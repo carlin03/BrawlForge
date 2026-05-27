@@ -49,6 +49,10 @@ function cleanTournamentName(name: string): string {
   return name.replace(/<!--[\s\S]*?-->/g, "").trim();
 }
 
+function spotlightStage(stage: string): string {
+  return stage.trim().toLowerCase() === "match" ? "Próximo duelo" : stage;
+}
+
 export function HomeView() {
   const [matchTab, setMatchTab] = useState<MatchTab>("upcoming");
 
@@ -69,7 +73,7 @@ export function HomeView() {
   );
 
   const tierEvents = useMemo(() => getTierBPlusTournaments(12), []);
-  const matchPool = useMemo(() => getCuratedHomeMatches(matchTab, 6), [matchTab]);
+  const matchPool = getCuratedHomeMatches(matchTab, 6);
   const voteEvents = useMemo(() => {
     const seen = new Set<string>();
     return openPredictions
@@ -82,7 +86,10 @@ export function HomeView() {
       })
       .slice(0, 3);
   }, []);
-  const showcasePros = useMemo(() => getTopFantasyPlayers(3), []);
+  const showcasePros = useMemo(
+    () => getTopFantasyPlayers(12).filter((p) => p.teamSlug && isKnownTeamSlug(p.teamSlug)).slice(0, 3),
+    [],
+  );
 
   const displayMatches = matches.filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)).length;
   const spotlightMatch =
@@ -117,7 +124,7 @@ export function HomeView() {
               </div>
               <div className="bf-arena-command-card">
                 <span>Spotlight</span>
-                <strong>{spotlightMatch ? spotlightMatch.stage : "BSC"}</strong>
+                <strong>{spotlightMatch ? spotlightStage(spotlightMatch.stage) : "BSC"}</strong>
                 <em>{spotlightLabel}</em>
               </div>
               <div className="bf-arena-command-card is-gold">
@@ -160,7 +167,7 @@ export function HomeView() {
           <div className="bf-arena-cards-stage">
             <div className="bf-arena-cards-glow" aria-hidden />
             <div className="bf-arena-stage-badge" aria-hidden>
-              Top fantasy cards
+              Cartas top fantasy
             </div>
             <div className="bf-arena-cards">
               {showcasePros.map((p, i) => (
