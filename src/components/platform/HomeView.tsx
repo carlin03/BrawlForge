@@ -9,18 +9,14 @@ import { PlayerCard, PlayerCardMini } from "@/components/platform/PlayerCard";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { SHOW_DEMO_SOCIAL } from "@/lib/app-config";
 import {
   CATALOG_STATS,
   catalogSyncedAt,
-  getCompetitiveTeamSlugs,
-  tierBadgeClass,
-  tierLabel,
-} from "@/lib/data";
-import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
   getCuratedHomeMatches,
+  getTeam,
+  getCompetitiveTeamSlugs,
   getLiveMatches,
   getSquadValue,
   getTierBPlusTournaments,
@@ -33,6 +29,8 @@ import {
   openPredictions,
   teamName,
   teams,
+  tierBadgeClass,
+  tierLabel,
   tournamentName,
 } from "@/lib/data";
 
@@ -47,6 +45,10 @@ function formatSyncDate(iso: string | null): string {
   }
 }
 
+function cleanTournamentName(name: string): string {
+  return name.replace(/<!--[\s\S]*?-->/g, "").trim();
+}
+
 export function HomeView() {
   const [matchTab, setMatchTab] = useState<MatchTab>("upcoming");
 
@@ -54,7 +56,8 @@ export function HomeView() {
   const squad = getUserSquad(DEFAULT_FANTASY_TOURNAMENT);
   const squadVal = getSquadValue(squad, DEFAULT_FANTASY_TOURNAMENT);
   const budgetLeft = FANTASY_BUDGET - squadVal;
-  const capPct = Math.round((squadVal / FANTASY_BUDGET) * 100);
+  const budgetLabel = budgetLeft >= 0 ? `$${budgetLeft.toFixed(1)}M libre` : `$${Math.abs(budgetLeft).toFixed(1)}M sobre cap`;
+  const capPct = Math.min(100, Math.round((squadVal / FANTASY_BUDGET) * 100));
 
   const competitiveSlugs = useMemo(() => new Set(getCompetitiveTeamSlugs()), []);
   const circuitTeams = useMemo(
@@ -85,6 +88,11 @@ export function HomeView() {
   const spotlightMatch =
     live[0] ?? getUpcomingMatches().find((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)) ?? null;
   const isLive = spotlightMatch?.status === "live";
+  const spotlightTeamA = spotlightMatch ? getTeam(spotlightMatch.teamASlug) : null;
+  const spotlightTeamB = spotlightMatch ? getTeam(spotlightMatch.teamBSlug) : null;
+  const spotlightLabel = spotlightMatch
+    ? `${teamName(spotlightMatch.teamASlug)} vs ${teamName(spotlightMatch.teamBSlug)}`
+    : "Calendario sincronizando";
 
   return (
     <div className="bf-home bf-home-arena-page">
@@ -101,6 +109,24 @@ export function HomeView() {
               Torneos Tier B+ con logos PNG en cada club y competición.
             </p>
 
+            <div className="bf-arena-command-strip" aria-label="Estado de la plataforma">
+              <div className="bf-arena-command-card is-live">
+                <span>Directo</span>
+                <strong>{live.length || "0"}</strong>
+                <em>{live.length === 1 ? "match activo" : "matches activos"}</em>
+              </div>
+              <div className="bf-arena-command-card">
+                <span>Spotlight</span>
+                <strong>{spotlightMatch ? spotlightMatch.stage : "BSC"}</strong>
+                <em>{spotlightLabel}</em>
+              </div>
+              <div className="bf-arena-command-card is-gold">
+                <span>Fantasy cap</span>
+                <strong>{capPct}%</strong>
+                <em>{budgetLabel}</em>
+              </div>
+            </div>
+
             <div className="bf-arena-stats">
               <div className="bf-arena-stat">
                 <strong>{CATALOG_STATS.playersActive}</strong>
@@ -116,7 +142,7 @@ export function HomeView() {
               </div>
               <div className="bf-arena-stat">
                 <strong>{CATALOG_STATS.tournaments2026}</strong>
-                <span>Torneos &apos;26</span>
+                <span>Torneos 2026</span>
               </div>
             </div>
 
@@ -133,6 +159,9 @@ export function HomeView() {
 
           <div className="bf-arena-cards-stage">
             <div className="bf-arena-cards-glow" aria-hidden />
+            <div className="bf-arena-stage-badge" aria-hidden>
+              Top fantasy cards
+            </div>
             <div className="bf-arena-cards">
               {showcasePros.map((p, i) => (
                 <div key={p.slug} className={`bf-arena-card-slot pos-${i}`}>
@@ -158,7 +187,7 @@ export function HomeView() {
             <h2 className="bf-home-block-title">Fantasy · Brawl Cup</h2>
           </div>
           <div className="bf-arena-squad-meta">
-            <span>${budgetLeft.toFixed(1)}M libre</span>
+            <span className={budgetLeft < 0 ? "is-over-cap" : ""}>{budgetLabel}</span>
             <span>{capPct}% usado</span>
             <Link href="/fantasy" className="bp-btn bp-btn-gold">Montar plantilla</Link>
           </div>
@@ -193,9 +222,17 @@ export function HomeView() {
               )}
             </div>
             <div className="bf-home-hero-battle">
-              <TeamLogo slug={spotlightMatch.teamASlug} name={teamName(spotlightMatch.teamASlug)} size="2xl" />
+              <div className="bf-home-hero-side">
+                <TeamLogo slug={spotlightMatch.teamASlug} name={teamName(spotlightMatch.teamASlug)} size="2xl" />
+                <strong>{teamName(spotlightMatch.teamASlug)}</strong>
+                {spotlightTeamA && <span>{spotlightTeamA.region} · {spotlightTeamA.tag}</span>}
+              </div>
               <span className="bf-home-hero-vs">VS</span>
-              <TeamLogo slug={spotlightMatch.teamBSlug} name={teamName(spotlightMatch.teamBSlug)} size="2xl" />
+              <div className="bf-home-hero-side">
+                <TeamLogo slug={spotlightMatch.teamBSlug} name={teamName(spotlightMatch.teamBSlug)} size="2xl" />
+                <strong>{teamName(spotlightMatch.teamBSlug)}</strong>
+                {spotlightTeamB && <span>{spotlightTeamB.region} · {spotlightTeamB.tag}</span>}
+              </div>
             </div>
           </Link>
         </section>
@@ -219,9 +256,15 @@ export function HomeView() {
           ))}
         </div>
         <div className="bf-home-match-list">
-          {matchPool.map((m) => (
-            <FeaturedMatch key={m.id} match={m} tag={m.status === "live" ? "LIVE" : undefined} />
-          ))}
+          {matchPool.length > 0 ? (
+            matchPool.map((m) => (
+              <FeaturedMatch key={m.id} match={m} tag={m.status === "live" ? "LIVE" : undefined} />
+            ))
+          ) : (
+            <div className="bf-home-empty">
+              No hay partidos en esta pestaña ahora mismo. Cambia de filtro o vuelve cuando Liquipedia actualice el calendario.
+            </div>
+          )}
         </div>
       </section>
 
@@ -233,10 +276,10 @@ export function HomeView() {
         <div className="bf-home-tours-track">
           {tierEvents.map((t) => (
             <Link key={t.slug} href={`/tournaments/${t.slug}`} className="bf-home-tour-card">
-              <TournamentLogo slug={t.slug} name={t.shortName.replace(/<!--[\s\S]*?-->/g, "").trim()} size={48} />
+              <TournamentLogo slug={t.slug} name={cleanTournamentName(t.shortName)} size={48} />
               <div className="bf-home-tour-body">
                 {t.tier != null && <span className={`bf-tier-badge ${tierBadgeClass(t.tier)}`}>{tierLabel(t.tier)}</span>}
-                <strong>{t.shortName.replace(/<!--[\s\S]*?-->/g, "").trim()}</strong>
+                <strong>{cleanTournamentName(t.shortName)}</strong>
                 <span>{t.prizePool}</span>
               </div>
             </Link>
