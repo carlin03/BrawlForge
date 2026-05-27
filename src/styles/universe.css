@@ -1,0 +1,621 @@
+/* ═══════════════════════════════════════════════════════════
+   BRAWLFORGE v4 — UNIVERSO VISUAL · Cada página = experiencia distinta
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bf-surface: #0f172a;
+}
+
+/* ─── Ambiente global — limpio, rojo sutil ─── */
+.forge-backdrop {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.forge-backdrop-base {
+  position: absolute;
+  inset: 0;
+  background: #070b14;
+}
+
+.forge-backdrop-red-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 30% at 50% 0%, rgba(255, 26, 46, 0.04), transparent 60%);
+}
+
+.forge-main { position: relative; z-index: 1; }
+
+/* ─── Temas de página — sin fondos extra ruidosos ─── */
+.forge-page { --page-accent: var(--bf-yellow); }
+
+.forge-home { --page-accent: var(--bf-yellow); }
+.forge-fantasy { --page-accent: var(--bf-blue); }
+.forge-arena { --page-accent: var(--bf-red); }
+.forge-bracket { --page-accent: var(--bf-yellow); }
+.forge-matches { --page-accent: var(--bf-blue); }
+
+/* ─── Hero cinematográfico (solo home) ─── */
+.forge-cinema {
+  position: relative;
+  margin: -24px -18px 32px;
+  padding: 48px 24px 56px;
+  overflow: hidden;
+  border-bottom: 3px solid var(--bf-red);
+}
+
+@media (min-width: 1024px) {
+  .forge-cinema { margin: -32px -24px 40px; padding: 64px 40px 72px; }
+}
+
+.forge-cinema-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 26, 46, 0.2) 0%, transparent 45%),
+    var(--bf-panel);
+}
+
+.forge-cinema-grid {
+  display: none;
+}
+
+.forge-cinema-content {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  display: grid;
+  gap: 32px;
+}
+
+@media (min-width: 900px) {
+  .forge-cinema-content { grid-template-columns: 1.2fr 0.8fr; align-items: center; }
+}
+
+.forge-cinema-title {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 700;
+  line-height: 0.88;
+  text-transform: uppercase;
+  text-shadow: 0 0 60px rgba(253,203,45,0.4);
+}
+
+.forge-cinema-accent {
+  display: block;
+  background: linear-gradient(90deg, var(--bf-yellow), var(--bf-red), var(--bf-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.forge-hud {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.forge-hud-cell {
+  padding: 16px 12px;
+  text-align: center;
+  border-radius: 4px;
+  transform: skewX(-4deg);
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+.forge-hud-cell > * { transform: skewX(4deg); }
+.forge-hud-yellow { background: var(--bf-yellow); color: #070b14; border-color: var(--bf-yellow); }
+.forge-hud-red { background: var(--bf-red); color: #fff; border-color: var(--bf-red); box-shadow: 0 0 20px var(--bf-red-glow); }
+.forge-hud-blue { background: var(--bf-blue); color: #fff; border-color: var(--bf-blue); }
+
+/* ─── Secciones home (layouts distintos) ─── */
+.forge-split {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 900px) {
+  .forge-split-asym { grid-template-columns: 1.15fr 0.85fr; }
+  .forge-split-reverse { grid-template-columns: 0.85fr 1.15fr; }
+}
+
+.forge-band {
+  position: relative;
+  padding: 6px 0 6px 16px;
+  margin-bottom: 16px;
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-left: 5px solid var(--page-accent, var(--bf-yellow));
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), transparent);
+}
+
+.forge-band-red { --page-accent: var(--bf-red); border-color: var(--bf-red); }
+.forge-band-blue { --page-accent: var(--bf-blue); border-color: var(--bf-blue); }
+.forge-band-yellow { --page-accent: var(--bf-yellow); border-color: var(--bf-yellow); }
+
+/* ─── Fantasy pitch (campo de juego) ─── */
+.forge-pitch {
+  position: relative;
+  padding: 40px 24px 48px;
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255,255,255,0.04) 49px, rgba(255,255,255,0.04) 50px),
+    repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255,255,255,0.04) 49px, rgba(255,255,255,0.04) 50px),
+    linear-gradient(180deg, #1a4d2e 0%, #0d3320 40%, #0a2818 100%);
+  border: 3px solid var(--bf-yellow);
+  box-shadow:
+    inset 0 0 80px rgba(0,0,0,0.5),
+    0 0 40px rgba(253,203,45,0.15);
+}
+
+.forge-pitch::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.forge-pitch-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.forge-pitch-cards {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  min-height: 320px;
+}
+
+.forge-pitch-cards .forge-card { max-width: 220px; flex: 1 1 200px; }
+
+.forge-pitch-cards .forge-card-captain {
+  transform: translateY(-16px) scale(1.06);
+  z-index: 2;
+}
+
+/* ─── Player card FUT / coleccionable ─── */
+.forge-card {
+  position: relative;
+  display: block;
+  border-radius: 12px 12px 8px 8px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.forge-card:hover {
+  transform: translateY(-8px) rotate(-1deg);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+}
+
+.forge-card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.forge-card:hover .forge-card-shine { transform: translateX(100%); }
+
+.forge-card-frame {
+  position: relative;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 55%, #070b14 100%);
+  border: 3px solid #334155;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.forge-card-gold .forge-card-frame { border-color: var(--bf-yellow); box-shadow: inset 0 0 30px rgba(253,203,45,0.15); }
+.forge-card-elite .forge-card-frame { border-color: var(--bf-blue); box-shadow: inset 0 0 30px rgba(59,130,246,0.15); }
+.forge-card-pro .forge-card-frame { border-color: var(--bf-red); }
+
+.forge-card-captain .forge-card-frame {
+  border-color: var(--bf-yellow);
+  box-shadow:
+    0 0 40px rgba(253,203,45,0.45),
+    inset 0 0 40px rgba(253,203,45,0.1);
+  animation: forge-captain-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes forge-captain-pulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(253,203,45,0.45), inset 0 0 40px rgba(253,203,45,0.1); }
+  50% { box-shadow: 0 0 60px rgba(253,203,45,0.65), inset 0 0 50px rgba(253,203,45,0.15); }
+}
+
+.forge-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 14px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.forge-card-ovr {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--bf-yellow);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.forge-card-ovr-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--bf-muted);
+}
+
+.forge-captain-ribbon {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 14px;
+  background: var(--bf-yellow);
+  color: #070b14;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  box-shadow: 0 0 20px rgba(253,203,45,0.6);
+  z-index: 4;
+}
+
+.forge-card-art {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 8px 16px 16px;
+  min-height: 120px;
+  align-items: center;
+}
+
+.forge-card-art-glow {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bf-blue) 0%, transparent 70%);
+  opacity: 0.35;
+  filter: blur(20px);
+}
+
+.forge-card-captain .forge-card-art-glow {
+  background: radial-gradient(circle, var(--bf-yellow) 0%, transparent 70%);
+  opacity: 0.5;
+}
+
+.forge-card-name {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0 12px;
+  text-transform: uppercase;
+}
+
+.forge-card-club {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bf-muted);
+  padding-bottom: 8px;
+}
+
+.forge-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 2px solid rgba(255,255,255,0.08);
+}
+
+.forge-card-stat {
+  padding: 10px 6px;
+  text-align: center;
+  background: rgba(0,0,0,0.25);
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.forge-card-stat:last-child { border-right: none; }
+.forge-card-stat-val {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.forge-card-stat-lbl {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--bf-dim);
+  text-transform: uppercase;
+}
+
+.forge-card-action {
+  padding: 10px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--bf-blue);
+  color: #fff;
+}
+
+.forge-card-form {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+/* ─── Arena vote (predicciones = gran partido) ─── */
+.forge-arena-card {
+  position: relative;
+  margin-bottom: 28px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+.forge-arena-card-featured {
+  border-color: var(--bf-yellow);
+  box-shadow: 0 0 50px rgba(253,203,45,0.2);
+}
+
+.forge-arena-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--bf-red);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow: 0 4px 24px var(--bf-red-glow);
+}
+
+.forge-arena-fight {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  min-height: 220px;
+}
+
+.forge-arena-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 16px;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+  background: linear-gradient(180deg, rgba(59,130,246,0.25), rgba(15,23,42,0.95));
+  color: inherit;
+  font: inherit;
+}
+
+.forge-arena-side:last-of-type {
+  background: linear-gradient(180deg, rgba(255, 26, 46, 0.35), rgba(15, 23, 42, 0.95));
+}
+
+.forge-arena-side:hover:not(:disabled) { filter: brightness(1.15); transform: scale(1.02); }
+.forge-arena-side:disabled { cursor: default; }
+
+.forge-arena-side.picked-a {
+  box-shadow: inset 0 0 0 4px var(--bf-blue);
+  background: linear-gradient(180deg, rgba(59,130,246,0.45), rgba(15,23,42,0.9));
+}
+
+.forge-arena-side.picked-b {
+  box-shadow: inset 0 0 0 4px var(--bf-red);
+  background: linear-gradient(180deg, rgba(255, 26, 46, 0.55), rgba(15, 23, 42, 0.9));
+}
+
+.forge-arena-vs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  background: var(--bf-bg);
+  min-width: 72px;
+}
+
+.forge-arena-vs-text {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--bf-yellow);
+  text-shadow: 0 0 30px rgba(253,203,45,0.6);
+  line-height: 1;
+}
+
+.forge-arena-pct {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.forge-arena-bar {
+  display: flex;
+  height: 12px;
+}
+
+.forge-arena-bar-a { background: var(--bf-blue); }
+.forge-arena-bar-b { background: var(--bf-red); }
+
+.forge-arena-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--bf-panel);
+  border-top: 2px solid rgba(255,255,255,0.06);
+}
+
+/* ─── Fantasy header (scoreboard, no hero genérico) ─── */
+.forge-scoreboard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  background: var(--bf-panel);
+  border: 2px solid var(--bf-red);
+  border-radius: 4px;
+  box-shadow: 0 0 32px rgba(255, 26, 46, 0.15);
+  transform: skewX(-2deg);
+}
+
+.forge-scoreboard > * { transform: skewX(2deg); }
+
+.forge-scoreboard-title {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* ─── Match scroll cards ─── */
+.forge-match-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+}
+
+.forge-match-tile {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  padding: 20px;
+  border-radius: 8px;
+  background: var(--bf-panel);
+  border: 2px solid var(--bf-blue);
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.forge-match-tile:hover {
+  transform: scale(1.03);
+  border-color: var(--bf-yellow);
+}
+
+.forge-match-tile-live {
+  border-color: var(--bf-red);
+  animation: forge-live-border 1.5s ease-in-out infinite;
+}
+
+@keyframes forge-live-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,90,0.4); }
+  50% { box-shadow: 0 0 20px 4px rgba(255,77,90,0.3); }
+}
+
+/* ─── News magazine ─── */
+.forge-mag-featured {
+  display: grid;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid var(--bf-red);
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .forge-mag-featured { grid-template-columns: 1.2fr 1fr; min-height: 280px; }
+}
+
+.forge-mag-visual {
+  min-height: 200px;
+  background:
+    linear-gradient(135deg, var(--bf-red) 0%, transparent 50%),
+    linear-gradient(225deg, var(--bf-blue) 0%, transparent 50%),
+    var(--bf-panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.forge-mag-visual-icon {
+  width: 80px;
+  height: 80px;
+  opacity: 0.3;
+}
+
+.forge-mag-body {
+  padding: 24px;
+  background: var(--bf-surface);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.forge-mag-grid {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .forge-mag-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.forge-mag-item {
+  padding: 16px;
+  border-left: 4px solid var(--bf-blue);
+  background: var(--bf-panel);
+  transition: border-color 0.15s;
+}
+
+.forge-mag-item:hover { border-color: var(--bf-yellow); }
+
+/* ─── Predictor HUD ─── */
+.forge-predictor-hud {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.forge-predictor-hud-cell {
+  padding: 14px 10px;
+  text-align: center;
+  border-radius: 4px;
+  border: 2px solid;
+}
+
+.forge-predictor-hud-cell:nth-child(1) { background: rgba(255,77,90,0.2); border-color: var(--bf-red); }
+.forge-predictor-hud-cell:nth-child(2) { background: rgba(253,203,45,0.2); border-color: var(--bf-yellow); }
+.forge-predictor-hud-cell:nth-child(3) { background: rgba(59,130,246,0.2); border-color: var(--bf-blue); }
+.forge-predictor-hud-cell:nth-child(4) { background: rgba(253,203,45,0.15); border-color: var(--bf-yellow); }

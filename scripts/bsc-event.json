@@ -1,0 +1,664 @@
+[
+  {
+    "eventId": "w4Lu1Ua9yIKv2ZBABn6oP",
+    "eventRules": {
+      "r": [
+        {
+          "m": [
+            {
+              "fP": false,
+              "id": 1
+            },
+            {
+              "fP": false,
+              "id": 2
+            },
+            {
+              "fP": false,
+              "id": 3
+            },
+            {
+              "fP": false,
+              "id": 4
+            },
+            {
+              "fP": false,
+              "id": 5
+            },
+            {
+              "fP": false,
+              "id": 6
+            }
+          ],
+          "r": 1
+        },
+        {
+          "m": [
+            {
+              "fP": false,
+              "id": 7
+            },
+            {
+              "fP": false,
+              "id": 8
+            },
+            {
+              "fP": false,
+              "id": 9
+            },
+            {
+              "fP": false,
+              "id": 10
+            },
+            {
+              "fP": false,
+              "id": 11
+            },
+            {
+              "fP": false,
+              "id": 12
+            }
+          ],
+          "r": 2
+        },
+        {
+          "m": [
+            {
+              "fP": false,
+              "id": 13
+            },
+            {
+              "fP": false,
+              "id": 14
+            },
+            {
+              "fP": false,
+              "id": 15
+            },
+            {
+              "fP": false,
+              "id": 16
+            },
+            {
+              "fP": true,
+              "id": 17
+            },
+            {
+              "fP": true,
+              "id": 18
+            },
+            {
+              "fP": true,
+              "id": 19
+            }
+          ],
+          "r": 3
+        }
+      ]
+    },
+    "status": "finished",
+    "groupStage": {
+      "groups": 4,
+      "type": "gsl",
+      "ranges": 2,
+      "advancingContestants": 8
+    },
+    "totalRanges": 3,
+    "estimatedUsers": 300000,
+    "bracketType": "single_elimination",
+    "range": 4,
+    "application": "brawlstars",
+    "region": "global",
+    "cup": "world-championship",
+    "minimumRetentionInDays": 14,
+    "numberOfContestants": 12,
+    "rangeStartTimes": {
+      "1": 1778841900000,
+      "2": 1778929800000,
+      "3": 1779014700000
+    },
+    "type": "global",
+    "raffles": [],
+    "predictionStartTimes": {
+      "1": 1778608800000,
+      "2": 1778868000000,
+      "3": 1778954400000
+    },
+    "streams": [
+      {
+        "followLink": "https://www.youtube.com/@BrawlStarsEsports",
+        "country": "US",
+        "streamId": 1778385599836,
+        "range": 1,
+        "photo": "/streamers/photos/11D7m26COWMvSS9sXmYqIL",
+        "videoId": "RxlvzA4ljA8",
+        "language": "English",
+        "title": "Brawl Stars 2026",
+        "locale": "en",
+        "languageNative": "English",
+        "platform": "Youtube",
+        "vodId": "https://www.youtube.com/watch?v=RxlvzA4ljA8",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@BrawlStarsEsports",
+        "country": "US",
+        "streamId": 1778385608105,
+        "range": 2,
+        "photo": "/streamers/photos/11D7m26COWMvSS9sXmYqIL",
+        "videoId": "7pSlz_4ERg0",
+        "language": "English",
+        "title": "Brawl Stars 2026",
+        "locale": "en",
+        "languageNative": "English",
+        "platform": "Youtube",
+        "vodId": "https://www.youtube.com/watch?v=7pSlz_4ERg0",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@BrawlStarsEsports",
+        "country": "US",
+        "streamId": 1778385617098,
+        "range": 3,
+        "photo": "/streamers/photos/11D7m26COWMvSS9sXmYqIL",
+        "videoId": "KMmfUmZKoak",
+        "language": "English",
+        "title": "Brawl Stars 2026",
+        "locale": "en",
+        "languageNative": "English",
+        "platform": "Youtube",
+        "vodId": "https://www.youtube.com/watch?v=KMmfUmZKoak",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@Chun",
+        "streamId": 1778838370716,
+        "vodId": "",
+        "range": 1,
+        "photo": "/streamers/photos/5f01PRpEJPPySoafsZk34D",
+        "videoId": "EPCeHBxyY4I",
+        "language": "Chinese",
+        "region": "",
+        "title": "盛主播",
+        "locale": "zh",
+        "languageNative": "中文",
+        "platform": "Youtube"
+      },
+      {
+        "followLink": "https://www.youtube.com/@Chun",
+        "streamId": 1778838476852,
+        "vodId": "",
+        "range": 2,
+        "photo": "/streamers/photos/5f01PRpEJPPySoafsZk34D",
+        "videoId": "kNiyTJl6qBY",
+        "language": "Chinese",
+        "region": "",
+        "title": "盛主播",
+        "locale": "zh",
+        "languageNative": "中文",
+        "platform": "Youtube"
+      },
+      {
+        "followLink": "https://www.youtube.com/@Chun",
+        "streamId": 1778838537973,
+        "vodId": "",
+        "range": 3,
+        "photo": "/streamers/photos/5f01PRpEJPPySoafsZk34D",
+        "videoId": "uU-qsW1kJKo",
+        "language": "Chinese",
+        "region": "",
+        "title": "盛主播",
+        "locale": "zh",
+        "languageNative": "中文",
+        "platform": "Youtube"
+      },
+      {
+        "followLink": "https://www.youtube.com/@brawlstarsjapan",
+        "country": "JP",
+        "streamId": 1778838617410,
+        "range": 1,
+        "photo": "/streamers/photos/389icacG1B4m83L9XmWLhV",
+        "videoId": "Mo7YT8HHYWo",
+        "language": "Japanese",
+        "title": "Brawl Stars Japan",
+        "locale": "ja",
+        "languageNative": "日本語",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@BrawlStarsKorea",
+        "country": "KR",
+        "streamId": 1778838680839,
+        "range": 1,
+        "photo": "/streamers/photos/62BqAuJNM0KNtZZhwyYRv5",
+        "videoId": "Ic48iyjzDIE",
+        "language": "Korean",
+        "title": "브롤스타즈",
+        "locale": "ko",
+        "languageNative": "한국어",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@brawlstarsjapan",
+        "country": "JP",
+        "streamId": 1778838739796,
+        "range": 2,
+        "photo": "/streamers/photos/389icacG1B4m83L9XmWLhV",
+        "videoId": "sIJbLdgevFw",
+        "language": "Japanese",
+        "title": "Brawl Stars Japan",
+        "locale": "ja",
+        "languageNative": "日本語",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@brawlstarsjapan",
+        "country": "JP",
+        "streamId": 1778838780657,
+        "range": 3,
+        "photo": "/streamers/photos/389icacG1B4m83L9XmWLhV",
+        "videoId": "Xz1FI2WQ6KE",
+        "language": "Japanese",
+        "title": "Brawl Stars Japan",
+        "locale": "ja",
+        "languageNative": "日本語",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@BrawlStarsKorea",
+        "country": "KR",
+        "streamId": 1778838830767,
+        "range": 3,
+        "photo": "/streamers/photos/62BqAuJNM0KNtZZhwyYRv5",
+        "videoId": "XMb5ojx6bQU",
+        "language": "Korean",
+        "title": "브롤스타즈",
+        "locale": "ko",
+        "languageNative": "한국어",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@BrawlStarsKorea",
+        "country": "KR",
+        "streamId": 1778838938414,
+        "range": 2,
+        "photo": "/streamers/photos/62BqAuJNM0KNtZZhwyYRv5",
+        "videoId": "-b9p6y-IzKU",
+        "language": "Korean",
+        "title": "브롤스타즈",
+        "locale": "ko",
+        "languageNative": "한국어",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/pioupioulover",
+        "country": "FR",
+        "streamId": 1778839028129,
+        "range": 1,
+        "photo": "/streamers/photos/3zg45iY3xzBhXOWuOJRDIy",
+        "videoId": "pioupioulover",
+        "language": "French",
+        "title": "PiouPiouLover",
+        "locale": "fr",
+        "languageNative": "Français",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/pioupioulover",
+        "country": "FR",
+        "streamId": 1778839067559,
+        "range": 2,
+        "photo": "/streamers/photos/3zg45iY3xzBhXOWuOJRDIy",
+        "videoId": "pioupioulover",
+        "language": "French",
+        "title": "PiouPiouLover",
+        "locale": "fr",
+        "languageNative": "Français",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/kuzan_tv",
+        "country": "FR",
+        "streamId": 1778839107345,
+        "range": 3,
+        "photo": "/streamers/photos/33eEM84uVZlKSbBinwDD1I",
+        "videoId": "kuzan_tv",
+        "language": "French",
+        "title": "Kuzan_TV",
+        "locale": "fr",
+        "languageNative": "Français",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/tv_brocast",
+        "country": "DE",
+        "streamId": 1778839189971,
+        "range": 3,
+        "photo": "/streamers/photos/35RPldG7613Fwb64YJeVS4",
+        "videoId": "tv_brocast",
+        "language": "German",
+        "title": "BroCast",
+        "locale": "de",
+        "languageNative": "Deutsch",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/tv_brocast",
+        "country": "DE",
+        "streamId": 1778839227073,
+        "range": 2,
+        "photo": "/streamers/photos/35RPldG7613Fwb64YJeVS4",
+        "videoId": "tv_brocast",
+        "language": "German",
+        "title": "BroCast",
+        "locale": "de",
+        "languageNative": "Deutsch",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/tv_brocast",
+        "country": "DE",
+        "streamId": 1778839265308,
+        "range": 1,
+        "photo": "/streamers/photos/35RPldG7613Fwb64YJeVS4",
+        "videoId": "tv_brocast",
+        "language": "German",
+        "title": "BroCast",
+        "locale": "de",
+        "languageNative": "Deutsch",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/ferre",
+        "country": "IT",
+        "streamId": 1778839335413,
+        "range": 1,
+        "photo": "/streamers/photos/3kVg0D1ywZP6RIHmH5Z3mU",
+        "videoId": "ferre",
+        "language": "Italian",
+        "title": "Ferre",
+        "locale": "it",
+        "languageNative": "Italiano",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/ferre",
+        "country": "IT",
+        "streamId": 1778839380658,
+        "range": 3,
+        "photo": "/streamers/photos/3kVg0D1ywZP6RIHmH5Z3mU",
+        "videoId": "ferre",
+        "language": "Italian",
+        "title": "Ferre",
+        "locale": "it",
+        "languageNative": "Italiano",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.twitch.tv/playerd",
+        "country": "IT",
+        "streamId": 1778839436220,
+        "range": 2,
+        "photo": "/streamers/photos/7J4lnUN46p8rLkSh9nIPWt",
+        "videoId": "playerd",
+        "language": "Italian",
+        "title": "PlayerD",
+        "locale": "it",
+        "languageNative": "Italiano",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@Toriiyt",
+        "country": "PL",
+        "streamId": 1778839678758,
+        "range": 1,
+        "photo": "/streamers/photos/369zKRqubuxum0Biv9PiAa",
+        "videoId": "Y7-XlWufXG4",
+        "language": "Polish",
+        "title": "Torii",
+        "locale": "pl",
+        "languageNative": "Polski",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@Skiller_Gaming",
+        "streamId": 1778839744419,
+        "vodId": "",
+        "range": 1,
+        "photo": "/streamers/photos/1UHl9Gko0b6I0ElZjHiPmd",
+        "videoId": "FEvmsTNflPk",
+        "language": "Russian",
+        "region": "",
+        "title": "Skiller Gaming",
+        "locale": "ru",
+        "languageNative": "Русский",
+        "platform": "Youtube"
+      },
+      {
+        "followLink": "https://www.twitch.tv/nearz_z",
+        "country": "ES",
+        "streamId": 1778839792809,
+        "range": 1,
+        "photo": "/streamers/photos/2vPOMDEexeg2w9EvqPysgW",
+        "videoId": "nearz_z",
+        "language": "Spanish",
+        "title": "NeaRz",
+        "locale": "es",
+        "languageNative": "Español",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@Slorienn",
+        "country": "TR",
+        "streamId": 1778839860793,
+        "range": 1,
+        "photo": "/streamers/photos/3ICfUTv5c4qRHnfgIGbvg6",
+        "videoId": "4sVNFcOL6N4",
+        "language": "Turkish",
+        "title": "Slorien",
+        "locale": "tr",
+        "languageNative": "Türkçe",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@KINGJOEJNT",
+        "country": "PT",
+        "streamId": 1778839906730,
+        "range": 1,
+        "photo": "/streamers/photos/5tf6nIZsjfQuOcmFDgvH9N",
+        "videoId": "yBad1zsEkhQ",
+        "language": "Portuguese",
+        "title": "KingJoeJNT",
+        "locale": "pt",
+        "languageNative": "Português",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@VeniGaming",
+        "country": "PL",
+        "streamId": 1778840104799,
+        "range": 2,
+        "photo": "/streamers/photos/7Dwu01yXMmtO2vXTpWuNZS",
+        "videoId": "UwYC3EJYRhQ",
+        "language": "Polish",
+        "title": "Veni Gaming",
+        "locale": "pl",
+        "languageNative": "Polski",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@TheElNinoTV",
+        "streamId": 1778840156407,
+        "vodId": "",
+        "range": 2,
+        "photo": "/streamers/photos/43Wrpz8bYs68IhbLkgxsBz",
+        "videoId": "xmZGai7Pm0o",
+        "language": "Russian",
+        "region": "",
+        "title": "El Nino TV",
+        "locale": "ru",
+        "languageNative": "Русский",
+        "platform": "Youtube"
+      },
+      {
+        "followLink": "https://www.twitch.tv/nearz_z",
+        "country": "ES",
+        "streamId": 1778840220081,
+        "range": 2,
+        "photo": "/streamers/photos/2vPOMDEexeg2w9EvqPysgW",
+        "videoId": "nearz_z",
+        "language": "Spanish",
+        "title": "NeaRz",
+        "locale": "es",
+        "languageNative": "Español",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@OyunlarinUstasii",
+        "country": "TR",
+        "streamId": 1778840278220,
+        "range": 2,
+        "photo": "/streamers/photos/kZ0IAiPl61hoOI70GiVnR",
+        "videoId": "IsJZCqSmA9Y",
+        "language": "Turkish",
+        "title": "Oyunların Ustası",
+        "locale": "tr",
+        "languageNative": "Türkçe",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@brunoclash",
+        "country": "PT",
+        "streamId": 1778840343835,
+        "range": 2,
+        "photo": "/streamers/photos/3c1p29RaoubVYQwgAUBXdd",
+        "videoId": "o6HAh3D-TXk",
+        "language": "Portuguese",
+        "title": "BrunoClash",
+        "locale": "pt",
+        "languageNative": "Português",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@Toriiyt",
+        "country": "PL",
+        "streamId": 1778840521230,
+        "range": 3,
+        "photo": "/streamers/photos/369zKRqubuxum0Biv9PiAa",
+        "videoId": "vHeLGOCvhZo",
+        "language": "Polish",
+        "title": "Torii",
+        "locale": "pl",
+        "languageNative": "Polski",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@Skiller_Gaming",
+        "streamId": 1778840583249,
+        "vodId": "",
+        "range": 3,
+        "photo": "/streamers/photos/1UHl9Gko0b6I0ElZjHiPmd",
+        "videoId": "TCGRWUSByNc",
+        "language": "Russian",
+        "region": "",
+        "title": "Skiller Gaming",
+        "locale": "ru",
+        "languageNative": "Русский",
+        "platform": "Youtube"
+      },
+      {
+        "followLink": "https://www.twitch.tv/nearz_z",
+        "country": "ES",
+        "streamId": 1778840627992,
+        "range": 3,
+        "photo": "/streamers/photos/2vPOMDEexeg2w9EvqPysgW",
+        "videoId": "nearz_z",
+        "language": "Spanish",
+        "title": "NeaRz",
+        "locale": "es",
+        "languageNative": "Español",
+        "platform": "Twitch",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@Slorienn",
+        "country": "TR",
+        "streamId": 1778840698492,
+        "range": 3,
+        "photo": "/streamers/photos/3ICfUTv5c4qRHnfgIGbvg6",
+        "videoId": "YgWUqRJDFiE",
+        "language": "Turkish",
+        "title": "Slorien",
+        "locale": "tr",
+        "languageNative": "Türkçe",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      },
+      {
+        "followLink": "https://www.youtube.com/@KINGJOEJNT",
+        "country": "PT",
+        "streamId": 1778840746443,
+        "range": 3,
+        "photo": "/streamers/photos/5tf6nIZsjfQuOcmFDgvH9N",
+        "videoId": "cDWhyf05UZY",
+        "language": "Portuguese",
+        "title": "KingJoeJNT",
+        "locale": "pt",
+        "languageNative": "Português",
+        "platform": "Youtube",
+        "vodId": "",
+        "region": ""
+      }
+    ]
+  }
+]

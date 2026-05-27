@@ -1,0 +1,558 @@
+/* ═══ BRAWLFORGE HOME — Hub esports (identidad + estructura OP.GG) ═══ */
+
+.bf-home {
+  --home-max: 1600px;
+  --home-gap: 20px;
+  margin-top: calc(-1 * var(--bf-page-pad));
+}
+
+/* ─── HERO ─── */
+.bf-home-hero {
+  position: relative;
+  overflow: hidden;
+  background: #0a101c;
+  border-bottom: 3px solid var(--bf-red);
+}
+
+.bf-home-hero-stripe {
+  height: 4px;
+  background: linear-gradient(90deg, var(--bf-red) 0%, var(--bf-red) 38%, var(--bf-yellow) 58%, var(--bf-blue) 100%);
+}
+
+.bf-home-hero-accent {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 65% 85% at 12% 55%, rgba(255, 26, 46, 0.11), transparent 58%),
+    radial-gradient(ellipse 55% 75% at 88% 38%, rgba(59, 130, 246, 0.09), transparent 52%),
+    linear-gradient(180deg, #0d1526 0%, var(--bf-bg) 100%);
+}
+
+.bf-home-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--home-max);
+  margin: 0 auto;
+  padding: 44px 48px 48px;
+  min-height: 420px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 32px;
+  align-items: center;
+}
+
+.bf-home-hero-copy {
+  min-width: 0;
+  max-width: none;
+}
+
+.bf-home-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.bf-home-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bf-red);
+  background: rgba(255, 26, 46, 0.1);
+  border: 1px solid rgba(255, 26, 46, 0.35);
+  border-radius: 4px;
+}
+
+.bf-home-title {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: clamp(2.75rem, 6.5vw, 4.75rem);
+  font-weight: 700;
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.bf-home-title-forge {
+  background: linear-gradient(135deg, var(--bf-yellow) 25%, #fff 52%, var(--bf-blue) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bf-home-sub {
+  margin: 14px 0 0;
+  max-width: none;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--bf-muted);
+}
+
+.bf-home-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.bf-home-stat {
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: var(--bf-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 2px solid var(--bf-yellow);
+}
+
+.bf-home-stat-val {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--bf-yellow);
+  line-height: 1;
+}
+
+.bf-home-stat-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bf-muted);
+  margin-top: 2px;
+}
+
+.bf-home-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.bf-home-cta .bf-btn {
+  padding: 11px 22px;
+  font-size: 13px;
+}
+
+/* ─── Hero card stack ─── */
+.bf-home-hero-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 380px;
+  margin-left: -48px;
+}
+
+.bf-home-card-stack {
+  position: relative;
+  width: min(100%, 580px);
+  height: 360px;
+  margin: 0 auto;
+}
+
+.bf-home-card-slot {
+  position: absolute;
+  transition: transform 0.25s ease;
+}
+
+.bf-home-card-slot .fx-card {
+  width: 240px;
+  max-width: 240px;
+  margin: 0;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.55));
+}
+
+.bf-home-card-slot-2 .fx-card {
+  width: 265px;
+  max-width: 265px;
+}
+
+.bf-home-card-slot-1 {
+  left: 12%;
+  top: 52px;
+  z-index: 1;
+  transform: rotate(-10deg);
+}
+
+.bf-home-card-slot-2 {
+  left: 50%;
+  top: 0;
+  z-index: 3;
+  transform: translateX(-50%) scale(1.1);
+}
+
+.bf-home-card-slot-3 {
+  right: 12%;
+  top: 56px;
+  z-index: 2;
+  transform: rotate(10deg);
+}
+
+.bf-home-card-stack:hover .bf-home-card-slot-1 { transform: rotate(-6deg) translateY(-6px); }
+.bf-home-card-stack:hover .bf-home-card-slot-2 { transform: translateX(-50%) scale(1.1) translateY(-8px); }
+.bf-home-card-stack:hover .bf-home-card-slot-3 { transform: rotate(6deg) translateY(-6px); }
+
+@media (max-width: 959px) {
+  .bf-home-hero-inner {
+    grid-template-columns: 1fr;
+    padding: 32px var(--bf-page-pad);
+    gap: 24px;
+    min-height: 0;
+  }
+  .bf-home-hero-copy { text-align: center; }
+  .bf-home-brand { justify-content: center; }
+  .bf-home-stats { justify-content: center; }
+  .bf-home-cta { justify-content: center; }
+  .bf-home-hero-visual { min-height: 300px; margin-left: 0; }
+  .bf-home-card-stack { width: min(100%, 440px); height: 300px; }
+  .bf-home-card-slot .fx-card { width: 200px; max-width: 200px; }
+  .bf-home-card-slot-2 .fx-card { width: 220px; max-width: 220px; }
+}
+
+/* ─── Marquee logos ─── */
+.bf-home-marquee-wrap {
+  max-width: var(--home-max);
+  margin: 0 auto;
+  height: 72px;
+  max-height: 72px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bf-surface);
+  scrollbar-width: none;
+}
+
+.bf-home-marquee-wrap::-webkit-scrollbar { display: none; }
+
+.bf-home-marquee {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+  width: max-content;
+  min-width: 100%;
+}
+
+.bf-home-marquee-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  opacity: 0.6;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.bf-home-marquee-item:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.bf-home-marquee-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bf-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ─── Body ─── */
+.bf-home-body {
+  max-width: var(--home-max);
+  margin: 0 auto;
+  padding: 0 var(--bf-page-pad) 32px;
+}
+
+.bf-home-section {
+  margin-top: 24px;
+}
+
+.bf-home-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(255, 26, 46, 0.22);
+}
+
+.bf-home-section-title {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-left: 12px;
+  border-left: 4px solid var(--bf-red);
+}
+
+.bf-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bf-blue);
+}
+
+.bf-home-link:hover { color: var(--bf-yellow); }
+
+/* ─── Grids ─── */
+.bf-home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--home-gap);
+  width: 100%;
+}
+
+.bf-home-grid-dashboard {
+  margin-top: 24px;
+}
+
+.bf-home-grid-pros {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.bf-home-grid-pros .fx-card {
+  width: 100%;
+  max-width: none;
+}
+
+/* ─── Panels ─── */
+.bf-home-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--bf-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.bf-home-panel:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+.bf-home-panel-fantasy { border-left: 3px solid var(--bf-blue); }
+.bf-home-panel-vote { border-left: 3px solid var(--bf-red); }
+.bf-home-panel-pickem { border-left: 3px solid var(--bf-yellow); }
+.bf-home-panel-tournaments { border-left: 3px solid rgba(255, 255, 255, 0.15); }
+
+.bf-home-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bf-home-panel-badge {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(253, 203, 45, 0.15);
+  color: var(--bf-yellow);
+}
+
+.bf-home-panel-cta {
+  width: 100%;
+  justify-content: center;
+  margin-top: auto;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.bf-home-panel.forge-match-tile {
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+  border-left: 3px solid var(--bf-blue);
+}
+
+.bf-home-panel.forge-match-tile-live {
+  border-left-color: var(--bf-red);
+}
+
+.bf-home-match-meta {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--bf-muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bf-home-match-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bf-home-match-score {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--bf-yellow);
+}
+
+.bf-home-match-score span {
+  color: var(--bf-dim);
+  margin: 0 2px;
+}
+
+.bf-home-match-names {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--bf-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bf-home-fantasy-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.bf-home-fantasy-meta { min-width: 0; }
+
+.bf-home-roster {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.bf-home-roster-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--bf-surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+  color: inherit;
+  font-size: 12px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.bf-home-roster-row:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.bf-home-roster-ovr {
+  font-family: var(--font-rajdhani), sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--bf-yellow);
+}
+
+.bf-home-roster-name {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bf-home-roster-team {
+  color: var(--bf-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.bf-home-roster-price {
+  font-weight: 800;
+  color: var(--bf-blue);
+  font-size: 11px;
+}
+
+.bf-home-roster-form {
+  display: flex;
+  gap: 2px;
+}
+
+.bf-home-mini-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.bf-home-mini-cards .fx-card {
+  width: 100%;
+  max-width: none;
+}
+
+.bf-home-vote-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.bf-home-pickem-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.bf-home-pickem-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--bf-surface);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.bf-home-pickem-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--bf-red), var(--bf-yellow));
+}
+
+.bf-home-tournament-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.bf-home-panel-tournaments .bf-tourney-card {
+  border-radius: 8px;
+}
+
+.bf-home-panel-tournaments .bf-tourney-body {
+  padding: 12px;
+  gap: 12px;
+}
+
+.bf-home-panel-tournaments .bf-display.text-xl {
+  font-size: 1rem;
+}
+
+.bf-home-panel-tournaments .bf-display.text-2xl {
+  font-size: 1.15rem;
+}

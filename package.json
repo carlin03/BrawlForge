@@ -6,9 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "logos:download": "node scripts/download-logos.mjs",
+    "data:sync": "node scripts/sync-liquipedia-data.mjs",
+    "data:sync:write": "node scripts/sync-liquipedia-data.mjs --write",
+    "data:sync:full": "node scripts/sync-liquipedia-full.mjs --write --logos",
+    "data:sync:tier-bplus": "node scripts/sync-liquipedia-full.mjs --write --logos --max-tier=3",
+    "data:enrich:2026": "node scripts/enrich-liquipedia-2026.mjs --write --logos",
+    "data:sync:logos": "node scripts/sync-liquipedia-full.mjs --logos-only",
+    "bsc:sync": "node scripts/sync-supercell-bsc.mjs",
+    "postinstall": "node scripts/download-logos.mjs"
   },
   "dependencies": {
+    "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -20,6 +30,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

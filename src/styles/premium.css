@@ -1,0 +1,486 @@
+/* BrawlForge — Ultra premium layer */
+
+@keyframes bf-sparkle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ── App atmosphere ── */
+.bf-game-app {
+  position: relative;
+  isolation: isolate;
+}
+.bf-game-app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+  background:
+    radial-gradient(ellipse 90% 50% at 50% -10%, rgba(255, 23, 68, 0.14), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 20%, rgba(0, 153, 255, 0.1), transparent 50%),
+    radial-gradient(ellipse 50% 35% at 0% 80%, rgba(255, 200, 46, 0.08), transparent 45%);
+}
+.bf-game-app::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
+}
+.bf-game-app .bp-main,
+.bf-game-app .bp-nav,
+.bf-game-app .bf-game-dock {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Nav chrome ── */
+.bf-game-nav.bp-nav {
+  height: auto;
+  min-height: var(--bp-nav-h);
+  border-bottom: 1px solid rgba(255, 200, 46, 0.12);
+  background: linear-gradient(180deg, rgba(14, 18, 28, 0.98), rgba(8, 10, 16, 0.94));
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 200, 46, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.bf-game-nav .bp-nav-inner {
+  flex-wrap: nowrap;
+  align-items: center;
+  height: var(--bp-nav-h);
+  padding: 0 16px;
+  gap: 12px;
+  max-width: var(--bp-max);
+  margin: 0 auto;
+}
+.bf-nav-actions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+@media (min-width: 900px) {
+  .bf-nav-actions { display: flex; }
+}
+.bf-game-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 24px rgba(255, 200, 46, 0.25);
+}
+.bf-game-logo-star {
+  width: 22px;
+  height: 22px;
+  color: var(--bp-red-bright);
+  filter: drop-shadow(0 0 8px var(--bp-red-glow));
+}
+.bf-game-nav .bp-nav-link {
+  font-family: var(--bp-head);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+.bf-game-nav .bp-nav-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.bf-game-nav .bp-nav-link.is-on {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.bf-game-nav .bp-nav-link.is-fantasy.is-on {
+  color: #1a1000;
+  background: linear-gradient(180deg, #ffe566, var(--bp-gold));
+  border-color: rgba(255, 200, 46, 0.6);
+  box-shadow: 0 4px 24px rgba(255, 200, 46, 0.45);
+}
+.bf-game-nav .bp-nav-link.is-vote.is-on {
+  color: #fff;
+  background: linear-gradient(180deg, var(--bp-red-bright), var(--bp-red));
+  border-color: rgba(255, 23, 68, 0.5);
+  box-shadow: 0 4px 24px var(--bp-red-glow);
+}
+
+.bf-subnav {
+  display: none;
+  max-width: var(--bp-max);
+  margin: 0 auto;
+  gap: 8px;
+  padding: 8px 16px 12px;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+@media (min-width: 720px) {
+  .bf-subnav { display: flex; }
+}
+.bf-subnav-link {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--bp-dim);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.bf-subnav-link:hover {
+  color: var(--bp-text);
+  border-color: rgba(255, 200, 46, 0.25);
+  transform: translateY(-1px);
+}
+.bf-subnav-link.is-on {
+  color: var(--bp-gold);
+  border-color: rgba(255, 200, 46, 0.4);
+  background: rgba(255, 200, 46, 0.08);
+  box-shadow: 0 0 20px rgba(255, 200, 46, 0.12);
+}
+
+@media (max-width: 899px) {
+  .bf-game-nav .bp-nav-toggle { margin-left: auto; }
+}
+.bf-nav-cta {
+  padding: 8px 18px !important;
+  font-size: 11px !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4) !important;
+}
+.bf-nav-cta-gold {
+  background: linear-gradient(180deg, #fff0a8, #ffc82e 45%, #e6a800) !important;
+}
+.bf-nav-cta-red {
+  background: linear-gradient(180deg, #ff6b8a, #ff1744 50%, #d50032) !important;
+}
+
+/* ── Premium sections (home + pages) ── */
+.bf-premium-section {
+  position: relative;
+  margin-bottom: var(--bp-gap-lg);
+  padding: 22px 20px 24px;
+  border-radius: 20px;
+  background: linear-gradient(165deg, rgba(24, 31, 44, 0.95), rgba(10, 12, 18, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+.bf-premium-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bp-red), var(--bp-gold), var(--bp-blue));
+  opacity: 0.85;
+}
+.bf-premium-section--gold::before {
+  background: linear-gradient(90deg, transparent, var(--bp-gold), transparent);
+  height: 2px;
+}
+.bf-premium-section--live::before {
+  background: linear-gradient(90deg, var(--bp-red), transparent);
+  animation: bf-sparkle 2s ease-in-out infinite;
+}
+.bf-premium-section .bf-home-block-title {
+  font-size: 1.25rem;
+  color: var(--bp-text);
+}
+@supports (background-clip: text) {
+  .bf-premium-section .bf-home-block-title {
+    background: linear-gradient(90deg, #fff 0%, #c8d4e8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+.bf-premium-section .bf-home-eyebrow {
+  color: var(--bp-gold);
+  letter-spacing: 0.14em;
+}
+
+/* ── Hero ultra ── */
+.bf-arena-hero--ultra {
+  border: 1px solid rgba(255, 200, 46, 0.2) !important;
+  box-shadow:
+    0 32px 100px rgba(0, 0, 0, 0.6),
+    0 0 80px rgba(255, 23, 68, 0.08),
+    0 0 120px rgba(0, 153, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+.bf-arena-hero--ultra .bf-arena-title {
+  font-size: clamp(2.8rem, 9vw, 4.5rem);
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
+}
+.bf-arena-hero--ultra .bf-arena-title span {
+  color: var(--bp-gold);
+}
+@supports (background-clip: text) {
+  .bf-arena-hero--ultra .bf-arena-title span {
+    background: linear-gradient(180deg, #fff5c0, var(--bp-gold) 55%, #c99200);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+.bf-arena-stat {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.25)) !important;
+  border: 1px solid rgba(255, 200, 46, 0.15) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.bf-arena-stat strong {
+  background: linear-gradient(180deg, #fff, #e2e8f0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.bf-arena-cta {
+  padding: 14px 26px !important;
+  font-size: 14px !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.bf-arena-cta-gold {
+  box-shadow: 0 8px 32px rgba(255, 200, 46, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+.bf-arena-cta-red {
+  box-shadow: 0 8px 32px var(--bp-red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+.bf-arena-cta-blue {
+  box-shadow: 0 8px 32px rgba(0, 153, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ── Squad strip ── */
+.bf-arena-squad--premium {
+  position: relative;
+  border: 1px solid rgba(255, 200, 46, 0.35) !important;
+  background: linear-gradient(135deg, rgba(255, 200, 46, 0.06), rgba(10, 12, 18, 0.98)) !important;
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(255, 200, 46, 0.08),
+    inset 0 0 60px rgba(255, 200, 46, 0.03) !important;
+}
+.bf-arena-squad--premium::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--bp-gold), transparent);
+  border-radius: var(--bp-r-lg) var(--bp-r-lg) 0 0;
+}
+
+/* ── FUT cards — glow border (sin máscara que rompe layout) ── */
+.bf-card-fut.bf-card-premium > * {
+  position: relative;
+  z-index: 1;
+}
+.bf-card-legend.bf-card-premium {
+  box-shadow:
+    0 16px 48px rgba(255, 200, 46, 0.35),
+    0 0 60px rgba(255, 200, 46, 0.15),
+    inset 0 0 40px rgba(255, 200, 46, 0.05) !important;
+}
+.bf-card-fut.bf-card-premium:hover {
+  outline: 2px solid rgba(255, 200, 46, 0.55);
+  outline-offset: 2px;
+}
+.bf-card-epic.bf-card-premium:hover { outline-color: rgba(168, 85, 247, 0.55); }
+.bf-card-rare.bf-card-premium:hover { outline-color: rgba(0, 195, 255, 0.55); }
+.bf-arena-cards .bf-card-hero.bf-card-legend .bf-card-ovr,
+.bf-card-hero.bf-card-legend .bf-card-ovr {
+  color: var(--bp-gold);
+  filter: drop-shadow(0 2px 8px rgba(255, 200, 46, 0.6));
+}
+@supports (background-clip: text) {
+  .bf-arena-cards .bf-card-hero.bf-card-legend .bf-card-ovr,
+  .bf-card-hero.bf-card-legend .bf-card-ovr {
+    background: linear-gradient(180deg, #fff9e6, var(--bp-gold) 40%, #b8860b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+.bf-card-fut.bf-card-premium .bf-card-shine {
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.25) 48%,
+    rgba(255, 200, 46, 0.15) 52%,
+    transparent 65%
+  );
+}
+.bf-card-fut.bf-card-premium .bf-card-logo-stage {
+  background: linear-gradient(180deg, #ffffff 0%, #e8ecf4 55%, #d0d8e8 100%);
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(255, 200, 46, 0.12);
+}
+
+/* ── Mini cards squad ── */
+.bf-card-mini.bf-card-premium-mini {
+  min-width: 96px;
+  padding: 12px;
+  background: linear-gradient(165deg, #1e2838, #0f141f);
+  border: 1px solid rgba(255, 200, 46, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.bf-card-mini.bf-card-premium-mini:hover {
+  border-color: rgba(255, 200, 46, 0.5);
+  box-shadow: 0 12px 32px rgba(255, 200, 46, 0.2);
+}
+
+/* ── Home blocks ── */
+.bf-home-hero.bf-premium-spotlight {
+  border: 1px solid rgba(255, 23, 68, 0.25) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 48px rgba(255, 23, 68, 0.12) !important;
+}
+.bf-home-hero.bf-premium-spotlight.is-live {
+  border-color: rgba(255, 23, 68, 0.45) !important;
+}
+.bf-home-hub.bf-premium-section,
+.bf-home-tours.bf-premium-section,
+.bf-home-predict.bf-premium-section,
+.bf-home-circuit.bf-premium-section {
+  margin-bottom: var(--bp-gap-lg);
+}
+.bf-home-hub.bf-premium-section { padding-top: 20px; }
+.bf-home-club-tile {
+  background: linear-gradient(180deg, rgba(30, 38, 54, 0.9), rgba(12, 14, 20, 0.95)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+}
+.bf-home-club-tile:hover {
+  border-color: rgba(255, 200, 46, 0.45) !important;
+  box-shadow: 0 14px 36px rgba(255, 200, 46, 0.15) !important;
+  transform: translateY(-6px) scale(1.03);
+}
+.bf-home-tour-card {
+  background: linear-gradient(135deg, rgba(24, 31, 44, 0.98), rgba(10, 12, 18, 0.99)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+}
+.bf-home-tour-card:hover {
+  border-color: rgba(0, 153, 255, 0.4) !important;
+  box-shadow: 0 16px 40px rgba(0, 153, 255, 0.15) !important;
+}
+.bf-home-tab.is-on {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) !important;
+  border: 1px solid rgba(255, 200, 46, 0.3) !important;
+  color: var(--bp-gold) !important;
+  box-shadow: 0 4px 16px rgba(255, 200, 46, 0.15) !important;
+}
+
+/* ── Vote / rivalry ── */
+.bf-vote-card,
+.bf-rivalry {
+  background: linear-gradient(165deg, rgba(24, 31, 44, 0.98), rgba(10, 12, 18, 0.99)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4) !important;
+}
+.bf-vote-card:hover,
+.bf-rivalry:hover {
+  border-color: rgba(255, 23, 68, 0.35) !important;
+  box-shadow: 0 20px 56px rgba(255, 23, 68, 0.15) !important;
+}
+
+/* ── Dock glass ── */
+.bf-game-dock {
+  background: linear-gradient(180deg, rgba(18, 22, 32, 0.97), rgba(6, 8, 12, 0.98)) !important;
+  border-top: 1px solid rgba(255, 200, 46, 0.15) !important;
+  box-shadow:
+    0 -12px 48px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+@media (min-width: 900px) {
+  .bf-game-dock {
+    border: 1px solid rgba(255, 200, 46, 0.2) !important;
+    box-shadow: 0 16px 56px rgba(0, 0, 0, 0.55), 0 0 40px rgba(255, 200, 46, 0.06) !important;
+  }
+}
+.bf-game-dock-item.is-on .bf-game-dock-icon {
+  transform: scale(1.08);
+}
+
+/* ── Buttons global boost ── */
+.bp-btn-gold {
+  background: linear-gradient(180deg, #fff0a8, #ffc82e 40%, #d4a017) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 28px rgba(255, 200, 46, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+.bp-btn-red {
+  box-shadow: 0 6px 28px var(--bp-red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+.bp-btn-blue {
+  box-shadow: 0 6px 28px rgba(0, 153, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ── Detail pages ── */
+.bf-team-hero,
+.bf-tour-hero,
+.bf-player-hero {
+  border: 1px solid rgba(255, 200, 46, 0.15) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+.bf-team-stat,
+.bf-tour-stat {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.15)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── Club rail ── */
+.bf-arena-club-rail {
+  border-top: 1px solid rgba(255, 200, 46, 0.2) !important;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.65)) !important;
+}
+.bf-arena-club-tile {
+  border: 1px solid rgba(255, 200, 46, 0.12) !important;
+}
+
+/* ── Fantasy page ── */
+.bf-fantasy-premium .bf-fantasy-gate {
+  padding: 20px 22px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 200, 46, 0.08), rgba(10, 12, 18, 0.98));
+  border: 1px solid rgba(255, 200, 46, 0.25);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45), 0 0 48px rgba(255, 200, 46, 0.06);
+  margin-bottom: var(--bp-gap-lg);
+}
+.bf-fantasy-premium .bf-fantasy-squad-bar {
+  border: 1px solid rgba(255, 200, 46, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+.bf-fantasy-premium .bf-fantasy-market {
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.bf-arena-club-rail {
+  overflow: hidden;
+}

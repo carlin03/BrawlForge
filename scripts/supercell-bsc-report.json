@@ -1,0 +1,154 @@
+{
+  "syncedAt": "2026-05-26T07:20:08.404Z",
+  "source": "https://event.supercell.com/brawlstars/en",
+  "events": [
+    {
+      "eventId": "w4Lu1Ua9yIKv2ZBABn6oP",
+      "status": "finished",
+      "cup": "world-championship",
+      "region": "global",
+      "numberOfContestants": 12,
+      "bracketType": "single_elimination"
+    }
+  ],
+  "apiPaths": [],
+  "teams": [
+    {
+      "name": "Brawl Stars 2026",
+      "logo": "https://event.supercell.com/streamers/photos/11D7m26COWMvSS9sXmYqIL",
+      "region": "US"
+    },
+    {
+      "name": "盛主播",
+      "logo": "https://event.supercell.com/streamers/photos/5f01PRpEJPPySoafsZk34D",
+      "region": ""
+    },
+    {
+      "name": "Brawl Stars Japan",
+      "logo": "https://event.supercell.com/streamers/photos/389icacG1B4m83L9XmWLhV",
+      "region": "JP"
+    },
+    {
+      "name": "브롤스타즈",
+      "logo": "https://event.supercell.com/streamers/photos/62BqAuJNM0KNtZZhwyYRv5",
+      "region": "KR"
+    },
+    {
+      "name": "PiouPiouLover",
+      "logo": "https://event.supercell.com/streamers/photos/3zg45iY3xzBhXOWuOJRDIy",
+      "region": "FR"
+    },
+    {
+      "name": "Kuzan_TV",
+      "logo": "https://event.supercell.com/streamers/photos/33eEM84uVZlKSbBinwDD1I",
+      "region": "FR"
+    },
+    {
+      "name": "BroCast",
+      "logo": "https://event.supercell.com/streamers/photos/35RPldG7613Fwb64YJeVS4",
+      "region": "DE"
+    },
+    {
+      "name": "Ferre",
+      "logo": "https://event.supercell.com/streamers/photos/3kVg0D1ywZP6RIHmH5Z3mU",
+      "region": "IT"
+    },
+    {
+      "name": "PlayerD",
+      "logo": "https://event.supercell.com/streamers/photos/7J4lnUN46p8rLkSh9nIPWt",
+      "region": "IT"
+    },
+    {
+      "name": "Torii",
+      "logo": "https://event.supercell.com/streamers/photos/369zKRqubuxum0Biv9PiAa",
+      "region": "PL"
+    },
+    {
+      "name": "Skiller Gaming",
+      "logo": "https://event.supercell.com/streamers/photos/1UHl9Gko0b6I0ElZjHiPmd",
+      "region": ""
+    },
+    {
+      "name": "NeaRz",
+      "logo": "https://event.supercell.com/streamers/photos/2vPOMDEexeg2w9EvqPysgW",
+      "region": "ES"
+    },
+    {
+      "name": "Slorien",
+      "logo": "https://event.supercell.com/streamers/photos/3ICfUTv5c4qRHnfgIGbvg6",
+      "region": "TR"
+    },
+    {
+      "name": "KingJoeJNT",
+      "logo": "https://event.supercell.com/streamers/photos/5tf6nIZsjfQuOcmFDgvH9N",
+      "region": "PT"
+    },
+    {
+      "name": "Veni Gaming",
+      "logo": "https://event.supercell.com/streamers/photos/7Dwu01yXMmtO2vXTpWuNZS",
+      "region": "PL"
+    },
+    {
+      "name": "El Nino TV",
+      "logo": "https://event.supercell.com/streamers/photos/43Wrpz8bYs68IhbLkgxsBz",
+      "region": ""
+    },
+    {
+      "name": "Oyunların Ustası",
+      "logo": "https://event.supercell.com/streamers/photos/kZ0IAiPl61hoOI70GiVnR",
+      "region": "TR"
+    },
+    {
+      "name": "BrunoClash",
+      "logo": "https://event.supercell.com/streamers/photos/3c1p29RaoubVYQwgAUBXdd",
+      "region": "PT"
+    }
+  ],
+  "images": [
+    "https://event.supercell.com/streamers/photos/11D7m26COWMvSS9sXmYqIL",
+    "https://event.supercell.com/streamers/photos/1UHl9Gko0b6I0ElZjHiPmd",
+    "https://event.supercell.com/streamers/photos/2vPOMDEexeg2w9EvqPysgW",
+    "https://event.supercell.com/streamers/photos/33eEM84uVZlKSbBinwDD1I",
+    "https://event.supercell.com/streamers/photos/35RPldG7613Fwb64YJeVS4",
+    "https://event.supercell.com/streamers/photos/369zKRqubuxum0Biv9PiAa",
+    "https://event.supercell.com/streamers/photos/389icacG1B4m83L9XmWLhV",
+    "https://event.supercell.com/streamers/photos/3ICfUTv5c4qRHnfgIGbvg6",
+    "https://event.supercell.com/streamers/photos/3c1p29RaoubVYQwgAUBXdd",
+    "https://event.supercell.com/streamers/photos/3kVg0D1ywZP6RIHmH5Z3mU",
+    "https://event.supercell.com/streamers/photos/3zg45iY3xzBhXOWuOJRDIy",
+    "https://event.supercell.com/streamers/photos/43Wrpz8bYs68IhbLkgxsBz",
+    "https://event.supercell.com/streamers/photos/5f01PRpEJPPySoafsZk34D",
+    "https://event.supercell.com/streamers/photos/5tf6nIZsjfQuOcmFDgvH9N",
+    "https://event.supercell.com/streamers/photos/62BqAuJNM0KNtZZhwyYRv5",
+    "https://event.supercell.com/streamers/photos/7Dwu01yXMmtO2vXTpWuNZS",
+    "https://event.supercell.com/streamers/photos/7J4lnUN46p8rLkSh9nIPWt",
+    "https://event.supercell.com/streamers/photos/kZ0IAiPl61hoOI70GiVnR"
+  ],
+  "imageBaseUrl": "https://event.supercell.com",
+  "notes": [
+    "Logos de equipos suelen estar en campos logo/contestantLogo dentro del JSON de evento",
+    "Fotos de streamers: /streamers/photos/{id}",
+    "Assets UI: /brawlstars/images/**",
+    "API principal: GET /brawlstars/v1/event (Accept: application/json)"
+  ],
+  "bracketContestantIds": [
+    4,
+    6,
+    8,
+    10,
+    15,
+    20,
+    33,
+    47,
+    51,
+    52,
+    53,
+    54
+  ],
+  "localAssets": [
+    "/supercell/share-image.jpg",
+    "/supercell/trophy-gold.png",
+    "/supercell/trophy-silver.png",
+    "/supercell/trophy-bronze.png"
+  ]
+}
