@@ -9,7 +9,7 @@
     "mobile:tunnel": "node scripts/mobile-link.mjs --tunnel",
     "supabase:check": "node scripts/check-supabase.mjs",
     "supabase:seed:catalog": "node scripts/seed-supabase-catalog.mjs",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "logos:download": "node scripts/download-logos.mjs",

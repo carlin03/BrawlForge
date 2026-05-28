@@ -1,5 +1,10 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "installCommand": "SKIP_LOGO_DOWNLOAD=1 npm install"
+  "installCommand": "SKIP_LOGO_DOWNLOAD=1 npm install",
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--max-old-space-size=6144"
+    }
+  }
 }
