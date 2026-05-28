@@ -8,6 +8,7 @@ import { MAIN_NAV } from "@/lib/nav-config";
 import { PlayerProfileMenu } from "@/components/platform/PlayerProfileMenu";
 import { AdminFab } from "@/components/admin/AdminFab";
 import { MotionAmbience } from "@/components/platform/MotionAmbience";
+import { useAuth } from "@/contexts/AuthContext";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -17,6 +18,7 @@ function isActive(pathname: string, href: string) {
 export function PlatformShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <div className="bp-app bf-game-app bf-ultra-app bf-premium-app bf-motion-app">
@@ -52,7 +54,13 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
 
           <div className="bf-nav-actions">
             <PlayerProfileMenu />
-            <button type="button" className="bp-nav-toggle" aria-label="Menú" onClick={() => setOpen(!open)}>
+            <button
+              type="button"
+              className="bp-nav-toggle"
+              aria-label={open ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={open}
+              onClick={() => setOpen((value) => !value)}
+            >
               {open ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
@@ -64,6 +72,16 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
               {item.label}
             </Link>
           ))}
+          {!user && (
+            <div className="bp-nav-mobile-auth">
+              <Link href="/login" className="bf-nav-auth-btn" onClick={() => setOpen(false)}>
+                Entrar
+              </Link>
+              <Link href="/registro" className="bf-nav-auth-btn is-primary" onClick={() => setOpen(false)}>
+                Crear cuenta
+              </Link>
+            </div>
+          )}
         </nav>
       </header>
 

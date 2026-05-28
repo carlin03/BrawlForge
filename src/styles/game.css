@@ -2527,3 +2527,36 @@
   line-height: 1.6;
 }
 .bf-predict-aside-text { font-size: 13px; color: var(--bp-muted); margin: 8px 0 0; }
+
+@media (max-width: 520px) {
+  .bf-game-nav .bp-nav-inner {
+    flex-wrap: nowrap;
+    height: var(--bp-nav-h);
+    min-height: var(--bp-nav-h);
+    padding: 0 12px;
+  }
+
+  .bf-game-nav .bf-nav-actions {
+    gap: 0;
+    margin-left: auto;
+  }
+
+  .bf-game-nav .bf-nav-auth {
+    display: none;
+  }
+
+  .bf-game-nav .bp-nav-toggle {
+    display: inline-flex;
+    margin-left: 0;
+    border-color: rgba(255, 200, 46, 0.38);
+    background: rgba(255, 200, 46, 0.12);
+    color: var(--bp-gold);
+  }
+
+  .bf-game-nav .bp-nav-mobile {
+    top: var(--bp-nav-h);
+    border-color: rgba(255, 200, 46, 0.18);
+    background: rgba(12, 15, 24, 0.98);
+    box-shadow: 0 22px 42px rgba(0, 0, 0, 0.48);
+  }
+}
