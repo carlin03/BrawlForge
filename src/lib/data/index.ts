@@ -2,7 +2,10 @@ export { teams, getTeam, getTeamByTag } from "./teams";
 export type { EsportsTeam } from "./teams";
 export { players, getPlayer, getPlayersByTeam, getPlayerTeam, getTopFantasyPlayers, getTopActivePlayers, getActivePlayers, getPlayersWithTeam, getTeamsWithPlayers, searchPlayers } from "./players";
 export type { EsportsPlayer, PlayerStatus } from "./players";
-export { CATALOG_STATS, catalogSyncedAt, getCompetitiveTeamSlugs, isTierBPlus, tierLabel, tierBadgeClass } from "./catalog";
+export { CATALOG_STATS, catalogSyncedAt, isTierBPlus, tierLabel, tierBadgeClass } from "./catalog";
+export { hasPlayedBsc2026, getBsc2026PlayedTeamSlugs, getCompetitiveTeamSlugs } from "./bsc-teams-played-2026";
+export { getBsc2026CircuitTeamSlugs, BSC_2026_CIRCUIT_SLUGS } from "./bsc-2026-circuit-teams";
+export { BSC_2026_ROSTERS, BSC_2026_TEAM_SLUGS } from "./bsc-2026-rosters";
 export {
   tournaments,
   matches,
@@ -43,6 +46,7 @@ export {
   getFantasyLeaguesForTournament,
   getTournamentFantasyProfile,
   getUserSquad,
+  getUserSquadDisplay,
   getTournamentMarket,
   getTournamentFeaturedPicks,
   getTournamentLeaderboard,
@@ -110,14 +114,6 @@ export function tournamentName(slug: string): string {
   return getTournament(slug)?.shortName ?? slug;
 }
 
-export const NAV_ITEMS = [
-  { label: "Inicio", href: "/" },
-  { label: "Fantasy", href: "/fantasy", accent: "fantasy" as const },
-  { label: "Votar", href: "/predictions", accent: "predict" as const },
-  { label: "Partidos", href: "/matches" },
-  { label: "Torneos", href: "/tournaments" },
-  { label: "Clubes", href: "/teams" },
-  { label: "Noticias", href: "/news" },
-] as const;
+export { MAIN_NAV as NAV_ITEMS } from "../nav-config";
 
 export const FOOTER_LINKS: readonly { label: string; href: string }[] = [];

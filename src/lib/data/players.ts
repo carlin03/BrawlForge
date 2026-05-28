@@ -1,7 +1,11 @@
 import type { Region } from "../types";
-import { getGeneratedPlayers, getGeneratedTeams, toLiquipediaUrl, isPlayerActive, TEAM_ROSTER_ALIASES } from "./catalog";
+import players2026Data from "./generated/players-2026.json";
+import { getGeneratedPlayers, toLiquipediaUrl, TEAM_ROSTER_ALIASES, isPlayerActive } from "./catalog";
 import { CURATED_PLAYERS } from "./teams-curated";
 import { teams, getTeam } from "./teams";
+import { getBsc2026PlayedTeamSlugs } from "./bsc-teams-played-2026";
+import { BSC_2026_ROSTERS, BSC_2026_EXCLUDED_PLAYERS, BSC_2026_PLAYER_SLUGS } from "./bsc-2026-rosters";
+import type { GeneratedPlayer } from "./catalog-types";
 
 export type PlayerStatus = "active" | "inactive" | "retired";
 
@@ -20,18 +24,22 @@ export interface EsportsPlayer {
   rating: number;
 }
 
-const KNOWN_TEAMS = new Set(getGeneratedTeams().map((t) => t.slug));
+const KNOWN_TEAMS = getBsc2026PlayedTeamSlugs();
+const PLAYERS_2026 = players2026Data as GeneratedPlayer[];
 
-/** jugador → equipo según roster Liquipedia */
-const ROSTER_TEAM_INDEX = new Map<string, string>();
-for (const t of getGeneratedTeams()) {
-  for (const pl of t.roster ?? []) {
-    if (pl && !ROSTER_TEAM_INDEX.has(pl)) ROSTER_TEAM_INDEX.set(pl, t.slug);
-  }
+const PLAYER_BSC_TEAM = new Map<string, string>();
+for (const [teamSlug, roster] of Object.entries(BSC_2026_ROSTERS)) {
+  for (const slug of roster) PLAYER_BSC_TEAM.set(slug, teamSlug);
 }
+
+function rosterTeamForPlayer(slug: string, fallback?: string): string | undefined {
+  return PLAYER_BSC_TEAM.get(slug) ?? fallback;
+}
+
+const ROSTER_TEAM_INDEX = new Map<string, string>();
 for (const t of teams) {
   for (const pl of t.roster ?? []) {
-    if (pl && !ROSTER_TEAM_INDEX.has(pl)) ROSTER_TEAM_INDEX.set(pl, t.slug);
+    if (pl) ROSTER_TEAM_INDEX.set(pl, t.slug);
   }
 }
 
@@ -73,33 +81,103 @@ export function resolvePlayerTeamSlug(playerSlug: string, rawTeamSlug?: string):
   return raw;
 }
 
+function pushPlayer(
+  list: EsportsPlayer[],
+  seen: Set<string>,
+  raw: GeneratedPlayer & { liquipediaPage?: string },
+  fallbackTeam?: string,
+) {
+  const slug = normalizeSlug(raw.slug, raw.liquipediaPage ?? "", raw.ign);
+  if (!slug || seen.has(slug) || BSC_2026_EXCLUDED_PLAYERS.has(slug)) return;
+  const curated = CURATED_PLAYERS[slug];
+  const teamSlug = resolvePlayerTeamSlug(
+    slug,
+    rosterTeamForPlayer(slug) ?? curated?.teamSlug ?? raw.teamSlug ?? fallbackTeam,
+  );
+  if (!teamSlug || !KNOWN_TEAMS.has(teamSlug)) return;
+  const status = normalizeStatus(raw.status);
+  if (status === "retired" && !rosterTeamForPlayer(slug)) return;
+  seen.add(slug);
+  const base: EsportsPlayer = {
+    slug,
+    ign: raw.ign.replace(/<!--[\s\S]*?-->/g, "").split("\n")[0].trim(),
+    realName: raw.realName,
+    teamSlug,
+    region: raw.region,
+    role: raw.role || "Player",
+    status,
+    liquipediaUrl: toLiquipediaUrl(raw.liquipediaPage),
+    fantasyPoints: raw.fantasyPoints ?? 70,
+    fantasyOwnership: raw.fantasyOwnership ?? 20,
+    rating: raw.rating ?? 1.08,
+  };
+  list.push(curated ? { ...base, ...curated, liquipediaUrl: base.liquipediaUrl, status: base.status } : base);
+}
+
 function buildPlayers(): EsportsPlayer[] {
   const seen = new Set<string>();
   const list: EsportsPlayer[] = [];
+  const pool = [...PLAYERS_2026];
 
-  for (const p of getGeneratedPlayers()) {
-    const slug = normalizeSlug(p.slug, p.liquipediaPage, p.ign);
-    if (!slug || seen.has(slug)) continue;
-    seen.add(slug);
+  for (const p of pool) {
+    if (!BSC_2026_PLAYER_SLUGS.has(p.slug) && !rosterTeamForPlayer(p.slug)) continue;
+    pushPlayer(list, seen, p);
+  }
 
-    const curated = CURATED_PLAYERS[slug];
-    const teamSlug = resolvePlayerTeamSlug(slug, curated?.teamSlug ?? p.teamSlug);
-    const status = normalizeStatus(p.status);
+  for (const [teamSlug, roster] of Object.entries(BSC_2026_ROSTERS)) {
+    if (!KNOWN_TEAMS.has(teamSlug)) continue;
+    for (const pl of roster) {
+      const existing = pool.find((x) => x.slug === pl) ?? getGeneratedPlayers().find((x) => x.slug === pl);
+      if (existing) {
+        pushPlayer(list, seen, existing, teamSlug);
+      } else {
+        pushPlayer(
+          list,
+          seen,
+          {
+            slug: pl,
+            ign: pl.replace(/-/g, " "),
+            teamSlug,
+            region: teams.find((t) => t.slug === teamSlug)?.region ?? "GLOBAL",
+            role: "Player",
+            status: "Active",
+            liquipediaPage: pl.replace(/-/g, "_"),
+            fantasyPoints: 70,
+            fantasyOwnership: 15,
+            rating: 1.06,
+          },
+          teamSlug,
+        );
+      }
+    }
+  }
 
-    const base: EsportsPlayer = {
-      slug,
-      ign: p.ign.replace(/<!--[\s\S]*?-->/g, "").split("\n")[0].trim(),
-      realName: p.realName,
-      teamSlug,
-      region: p.region,
-      role: p.role || "Player",
-      status,
-      liquipediaUrl: toLiquipediaUrl(p.liquipediaPage),
-      fantasyPoints: p.fantasyPoints,
-      fantasyOwnership: p.fantasyOwnership,
-      rating: p.rating,
-    };
-    list.push(curated ? { ...base, ...curated, liquipediaUrl: base.liquipediaUrl, status: base.status } : base);
+  for (const t of teams) {
+    if (!KNOWN_TEAMS.has(t.slug)) continue;
+    for (const pl of t.roster ?? []) {
+      const existing = pool.find((x) => x.slug === pl) ?? getGeneratedPlayers().find((x) => x.slug === pl);
+      if (existing) {
+        pushPlayer(list, seen, existing, t.slug);
+      } else {
+        pushPlayer(
+          list,
+          seen,
+          {
+            slug: pl,
+            ign: pl.replace(/-/g, " "),
+            teamSlug: t.slug,
+            region: t.region,
+            role: "Player",
+            status: "Active",
+            liquipediaPage: pl.replace(/-/g, "_"),
+            fantasyPoints: 70,
+            fantasyOwnership: 15,
+            rating: 1.06,
+          },
+          t.slug,
+        );
+      }
+    }
   }
 
   return list.sort((a, b) => {

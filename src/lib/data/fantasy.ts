@@ -186,22 +186,16 @@ export function getTournamentFantasyProfile(slug: string): TournamentFantasyProf
       participants: Math.max(800, teamCount * 900 + hashNum(slug, 4000) + pool.length * 40),
     };
   }
-  if (!SHOW_DEMO_SOCIAL) {
-    return {
-      ...profile,
-      totalPoints: 0,
-      rank: 0,
-      rankChange: 0,
-      participants: 0,
-    };
-  }
   return profile;
 }
 
-export function getUserSquad(tournamentSlug: string): FantasySquadSlot[] {
-  const pool = new Set(getTournamentPlayerPool(tournamentSlug));
-  const saved = userSquadsByTournament[tournamentSlug] ?? [];
-  return saved.filter((s) => pool.has(s.playerSlug));
+/** Plantilla del usuario: cargar desde Supabase (GameContext), no datos locales */
+export function getUserSquad(_tournamentSlug: string): FantasySquadSlot[] {
+  return [];
+}
+
+export function getUserSquadDisplay(tournamentSlug: string): FantasySquadSlot[] {
+  return getUserSquad(tournamentSlug);
 }
 
 export function isPlayerInTournament(playerSlug: string, tournamentSlug: string): boolean {
@@ -210,10 +204,10 @@ export function isPlayerInTournament(playerSlug: string, tournamentSlug: string)
 
 export function getTournamentPlayerPool(tournamentSlug: string): string[] {
   const teamSlugs = getFantasyTournamentTeams(tournamentSlug);
-  const fromTeams = teamSlugs.flatMap((ts) => getFantasyTeamPlayerSlugs(ts));
+  const fromTeams = teamSlugs.flatMap((ts) => getFantasyTeamPlayerSlugs(ts, tournamentSlug));
   const pool = [...new Set(fromTeams)].filter((slug) => {
     const p = getPlayer(slug);
-    return p && p.status === "active";
+    return p && p.status !== "retired";
   });
   if (pool.length > 0) return pool;
   return getFantasyPlayersForTournament(tournamentSlug);

@@ -1,0 +1,86 @@
+/* BrawlForge — motion & premium atmosphere */
+
+@keyframes bf-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bf-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bf-glow-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.04); }
+}
+
+@keyframes bf-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bf-nav-glow {
+  0%, 100% { box-shadow: 0 0 0 transparent; }
+  50% { box-shadow: 0 0 24px rgba(255, 200, 46, 0.15); }
+}
+
+.bf-page-enter > .bf-page-ultra {
+  animation: none;
+}
+
+.bf-page-enter > *:not(.bf-page-ultra) {
+  animation: bf-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.bf-stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.bf-stagger > *:nth-child(2) { animation-delay: 0.06s; }
+.bf-stagger > *:nth-child(3) { animation-delay: 0.1s; }
+.bf-stagger > *:nth-child(4) { animation-delay: 0.14s; }
+.bf-stagger > *:nth-child(5) { animation-delay: 0.18s; }
+.bf-stagger > *:nth-child(6) { animation-delay: 0.22s; }
+
+.bf-hover-lift {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+.bf-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* Brillo infinito desactivado: el overlay .bf-card-shine va dentro de .bf-card;
+   el barrido solo en :hover vía game.css + .bf-shine-hover en home-wow.css */
+
+.bf-hero-glow-animated {
+  animation: bf-glow-pulse 5s ease-in-out infinite;
+}
+
+.bf-card.has-motion,
+.bf-team-tour-row,
+.bp-btn {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, border-color 0.2s ease;
+}
+.bp-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.bf-panel,
+.bf-fantasy-event {
+  transition: border-color 0.2s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-page-enter > *,
+  .bf-hero-glow-animated,
+  .bf-card-shine::after {
+    animation: none !important;
+  }
+  .bf-hover-lift:hover {
+    transform: none;
+  }
+}

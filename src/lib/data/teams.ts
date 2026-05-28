@@ -1,5 +1,8 @@
 import type { Region } from "../types";
-import { getGeneratedTeams, toLiquipediaUrl } from "./catalog";
+import { toLiquipediaUrl } from "./catalog";
+import { getTeams2026, isTeam2026 } from "./teams-2026";
+import { getBsc2026PlayedTeamSlugs } from "./bsc-teams-played-2026";
+import { BSC_2026_ROSTERS } from "./bsc-2026-rosters";
 import { CURATED_TEAMS } from "./teams-curated";
 
 export interface EsportsTeam {
@@ -18,7 +21,10 @@ export interface EsportsTeam {
 }
 
 function buildTeams(): EsportsTeam[] {
-  const list = getGeneratedTeams().map((t) => {
+  const played = getBsc2026PlayedTeamSlugs();
+  const list = getTeams2026()
+    .filter((t) => played.has(t.slug))
+    .map((t) => {
     const curated = CURATED_TEAMS[t.slug];
     const base: EsportsTeam = {
       slug: t.slug,
@@ -34,7 +40,12 @@ function buildTeams(): EsportsTeam[] {
       roster: t.roster ?? [],
       achievements: t.achievements ?? [],
     };
-    return curated ? { ...base, ...curated, liquipediaUrl: base.liquipediaUrl } : base;
+    const roster2026 = BSC_2026_ROSTERS[t.slug];
+    const merged = curated ? { ...base, ...curated, liquipediaUrl: base.liquipediaUrl } : base;
+    if (roster2026?.length) {
+      return { ...merged, roster: roster2026 };
+    }
+    return merged;
   });
 
   return list.sort((a, b) => {
@@ -53,10 +64,4 @@ export function getTeamByTag(tag: string): EsportsTeam | undefined {
   return teams.find((t) => t.tag.toLowerCase() === tag.toLowerCase());
 }
 
-export function searchTeams(query: string, limit = 50): EsportsTeam[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return teams.slice(0, limit);
-  return teams
-    .filter((t) => t.name.toLowerCase().includes(q) || t.tag.toLowerCase().includes(q) || t.slug.includes(q))
-    .slice(0, limit);
-}
+export { isTeam2026 };

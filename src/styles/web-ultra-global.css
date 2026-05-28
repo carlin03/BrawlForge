@@ -1,0 +1,360 @@
+/* ═══ BrawlForge — PREMIUM EN TODA LA WEB ═══ */
+
+.bf-premium-app .bp-main {
+  position: relative;
+  isolation: isolate;
+  padding-top: 8px;
+  padding-bottom: 48px;
+}
+
+.bf-premium-app .bp-main::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  top: 52px;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 23, 68, 0.12), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 85% 5%, rgba(0, 153, 255, 0.1), transparent 50%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(255, 200, 46, 0.08), transparent 55%),
+    #06080e;
+  pointer-events: none;
+}
+
+.bf-premium-app .bp-main::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  top: 52px;
+  z-index: -1;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
+  pointer-events: none;
+}
+
+.bf-page-ultra {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Tabs globales → estilo fu-tab */
+.bf-premium-app .bf-home-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+.bf-premium-app .bf-home-tab {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: var(--bp-head);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--bp-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.bf-premium-app .bf-home-tab:hover {
+  color: var(--bp-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+.bf-premium-app .bf-home-tab.is-on {
+  color: #fff;
+  background: linear-gradient(180deg, rgba(255, 200, 46, 0.25), rgba(255, 23, 68, 0.15));
+  border-color: rgba(255, 200, 46, 0.35);
+  box-shadow: 0 0 20px rgba(255, 200, 46, 0.15);
+}
+.bf-premium-app .bf-home-tab.has-live.is-on {
+  border-color: rgba(255, 23, 68, 0.5);
+  box-shadow: 0 0 24px rgba(255, 23, 68, 0.2);
+}
+
+/* Partidos — líneas y destacados */
+.bf-premium-app .bp-match-featured {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(155deg, rgba(28, 34, 52, 0.95), rgba(6, 8, 14, 0.98)) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45) !important;
+}
+.bf-premium-app .bp-match-featured.is-live {
+  border-color: rgba(255, 23, 68, 0.45) !important;
+  animation: fu-pulse-ring 2.5s ease infinite;
+}
+.bf-premium-app .bp-match-featured-glow {
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 200, 46, 0.12), transparent 60%) !important;
+}
+.bf-premium-app .bp-match-featured-vs {
+  font-family: var(--bp-head);
+  font-size: 1.5rem !important;
+  font-weight: 900;
+  color: var(--bp-red-bright) !important;
+  text-shadow: 0 0 24px var(--bp-red-glow);
+}
+
+.bf-premium-app .bp-match,
+.bf-premium-app .bp-match-rich {
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(165deg, rgba(22, 28, 44, 0.9), rgba(8, 10, 16, 0.95)) !important;
+  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s !important;
+}
+.bf-premium-app .bp-match:hover,
+.bf-premium-app .bp-match-rich:hover {
+  transform: translateX(4px) translateY(-2px);
+  border-color: rgba(255, 200, 46, 0.3) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+.bf-premium-app .bp-match-win {
+  color: var(--bp-gold) !important;
+  text-shadow: 0 0 12px rgba(255, 200, 46, 0.35);
+}
+
+/* Torneos — grid premium */
+.bf-premium-app .bf-tour-card-lg {
+  overflow: hidden;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(160deg, rgba(26, 32, 50, 0.95), rgba(6, 8, 14, 0.98)) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s, border-color 0.2s !important;
+}
+.bf-premium-app .bf-tour-card-lg:hover {
+  transform: translateY(-6px) scale(1.01) !important;
+  border-color: rgba(255, 200, 46, 0.4) !important;
+  box-shadow: 0 20px 56px rgba(255, 200, 46, 0.12), 0 16px 48px rgba(0, 0, 0, 0.45) !important;
+}
+.bf-premium-app .bf-tour-card-lg-glow {
+  background: radial-gradient(ellipse at 100% 0%, rgba(255, 200, 46, 0.15), transparent 55%) !important;
+}
+.bf-premium-app .bf-tour-card-lg.status-live {
+  border-color: rgba(255, 23, 68, 0.4) !important;
+}
+
+/* Detalle torneo */
+.bf-premium-app .bf-tour-hero {
+  position: relative;
+  margin: 0;
+  padding: 32px 24px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 200, 46, 0.22);
+  background: #080a10;
+  display: grid;
+  gap: 24px;
+  align-items: center;
+}
+@media (min-width: 720px) {
+  .bf-premium-app .bf-tour-hero {
+    grid-template-columns: auto 1fr;
+  }
+}
+.bf-premium-app .bf-tour-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg, #1a0820 0%, #0a0c14 35%, #081828 70%, #0a0c12 100%);
+  background-size: 200% 200%;
+  animation: fu-aurora 14s ease infinite;
+}
+.bf-premium-app .bf-tour-hero.is-live {
+  border-color: rgba(255, 23, 68, 0.45);
+  animation: fu-pulse-ring 2.5s ease infinite;
+}
+.bf-premium-app .bf-tour-hero-body,
+.bf-premium-app .bf-tour-hero > *:not(.bf-tour-hero-bg) {
+  position: relative;
+  z-index: 1;
+}
+.bf-premium-app .bf-tour-hero-title {
+  font-family: var(--bp-head);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 32px rgba(255, 200, 46, 0.2);
+}
+.bf-premium-app .bf-tour-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bf-premium-app .bf-tour-stat {
+  text-align: center;
+  padding: 12px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.bf-premium-app .bf-tour-stat strong {
+  display: block;
+  font-family: var(--bp-head);
+  font-size: 1.2rem;
+  color: var(--bp-gold);
+}
+.bf-premium-app .bf-tour-panel,
+.bf-premium-app .bf-tour-section {
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(165deg, rgba(24, 30, 48, 0.92), rgba(8, 10, 16, 0.98));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.bf-premium-app .bf-tour-champion {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 200, 46, 0.35);
+  background: linear-gradient(90deg, rgba(255, 200, 46, 0.12), rgba(0, 0, 0, 0.4));
+}
+
+/* Equipos / jugadores cards */
+.bf-premium-app .bf-teams-podium-slot,
+.bf-premium-app .bf-team-card,
+.bf-premium-app .bf-player-card {
+  border-radius: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(165deg, rgba(24, 30, 48, 0.9), rgba(8, 10, 16, 0.96)) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+.bf-premium-app .bf-teams-podium-slot.is-champ {
+  border-color: rgba(255, 200, 46, 0.5) !important;
+  box-shadow: 0 16px 48px rgba(255, 200, 46, 0.18) !important;
+}
+
+/* Nav premium */
+.bf-premium-app .bf-premium-nav,
+.bf-premium-app .bp-nav.bf-game-nav {
+  background: rgba(6, 8, 14, 0.85) !important;
+  backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid rgba(255, 200, 46, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+.bf-premium-app .bp-nav-link.is-on {
+  color: var(--bp-gold) !important;
+  text-shadow: 0 0 20px rgba(255, 200, 46, 0.35);
+}
+
+/* Botones globales */
+.bf-premium-app .bp-btn-gold {
+  box-shadow: 0 0 24px rgba(255, 200, 46, 0.25), 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+.bf-premium-app .bp-btn-red {
+  box-shadow: 0 0 28px rgba(255, 23, 68, 0.3);
+}
+
+/* Marquee torneos en página */
+.fu-tour-marquee-wrap {
+  position: relative;
+  padding: 16px 0;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 200, 46, 0.15);
+  background: rgba(0, 0, 0, 0.35);
+}
+.fu-tour-marquee-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: fu-marquee 90s linear infinite;
+}
+.fu-tour-marquee-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  min-width: 100px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 0.2s, border-color 0.2s;
+}
+.fu-tour-marquee-item:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 200, 46, 0.35);
+}
+.fu-tour-marquee-item span {
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  max-width: 90px;
+  line-height: 1.2;
+}
+
+/* Match detail full ultra */
+.bf-match-detail-ultra .fu-match-score-hero {
+  font-family: var(--bp-head);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 900;
+  text-align: center;
+  line-height: 1;
+}
+.bf-match-detail-ultra .fu-match-score-hero .is-win {
+  color: var(--bp-gold);
+  text-shadow: 0 0 32px rgba(255, 200, 46, 0.4);
+}
+
+/* Tablas rankings / jugadores */
+.bf-premium-app .bf-rank-table-wrap,
+.bf-premium-app .bf-players-table-wrap {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.bf-premium-app .bf-rank-table th,
+.bf-premium-app .bf-players-table th {
+  background: rgba(0, 0, 0, 0.5);
+  font-family: var(--bp-head);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bf-premium-app .bf-rank-table tr:hover td,
+.bf-premium-app .bf-players-table tr:hover td {
+  background: rgba(255, 200, 46, 0.04);
+}
+.bf-premium-app .bf-rank-table tr.is-top-1 td {
+  background: linear-gradient(90deg, rgba(255, 200, 46, 0.12), transparent);
+}
+.bf-premium-app .bf-rank-table tr.is-top-2 td,
+.bf-premium-app .bf-rank-table tr.is-top-3 td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Detalle equipo / jugador */
+.bf-premium-app .bf-detail-hero-premium {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 200, 46, 0.22);
+  overflow: hidden;
+}
+.bf-premium-app .bf-detail-hero-premium-bg {
+  animation: fu-aurora 14s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* Fantasy layout */
+.bf-premium-app .bf-fantasy-page .bf-fantasy-squad-slot,
+.bf-premium-app .bf-fantasy-market-card {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}

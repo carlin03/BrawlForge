@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { TeamsView } from "@/components/platform/TeamsView";
+import { RankingsView } from "@/components/platform/RankingsView";
 import { teams } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Rankings — BrawlForge",
-  description: "Ranking global de clubes BSC Tier B+.",
+  description: "Tabla global de clubes BSC Tier B+ por posición.",
 };
 
 export default function RankingsPage() {
-  return <TeamsView teams={teams} />;
+  return <RankingsView teams={teams} />;
 }

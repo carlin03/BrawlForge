@@ -2,15 +2,16 @@
 
 ## 1. Supabase
 
-1. Crea un proyecto en [supabase.com](https://supabase.com).
-2. SQL Editor → pega y ejecuta `supabase/migrations/20260528000000_initial.sql`.
+1. Crea un proyecto en [supabase.com](https://supabase.com) (BrawlForge usa `bkxxykztewquhnimpjgc`).
+2. SQL Editor → pega y ejecuta **`supabase/ALL_IN_ONE_SETUP.sql`** (recomendado; incluye perfiles, catálogo, fantasy, predicciones y RLS). Alternativa: cada archivo en `supabase/migrations/` en orden.
 3. Authentication → activa Email (y Google si quieres “Continuar con Google”).
 4. Authentication → URL Configuration:
    - Site URL: `http://localhost:3000` (en producción, tu dominio).
    - Redirect URLs: `http://localhost:3000/auth/callback` y `https://tu-dominio.vercel.app/auth/callback`.
 5. Para probar registro rápido en local: Authentication → Providers → Email → desactiva **Confirm email** (opcional en producción).
 6. Storage (opcional): bucket público `logos` para overrides.
-7. Copia URL y anon key a `.env.local` (ver `.env.example`).
+7. Dashboard → **API** → copia **Project URL** y clave **anon / publishable** (`sb_publishable_...` o `eyJ...`) a `.env.local`. No uses `sb_secret_` en el front.
+8. `npm run supabase:check` en local para validar.
 
 Hacerte admin:
 

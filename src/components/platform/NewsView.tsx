@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Panel } from "@/components/platform/ui";
+import { Newspaper, Zap } from "lucide-react";
+import { NewsCover } from "@/components/news/NewsCover";
+import { PageUltraShell } from "@/components/platform/PageUltraShell";
+import { PageUltraHero } from "@/components/platform/PageUltraHero";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { getLatestNews, teamName, type NewsArticle } from "@/lib/data";
 
@@ -13,13 +16,6 @@ const accentMap = {
   red: "bp-chip-live",
 } as const;
 
-const heroTone = {
-  gold: "",
-  yellow: "",
-  blue: "blue",
-  red: "red",
-} as const;
-
 const CATEGORIES = ["Todo", "Resultados", "Torneos", "Fichajes", "Fantasy", "Esports"] as const;
 type Category = (typeof CATEGORIES)[number];
 
@@ -28,7 +24,7 @@ function formatDate(date: string) {
 }
 
 export function NewsView() {
-  const articles = getLatestNews(12);
+  const articles = getLatestNews(24);
   const [category, setCategory] = useState<Category>("Todo");
 
   const filtered = useMemo(() => {
@@ -41,19 +37,80 @@ export function NewsView() {
   const trending = [...articles].sort((a, b) => (b.hot ? 1 : 0) - (a.hot ? 1 : 0)).slice(0, 5);
   const moves = articles.filter((a) => a.category === "Fichajes").slice(0, 3);
   const rest = filtered.filter((a) => a.slug !== featured?.slug && !secondary.some((s) => s.slug === a.slug));
-  const breaking = articles.filter((a) => a.hot || a.coverAccent === "red").slice(0, 4);
+  const breaking = articles.filter((a) => a.hot || a.coverAccent === "red").slice(0, 6);
 
   return (
-    <>
-      <h1 className="bp-h1">Noticias</h1>
-      <p className="bp-lead">Competitivo, fantasy y mercado — cobertura en directo del circuito BSC.</p>
+    <PageUltraShell className="bf-news-ultra">
+      <PageUltraHero
+        kicker={
+          <>
+            <Newspaper size={14} /> Noticias BSC
+          </>
+        }
+        title={
+          <>
+            Cobertura <em>pro</em>
+          </>
+        }
+        lead="Competitivo, fantasy y mercado de fichajes — el pulso del circuito en tiempo real."
+        stats={
+          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+            <div className="fu-stat">
+              <b>{articles.length}</b>
+              <span>Historias</span>
+            </div>
+            <div className="fu-stat">
+              <b>{breaking.length}</b>
+              <span>Breaking</span>
+            </div>
+            <div className="fu-stat">
+              <b>{moves.length}</b>
+              <span>Fichajes</span>
+            </div>
+          </div>
+        }
+        actions={
+          <>
+            <Link href="/matches" className="fu-btn fu-btn-ghost">
+              Partidos
+            </Link>
+            <Link href="/predictions" className="fu-btn fu-btn-red">
+              Predicciones
+            </Link>
+          </>
+        }
+        showcase={
+          featured ? (
+            <div className="fu-cards-showcase" style={{ minHeight: 260 }}>
+              <Link href={`/news/${featured.slug}`} className="fu-card-float fu-card-float-2" style={{ textDecoration: "none" }}>
+                <div className="fu-news-feature" style={{ width: 220, padding: 0 }}>
+                  <div className="fu-news-feature-cover" style={{ height: 140 }}>
+                    <NewsCover article={featured} size="card" />
+                  </div>
+                  <div className="fu-news-feature-body" style={{ padding: "12px 14px" }}>
+                    <span className={`bp-chip ${featured.hot ? "bp-chip-break" : accentMap[featured.coverAccent]}`}>
+                      {featured.hot ? "Hot" : featured.category}
+                    </span>
+                    <div className="fu-news-feature-title" style={{ fontSize: 13, margin: "8px 0 0" }}>
+                      {featured.title.slice(0, 72)}
+                      {featured.title.length > 72 ? "…" : ""}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ) : undefined
+        }
+      />
 
       {breaking.length > 0 && (
-        <div className="bp-breaking-strip">
-          <span className="bp-breaking-label">Breaking</span>
-          <div className="bp-breaking-scroll">
-            {breaking.map((a) => (
-              <Link key={a.slug} href={`/news/${a.slug}`} className="bp-breaking-item">
+        <div className="fu-news-breaking">
+          <span className="bp-chip bp-chip-live">
+            <Zap size={12} /> Breaking
+          </span>
+          <div className="fu-news-breaking-scroll">
+            {[...breaking, ...breaking].map((a, i) => (
+              <Link key={`${a.slug}-${i}`} href={`/news/${a.slug}`} className="fu-news-breaking-item">
                 {a.title}
               </Link>
             ))}
@@ -61,12 +118,12 @@ export function NewsView() {
         </div>
       )}
 
-      <div className="bp-news-categories">
+      <div className="fu-tabs" style={{ flexWrap: "wrap" }}>
         {CATEGORIES.map((c) => (
           <button
             key={c}
             type="button"
-            className={`bp-news-cat ${category === c ? "is-on" : ""}`}
+            className={`fu-tab ${category === c ? "is-on" : ""}`}
             onClick={() => setCategory(c)}
           >
             {c}
@@ -75,34 +132,50 @@ export function NewsView() {
       </div>
 
       {featured && (
-        <div className="bp-news-editorial">
-          <Link
-            href={`/news/${featured.slug}`}
-            className={`bp-news-hero-lg ${heroTone[featured.coverAccent]}`}
-          >
-            <span className={`bp-chip ${featured.hot ? "bp-chip-break" : accentMap[featured.coverAccent]}`}>
-              {featured.hot ? "Destacado" : featured.category}
-            </span>
-            <h2 className="bp-news-hero-lg-title">{featured.title}</h2>
-            <p className="bp-news-hero-lg-excerpt">{featured.excerpt}</p>
-            <div className="bp-news-hero-lg-meta">
-              {featured.author} · {featured.readMinutes} min · {formatDate(featured.date)}
+        <div className="fu-news-hero-grid">
+          <Link href={`/news/${featured.slug}`} className="fu-news-feature">
+            <div className="fu-news-feature-cover">
+              <NewsCover article={featured} size="card" />
+            </div>
+            <div className="fu-news-feature-body">
+              <span className={`bp-chip ${featured.hot ? "bp-chip-break" : accentMap[featured.coverAccent]}`}>
+                {featured.hot ? "Destacado" : featured.category}
+              </span>
+              <h2 className="fu-news-feature-title">{featured.title}</h2>
+              <p style={{ margin: 0, fontSize: 14, color: "var(--bp-muted)", lineHeight: 1.5 }}>{featured.excerpt}</p>
+              {featured.highlights && featured.highlights.length > 0 && (
+                <ul className="bp-news-highlights">
+                  {featured.highlights.slice(0, 3).map((h) => (
+                    <li key={h}>{h}</li>
+                  ))}
+                </ul>
+              )}
+              <div className="bp-news-hero-lg-meta" style={{ marginTop: 12 }}>
+                {featured.author} · {featured.readMinutes} min · {formatDate(featured.date)}
+              </div>
             </div>
           </Link>
 
-          <div className="bp-news-stack">
+          <div className="fu-news-stack-ultra">
             {secondary.map((a) => (
-              <Link key={a.slug} href={`/news/${a.slug}`} className="bp-news-card-md">
-                <span className={`bp-chip ${accentMap[a.coverAccent]}`}>{a.category}</span>
-                <div className="bp-news-card-md-title">{a.title}</div>
-                <div className="bp-news-card-md-meta">{formatDate(a.date)} · {a.readMinutes} min</div>
+              <Link key={a.slug} href={`/news/${a.slug}`} className="fu-news-mini">
+                <div className="fu-news-mini-cover">
+                  <NewsCover article={a} size="card" />
+                </div>
+                <div>
+                  <span className={`bp-chip ${accentMap[a.coverAccent]}`}>{a.category}</span>
+                  <div style={{ fontWeight: 800, fontSize: 13, marginTop: 6, lineHeight: 1.25 }}>{a.title}</div>
+                  <div className="bp-news-card-md-meta">
+                    {formatDate(a.date)} · {a.readMinutes} min
+                  </div>
+                </div>
               </Link>
             ))}
-          </div>
 
-          <div>
-            <div className="bp-news-sidebar-block">
-              <h3>Trending ahora</h3>
+            <div className="fu-panel fu-panel-glow">
+              <div className="fu-panel-head">
+                <h2>Trending</h2>
+              </div>
               {trending.map((a, i) => (
                 <Link key={a.slug} href={`/news/${a.slug}`} className="bp-news-trend-item">
                   <span className="bp-news-trend-num">{i + 1}</span>
@@ -110,39 +183,29 @@ export function NewsView() {
                 </Link>
               ))}
             </div>
-            <div className="bp-news-sidebar-block">
-              <h3>Reacción comunidad</h3>
-              <div className="bp-feed-item bp-feed-item-dense" style={{ border: "none", padding: "4px 0" }}>
-                <span className="bp-feed-dot gold" />
-                <span className="bp-feed-text">2.4K managers comentaron el mercado</span>
-              </div>
-              <div className="bp-feed-item bp-feed-item-dense" style={{ border: "none", padding: "4px 0" }}>
-                <span className="bp-feed-dot blue" />
-                <span className="bp-feed-text">68% acertó la sorpresa CR vs HMBLE</span>
-              </div>
-              <div className="bp-feed-item bp-feed-item-dense" style={{ border: "none", padding: "4px 0" }}>
-                <span className="bp-feed-dot red" />
-                <span className="bp-feed-text">Fichaje Joker — trending #1 fantasy</span>
-              </div>
-            </div>
           </div>
         </div>
       )}
 
       {moves.length > 0 && category !== "Resultados" && (
-        <>
-          <h2 className="bp-h2" style={{ marginBottom: 10 }}>Movimientos de roster</h2>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>Movimientos de roster</h2>
+            <Link href="/news">Archivo</Link>
+          </div>
           <div className="bp-news-moves">
             {moves.map((a) => (
               <MoveCard key={a.slug} article={a} />
             ))}
           </div>
-        </>
+        </section>
       )}
 
       {rest.length > 0 && (
-        <>
-          <h2 className="bp-h2" style={{ marginBottom: 10 }}>Más historias</h2>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>Más historias</h2>
+          </div>
           <div className="bp-news-grid-mixed">
             {rest.map((a, i) => (
               <Link
@@ -153,7 +216,9 @@ export function NewsView() {
                 <span className={`bp-chip ${accentMap[a.coverAccent]}`}>{a.category}</span>
                 <div className="bp-news-grid-item-title">{a.title}</div>
                 {i === 0 && <p className="bp-news-grid-item-excerpt">{a.excerpt}</p>}
-                <div className="bp-news-card-md-meta">{formatDate(a.date)} · {a.readMinutes} min</div>
+                <div className="bp-news-card-md-meta">
+                  {formatDate(a.date)} · {a.readMinutes} min
+                </div>
                 {a.relatedTeams?.[0] && (
                   <div style={{ marginTop: 8, display: "flex", gap: 6 }}>
                     {a.relatedTeams.slice(0, 2).map((slug) => (
@@ -164,22 +229,9 @@ export function NewsView() {
               </Link>
             ))}
           </div>
-        </>
+        </section>
       )}
-
-      <Panel title="Archivo reciente" flush className="bp-panel-quiet">
-        {articles.slice(0, 6).map((a) => (
-          <Link key={a.slug} href={`/news/${a.slug}`} className="bp-row">
-            <span className={`bp-chip ${accentMap[a.coverAccent]}`}>{a.category}</span>
-            <div className="bp-row-main">
-              <div className="bp-row-title">{a.title}</div>
-              <div className="bp-row-sub">{a.excerpt.slice(0, 90)}…</div>
-            </div>
-            <span className="bp-feed-ago">{formatDate(a.date)}</span>
-          </Link>
-        ))}
-      </Panel>
-    </>
+    </PageUltraShell>
   );
 }
 
@@ -188,7 +240,9 @@ function MoveCard({ article }: { article: NewsArticle }) {
     <Link href={`/news/${article.slug}`} className="bp-news-move-card">
       <span className="bp-chip bp-chip-live">Fichaje</span>
       <div className="bp-news-move-card-title">{article.title}</div>
-      <div className="bp-news-move-card-meta">{formatDate(article.date)} · {article.readMinutes} min</div>
+      <div className="bp-news-move-card-meta">
+        {formatDate(article.date)} · {article.readMinutes} min
+      </div>
       {article.relatedTeams && (
         <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
           {article.relatedTeams.map((slug) => (

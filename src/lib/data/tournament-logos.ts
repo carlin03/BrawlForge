@@ -41,6 +41,7 @@ export function buildTournamentRemoteLogoChain(slug: string): string[] {
   return sources;
 }
 
-export function getTournamentLogoApiPath(slug: string): string {
-  return `/api/logos/tournaments/${encodeURIComponent(slug)}`;
+/** Primera URL remota del torneo (PNG en CDN Liquipedia / BSC). */
+export function getTournamentLogoRemote(slug: string): string | undefined {
+  return buildTournamentRemoteLogoChain(slug)[0];
 }

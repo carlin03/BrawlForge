@@ -1,0 +1,308 @@
+/* ═══ HOME + brillo solo en la carta bajo el cursor ═══ */
+
+.bf-home-site-header {
+  position: relative;
+  margin: 0 0 20px;
+  padding: 22px 24px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 200, 46, 0.35);
+  background: linear-gradient(125deg, #1a0820 0%, #0c0e16 45%, #081828 100%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 200, 46, 0.08);
+  z-index: 5;
+}
+.bf-home-site-header-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 0% 0%, rgba(255, 23, 68, 0.2), transparent 55%),
+    radial-gradient(ellipse 50% 70% at 100% 20%, rgba(0, 153, 255, 0.15), transparent 50%);
+  pointer-events: none;
+}
+.bf-home-site-header-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.bf-home-site-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.bf-home-site-header-icon {
+  color: var(--bp-gold);
+  filter: drop-shadow(0 0 12px rgba(255, 200, 46, 0.6));
+}
+.bf-home-site-header-kicker {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bf-home-site-header-title {
+  margin: 0;
+  font-family: var(--bp-head);
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.bf-home-site-header-title em {
+  font-style: normal;
+  background: linear-gradient(180deg, #fff9e0, var(--bp-gold) 50%, #c9a020);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.bf-home-site-header-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Brillo / zumbido — SOLO el elemento con el ratón encima */
+.bf-shine-hover {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.bf-shine-hover::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.16) 48%,
+    transparent 58%
+  );
+  transform: translateX(-140%) skewX(-8deg);
+  transition: transform 1.5s ease-in-out, opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+}
+.bf-shine-hover:hover::after {
+  transform: translateX(140%) skewX(-8deg);
+  opacity: 1;
+}
+
+.bf-card.bf-shine-hover:not(:hover) .bf-card-shine {
+  transform: translateX(-120%);
+  opacity: 0;
+  transition: transform 1.5s ease-in-out, opacity 0.35s ease;
+}
+.bf-card.bf-shine-hover:hover {
+  z-index: 8;
+}
+.bf-card.bf-shine-hover:hover .bf-card-shine {
+  transform: translateX(120%);
+  opacity: 1;
+  transition: transform 1.5s ease-in-out, opacity 0.35s ease;
+}
+
+.fu-cards-showcase .fu-card-float {
+  pointer-events: auto;
+  isolation: isolate;
+  animation-duration: 9s !important;
+}
+.fu-cards-showcase .fu-card-float:nth-child(2) {
+  animation-duration: 9s !important;
+}
+.fu-cards-showcase .bf-card.has-motion {
+  animation: none !important;
+}
+.bf-motion-app .fu-marquee-track {
+  animation-duration: 110s !important;
+}
+.bf-motion-app .fu-tour-marquee-track {
+  animation-duration: 90s !important;
+}
+.fu-cards-showcase .fu-card-float:not(:hover) {
+  filter: brightness(0.92);
+}
+.fu-cards-showcase .fu-card-float:hover {
+  z-index: 10;
+  filter: brightness(1.08);
+}
+
+.bf-home-ultra .fu-hero.bf-home-hero {
+  min-height: 360px;
+}
+.bf-home-ultra .fu-hero.bf-home-hero .fu-hero-grid {
+  z-index: 4;
+}
+.bf-home-ultra .fu-hero.bf-home-hero .fu-title,
+.bf-home-ultra .fu-hero.bf-home-hero .fu-kicker,
+.bf-home-ultra .fu-hero.bf-home-hero .fu-lead,
+.bf-home-ultra .fu-hero.bf-home-hero .fu-cta-row,
+.bf-home-ultra .fu-hero.bf-home-hero .fu-stats {
+  position: relative;
+  z-index: 4;
+}
+
+/* Arena predicciones / partidos */
+.bf-arena-page {
+  gap: 32px;
+}
+.bf-arena-hero-duel {
+  margin-top: -8px;
+}
+.bf-arena-vote-stage {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 900px) {
+  .bf-arena-vote-stage {
+    grid-template-columns: 1.15fr 1fr;
+    align-items: start;
+  }
+}
+.bf-arena-vote-featured {
+  padding: 4px;
+}
+.bf-arena-match-lane {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bf-arena-match-lane .bp-match-rich,
+.bf-arena-match-lane .bp-match-featured {
+  margin: 0;
+}
+
+.bf-predict-grid .bf-vote-card,
+.bf-predict-grid-home .bf-vote-card {
+  isolation: isolate;
+}
+
+/* Predicciones / Partidos — sin logos flotando ni entrada en cascada */
+.bf-arena-static .fu-card-float,
+.bf-arena-static .fu-duel-logo {
+  animation: none !important;
+}
+.bf-arena-static .bf-stagger > * {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.bf-arena-duel-static {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+  min-height: 200px;
+  padding: 12px 0;
+}
+.bf-arena-duel-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.bf-arena-duel-side span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bp-muted);
+  max-width: 120px;
+}
+.bf-arena-duel-empty {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--bp-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.bf-arena-section-title {
+  margin: 0 0 14px;
+  font-family: var(--bp-head);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bp-gold);
+}
+.bf-matches-main,
+.bf-predict-main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.bf-matches-spotlight-block,
+.bf-matches-vote-block,
+.bf-predict-featured-wrap {
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(165deg, rgba(22, 26, 38, 0.98), rgba(8, 10, 14, 0.99));
+}
+.bf-matches-vote-block {
+  border-color: rgba(255, 23, 68, 0.22);
+}
+
+/* Fantasy — cartas quietas (sin flotar ni barrido) */
+.bf-fantasy-page .bf-card,
+.bf-fantasy-page .bf-card.has-motion {
+  animation: none !important;
+}
+.bf-fantasy-page .bf-card.has-motion:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  rotate: 0deg !important;
+}
+.bf-fantasy-market .bf-card.bf-shine-hover::after {
+  display: none;
+}
+.bf-fantasy-market .bf-card-shine {
+  display: none;
+}
+
+/* Predicciones / Partidos — más presencia */
+.bf-arena-page .fu-hero {
+  border: 1px solid rgba(255, 200, 46, 0.2);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(255, 23, 68, 0.06);
+}
+.bf-arena-tabs .fu-tab.is-on {
+  box-shadow: 0 0 24px rgba(255, 200, 46, 0.25);
+}
+.bf-arena-spotlight {
+  margin-top: -4px;
+}
+.bf-matches-ultra .bf-matches-vote,
+.bf-predict-ultra .bf-predict-featured-wrap {
+  padding: 20px 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 23, 68, 0.25);
+  background: linear-gradient(160deg, rgba(28, 12, 18, 0.95), rgba(10, 12, 18, 0.98));
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
+}
+.bf-predict-featured-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bp-gold);
+}
+.bf-home-ultra .fu-bento > .fu-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.bf-home-ultra .fu-bento > .fu-panel:hover {
+  border-color: rgba(255, 200, 46, 0.22);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}

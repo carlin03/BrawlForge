@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "../styles/platform.css";
+@import "../styles/motion.css";
+@import "../styles/motion-ultra.css";
 @import "../styles/game.css";
 
 @layer base {
@@ -29,21 +31,34 @@ table { border-spacing: 0; }
   border: none;
   overflow: hidden;
 }
+.bf-logo-frame-inner {
+  background: transparent;
+}
 .logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35));
+  filter: none;
 }
-.logo-box-fallback {
+.logo-img-invert {
+  filter: brightness(0) invert(1);
+}
+/* mono-white ya viene procesado en PNG; sin filtros extra */
+.logo-treatment-mono-white .logo-img,
+.logo-treatment-strip-white .logo-img,
+.logo-treatment-border-only .logo-img {
+  filter: none;
+}
+.logo-missing-tag {
   font-family: var(--font-display), system-ui, sans-serif;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: #eab308;
-  background: #0f141f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  font-size: 0.55em;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: rgba(255, 200, 46, 0.7);
 }
-.logo-box-tournament { color: #3b82f6; }
+.logo-missing .bf-logo-frame-ring {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px dashed rgba(255, 200, 46, 0.25);
+}
 
 ::selection { background: rgba(59, 130, 246, 0.25); color: #fff; }

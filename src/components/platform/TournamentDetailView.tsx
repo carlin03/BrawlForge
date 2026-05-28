@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { Radio, Trophy } from "lucide-react";
 import { MatchLine } from "@/components/platform/ui";
+import { PageUltraShell } from "@/components/platform/PageUltraShell";
+import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltraHero";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { tierBadgeClass, tierLabel, isTierBPlus } from "@/lib/data";
@@ -26,10 +29,14 @@ export function TournamentDetailView({ slug }: { slug: string }) {
   const tournament = getTournament(slug);
   if (!tournament) {
     return (
-      <div className="bf-home-empty" style={{ padding: 32 }}>
-        <p>Torneo no encontrado.</p>
-        <Link href="/tournaments">Ver torneos</Link>
-      </div>
+      <PageUltraShell>
+        <div className="fu-panel bf-home-empty">
+          <p>Torneo no encontrado.</p>
+          <Link href="/tournaments" className="fu-btn fu-btn-ghost">
+            Ver torneos
+          </Link>
+        </div>
+      </PageUltraShell>
     );
   }
 
@@ -44,66 +51,105 @@ export function TournamentDetailView({ slug }: { slug: string }) {
   const liveMatches = matches.filter((m) => m.status === "live");
   const upcoming = matches.filter((m) => m.status === "upcoming");
   const finished = matches.filter((m) => m.status === "finished").slice(0, 10);
+  const spotlight = liveMatches[0] ?? upcoming[0] ?? finished[0];
 
   return (
-    <div className="bf-tour-page">
-      <section
-        className={`bf-tour-hero ${tournament.status === "live" ? "is-live" : tournament.status === "upcoming" ? "is-upcoming" : "is-finished"}`}
-      >
-        <div className="bf-tour-hero-bg" aria-hidden />
-        <TournamentLogo slug={slug} name={clean(tournament.shortName)} size={96} />
-        <div className="bf-tour-hero-body">
-          <div className="bf-tour-hero-badges">
+    <PageUltraShell className="bf-tour-page-ultra">
+      <PageUltraHero
+        className={tournament.status === "live" ? "is-live-tour" : ""}
+        kicker={
+          <>
             {tournament.tier != null && (
               <span className={`bf-tier-badge ${tierBadgeClass(tournament.tier)}`}>{tierLabel(tournament.tier)}</span>
             )}
-            {isTierBPlus(tournament) && <span className="bp-chip bp-chip-gold">Circuito B+</span>}
+            {isTierBPlus(tournament) && <span className="bp-chip bp-chip-gold">B+</span>}
             <span className="bp-chip">{tournament.region}</span>
-            <span className={`bf-home-tour-status status-${tournament.status}`}>
-              {tournament.status === "live" ? "En directo" : tournament.status === "upcoming" ? "Próximo" : "Finalizado"}
-            </span>
+            {tournament.status === "live" && (
+              <span className="bp-chip bp-chip-live">
+                <span className="bp-live-dot" /> LIVE
+              </span>
+            )}
+          </>
+        }
+        title={clean(tournament.name)}
+        lead={`${tournament.prizePool} · ${dateLabel} · ${tournament.location}${tournament.stage ? ` · ${tournament.stage}` : ""}`}
+        stats={
+          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
+            <div className="fu-stat">
+              <b>{stats.participantCount || participants.length}</b>
+              <span>Equipos</span>
+            </div>
+            <div className="fu-stat">
+              <b>{stats.totalMatches}</b>
+              <span>Partidos</span>
+            </div>
+            <div className="fu-stat">
+              <b>{stats.liveMatches || stats.upcomingMatches}</b>
+              <span>{stats.liveMatches ? "En vivo" : "Próximos"}</span>
+            </div>
+            <div className="fu-stat">
+              <b>{stats.finishedMatches}</b>
+              <span>Jugados</span>
+            </div>
           </div>
-          <h1 className="bf-tour-hero-title">{clean(tournament.name)}</h1>
-          <p className="bf-tour-hero-meta">
-            {tournament.prizePool} · {dateLabel} · {tournament.location}
-            {tournament.stage && ` · ${tournament.stage}`}
-          </p>
-          <div className="bf-tour-hero-actions">
+        }
+        actions={
+          <>
             {fantasyEnabled && (
-              <Link href={`/fantasy?tournament=${slug}`} className="bp-btn bp-btn-gold">
-                Fantasy del torneo
+              <Link href={`/fantasy?tournament=${slug}`} className="fu-btn fu-btn-gold">
+                Fantasy
               </Link>
             )}
-            <Link href="/predictions" className="bp-btn bp-btn-red">Votar</Link>
-            <a href={tournament.liquipediaUrl} target="_blank" rel="noopener noreferrer" className="bp-btn bp-btn-ghost">
-              Liquipedia
-            </a>
-          </div>
-        </div>
-      </section>
+            <Link href="/predictions" className="fu-btn fu-btn-red">
+              Predicciones
+            </Link>
+            <Link href="/matches" className="fu-btn fu-btn-ghost">
+              Calendario
+            </Link>
+          </>
+        }
+        showcase={
+          spotlight ? (
+            <Link href={`/matches/${spotlight.id}`} style={{ textDecoration: "none" }}>
+              <DuelLogoShowcase
+                teamA={<TeamLogo slug={spotlight.teamASlug} name={teamName(spotlight.teamASlug)} size={96} glow />}
+                teamB={<TeamLogo slug={spotlight.teamBSlug} name={teamName(spotlight.teamBSlug)} size={96} glow />}
+                labelA={teamName(spotlight.teamASlug)}
+                labelB={teamName(spotlight.teamBSlug)}
+              />
+            </Link>
+          ) : (
+            <div className="fu-duel-showcase">
+              <div className="fu-duel-logo fu-card-float fu-card-float-2">
+                <TournamentLogo slug={slug} name={clean(tournament.shortName)} size={120} glow />
+                <span>{clean(tournament.shortName)}</span>
+              </div>
+            </div>
+          )
+        }
+      />
 
       {tournament.winnerSlug && (
-        <div className="bf-tour-champion">
-          <span className="bf-home-eyebrow">Campeón</span>
-          <TeamLogo slug={tournament.winnerSlug} name={teamName(tournament.winnerSlug)} size={56} />
+        <div className="bf-tour-champion fu-panel-glow">
+          <Trophy size={20} color="var(--bp-gold)" />
+          <span className="fu-kicker" style={{ margin: 0 }}>
+            Campeón
+          </span>
+          <TeamLogo slug={tournament.winnerSlug} name={teamName(tournament.winnerSlug)} size={56} glow />
           <Link href={`/teams/${tournament.winnerSlug}`} className="bf-tour-champion-name">
             {teamName(tournament.winnerSlug)}
           </Link>
         </div>
       )}
 
-      <div className="bf-tour-stats-bar">
-        <div className="bf-tour-stat"><strong>{stats.participantCount || participants.length}</strong><span>Equipos</span></div>
-        <div className="bf-tour-stat"><strong>{tournament.prizePool}</strong><span>Premio</span></div>
-        <div className="bf-tour-stat"><strong>{stats.totalMatches}</strong><span>Partidos</span></div>
-        <div className="bf-tour-stat"><strong>{stats.liveMatches || stats.upcomingMatches}</strong><span>{stats.liveMatches ? "En vivo" : "Próximos"}</span></div>
-        <div className="bf-tour-stat"><strong>{stats.finishedMatches}</strong><span>Jugados</span></div>
-        <div className="bf-tour-stat"><strong>{stats.formats.join(", ") || "—"}</strong><span>Formato</span></div>
-      </div>
-
       {liveMatches.length > 0 && (
-        <section className="bf-tour-section">
-          <h2 className="bf-home-block-title"><span className="bp-live-dot" /> En directo</h2>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>
+              <Radio size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
+              En directo
+            </h2>
+          </div>
           {liveMatches.map((m) => (
             <MatchLine key={m.id} match={m} rich />
           ))}
@@ -111,16 +157,20 @@ export function TournamentDetailView({ slug }: { slug: string }) {
       )}
 
       <div className="bf-tour-grid-2">
-        <section className="bf-tour-panel">
-          <h2 className="bf-home-block-title">Próximos ({upcoming.length})</h2>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>Próximos ({upcoming.length})</h2>
+          </div>
           {upcoming.length === 0 ? (
             <p className="bf-home-empty">Sin partidos próximos.</p>
           ) : (
             upcoming.slice(0, 8).map((m) => <MatchLine key={m.id} match={m} rich />)
           )}
         </section>
-        <section className="bf-tour-panel">
-          <h2 className="bf-home-block-title">Resultados</h2>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>Resultados</h2>
+          </div>
           {finished.length === 0 ? (
             <p className="bf-home-empty">Sin resultados aún.</p>
           ) : (
@@ -130,24 +180,29 @@ export function TournamentDetailView({ slug }: { slug: string }) {
       </div>
 
       {stats.standings.length > 0 && (
-        <section className="bf-tour-section">
-          <h2 className="bf-home-block-title">Clasificación</h2>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>Clasificación</h2>
+          </div>
           <div className="bf-tour-standings">
             {stats.standings.slice(0, 12).map((row) => (
               <Link key={row.teamSlug} href={`/teams/${row.teamSlug}`} className="bf-tour-stand-row">
                 <span className="bf-tour-stand-rank">{row.rank}</span>
                 <TeamLogo slug={row.teamSlug} name={teamName(row.teamSlug)} size={32} />
                 <strong>{teamName(row.teamSlug)}</strong>
-                <span>{row.w}W · {row.l}L · {row.diff}</span>
+                <span>
+                  {row.w}W · {row.l}L · {row.diff}
+                </span>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      <section className="bf-tour-section">
-        <div className="bf-home-block-head">
-          <h2 className="bf-home-block-title">Participantes ({participants.length})</h2>
+      <section className="fu-panel fu-panel-glow">
+        <div className="fu-panel-head">
+          <h2>Participantes ({participants.length})</h2>
+          <Link href="/teams">Todos los clubes</Link>
         </div>
         <div className="bf-tour-participants">
           {participants.slice(0, 32).map((ts) => (
@@ -160,13 +215,13 @@ export function TournamentDetailView({ slug }: { slug: string }) {
       </section>
 
       {fantasyEnabled && fantasyPool.length > 0 && (
-        <section className="bf-tour-section">
-          <div className="bf-home-block-head">
-            <h2 className="bf-home-block-title">Pool fantasy</h2>
-            <Link href={`/fantasy?tournament=${slug}`} className="bf-home-link">Mercado</Link>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>Pool fantasy</h2>
+            <Link href={`/fantasy?tournament=${slug}`}>Mercado</Link>
           </div>
           <p className="bf-tour-pool-hint">
-            {fantasyTeams.length} equipos con roster · {fantasyPool.length}+ pros disponibles
+            {fantasyTeams.length} equipos · {fantasyPool.length}+ pros
           </p>
           <div className="bf-tour-fantasy-cards">
             {fantasyPool.map((ps) => {
@@ -187,8 +242,10 @@ export function TournamentDetailView({ slug }: { slug: string }) {
       )}
 
       {stats.prizeBreakdown.length > 0 && (
-        <section className="bf-tour-section">
-          <h2 className="bf-home-block-title">Distribución de premios</h2>
+        <section className="fu-panel fu-panel-glow">
+          <div className="fu-panel-head">
+            <h2>Premios</h2>
+          </div>
           <div className="bf-tour-prizes">
             {stats.prizeBreakdown.map((p) => (
               <div key={p.place} className="bf-tour-prize-row">
@@ -199,6 +256,6 @@ export function TournamentDetailView({ slug }: { slug: string }) {
           </div>
         </section>
       )}
-    </div>
+    </PageUltraShell>
   );
 }

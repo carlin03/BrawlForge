@@ -35,6 +35,9 @@
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
 }
+.bf-game-app:has(.bf-fantasy-premium)::after {
+  opacity: 0.012;
+}
 .bf-game-app .bp-main,
 .bf-game-app .bp-nav,
 .bf-game-app .bf-game-dock {
@@ -63,14 +66,11 @@
   margin: 0 auto;
 }
 .bf-nav-actions {
-  display: none;
+  display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
   margin-left: auto;
-}
-@media (min-width: 900px) {
-  .bf-nav-actions { display: flex; }
 }
 .bf-game-logo {
   display: inline-flex;
@@ -157,7 +157,8 @@
 }
 
 @media (max-width: 899px) {
-  .bf-game-nav .bp-nav-toggle { margin-left: auto; }
+  .bf-game-nav .bp-nav-inner { flex-wrap: wrap; height: auto; min-height: var(--bp-nav-h); padding-bottom: 6px; }
+  .bf-game-nav .bp-nav-toggle { margin-left: 0; }
 }
 .bf-nav-cta {
   padding: 8px 18px !important;
@@ -335,11 +336,13 @@
   );
 }
 .bf-card-fut.bf-card-premium .bf-card-logo-stage {
-  background: linear-gradient(180deg, #ffffff 0%, #e8ecf4 55%, #d0d8e8 100%);
-  box-shadow:
-    inset 0 2px 12px rgba(0, 0, 0, 0.06),
-    0 12px 32px rgba(0, 0, 0, 0.35),
-    0 0 24px rgba(255, 200, 46, 0.12);
+  background: radial-gradient(circle at 50% 30%, rgba(255, 200, 46, 0.12), rgba(0, 0, 0, 0.35));
+  box-shadow: 0 0 32px rgba(255, 200, 46, 0.15), inset 0 0 24px rgba(255, 200, 46, 0.08);
+}
+.bf-card-fut.bf-card-premium .bf-card-logo-stage .bf-logo-frame-ring {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 /* ── Mini cards squad ── */
@@ -476,11 +479,111 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 .bf-fantasy-premium .bf-fantasy-market {
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  overflow: visible;
+  padding: 16px 18px 20px;
+  border-radius: 16px;
+  background: rgba(10, 12, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  min-width: 0;
+}
+.bf-fantasy-premium .bf-fantasy-layout {
+  gap: 20px;
+}
+.bf-fantasy-premium .bf-fantasy-market .bf-card-logo-stage {
+  border: none;
+  box-shadow: none;
+  background: radial-gradient(circle at 50% 35%, rgba(255,255,255,0.06), transparent 70%);
+}
+.bf-fantasy-premium .bf-fantasy-market .bf-card-fut-foot {
+  border-top-color: rgba(255, 255, 255, 0.05);
 }
 
 .bf-arena-club-rail {
   overflow: hidden;
+}
+
+/* ── Móvil: misma app, UX tipo “nube” / PWA ── */
+@media (max-width: 719px) {
+  .bp-main.bf-game-main {
+    padding: 10px 12px calc(var(--bf-dock-h, 64px) + env(safe-area-inset-bottom, 0px) + 12px);
+  }
+  .bf-arena-hero {
+    margin-left: calc(-1 * 12px);
+    margin-right: calc(-1 * 12px);
+    padding-top: 20px;
+  }
+  .bf-arena-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .bf-arena-ctas {
+    flex-direction: column;
+  }
+  .bf-arena-cta {
+    width: 100%;
+    text-align: center;
+    padding: 14px 16px !important;
+  }
+  .bf-arena-cards-stage {
+    min-height: auto;
+    margin: 8px calc(-1 * 12px) 0;
+    padding: 0 0 8px;
+    perspective: none;
+  }
+  .bf-arena-cards {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 12px 12px;
+    justify-content: flex-start;
+  }
+  .bf-arena-card-slot {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .bf-arena-card-slot .bf-card-fut {
+    max-width: 200px;
+    min-height: 300px;
+  }
+  .bf-arena-card-slot.pos-1 .bf-card-fut {
+    max-width: 220px;
+  }
+  .bf-premium-section {
+    padding: 16px 14px 18px;
+    border-radius: 16px;
+  }
+  .bf-home-club-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .bf-home-tour-card {
+    flex: 0 0 min(260px, 78vw);
+  }
+  .bf-predict-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .bf-card-fut.bf-card-premium {
+    max-width: 100%;
+  }
+  .bf-team-roster-cards,
+  .bf-tour-fantasy-cards {
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .bf-team-roster-cards > *,
+  .bf-tour-fantasy-cards > * {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+  }
 }

@@ -1,0 +1,301 @@
+/* BrawlForge Home v3 — rebuild limpio */
+.bf-home-v3 {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-bottom: 32px;
+}
+
+.bf-h3-hero {
+  position: relative;
+  padding: 36px 28px 32px;
+  margin-bottom: 20px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 200, 46, 0.2);
+  background: linear-gradient(145deg, #141a28 0%, #0a0c12 55%, #120810 100%);
+}
+.bf-h3-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 90% 10%, rgba(255, 61, 90, 0.12), transparent),
+    radial-gradient(ellipse 60% 50% at 10% 80%, rgba(0, 153, 255, 0.1), transparent);
+  pointer-events: none;
+}
+.bf-h3-hero-grid {
+  position: relative;
+  display: grid;
+  gap: 28px;
+}
+@media (min-width: 900px) {
+  .bf-h3-hero-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+.bf-h3-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-gold);
+  margin: 0 0 8px;
+}
+.bf-h3-title {
+  font-family: var(--bp-head);
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  font-weight: 900;
+  line-height: 0.95;
+  margin: 0;
+  letter-spacing: -0.04em;
+}
+.bf-h3-title em {
+  font-style: normal;
+  color: var(--bp-gold);
+}
+.bf-h3-lead {
+  margin: 14px 0 0;
+  font-size: 15px;
+  color: var(--bp-muted);
+  max-width: 42ch;
+  line-height: 1.5;
+}
+.bf-h3-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+.bf-h3-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-family: var(--bp-head);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.15s;
+}
+.bf-h3-btn:hover {
+  transform: translateY(-2px);
+}
+.bf-h3-btn-gold {
+  background: linear-gradient(180deg, #ffe566, var(--bp-gold));
+  color: #1a1000;
+}
+.bf-h3-btn-red {
+  background: linear-gradient(180deg, var(--bp-red-bright), var(--bp-red));
+  color: #fff;
+}
+.bf-h3-btn-ghost {
+  border: 1px solid var(--bp-line-strong);
+  color: var(--bp-text);
+}
+.bf-h3-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 24px;
+}
+.bf-h3-stat {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+.bf-h3-stat b {
+  display: block;
+  font-family: var(--bp-head);
+  font-size: 1.35rem;
+  color: var(--bp-gold);
+}
+.bf-h3-stat span {
+  font-size: 10px;
+  color: var(--bp-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bf-h3-spotlight {
+  display: block;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+}
+.bf-h3-spotlight.is-live {
+  border-color: rgba(255, 61, 90, 0.4);
+  box-shadow: 0 0 32px rgba(255, 61, 90, 0.12);
+}
+.bf-h3-spotlight-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.bf-h3-spotlight-battle {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+.bf-h3-spot-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.bf-h3-spot-team span {
+  font-family: var(--bp-head);
+  font-size: 14px;
+  font-weight: 800;
+}
+.bf-h3-vs {
+  font-family: var(--bp-head);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--bp-dim);
+}
+
+.bf-h3-section {
+  margin-bottom: 24px;
+}
+.bf-h3-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.bf-h3-section-head h2 {
+  margin: 0;
+  font-family: var(--bp-head);
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+.bf-h3-section-head a {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bp-blue-bright);
+  text-decoration: none;
+}
+
+.bf-h3-tours-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.bf-h3-tour-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.bf-h3-tour-card:hover {
+  border-color: rgba(0, 153, 255, 0.35);
+  transform: translateY(-2px);
+}
+.bf-h3-tour-card.is-live {
+  border-color: rgba(255, 61, 90, 0.35);
+}
+.bf-h3-tour-body strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.bf-h3-tour-body span {
+  font-size: 11px;
+  color: var(--bp-dim);
+}
+
+.bf-h3-clubs-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+.bf-h3-club {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+}
+.bf-h3-club:hover {
+  border-color: rgba(255, 200, 46, 0.35);
+}
+.bf-h3-club-tag {
+  font-family: var(--bp-head);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.bf-h3-bento {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 960px) {
+  .bf-h3-bento {
+    grid-template-columns: 1.2fr 1fr;
+  }
+  .bf-h3-bento-wide {
+    grid-column: 1 / -1;
+  }
+}
+.bf-h3-panel {
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+}
+.bf-h3-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.bf-h3-tab {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--bp-line);
+  background: transparent;
+  color: var(--bp-muted);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--bp-head);
+}
+.bf-h3-tab.is-on {
+  background: var(--bp-gold);
+  color: #1a1000;
+  border-color: var(--bp-gold);
+}
+.bf-h3-squad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.bf-h3-squad-meta {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--bp-gold);
+  font-weight: 700;
+}

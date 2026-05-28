@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
-import { getPlayer, teamName, getFantasyRole } from "@/lib/data";
+import { getTeam, teamName, getFantasyRole } from "@/lib/data";
+import { useResolvedPlayer } from "@/hooks/useResolvedEntity";
 import { PriceDelta } from "@/components/platform/ui";
-import { SHOW_DEMO_SOCIAL } from "@/lib/app-config";
 
 export type CardTier = "legend" | "epic" | "rare" | "common";
 
@@ -20,6 +21,7 @@ const LOGO_BY_SIZE = { hero: 96, xl: 80, lg: 64, md: 56, sm: 44 } as const;
 
 export function PlayerCard({
   playerSlug,
+  clubSlug,
   size = "md",
   price,
   priceChange,
@@ -31,8 +33,11 @@ export function PlayerCard({
   actionLabel,
   actionDisabled,
   animate = true,
+  showExtended = false,
 }: {
   playerSlug: string;
+  /** Club del bloque del mercado (torneo); si no coincide con teamSlug del jugador, muestra el logo correcto del evento */
+  clubSlug?: string;
   size?: "hero" | "xl" | "lg" | "md" | "sm";
   price?: number;
   priceChange?: number;
@@ -44,17 +49,21 @@ export function PlayerCard({
   actionLabel?: string;
   actionDisabled?: boolean;
   animate?: boolean;
+  showExtended?: boolean;
 }) {
-  const p = getPlayer(playerSlug);
-  if (!p?.teamSlug) return null;
+  const p = useResolvedPlayer(playerSlug);
+  const displayClub = clubSlug ?? p?.teamSlug;
+  if (!p || !displayClub) return null;
 
+  const club = getTeam(displayClub);
   const tier = getCardTier(p.rating, p.fantasyPoints);
   const role = getFantasyRole(playerSlug).toUpperCase();
   const ovr = p.fantasyPoints;
   const ownership = pickRate ?? p.fantasyOwnership;
-  const pick = SHOW_DEMO_SOCIAL ? ownership : undefined;
   const trend = priceChange ?? 0;
   const logoSize = LOGO_BY_SIZE[size];
+  const statusLabel =
+    p.status === "active" ? "Activo" : p.status === "inactive" ? "Inactivo" : "Retirado";
 
   const inner = (
     <>
@@ -69,13 +78,46 @@ export function PlayerCard({
       </div>
 
       <div className="bf-card-logo-stage">
-        <TeamLogo slug={p.teamSlug} name={teamName(p.teamSlug)} size={logoSize} />
+        <PlayerPhoto
+          playerSlug={playerSlug}
+          teamSlug={displayClub}
+          name={p.ign}
+          size={logoSize}
+          key={`${playerSlug}-${p.photoUrl ?? ""}`}
+        />
       </div>
 
       <div className="bf-card-identity">
         <div className="bf-card-name">{p.ign}</div>
-        <div className="bf-card-team">{teamName(p.teamSlug)}</div>
+        <div className="bf-card-team">{club?.name ?? teamName(displayClub)}</div>
         <RegionBadge region={p.region} />
+        <div className={`bf-card-extra-slot ${showExtended ? "" : "is-empty"}`}>
+          {showExtended && (
+            <div className="bf-card-extra">
+              <span className="bf-card-extra-pill">{role}</span>
+              <span className="bf-card-extra-pill">{statusLabel}</span>
+              {club?.country && <span className="bf-card-extra-meta">{club.country}</span>}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className={`bf-card-detail-slot ${showExtended ? "" : "is-empty"}`}>
+        {showExtended && (
+          <div className="bf-card-detail-row">
+            <span title="Rating competitivo">RTG <strong>{p.rating.toFixed(2)}</strong></span>
+            <span title="Rol oficial">ROL <strong>{p.role}</strong></span>
+            {p.realName ? (
+              <span className="bf-card-detail-name" title={p.realName}>
+                {p.realName}
+              </span>
+            ) : (
+              <span className="bf-card-detail-name is-placeholder" aria-hidden>
+                —
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="bf-card-fut-foot">
@@ -88,16 +130,18 @@ export function PlayerCard({
           <span>Own</span>
         </div>
         <div className="bf-card-fut-stat">
-          <strong>{pick !== undefined ? `${pick}%` : p.fantasyPoints}</strong>
-          <span>{pick !== undefined ? "Pick" : "Pts"}</span>
+          <strong>{p.fantasyPoints}</strong>
+          <span>Pts</span>
         </div>
       </div>
 
-      {trend !== 0 && (
-        <div className="bf-card-trend">
-          <PriceDelta change={trend} />
-        </div>
-      )}
+      <div className="bf-card-trend-slot">
+        {trend !== 0 ? (
+          <div className="bf-card-trend">
+            <PriceDelta change={trend} />
+          </div>
+        ) : null}
+      </div>
 
       {onAction && (
         <button
@@ -123,6 +167,7 @@ export function PlayerCard({
     `bf-card-${size}`,
     isCaptain ? "is-captain" : "",
     animate ? "has-motion" : "",
+    "bf-shine-hover",
   ]
     .filter(Boolean)
     .join(" ");
@@ -139,7 +184,7 @@ export function PlayerCard({
 }
 
 export function PlayerCardMini({ playerSlug, isCaptain }: { playerSlug: string; isCaptain?: boolean }) {
-  const p = getPlayer(playerSlug);
+  const p = useResolvedPlayer(playerSlug);
   if (!p?.teamSlug) return null;
   const tier = getCardTier(p.rating, p.fantasyPoints);
   return (

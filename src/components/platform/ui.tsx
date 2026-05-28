@@ -146,7 +146,7 @@ export function FeaturedMatch({ match, tag: tagLabel }: { match: EsportsMatch; t
   const winB = finished && match.scoreB > match.scoreA;
 
   return (
-    <Link href={`/matches/${match.id}`} className={`bp-match-featured ${live ? "is-live" : ""}`}>
+    <Link href={`/matches/${match.id}`} className={`bp-match-featured bf-hover-lift bf-shine-hover ${live ? "is-live" : ""}`}>
       <div className="bp-match-featured-glow" aria-hidden />
       <div className="bp-match-featured-top">
         {tagLabel && <span className="bp-chip bp-chip-gold">{tagLabel}</span>}
@@ -199,7 +199,7 @@ export function MatchLine({ match, compact, rich }: { match: EsportsMatch; compa
   const importance = rich ? matchImportance(match.stage) : null;
 
   return (
-    <Link href={`/matches/${match.id}`} className={`bp-match ${rich ? "bp-match-rich" : ""}`}>
+    <Link href={`/matches/${match.id}`} className={`bp-match bf-hover-lift bf-shine-hover ${rich ? "bp-match-rich" : ""}`}>
       {rich && (
         <div className="bp-match-tourney">
           <TournamentLogo slug={match.tournamentSlug} name={tournamentName(match.tournamentSlug)} size={22} />

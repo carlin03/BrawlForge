@@ -1,3 +1,5 @@
+import { extraNewsArticles } from "./news-articles-extra";
+
 export interface NewsArticle {
   slug: string;
   title: string;
@@ -11,9 +13,12 @@ export interface NewsArticle {
   relatedTeams?: string[];
   relatedTournament?: string;
   hot?: boolean;
+  /** Datos clave en ficha del artículo */
+  highlights?: string[];
+  keyStats?: { label: string; value: string }[];
 }
 
-export const news: NewsArticle[] = [
+const baseNews: NewsArticle[] = [
   {
     slug: "crazy-raccoon-world-champions-2025",
     title: "Crazy Raccoon barre a HMBLE 3-0 y se proclama campeón del mundo 2025",
@@ -167,10 +172,18 @@ export const news: NewsArticle[] = [
   },
 ];
 
+export const news: NewsArticle[] = [...baseNews, ...extraNewsArticles];
+
+const allNews = news;
+
 export function getNews(slug: string): NewsArticle | undefined {
-  return news.find((n) => n.slug === slug);
+  return allNews.find((n) => n.slug === slug);
 }
 
-export function getLatestNews(limit = 6): NewsArticle[] {
-  return [...news].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, limit);
+export function getLatestNews(limit = 24): NewsArticle[] {
+  return [...allNews].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, limit);
+}
+
+export function getAllNews(): NewsArticle[] {
+  return [...allNews].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }

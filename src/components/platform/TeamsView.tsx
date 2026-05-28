@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { Search, Shield } from "lucide-react";
+import { PageUltraShell } from "@/components/platform/PageUltraShell";
+import { PageUltraHero } from "@/components/platform/PageUltraHero";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 import type { EsportsTeam } from "@/lib/data/teams";
@@ -13,31 +16,103 @@ const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 
 export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
   const [region, setRegion] = useState<Region | "all">("all");
+  const [query, setQuery] = useState("");
   const competitive = useMemo(() => new Set(getCompetitiveTeamSlugs()), []);
 
   const sorted = useMemo(() => {
     const base = teams.filter((t) => competitive.has(t.slug));
-    const filtered = region === "all" ? base : base.filter((t) => t.region === region);
+    let filtered = region === "all" ? base : base.filter((t) => t.region === region);
+    const q = query.trim().toLowerCase();
+    if (q) {
+      filtered = filtered.filter(
+        (t) =>
+          t.name.toLowerCase().includes(q) ||
+          t.tag.toLowerCase().includes(q) ||
+          t.slug.includes(q),
+      );
+    }
     return [...filtered].sort((a, b) => a.rank - b.rank);
-  }, [teams, region, competitive]);
+  }, [teams, region, competitive, query]);
 
-  const spotlight = sorted.slice(0, 3);
-  const rest = sorted.slice(3);
+  const spotlight = query.trim() ? [] : sorted.slice(0, 3);
+  const rest = query.trim() ? sorted : sorted.slice(3);
+
+  const topThree = sorted.slice(0, 3);
 
   return (
-    <div className="bf-teams-page">
-      <header className="bf-fantasy-gate">
-        <div className="bf-fantasy-gate-left">
-          <span className="bf-home-gate-badge">Tier B+</span>
-          <div>
-            <h1 className="bf-fantasy-title">Clubes</h1>
-            <p className="bf-fantasy-sub">{sorted.length} equipos · logos PNG Liquipedia</p>
+    <PageUltraShell className="bf-teams-page">
+      <PageUltraHero
+        kicker={
+          <>
+            <Shield size={14} /> Circuito BSC 2026
+          </>
+        }
+        title={
+          <>
+            Clubes <em>pro</em>
+          </>
+        }
+        lead={`${sorted.length} equipos verificados · busca por nombre, tag o región`}
+        stats={
+          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+            <div className="fu-stat">
+              <b>{sorted.length}</b>
+              <span>En vista</span>
+            </div>
+            <div className="fu-stat">
+              <b>{region === "all" ? "GLOBAL" : region}</b>
+              <span>Región</span>
+            </div>
+            <div className="fu-stat">
+              <b>2026</b>
+              <span>Temporada</span>
+            </div>
           </div>
-        </div>
-        <Link href="/fantasy" className="bp-btn bp-btn-gold">Mercado fantasy</Link>
-      </header>
+        }
+        actions={
+          <>
+            <Link href="/rankings" className="fu-btn fu-btn-ghost">
+              Rankings
+            </Link>
+            <Link href="/fantasy" className="fu-btn fu-btn-gold">
+              Fantasy
+            </Link>
+            <Link href="/tournaments" className="fu-btn fu-btn-red">
+              Torneos
+            </Link>
+          </>
+        }
+        showcase={
+          topThree.length >= 3 ? (
+            <div className="fu-cards-showcase" style={{ minHeight: 260 }}>
+              {[topThree[1], topThree[0], topThree[2]].map((t, i) => (
+                <Link
+                  key={t.slug}
+                  href={`/teams/${t.slug}`}
+                  className={`fu-card-float fu-card-float-${i === 1 ? 2 : i === 0 ? 1 : 3}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <TeamLogo slug={t.slug} name={t.name} size={i === 1 ? 88 : 72} glow />
+                  <span style={{ fontWeight: 800, fontSize: 12 }}>{t.tag}</span>
+                </Link>
+              ))}
+            </div>
+          ) : undefined
+        }
+      />
 
-      {spotlight.length >= 3 && (
+      <label className="bf-teams-search">
+        <Search size={18} aria-hidden />
+        <input
+          type="search"
+          placeholder="Buscar club por nombre, tag o slug…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          autoComplete="off"
+        />
+      </label>
+
+      {spotlight.length >= 3 && !query.trim() && (
         <div className="bf-teams-podium">
           {[spotlight[1], spotlight[0], spotlight[2]].map((t, i) => (
             <Link
@@ -73,7 +148,7 @@ export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
         ))}
       </div>
 
-      <div className="bf-teams-grid">
+      <div className="bf-teams-grid bf-stagger">
         {rest.map((t) => {
           const meta = getTeamPlatformMeta(t.slug);
           const rosterCount = getPlayersByTeam(t.slug).length;
@@ -97,7 +172,7 @@ export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
         })}
       </div>
 
-      {sorted.length === 0 && <p className="bf-home-empty">No hay equipos en esta región.</p>}
-    </div>
+      {sorted.length === 0 && <p className="bf-home-empty fu-panel">No hay equipos en esta región.</p>}
+    </PageUltraShell>
   );
 }

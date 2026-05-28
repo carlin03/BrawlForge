@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { buildTeamLogoSources, resolveTeamLogoSlug } from "@/lib/data/logo-sources";
+import { useMemo } from "react";
+import { buildTeamLogoSources, resolveTeamLogoSlug } from "@/lib/data/png-logo-urls";
+import { useLogoConfig } from "@/contexts/LogoConfigContext";
+import { getLogoTreatment } from "@/lib/data/logo-branding";
 import { isValidLogoSlug } from "@/lib/data/logo-slugs";
 import { getTeam } from "@/lib/data/teams";
 import { LogoFrame } from "@/components/ui/LogoFrame";
+import { useLogoImage } from "@/components/ui/useLogoImage";
 
 export const LOGO_SIZES = {
   xs: 20,
@@ -31,43 +34,43 @@ export function TeamLogo({ slug, name, tag, size = "md", className = "", glow = 
   const valid = isValidLogoSlug(slug);
   const resolvedSlug = valid ? resolveTeamLogoSlug(slug) : slug;
   const team = valid ? (getTeam(slug) ?? getTeam(resolvedSlug)) : undefined;
-  const sources = valid ? buildTeamLogoSources(slug) : [];
-  const [sourceIndex, setSourceIndex] = useState(0);
-  const [loaded, setLoaded] = useState(false);
-  const src = sources[sourceIndex];
+  const logoConfig = useLogoConfig();
+  const sources = useMemo(
+    () => (valid ? buildTeamLogoSources(slug, logoConfig) : []),
+    [slug, valid, logoConfig.cacheVersion, logoConfig.overrides],
+  );
+  const { src, status, onLoad, onError, imgRef } = useLogoImage(sources);
   const displayName = name || team?.name || (valid ? slug : "TBD");
-  const displayTag = tag ?? team?.tag ?? (valid ? displayName.slice(0, 3).toUpperCase() : "TBD");
+  const loaded = status === "ready" && !!src;
+  const treatment = valid ? getLogoTreatment(resolvedSlug) : "border-only";
 
-  useEffect(() => {
-    setSourceIndex(0);
-    setLoaded(false);
-  }, [slug]);
-
-  if (!valid || !src || sourceIndex >= sources.length) {
+  if (!valid || status === "failed" || !src) {
     return (
-      <LogoFrame size={pixelSize} kind="team" glow={glow} className={className} title={displayName}>
-        <div className="logo-box logo-box-fallback" style={{ width: "100%", height: "100%", fontSize: Math.max(9, pixelSize * 0.26) }}>
-          {displayTag}
-        </div>
+      <LogoFrame size={pixelSize} kind="team" glow={false} className={`logo-missing ${className}`.trim()} title={displayName}>
+        <span className="logo-missing-tag">{tag ?? team?.tag ?? displayName.slice(0, 2).toUpperCase()}</span>
       </LogoFrame>
     );
   }
 
   return (
-    <LogoFrame size={pixelSize} kind="team" glow={glow && loaded} className={`${className} ${loaded ? "is-loaded" : ""}`.trim()} title={displayName}>
+    <LogoFrame
+      size={pixelSize}
+      kind="team"
+      glow={glow && loaded}
+      className={`${className} ${loaded ? "is-loaded" : ""} logo-treatment-${treatment}`.trim()}
+      title={displayName}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        ref={imgRef}
         src={src}
         alt={displayName}
-        width={pixelSize - 8}
-        height={pixelSize - 8}
+        width={pixelSize - 6}
+        height={pixelSize - 6}
         loading="lazy"
         decoding="async"
-        onLoad={() => setLoaded(true)}
-        onError={() => {
-          setLoaded(false);
-          setSourceIndex((i) => i + 1);
-        }}
+        onLoad={onLoad}
+        onError={onError}
         className="logo-img"
       />
     </LogoFrame>
