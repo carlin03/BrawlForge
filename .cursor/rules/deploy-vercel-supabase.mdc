@@ -1,0 +1,16 @@
+---
+description: Tras cambios en BrawlForge, sincronizar Git, Vercel y Supabase
+alwaysApply: true
+---
+
+# Deploy y backend
+
+Al terminar cambios de código o datos que afecten producción:
+
+1. `npm run build` (o `npm run deploy:check` si hay `.env.local` con Supabase).
+2. `git push origin main` para que Vercel despliegue (no hace falta pedir permiso si el usuario pide "actualizar para Vercel").
+3. Si tocaste SQL: recordar `supabase/ALL_IN_ONE_SETUP.sql` en el proyecto `bkxxykztewquhnimpjgc`.
+4. Si tocaste `NEXT_PUBLIC_*`: el usuario debe **Redeploy** en Vercel.
+5. Producción: https://brawl-forge-delta.vercel.app — detalle en `DEPLOY.md`.
+
+No commitear `.env.local`, `sb_secret_`, ni `public/logos/`.
