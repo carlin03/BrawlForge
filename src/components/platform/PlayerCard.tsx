@@ -5,6 +5,7 @@ import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 import { getTeam, teamName, getFantasyRole } from "@/lib/data";
+import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
 import { useResolvedPlayer } from "@/hooks/useResolvedEntity";
 import { PriceDelta } from "@/components/platform/ui";
 
@@ -56,6 +57,7 @@ export function PlayerCard({
   if (!p || !displayClub) return null;
 
   const club = getTeam(displayClub);
+  const theme = getTeamCardTheme(displayClub, club?.region ?? p.region);
   const tier = getCardTier(p.rating, p.fantasyPoints);
   const role = getFantasyRole(playerSlug).toUpperCase();
   const ovr = p.fantasyPoints;
@@ -67,6 +69,11 @@ export function PlayerCard({
 
   const inner = (
     <>
+      <div className="bf-card-team-bg" aria-hidden>
+        <div className="bf-card-team-watermark">
+          <TeamLogo slug={displayClub} name={club?.name ?? teamName(displayClub)} size={200} glow={false} />
+        </div>
+      </div>
       <div className="bf-card-shine" aria-hidden />
       <div className="bf-card-fut-head">
         <span className="bf-card-ovr">{ovr}</span>
@@ -163,6 +170,7 @@ export function PlayerCard({
     "bf-card",
     "bf-card-fut",
     "bf-card-premium",
+    "has-team-theme",
     `bf-card-${tier}`,
     `bf-card-${size}`,
     isCaptain ? "is-captain" : "",
@@ -172,26 +180,46 @@ export function PlayerCard({
     .filter(Boolean)
     .join(" ");
 
-  if (onAction) return <div className={cls}>{inner}</div>;
+  const themeStyle = teamCardThemeVars(theme);
+
+  if (onAction) {
+    return (
+      <div className={cls} style={themeStyle} data-team={displayClub}>
+        {inner}
+      </div>
+    );
+  }
   if (href) {
     return (
-      <Link href={href} className={cls}>
+      <Link href={href} className={cls} style={themeStyle} data-team={displayClub}>
         {inner}
       </Link>
     );
   }
-  return <div className={cls}>{inner}</div>;
+  return (
+    <div className={cls} style={themeStyle} data-team={displayClub}>
+      {inner}
+    </div>
+  );
 }
 
 export function PlayerCardMini({ playerSlug, isCaptain }: { playerSlug: string; isCaptain?: boolean }) {
   const p = useResolvedPlayer(playerSlug);
   if (!p?.teamSlug) return null;
   const tier = getCardTier(p.rating, p.fantasyPoints);
+  const theme = getTeamCardTheme(p.teamSlug, p.region);
   return (
     <Link
       href={`/players/${playerSlug}`}
-      className={`bf-card-mini bf-card-premium-mini bf-card-${tier}${isCaptain ? " is-captain" : ""}`}
+      className={`bf-card-mini bf-card-premium-mini has-team-theme bf-card-${tier}${isCaptain ? " is-captain" : ""}`}
+      style={teamCardThemeVars(theme)}
+      data-team={p.teamSlug}
     >
+      <div className="bf-card-team-bg" aria-hidden>
+        <div className="bf-card-team-watermark is-mini">
+          <TeamLogo slug={p.teamSlug} name={teamName(p.teamSlug)} size={72} glow={false} />
+        </div>
+      </div>
       <span className="bf-card-mini-ovr">{p.fantasyPoints}</span>
       <TeamLogo slug={p.teamSlug} name={teamName(p.teamSlug)} size={40} />
       <span className="bf-card-mini-name">{p.ign}</span>

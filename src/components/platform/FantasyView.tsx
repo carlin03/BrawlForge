@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, X, Crown, Users, Wallet, ArrowLeftRight } from "lucide-react";
@@ -29,6 +29,7 @@ import { useGame } from "@/contexts/GameContext";
 import { getFantasyTournaments } from "@/lib/data/fantasy-tournaments";
 import { getFantasyMarketByTeam, getFantasyTournamentStats, hasFantasyForTournament } from "@/lib/data/fantasy-rosters";
 import { getPlayer, getTeam, tournamentName, teamName, getFantasyRole, getPickRate } from "@/lib/data";
+import { PlayerCardMini } from "@/components/platform/PlayerCard";
 import { getTournament } from "@/lib/data/matches";
 import type { Region } from "@/lib/types";
 import { RegionBadge } from "@/components/ui/RegionBadge";
@@ -72,6 +73,9 @@ export function FantasyView() {
   const [teamFilter, setTeamFilter] = useState("all");
   const [sortBy, setSortBy] = useState<SortKey>("price");
   const [saveMsg, setSaveMsg] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [squadDirty, setSquadDirty] = useState(false);
+  const skipAutoSaveRef = useRef(true);
 
   const entry = game?.fantasy[activeTournament];
   const baseProfile = getTournamentFantasyProfile(activeTournament);
@@ -104,6 +108,8 @@ export function FantasyView() {
 
   useEffect(() => {
     if (!game) return;
+    skipAutoSaveRef.current = true;
+    setSquadDirty(false);
     setSquads((prev) => {
       const next = { ...prev };
       for (const [slug, e] of Object.entries(game.fantasy)) {
@@ -115,6 +121,10 @@ export function FantasyView() {
       }
       return next;
     });
+    const t = setTimeout(() => {
+      skipAutoSaveRef.current = false;
+    }, 1200);
+    return () => clearTimeout(t);
   }, [game]);
 
   useEffect(() => {
@@ -130,17 +140,30 @@ export function FantasyView() {
       });
   }, [activeTournament]);
 
+  const persistSquad = useCallback(
+    async (silent = false) => {
+      const current = squads[activeTournament];
+      if (current === undefined) return;
+      setSaving(true);
+      const res = await saveFantasy(activeTournament, profile.teamName, current);
+      setSaving(false);
+      if (!silent || res.error) {
+        setSaveMsg(res.error ? res.error : "Plantilla guardada");
+      }
+      if (!res.error) setSquadDirty(false);
+    },
+    [squads, activeTournament, profile.teamName, saveFantasy],
+  );
+
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!isLoggedIn || skipAutoSaveRef.current || !squadDirty) return;
     const current = squads[activeTournament];
     if (current === undefined) return;
     const timer = setTimeout(() => {
-      void saveFantasy(activeTournament, profile.teamName, current).then((res) => {
-        setSaveMsg(res.error ? res.error : "Plantilla guardada");
-      });
-    }, 900);
+      void persistSquad(true);
+    }, 1200);
     return () => clearTimeout(timer);
-  }, [squads, activeTournament, isLoggedIn, profile.teamName, saveFantasy]);
+  }, [squads, activeTournament, isLoggedIn, squadDirty, persistSquad]);
 
   useEffect(() => {
     const p = searchParams.get("tournament");
@@ -185,7 +208,7 @@ export function FantasyView() {
           if (sortBy === "price") return getPlayerPrice(b, activeTournament) - getPlayerPrice(a, activeTournament);
           if (sortBy === "rating") return (pb?.rating ?? 0) - (pa?.rating ?? 0);
           if (sortBy === "change") return (mb?.priceChange ?? 0) - (ma?.priceChange ?? 0);
-          return (pb?.fantasyPoints ?? 0) - (pa?.fantasyPoints ?? 0);
+          return getPickRate(b) - getPickRate(a);
         });
         return { ...g, players };
       })
@@ -197,6 +220,7 @@ export function FantasyView() {
     if (!isPlayerInTournament(slug, activeTournament)) return;
     const price = getPlayerPrice(slug, activeTournament);
     if (price > budgetLeft) return;
+    setSquadDirty(true);
     setSquads((prev) => ({
       ...prev,
       [activeTournament]: [...squad, { playerSlug: slug, isCaptain: squad.length === 0, eventPoints: 0 }],
@@ -209,11 +233,13 @@ export function FantasyView() {
     if (next.length && !next.some((s) => s.isCaptain)) {
       next = [{ ...next[0], isCaptain: true }, ...next.slice(1)];
     }
+    setSquadDirty(true);
     setSquads((prev) => ({ ...prev, [activeTournament]: next }));
   }
 
   function setCaptain(slug: string) {
     if (locked) return;
+    setSquadDirty(true);
     setSquads((prev) => ({
       ...prev,
       [activeTournament]: squad.map((s) => ({ ...s, isCaptain: s.playerSlug === slug })),
@@ -384,6 +410,23 @@ export function FantasyView() {
             <span className="bf-home-eyebrow">{tournamentName(activeTournament)}</span>
             <strong>{profile.teamName}</strong>
             {tourMeta?.prizePool && <span className="bf-fantasy-roster-prize">{tourMeta.prizePool}</span>}
+            <p className="bf-fantasy-roster-hint">
+              {squad.length < FANTASY_SQUAD_SIZE
+                ? `Faltan ${FANTASY_SQUAD_SIZE - squad.length} jugador${FANTASY_SQUAD_SIZE - squad.length === 1 ? "" : "es"}`
+                : squad.some((s) => s.isCaptain)
+                  ? "Plantilla lista · capitán ×2"
+                  : "Elige un capitán (botón C)"}
+            </p>
+            {!locked && (
+              <button
+                type="button"
+                className="bp-btn bp-btn-gold bp-btn-sm"
+                disabled={saving || squad.length === 0}
+                onClick={() => void persistSquad(false)}
+              >
+                {saving ? "Guardando…" : squadDirty ? "Guardar cambios" : "Guardar plantilla"}
+              </button>
+            )}
           </div>
 
           <div className="bf-fantasy-roster-slots">
@@ -400,8 +443,8 @@ export function FantasyView() {
               const mp = marketMap.get(slot.playerSlug);
               if (!p?.teamSlug) return <div key={i} className="bf-fantasy-slot empty" />;
               return (
-                <div key={slot.playerSlug} className={`bf-fantasy-slot ${slot.isCaptain ? "is-captain" : ""}`}>
-                  <TeamLogo slug={p.teamSlug} name={teamName(p.teamSlug)} size={40} />
+                <div key={slot.playerSlug} className={`bf-fantasy-slot is-filled ${slot.isCaptain ? "is-captain" : ""}`}>
+                  <PlayerCardMini playerSlug={slot.playerSlug} isCaptain={slot.isCaptain} />
                   <div className="bf-fantasy-slot-info">
                     <div className="bf-fantasy-slot-name">
                       {p.ign}

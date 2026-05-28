@@ -53,6 +53,13 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
   }
 
+  if (squad.length > 0) {
+    const captains = squad.filter((s) => s.isCaptain).length;
+    if (captains !== 1) {
+      return NextResponse.json({ error: "Debe haber exactamente un capitán" }, { status: 400 });
+    }
+  }
+
   const totalPoints = 0;
 
   let { data: entry } = await supabase

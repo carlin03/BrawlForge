@@ -539,6 +539,19 @@
   display: flex; align-items: center; gap: 10px; padding: 10px 12px;
   border-radius: var(--bp-r); border: 1px solid var(--bp-line); background: var(--bp-elevated);
 }
+.bf-fantasy-slot.is-filled {
+  gap: 12px;
+  padding: 12px;
+}
+.bf-fantasy-slot.is-filled .bf-card-mini {
+  flex-shrink: 0;
+}
+.bf-fantasy-roster-hint {
+  font-size: 12px;
+  color: var(--bp-muted);
+  margin: 8px 0 10px;
+  line-height: 1.4;
+}
 .bf-fantasy-slot.is-captain { border-color: rgba(255,200,46,0.45); box-shadow: inset 0 0 0 1px rgba(255,200,46,0.12); }
 .bf-fantasy-slot.empty { border-style: dashed; opacity: 0.85; }
 .bf-fantasy-slot-num {
@@ -806,6 +819,83 @@
   background: linear-gradient(165deg, #1e2838 0%, #121820 100%);
   border: 1px solid var(--bp-line-strong);
 }
+
+/* Fondo de carta según club (logo watermark grande) */
+.bf-card.has-team-theme {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--bf-team-primary) 42%, #080a10) 0%,
+    color-mix(in srgb, var(--bf-team-secondary) 55%, #060810) 38%,
+    #050608 100%
+  ) !important;
+  border-color: color-mix(in srgb, var(--bf-team-primary) 50%, rgba(255, 255, 255, 0.12)) !important;
+  box-shadow:
+    0 12px 36px color-mix(in srgb, var(--bf-team-glow) 28%, transparent),
+    inset 0 0 48px color-mix(in srgb, var(--bf-team-primary) 12%, transparent) !important;
+}
+.bf-card-team-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.bf-card-team-watermark {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  width: 115%;
+  max-width: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.22;
+  filter: saturate(1.2) brightness(1.05);
+}
+.bf-card-team-watermark .bf-logo-frame,
+.bf-card-team-watermark .logo-missing {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1;
+  max-width: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+.bf-card-team-watermark.is-mini {
+  top: 50%;
+  width: 130%;
+  max-width: 120px;
+  opacity: 0.18;
+}
+.bf-card.has-team-theme .bf-card-logo-stage {
+  background: radial-gradient(
+    circle at 50% 35%,
+    color-mix(in srgb, var(--bf-team-primary) 28%, transparent),
+    rgba(0, 0, 0, 0.35) 72%
+  );
+  border-color: color-mix(in srgb, var(--bf-team-primary) 35%, transparent);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    inset 0 0 28px color-mix(in srgb, var(--bf-team-primary) 15%, transparent);
+}
+.bf-card-mini.has-team-theme {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--bf-team-primary) 38%, #121820) 0%,
+    color-mix(in srgb, var(--bf-team-secondary) 45%, #0a0c12) 100%
+  ) !important;
+  border-color: color-mix(in srgb, var(--bf-team-primary) 40%, rgba(255, 200, 46, 0.2)) !important;
+}
+.bf-card-mini.has-team-theme > *:not(.bf-card-team-bg) {
+  position: relative;
+  z-index: 1;
+}
+
 .bf-card.is-captain { outline: 2px solid var(--bp-gold); outline-offset: 2px; }
 
 .bf-card-featured {

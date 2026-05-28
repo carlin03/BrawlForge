@@ -490,10 +490,12 @@
 .bf-fantasy-premium .bf-fantasy-layout {
   gap: 20px;
 }
-.bf-fantasy-premium .bf-fantasy-market .bf-card-logo-stage {
-  border: none;
-  box-shadow: none;
-  background: radial-gradient(circle at 50% 35%, rgba(255,255,255,0.06), transparent 70%);
+.bf-fantasy-premium .bf-fantasy-market .bf-card.has-team-theme .bf-card-logo-stage {
+  border: 1px solid color-mix(in srgb, var(--bf-team-primary) 30%, transparent);
+}
+.bf-fantasy-premium .bf-fantasy-market .bf-card-team-watermark {
+  opacity: 0.26;
+  max-width: 260px;
 }
 .bf-fantasy-premium .bf-fantasy-market .bf-card-fut-foot {
   border-top-color: rgba(255, 255, 255, 0.05);
