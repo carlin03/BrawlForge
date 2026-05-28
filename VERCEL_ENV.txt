@@ -1,0 +1,9 @@
+# Pega estos valores en Vercel → Settings → Environment Variables
+# (Production + Preview). Sin comillas.
+
+NEXT_PUBLIC_SUPABASE_URL=https://bkxxykztewquhnimpjgc.supabase.co
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+(pega aquí la clave anon/publishable de Supabase → Settings → API)
+
+NEXT_PUBLIC_DEMO_ADMIN=false
