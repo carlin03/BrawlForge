@@ -125,8 +125,16 @@
 @media (max-width: 520px) {
   .bp-nav-inner { gap: 8px; padding: 0 12px; }
   .bp-logo { font-size: 0.98rem; min-width: 0; }
-  .bf-nav-actions { gap: 0; }
-  .bf-nav-actions .bf-nav-auth { display: none; }
+  .bf-nav-actions { gap: 6px; }
+  .bf-nav-actions .bf-nav-auth {
+    display: flex;
+    gap: 5px;
+  }
+  .bf-nav-actions .bf-nav-auth-btn {
+    padding: 6px 8px;
+    font-size: 10px;
+    border-radius: 9px;
+  }
   .bf-game-nav .bp-nav-toggle {
     margin-left: 0;
     border-color: rgba(255, 200, 46, 0.35);

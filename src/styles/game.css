@@ -2543,19 +2543,28 @@
   .bf-game-nav .bf-game-logo {
     flex: 1 1 auto;
     min-width: 0;
-    max-width: calc(100vw - 64px);
+    max-width: calc(100vw - 210px);
     overflow: hidden;
     white-space: nowrap;
   }
 
   .bf-game-nav .bf-nav-actions {
     flex: 0 0 auto;
-    gap: 0;
+    gap: 6px;
     margin-left: auto;
   }
 
   .bf-game-nav .bf-nav-auth {
-    display: none;
+    display: flex;
+    gap: 5px;
+    flex: 0 0 auto;
+  }
+
+  .bf-game-nav .bf-nav-auth-btn {
+    padding: 6px 8px;
+    font-size: 10px;
+    line-height: 1;
+    border-radius: 9px;
   }
 
   .bf-game-nav .bp-nav-toggle {
