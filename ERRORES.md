@@ -15,7 +15,10 @@
 
 | Correcto | Incorrecto |
 |----------|------------|
+| `NEXT_PUBLIC_SUPABASE_URL` = `https://bkxxykztewquhnimpjgc.supabase.co` | `brawl-forge-delta.ve`, sin `https://`, con comillas |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` = publishable / anon | `sb_secret_` o service_role en Vercel |
+
+Si el log dice **Invalid supabaseUrl**: edita la variable URL en Vercel (sin comillas, URL completa).
 
 Tras cambiar `.env.local`: **reinicia** `npm run dev`.
 
