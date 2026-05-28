@@ -61,8 +61,17 @@ Copia desde **`VERCEL_ENV.txt`** → Vercel → **Settings → Environment Varia
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://bkxxykztewquhnimpjgc.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | clave **anon** `eyJ...` de Supabase |
 | `NEXT_PUBLIC_DEMO_ADMIN` | `false` |
+| `ADMIN_EMAILS` | tu email de login (ej. `tu@gmail.com`) |
+| `NEXT_PUBLIC_ADMIN_EMAILS` | el mismo email |
 
 `vercel.json` ya define `SKIP_LOGO_DOWNLOAD=1` (sin descargar miles de PNG en build).
+
+### Botón Admin (solo tú)
+
+1. Añade **tu email** en `ADMIN_EMAILS` y `NEXT_PUBLIC_ADMIN_EMAILS` en Vercel.
+2. **Redeploy**.
+3. Entra en la web con ese email → ve a **/profile** → **Activar panel admin**.
+4. Deberías ver el botón dorado **Admin** abajo a la derecha y en el menú del avatar.
 
 Tras cambiar cualquier `NEXT_PUBLIC_*` → **Deployments → Redeploy**.
 

@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { teams } from "@/lib/data";
+import { isOwnerEmail } from "@/lib/admin-access";
 
 export default function ProfilePage() {
-  const { profile, user, loading } = useAuth();
+  const { profile, user, loading, isAdmin, refreshProfile } = useAuth();
+  const [claimMsg, setClaimMsg] = useState("");
+  const [claiming, setClaiming] = useState(false);
   const { game } = useGame();
   const router = useRouter();
 
@@ -75,6 +79,61 @@ export default function ProfilePage() {
       <Link href="/fantasy" className="bp-btn bp-btn-gold">
         Gestionar plantilla
       </Link>
+
+      {isAdmin ? (
+        <section className="bf-panel bf-admin-profile-panel">
+          <h2 className="bf-home-block-title">
+            <Shield size={18} style={{ verticalAlign: "middle", marginRight: 6 }} />
+            Panel de administración
+          </h2>
+          <p className="bf-fantasy-sub">Edita equipos, jugadores, logos y noticias.</p>
+          <Link href="/admin" className="bp-btn bp-btn-gold" style={{ marginTop: 12 }}>
+            Abrir admin
+          </Link>
+        </section>
+      ) : (
+        <section className="bf-panel bf-admin-profile-panel">
+          <h2 className="bf-home-block-title">Activar admin</h2>
+          <p className="bf-fantasy-sub">
+            Cuenta: <strong>{user.email}</strong>
+            <br />
+            ID: <code style={{ fontSize: 11 }}>{user.id}</code>
+          </p>
+          {isOwnerEmail(user.email) ? (
+            <p className="bf-fantasy-sub" style={{ marginTop: 8 }}>
+              Tu email está en la lista de dueño. Pulsa el botón para guardar permisos en Supabase.
+            </p>
+          ) : (
+            <p className="bf-fantasy-sub" style={{ marginTop: 8 }}>
+              En Vercel añade <code>ADMIN_EMAILS</code> y <code>NEXT_PUBLIC_ADMIN_EMAILS</code> con este email,
+              haz Redeploy, o ejecuta <code>MAKE_ME_ADMIN.sql</code>.
+            </p>
+          )}
+          <button
+            type="button"
+            className="bp-btn bp-btn-gold"
+            style={{ marginTop: 12 }}
+            disabled={claiming}
+            onClick={async () => {
+              setClaiming(true);
+              setClaimMsg("");
+              const res = await fetch("/api/admin/claim", { method: "POST", credentials: "include" });
+              const json = await res.json().catch(() => ({}));
+              setClaiming(false);
+              if (res.ok) {
+                setClaimMsg("Admin activado. Recargando…");
+                await refreshProfile();
+                window.location.href = "/admin";
+              } else {
+                setClaimMsg(json.error ?? "No se pudo activar");
+              }
+            }}
+          >
+            {claiming ? "Activando…" : "Activar panel admin"}
+          </button>
+          {claimMsg && <p className="bf-auth-error" style={{ marginTop: 10 }}>{claimMsg}</p>}
+        </section>
+      )}
     </div>
   );
 }

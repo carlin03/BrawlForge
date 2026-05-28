@@ -2053,9 +2053,9 @@
 
 .bf-admin-fab {
   position: fixed;
-  right: 18px;
-  bottom: 22px;
-  z-index: 90;
+  right: max(18px, env(safe-area-inset-right, 0px));
+  bottom: max(22px, calc(env(safe-area-inset-bottom, 0px) + 16px));
+  z-index: 10050;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -2072,6 +2072,14 @@
 .bf-admin-fab:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 40px rgba(255, 200, 46, 0.55);
+}
+.bf-admin-profile-panel {
+  margin-top: 20px;
+  border-color: rgba(255, 200, 46, 0.25);
+}
+.bf-profile-dropdown-item.is-admin {
+  color: var(--bp-gold);
+  font-weight: 800;
 }
 
 .bf-admin-console .bf-admin-tabs {

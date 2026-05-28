@@ -4,15 +4,20 @@ import Link from "next/link";
 import { Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-/** Botón flotante solo para administradores */
+/** Botón flotante solo para administradores (logueado + isAdmin) */
 export function AdminFab() {
-  const { isLoggedIn, isAdmin } = useAuth();
+  const { isLoggedIn, isAdmin, loading } = useAuth();
 
-  if (!isLoggedIn || !isAdmin) return null;
+  if (loading || !isLoggedIn || !isAdmin) return null;
 
   return (
-    <Link href="/admin" className="bf-admin-fab" title="Panel de administración">
-      <Shield size={20} />
+    <Link
+      href="/admin"
+      className="bf-admin-fab"
+      title="Panel de administración"
+      aria-label="Abrir panel de administración"
+    >
+      <Shield size={20} aria-hidden />
       <span>Admin</span>
     </Link>
   );

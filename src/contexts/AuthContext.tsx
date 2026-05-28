@@ -6,11 +6,13 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import { isOwnerEmail, resolveIsAdmin } from "@/lib/admin-access";
 
 export interface PlayerProfile {
   id: string;
@@ -66,6 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [loading, setLoading] = useState(supabaseReady);
+  const adminClaimAttempted = useRef(false);
 
   const loadProfile = useCallback(
     async (u: User | null) => {
@@ -108,7 +111,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      setProfile(mapProfile(u, data as Record<string, unknown> | null));
+      const mapped = mapProfile(u, data as Record<string, unknown> | null);
+      setProfile(mapped);
+
+      if (!mapped.isAdmin && isOwnerEmail(u.email) && !adminClaimAttempted.current) {
+        adminClaimAttempted.current = true;
+        void fetch("/api/admin/claim", { method: "POST", credentials: "include" })
+          .then(async (res) => {
+            if (res.ok) await loadProfile(u);
+          })
+          .catch(() => {
+            adminClaimAttempted.current = false;
+          });
+      }
     },
     [supabase],
   );
@@ -194,16 +209,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (supabase) await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
+    adminClaimAttempted.current = false;
   }, [supabase]);
 
-  const demoAdmin = process.env.NEXT_PUBLIC_DEMO_ADMIN === "true";
+  const isAdmin = resolveIsAdmin(user?.email ?? null, Boolean(profile?.isAdmin));
 
   const value = useMemo(
     () => ({
       user,
       profile,
       isLoggedIn: Boolean(user),
-      isAdmin: demoAdmin || Boolean(profile?.isAdmin),
+      isAdmin,
       loading,
       supabaseReady,
       signIn,
@@ -212,7 +228,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut,
       refreshProfile: () => loadProfile(user),
     }),
-    [user, profile, demoAdmin, loading, supabaseReady, signIn, signUp, signInWithGoogle, signOut, loadProfile],
+    [user, profile, isAdmin, loading, supabaseReady, signIn, signUp, signInWithGoogle, signOut, loadProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

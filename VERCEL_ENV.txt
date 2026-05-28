@@ -9,6 +9,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 NEXT_PUBLIC_DEMO_ADMIN=false
 
+# Pon TU email (el de /login) en ambas líneas, luego Redeploy:
+ADMIN_EMAILS=tu@gmail.com
+NEXT_PUBLIC_ADMIN_EMAILS=tu@gmail.com
+
 # Site URL en Supabase Auth:
 # https://brawl-forge-delta.vercel.app
 # Redirect: https://brawl-forge-delta.vercel.app/auth/callback
