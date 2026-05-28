@@ -201,7 +201,7 @@ export function LoginForm() {
           Continuar con Google
         </button>
         <p className="bf-auth-hint">
-          En Supabase -> Authentication -> URL Configuration, añade{" "}
+          En Supabase {"->"} Authentication {"->"} URL Configuration, añade{" "}
           <code>http://localhost:3000/auth/callback</code> como redirect. Para Google, activa el proveedor
           Google en el mismo panel.
         </p>
