@@ -10,7 +10,7 @@ Fantasy, predicciones y datos BSC 2026 (Next.js 16 + Supabase).
 4. Copia variables a `.env.local` desde `.env.example` (anon key desde Dashboard → API).
 5. Comprobar: `npm run supabase:check`
 6. Volcar catálogo JSON a DB (opcional): `SUPABASE_SERVICE_ROLE_KEY=... npm run supabase:seed:catalog`
-7. Hacerte admin: ver `supabase/RUN_IN_SUPABASE_admin.sql`
+7. Hacerte admin: `supabase/MAKE_ME_ADMIN.sql` (cambia tu email y ejecuta en SQL Editor)
 
 Migraciones individuales en `supabase/migrations/` si prefieres aplicar por partes.
 
@@ -26,9 +26,11 @@ Logos locales (opcional, no van a Git): `npm run logos:bsc`
 
 Móvil en la misma red: `npm run dev:mobile` → `http://<tu-ip>:3000/m`
 
-## Deploy
+## Deploy (Vercel + Supabase)
 
-Ver [DEPLOY.md](./DEPLOY.md). Repo: `carlin03/BrawlForge`.
+**Siempre:** `npm run build` → `git push origin main` → Vercel despliega solo. Si cambias env en Vercel/Supabase → **Redeploy**.
+
+Guía completa: [DEPLOY.md](./DEPLOY.md) · Producción: https://brawl-forge-delta.vercel.app · Repo: `carlin03/BrawlForge`.
 
 `public/logos/` está en `.gitignore` (miles de PNG); la app usa URLs remotas (Liquipedia, etc.).
 

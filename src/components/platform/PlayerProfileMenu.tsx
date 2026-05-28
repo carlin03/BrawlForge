@@ -9,7 +9,7 @@ import { useGame } from "@/contexts/GameContext";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 
 export function PlayerProfileMenu() {
-  const { profile, user, signOut, loading } = useAuth();
+  const { profile, user, signOut, loading, isAdmin } = useAuth();
   const { game } = useGame();
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState({ top: 0, right: 16 });
@@ -99,7 +99,7 @@ export function PlayerProfileMenu() {
         <Settings size={16} /> Mi plantilla
       </Link>
 
-      {profile?.isAdmin && (
+      {isAdmin && (
         <Link href="/admin" className="bf-profile-dropdown-item is-admin" onClick={() => setOpen(false)}>
           <Shield size={16} /> Panel admin
         </Link>

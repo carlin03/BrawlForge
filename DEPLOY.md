@@ -1,48 +1,101 @@
-# Desplegar BrawlForge
+# BrawlForge — Vercel + Supabase (siempre al día)
 
-## 1. Supabase
+Producción: **https://brawl-forge-delta.vercel.app**  
+Repo: **carlin03/BrawlForge** · Supabase: **bkxxykztewquhnimpjgc**
 
-1. Crea un proyecto en [supabase.com](https://supabase.com) (BrawlForge usa `bkxxykztewquhnimpjgc`).
-2. SQL Editor → pega y ejecuta **`supabase/ALL_IN_ONE_SETUP.sql`** (recomendado; incluye perfiles, catálogo, fantasy, predicciones y RLS). Alternativa: cada archivo en `supabase/migrations/` en orden.
-3. Authentication → activa Email (y Google si quieres “Continuar con Google”).
-4. Authentication → URL Configuration:
-   - Site URL: `http://localhost:3000` (en producción, tu dominio).
-   - Redirect URLs: `http://localhost:3000/auth/callback` y `https://tu-dominio.vercel.app/auth/callback`.
-5. Para probar registro rápido en local: Authentication → Providers → Email → desactiva **Confirm email** (opcional en producción).
-6. Storage (opcional): bucket público `logos` para overrides.
-7. Dashboard → **API** → copia **Project URL** y clave **anon / publishable** (`sb_publishable_...` o `eyJ...`) a `.env.local`. No uses `sb_secret_` en el front.
-8. `npm run supabase:check` en local para validar.
+---
 
-Hacerte admin:
+## Checklist después de cada cambio de código
+
+1. En local: `npm run build` (y `npm run supabase:check` si tocaste SQL o auth).
+2. Commit + push a `main`:
+   ```bash
+   git add -A
+   git commit -m "tu mensaje"
+   git push origin main
+   ```
+3. Vercel despliega solo al recibir el push (1–3 min). Revisa **Deployments** → último = **Ready**.
+4. Si cambiaste variables en Vercel o Supabase Auth → **Redeploy** manual (Settings no redeployan solas).
+5. Prueba producción: `/`, `/login`, `/fantasy`, `/teams`, `/admin` (con admin activo).
+
+---
+
+## 1. Supabase (una vez + cuando falten tablas)
+
+1. [supabase.com](https://supabase.com) → proyecto `bkxxykztewquhnimpjgc`.
+2. **SQL Editor** → ejecuta todo **`supabase/ALL_IN_ONE_SETUP.sql`** (idempotente).
+3. **Authentication** → Email (+ Google opcional).
+4. **URL Configuration**:
+   - Site URL: `https://brawl-forge-delta.vercel.app`
+   - Redirect URLs:
+     - `https://brawl-forge-delta.vercel.app/auth/callback`
+     - `http://localhost:3000/auth/callback`
+5. **API** → copia URL + clave **anon** (`eyJ...`) — nunca `sb_secret_` en el front.
+
+### Hacerte admin (solo tú)
+
+Edita y ejecuta **`supabase/MAKE_ME_ADMIN.sql`** con tu email, o:
 
 ```sql
-update public.profiles set is_admin = true where id = 'TU-USER-UUID';
+update public.profiles set is_admin = true
+where id = (select id from auth.users where email = 'tu@email.com' limit 1);
 ```
 
-## 2. Variables locales
+Tras eso: cerrar sesión y volver a entrar → botón **Admin** abajo a la derecha y en el menú del avatar.
+
+### Comprobar en local
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env.local   # rellena ANON_KEY
+npm run supabase:check
 ```
 
-## 3. Logos
+---
+
+## 2. Vercel — variables obligatorias
+
+Copia desde **`VERCEL_ENV.txt`** → Vercel → **Settings → Environment Variables** (Production + Preview):
+
+| Variable | Valor |
+|----------|--------|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://bkxxykztewquhnimpjgc.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | clave **anon** `eyJ...` de Supabase |
+| `NEXT_PUBLIC_DEMO_ADMIN` | `false` |
+
+`vercel.json` ya define `SKIP_LOGO_DOWNLOAD=1` (sin descargar miles de PNG en build).
+
+Tras cambiar cualquier `NEXT_PUBLIC_*` → **Deployments → Redeploy**.
+
+---
+
+## 3. Local
 
 ```bash
-npm run logos:bsc
-npm run logos:brand
-npm run logos:tournaments
+npm install
+npm run dev
 ```
 
-## 4. Vercel
+Logos locales (opcional, no van a Git): `npm run logos:bsc`
 
-1. Importa el repo en [vercel.com](https://vercel.com).
-2. Root: vacío si el repo es solo BrawlForge (package.json en la raíz).
-3. Añade las variables de `.env.example`.
-4. Deploy.
+---
 
-Si falla con **"Function exceeds 300mb"**: sube el commit que **elimina** `src/app/api/logos/tournaments/[slug]` y `teams/[slug]`. En Vercel → Deployments → **Redeploy** del último commit (no el fallido). `.vercelignore` excluye `public/logos`.
+## 4. Problemas frecuentes
 
-## 5. Panel admin
+| Síntoma | Solución |
+|---------|----------|
+| Build 506 MB / función enorme | Último `main` sin rutas `api/logos/*/[*]`; `.vercelignore` excluye `public/logos` |
+| Login / invalid supabaseUrl | URL = `https://bkxxykztewquhnimpjgc.supabase.co`, no la URL de Vercel |
+| Sin botón Admin | `is_admin = true` en `profiles` + sesión nueva |
+| Fantasy no guarda | Ejecutar `ALL_IN_ONE_SETUP.sql` (tablas `fantasy_entries`, `fantasy_squad_slots`) |
+| Logos vacíos en Vercel | Normal sin PNG locales; usan CDN (Taiyoro/Wikimedia) |
+| Deploy viejo | Redeploy del último commit **Ready**, no uno fallido |
 
-- Con `NEXT_PUBLIC_DEMO_ADMIN=true` → `/admin` sin login.
-- Con Supabase + `is_admin` → `/admin` tras iniciar sesión en `/login` o `/registro`.
+---
+
+## 5. Catálogo en Supabase (opcional)
+
+```bash
+SUPABASE_SERVICE_ROLE_KEY=... npm run supabase:seed:catalog
+```
+
+Solo en tu PC; la service role no va a Vercel.

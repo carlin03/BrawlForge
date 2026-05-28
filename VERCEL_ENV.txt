@@ -1,9 +1,14 @@
-# Pega estos valores en Vercel → Settings → Environment Variables
-# (Production + Preview). Sin comillas.
+# Vercel → Settings → Environment Variables
+# Production + Preview. Sin comillas. Tras guardar → Redeploy.
 
 NEXT_PUBLIC_SUPABASE_URL=https://bkxxykztewquhnimpjgc.supabase.co
 
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
-(pega aquí la clave anon/publishable de Supabase → Settings → API)
+# Supabase → Project Settings → API → anon public (eyJ...)
+# NO pegar sb_secret_ ni service_role aquí
 
 NEXT_PUBLIC_DEMO_ADMIN=false
+
+# Site URL en Supabase Auth:
+# https://brawl-forge-delta.vercel.app
+# Redirect: https://brawl-forge-delta.vercel.app/auth/callback
