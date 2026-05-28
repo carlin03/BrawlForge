@@ -11,7 +11,7 @@ import { PlayerCard } from "@/components/platform/PlayerCard";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { CATALOG_STATS, catalogSyncedAt, getCompetitiveTeamSlugs, tierBadgeClass, tierLabel, tournamentName } from "@/lib/data";
+import { CATALOG_STATS, catalogSyncedAt, tierBadgeClass, tierLabel, tournamentName } from "@/lib/data";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
@@ -29,34 +29,9 @@ import {
 } from "@/lib/data";
 import { NewsCover } from "@/components/news/NewsCover";
 import { getHomeTournaments } from "@/lib/data/home-tournaments";
-import { hasTeamLogoSource } from "@/lib/data/png-logo-urls";
 import { HomeSiteHeader } from "@/components/platform/HomeSiteHeader";
 
 type MatchTab = "live" | "upcoming" | "results";
-
-const BSC_CLUBS = [
-  "sk-gaming",
-  "team-heretics",
-  "crazy-raccoon",
-  "loud",
-  "tribe-gaming",
-  "zeta-division",
-  "fut-esports",
-  "natus-vincere",
-  "totem-esports",
-  "spacestation-gaming",
-  "novo-esports",
-  "hmble",
-  "reject",
-  "stmn-esports",
-  "papara-supermassive",
-  "toxic-lotus",
-  "revenant-xspark",
-  "qlash",
-  "skcalalas",
-  "bc-gaming",
-  "only-realm",
-];
 
 function cleanName(raw: string): string {
   return raw.replace(/<!--[\s\S]*?-->/g, "").trim();
@@ -73,17 +48,10 @@ export function HomeView() {
   const topPros = useMemo(() => getTopActivePlayers(3), []);
 
   const homeClubs = useMemo(() => {
-    const competitive = new Set(getCompetitiveTeamSlugs());
-    const bySlug = new Map(teams.filter((t) => competitive.has(t.slug)).map((t) => [t.slug, t]));
-    const ordered: typeof teams = [];
-    for (const slug of BSC_CLUBS) {
-      const t = bySlug.get(slug);
-      if (t && hasTeamLogoSource(slug)) ordered.push(t);
-    }
-    for (const t of teams) {
-      if (!ordered.some((x) => x.slug === t.slug) && hasTeamLogoSource(t.slug)) ordered.push(t);
-    }
-    return ordered.slice(0, 24);
+    return [...teams].sort((a, b) => {
+      if (a.rank && b.rank) return a.rank - b.rank;
+      return a.name.localeCompare(b.name);
+    });
   }, []);
 
   const marqueeClubs = useMemo(() => [...homeClubs, ...homeClubs], [homeClubs]);

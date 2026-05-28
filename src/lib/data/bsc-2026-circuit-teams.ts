@@ -35,7 +35,6 @@ export const BSC_2026_CIRCUIT_CURATED: string[] = [
   "big-talents",
   "kebap",
   "papara-supermassive",
-  "qlash",
   "oddyssey",
   "reject",
   "fut-esports-academy",
@@ -49,6 +48,9 @@ export const BSC_2026_CIRCUIT_CURATED: string[] = [
   "vatic-esports",
   "zoos-esports",
   "team-elektros",
+  "enosis-esports",
+  "kds-esports",
+  "only-realm-na",
   "skcalalas",
   "skcalalas-na",
 
@@ -78,13 +80,25 @@ function slugsFromDiscoveryJson(): string[] {
   return Array.isArray(raw.teamSlugs) ? raw.teamSlugs : [];
 }
 
+/**
+ * Slugs que existen en Liquipedia/catálogo histórico, pero no deben entrar como
+ * club activo BSC 2026 si no aparecen en páginas oficiales 2026 actuales.
+ */
+export const BSC_2026_EXCLUDED_TEAM_SLUGS = new Set([
+  "qlash",
+]);
+
 /** Slugs únicos del circuito BSC 2026 (curado + discovery Liquipedia + fantasy) */
 export function getBsc2026CircuitTeamSlugs(): string[] {
   const out = new Set<string>();
-  for (const s of BSC_2026_CIRCUIT_CURATED) out.add(s);
-  for (const s of slugsFromFantasy()) out.add(s);
+  for (const s of BSC_2026_CIRCUIT_CURATED) {
+    if (!BSC_2026_EXCLUDED_TEAM_SLUGS.has(s)) out.add(s);
+  }
+  for (const s of slugsFromFantasy()) {
+    if (!BSC_2026_EXCLUDED_TEAM_SLUGS.has(s)) out.add(s);
+  }
   for (const s of slugsFromDiscoveryJson()) {
-    if (s !== "toc-team") out.add(s);
+    if (s !== "toc-team" && !BSC_2026_EXCLUDED_TEAM_SLUGS.has(s)) out.add(s);
   }
   return [...out].sort((a, b) => a.localeCompare(b));
 }

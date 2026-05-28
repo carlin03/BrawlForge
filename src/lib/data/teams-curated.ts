@@ -82,7 +82,6 @@ export const CURATED_TEAMS: Record<
 
   reject: { rank: 13, roster: ["levi", "melty", "shu"] },
 
-  qlash: { rank: 15, roster: ["jeton", "skyrilzz"] },
 
   "spacestation-gaming": { rank: 12, roster: ["bobby", "chino", "sans"] },
 
@@ -167,8 +166,6 @@ export const CURATED_PLAYERS: Record<
   zee: { teamSlug: "vatic-esports", fantasyPoints: 77, fantasyOwnership: 30, rating: 1.09 },
   ray092: { teamSlug: "bc-gaming-sa", fantasyPoints: 75, fantasyOwnership: 25, rating: 1.07 },
   skyriikzz: { teamSlug: "bc-gaming-sa", fantasyPoints: 74, fantasyOwnership: 22, rating: 1.06 },
-  jeton: { teamSlug: "qlash", fantasyPoints: 79, fantasyOwnership: 33, rating: 1.1 },
-  skyrilzz: { teamSlug: "qlash", fantasyPoints: 76, fantasyOwnership: 27, rating: 1.08 },
   meow: { teamSlug: "novo-esports", fantasyPoints: 80, fantasyOwnership: 35, rating: 1.11 },
   terry: { teamSlug: "novo-esports", fantasyPoints: 78, fantasyOwnership: 30, rating: 1.09 },
   ryuk: { teamSlug: "only-realm", fantasyPoints: 77, fantasyOwnership: 28, rating: 1.08 },

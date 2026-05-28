@@ -20,7 +20,6 @@ export const BSC_2026_ROSTERS: Record<string, string[]> = {
   "papara-supermassive": ["tomzy", "woodland", "salty"],
   "toxic-lotus": ["engine", "ou", "toc"],
   "revenant-xspark": ["hiroshii", "response", "sergeant-clash", "walkthrough"],
-  qlash: ["jeton", "skyrilzz"],
   skcalalas: ["juan-carlos", "kristian", "rhz"],
   "bc-gaming-sa": ["leo", "mica", "tomz", "ray092", "skyriikzz"],
   "only-realm": ["patchy", "ryuk", "storm"],

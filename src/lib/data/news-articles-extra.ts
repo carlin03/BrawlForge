@@ -241,23 +241,4 @@ export const extraNewsArticles: NewsArticle[] = [
     coverAccent: "blue",
     relatedTeams: ["stmn-esports", "tribe-gaming"],
   },
-  {
-    slug: "qlash-emea-dark-horse",
-    title: "QLASH se cita en cuartos de Challengers EMEA: ¿el dark horse del año?",
-    excerpt:
-      "El equipo europeo sorpresa mezcla veterans y rookies con resultados que ya no se pueden ignorar.",
-    body: [
-      "QLASH no aparece en los titulares de los grandes, pero sus números sí gritan. Cuartos de final en el último Challengers y victorias contra equipos del top 8 del leaderboard.",
-      "Su estilo es lento, metódico, casi 'anti-hype'. Funciona en meta de control y en mapas largos donde el rival se frustra.",
-      "Fantasy managers empiezan a fichar al support de QLASH por precio (4.2M) y consistencia.",
-      "El próximo MF será la prueba de fuego: si pasan grupos, QLASH entrará en el tier de equipos que pueden ganar un evento entero.",
-    ],
-    highlights: ["Cuartos Challengers", "Support a 4.2M", "Estilo control / mapas largos"],
-    category: "Esports",
-    date: "2026-05-12",
-    author: "Redacción BrawlForge",
-    readMinutes: 4,
-    coverAccent: "yellow",
-    relatedTeams: ["qlash"],
-  },
 ];
