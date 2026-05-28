@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# Logos locales (miles de PNG) — no subir a Git/Vercel; npm run logos:download en local
+/public/logos/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

@@ -1,0 +1,3 @@
+# Miles de PNG locales — no subir a Vercel (rompe límite 300MB de funciones).
+# La app usa URLs remotas (Liquipedia, Taiyoro, etc.) si no hay archivo local.
+public/logos
