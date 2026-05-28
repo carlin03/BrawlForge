@@ -29,7 +29,9 @@ const PLAYERS_2026 = players2026Data as GeneratedPlayer[];
 
 const PLAYER_BSC_TEAM = new Map<string, string>();
 for (const [teamSlug, roster] of Object.entries(BSC_2026_ROSTERS)) {
-  for (const slug of roster) PLAYER_BSC_TEAM.set(slug, teamSlug);
+  for (const slug of roster) {
+    if (!PLAYER_BSC_TEAM.has(slug)) PLAYER_BSC_TEAM.set(slug, teamSlug);
+  }
 }
 
 function rosterTeamForPlayer(slug: string, fallback?: string): string | undefined {
@@ -39,7 +41,7 @@ function rosterTeamForPlayer(slug: string, fallback?: string): string | undefine
 const ROSTER_TEAM_INDEX = new Map<string, string>();
 for (const t of teams) {
   for (const pl of t.roster ?? []) {
-    if (pl) ROSTER_TEAM_INDEX.set(pl, t.slug);
+    if (pl && !ROSTER_TEAM_INDEX.has(pl)) ROSTER_TEAM_INDEX.set(pl, t.slug);
   }
 }
 
@@ -92,7 +94,7 @@ function pushPlayer(
   const curated = CURATED_PLAYERS[slug];
   const teamSlug = resolvePlayerTeamSlug(
     slug,
-    rosterTeamForPlayer(slug) ?? curated?.teamSlug ?? raw.teamSlug ?? fallbackTeam,
+    curated?.teamSlug ?? rosterTeamForPlayer(slug) ?? raw.teamSlug ?? fallbackTeam,
   );
   if (!teamSlug || !KNOWN_TEAMS.has(teamSlug)) return;
   const status = normalizeStatus(raw.status);
@@ -196,8 +198,13 @@ export function getPlayer(slug: string): EsportsPlayer | undefined {
 
 export function getPlayersByTeam(teamSlug: string): EsportsPlayer[] {
   const resolved = resolvePlayerTeamSlug("", teamSlug) || teamSlug;
+  const rosterSlugs = new Set((getTeam(resolved) ?? getTeam(teamSlug))?.roster ?? []);
   return players.filter(
-    (p) => p.teamSlug === resolved || p.teamSlug === teamSlug || ROSTER_TEAM_INDEX.get(p.slug) === resolved,
+    (p) =>
+      p.teamSlug === resolved ||
+      p.teamSlug === teamSlug ||
+      ROSTER_TEAM_INDEX.get(p.slug) === resolved ||
+      rosterSlugs.has(p.slug),
   );
 }
 

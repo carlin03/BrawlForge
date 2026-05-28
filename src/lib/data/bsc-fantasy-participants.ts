@@ -47,7 +47,6 @@ const MF_EMEA = [
   "hmble",
   "natus-vincere",
   "totem-esports",
-  "qlash",
   "oddyssey",
   "papara-supermassive",
   "revenant-xspark",
@@ -72,6 +71,11 @@ const MF_NA = [
   "skcalalas",
   "vatic-esports",
   "only-realm",
+  "only-realm-na",
+  "team-elektros",
+  "kds-esports",
+  "enosis-esports",
+  "zoos-esports",
   "bc-gaming-sa",
 ];
 
@@ -99,7 +103,7 @@ const MF_MONTHS = [
 for (const month of MF_MONTHS) {
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-emea-mf`] = [...MF_EMEA];
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-ea-mf`] = [...MF_EA];
-  BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-na-mf`] = [...MF_SA];
+  BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-na-mf`] = [...MF_NA];
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-sa-mf`] = [...MF_SA];
 }
 

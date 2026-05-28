@@ -306,6 +306,13 @@
   font-family: var(--bp-head); font-size: clamp(0.9rem, 2.5vw, 1.05rem);
   font-weight: 800; max-width: 160px; line-height: 1.15;
 }
+.bf-home-hero-side span {
+  color: var(--bp-dim);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .bf-home-hero-score { font-family: var(--bp-head); font-size: 1.75rem; font-weight: 900; color: var(--bp-gold); }
 .bf-home-hero-vs {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -316,6 +323,24 @@
   display: flex; gap: 10px; justify-content: center; margin-top: 20px;
 }
 .bf-home-hero-actions .bp-btn { pointer-events: none; font-size: 12px; padding: 8px 16px; }
+@media (max-width: 560px) {
+  .bf-home-hero-link {
+    padding: 20px 16px 18px;
+  }
+  .bf-home-hero-battle {
+    gap: 12px;
+  }
+  .bf-home-hero-side strong {
+    max-width: 118px;
+    font-size: 0.85rem;
+  }
+  .bf-home-hero-side span {
+    font-size: 9px;
+  }
+  .bf-home-hero-vs {
+    font-size: 1rem;
+  }
+}
 
 .bf-home-quick {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: var(--bp-gap-lg);
@@ -923,6 +948,73 @@
 }
 .bf-arena-title span { color: var(--bp-gold); }
 .bf-arena-lead { font-size: 14px; color: var(--bp-muted); line-height: 1.55; margin: 0 0 20px; max-width: 48ch; }
+.bf-arena-command-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 18px;
+}
+.bf-arena-command-card {
+  position: relative;
+  min-width: 0;
+  padding: 10px 11px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+    rgba(0,0,0,0.34);
+  overflow: hidden;
+}
+.bf-arena-command-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--bp-blue-bright);
+  box-shadow: 0 0 18px rgba(0,153,255,0.45);
+}
+.bf-arena-command-card.is-live::before {
+  background: var(--bp-red-bright);
+  box-shadow: 0 0 18px var(--bp-red-glow);
+}
+.bf-arena-command-card.is-gold::before {
+  background: var(--bp-gold);
+  box-shadow: 0 0 18px rgba(255,200,46,0.45);
+}
+.bf-arena-command-card span,
+.bf-arena-command-card em {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bf-arena-command-card span {
+  margin-bottom: 4px;
+  color: var(--bp-dim);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.bf-arena-command-card strong {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--bp-head);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.05;
+}
+.bf-arena-command-card em {
+  margin-top: 3px;
+  color: var(--bp-muted);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+}
 .bf-arena-stats {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;
 }
@@ -954,6 +1046,23 @@
   background: radial-gradient(ellipse at center, rgba(255, 200, 46, 0.22), transparent 68%);
   filter: blur(28px); pointer-events: none;
   animation: bf-glow-pulse 5s ease-in-out infinite;
+}
+.bf-arena-stage-badge {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 18px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,200,46,0.28);
+  background: rgba(6,8,13,0.76);
+  color: var(--bp-gold);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
 }
 .bf-arena-cards {
   position: relative; z-index: 1;
@@ -993,7 +1102,99 @@
 }
 .bf-arena-squad-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 .bf-arena-squad-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--bp-muted); }
+.bf-arena-squad-meta .is-over-cap { color: var(--bp-red-bright); }
 .bf-arena-squad-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+@media (max-width: 640px) {
+  .bf-arena-hero {
+    padding: 24px 20px 0;
+  }
+  .bf-arena-command-strip {
+    grid-template-columns: 1fr;
+  }
+  .bf-arena-command-card {
+    padding: 11px 12px 11px 14px;
+  }
+  .bf-arena-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bf-arena-stat {
+    padding: 11px 10px;
+  }
+  .bf-arena-ctas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .bf-arena-cta {
+    justify-content: center;
+    text-align: center;
+    padding-inline: 14px;
+  }
+  .bf-arena-cta-blue {
+    grid-column: 1 / -1;
+  }
+  .bf-arena-cards-stage {
+    min-height: 330px;
+    margin: 8px -20px 0;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+  }
+  .bf-arena-stage-badge {
+    top: 0;
+    right: 20px;
+  }
+  .bf-arena-cards-glow {
+    width: 95%;
+    height: 62%;
+    bottom: 2%;
+    opacity: 0.75;
+  }
+  .bf-arena-cards {
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 34px 20px 18px;
+    scrollbar-width: none;
+  }
+  .bf-arena-cards::-webkit-scrollbar {
+    display: none;
+  }
+  .bf-arena-card-slot,
+  .bf-arena-card-slot.pos-0,
+  .bf-arena-card-slot.pos-1,
+  .bf-arena-card-slot.pos-2 {
+    flex: 0 0 176px;
+    scroll-snap-align: center;
+    animation: none;
+    filter: none;
+    transform: none;
+  }
+  .bf-arena-cards .bf-card-fut {
+    max-width: 176px;
+    min-height: 282px;
+  }
+  .bf-arena-cards .bf-card-hero.bf-card-fut {
+    max-width: 186px;
+    min-height: 306px;
+  }
+  .bf-arena-cards .bf-card-hero .bf-card-ovr {
+    font-size: 2.7rem;
+  }
+  .bf-arena-cards .bf-card-hero .bf-card-name {
+    font-size: 1.12rem;
+  }
+  .bf-arena-cards .bf-card-hero .bf-card-logo-stage {
+    max-width: 132px;
+  }
+  .bf-arena-squad-meta {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
 
 /* Club logo rail — pie del hero, scroll lento (mockup) */
 .bf-arena-club-rail {
@@ -2326,3 +2527,59 @@
   line-height: 1.6;
 }
 .bf-predict-aside-text { font-size: 13px; color: var(--bp-muted); margin: 8px 0 0; }
+
+@media (max-width: 520px) {
+  .bf-game-nav .bp-nav-inner {
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100vw;
+    height: var(--bp-nav-h);
+    min-height: var(--bp-nav-h);
+    padding: 0 12px;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .bf-game-nav .bf-game-logo {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: calc(100vw - 210px);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .bf-game-nav .bf-nav-actions {
+    flex: 0 0 auto;
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  .bf-game-nav .bf-nav-auth {
+    display: flex;
+    gap: 5px;
+    flex: 0 0 auto;
+  }
+
+  .bf-game-nav .bf-nav-auth-btn {
+    padding: 6px 8px;
+    font-size: 10px;
+    line-height: 1;
+    border-radius: 9px;
+  }
+
+  .bf-game-nav .bp-nav-toggle {
+    display: inline-flex;
+    flex: 0 0 40px;
+    margin-left: 0;
+    border-color: rgba(255, 200, 46, 0.38);
+    background: rgba(255, 200, 46, 0.12);
+    color: var(--bp-gold);
+  }
+
+  .bf-game-nav .bp-nav-mobile {
+    top: var(--bp-nav-h);
+    border-color: rgba(255, 200, 46, 0.18);
+    background: rgba(12, 15, 24, 0.98);
+    box-shadow: 0 22px 42px rgba(0, 0, 0, 0.48);
+  }
+}
