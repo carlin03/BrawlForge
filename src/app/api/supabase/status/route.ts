@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getSupabaseEnv } from "@/lib/supabase/env";
 
 const REQUIRED_TABLES = [
   "profiles",
@@ -31,19 +32,25 @@ async function tableOk(
 }
 
 export async function GET() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const env = getSupabaseEnv();
 
-  if (!url || !key) {
+  if (!env) {
+    const hasUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL?.trim());
+    const hasKey = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim());
     return NextResponse.json({
       connected: false,
       auth: false,
       profilesTable: false,
       tablesOk: false,
       missingTables: REQUIRED_TABLES,
-      message: "Faltan variables en .env.local o Vercel (URL y clave publishable/anon).",
+      message:
+        hasUrl || hasKey
+          ? "NEXT_PUBLIC_SUPABASE_URL inválida en Vercel. Usa https://bkxxykztewquhnimpjgc.supabase.co (sin comillas ni espacios)."
+          : "Faltan variables en .env.local o Vercel (URL y clave publishable/anon).",
     });
   }
+
+  const { url, anonKey: key } = env;
 
   const headers = {
     apikey: key,
