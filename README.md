@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BrawlForge
 
-## Getting Started
+Fantasy, predicciones y datos BSC 2026 (Next.js 16 + Supabase).
 
-First, run the development server:
+## Supabase (obligatorio para auth y datos de usuario)
+
+1. Proyecto: `bkxxykztewquhnimpjgc` (o el tuyo).
+2. **SQL Editor** → pega y ejecuta todo `supabase/ALL_IN_ONE_SETUP.sql` (idempotente).
+3. **Authentication** → Email (y Google opcional). Redirect: `http://localhost:3000/auth/callback` y tu URL de Vercel `/auth/callback`.
+4. Copia variables a `.env.local` desde `.env.example` (anon key desde Dashboard → API).
+5. Comprobar: `npm run supabase:check`
+6. Volcar catálogo JSON a DB (opcional): `SUPABASE_SERVICE_ROLE_KEY=... npm run supabase:seed:catalog`
+7. Hacerte admin: ver `supabase/RUN_IN_SUPABASE_admin.sql`
+
+Migraciones individuales en `supabase/migrations/` si prefieres aplicar por partes.
+
+## Local
 
 ```bash
+npm install
+cp .env.example .env.local   # rellena NEXT_PUBLIC_SUPABASE_ANON_KEY
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Logos locales (opcional, no van a Git): `npm run logos:bsc`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Móvil en la misma red: `npm run dev:mobile` → `http://<tu-ip>:3000/m`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy
 
-## Learn More
+Ver [DEPLOY.md](./DEPLOY.md). Repo: `carlin03/BrawlForge`.
 
-To learn more about Next.js, take a look at the following resources:
+`public/logos/` está en `.gitignore` (miles de PNG); la app usa URLs remotas (Liquipedia, etc.).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estructura útil (Cursor / móvil)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Ruta | Qué es |
+|------|--------|
+| `src/app/` | Páginas App Router |
+| `src/lib/supabase/` | Cliente, middleware, game server |
+| `src/lib/data/` | JSON BSC 2026, equipos, fantasy |
+| `supabase/` | SQL todo-en-uno + migraciones |
+| `scripts/` | sync Liquipedia, seed, check Supabase |

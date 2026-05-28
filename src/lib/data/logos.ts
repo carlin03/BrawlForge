@@ -1,10 +1,6 @@
 import { BSC_DEFAULT_LOGO } from "./bsc-tournaments";
 import { TEAM_LOGOS, buildRemoteLogoChain } from "./team-logo-urls";
-import {
-  buildTournamentRemoteLogoChain,
-  getTournamentLogoApiPath,
-  getTournamentLogoFilename,
-} from "./tournament-logos";
+import { buildTournamentRemoteLogoChain, getTournamentLogoFilename } from "./tournament-logos";
 
 export { TEAM_LOGOS };
 
@@ -18,4 +14,8 @@ export function getTournamentLogo(slug: string): string | undefined {
   return remote[0] ?? BSC_DEFAULT_LOGO;
 }
 
-export { getTournamentLogoFilename, getTournamentLogoApiPath, liquipediaCommonsUrl } from "./tournament-logos";
+export {
+  getTournamentLogoFilename,
+  getTournamentLogoRemote,
+  liquipediaCommonsUrl,
+} from "./tournament-logos";

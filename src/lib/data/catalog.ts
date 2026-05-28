@@ -4,9 +4,11 @@ import allPlayers from "./generated/players.json";
 import allTournaments from "./generated/tournaments.json";
 import catalogMeta from "./generated/catalog.json";
 import tournaments2026 from "./generated/tournaments-2026.json";
+import players2026 from "./generated/players-2026.json";
 import matches2026 from "./generated/matches-2026.json";
 import type { GeneratedTeam, GeneratedPlayer, GeneratedTournament } from "./catalog-types";
 import { MAX_DISPLAY_TIER } from "../app-config";
+import { isTeam2026, TEAMS_2026_SLUGS } from "./teams-2026";
 
 export type { GeneratedTeam, GeneratedPlayer, GeneratedTournament };
 
@@ -20,6 +22,7 @@ export const TEAM_ROSTER_ALIASES: Record<string, string> = {
   "zeta-division-one": "zeta-division",
   "zeta-division-zero": "zeta-division",
   "oddyssey-eu": "oddyssey",
+  oddyssey: "oddyssey",
 };
 
 const KNOWN_TEAM_SLUGS = new Set((allTeams as GeneratedTeam[]).map((t) => t.slug));
@@ -80,10 +83,11 @@ const isActiveStatus = (status?: string) => {
 };
 
 export const CATALOG_STATS = {
-  teams: (allTeams as GeneratedTeam[]).length,
-  players: (allPlayers as GeneratedPlayer[]).length,
-  playersActive: (allPlayers as GeneratedPlayer[]).filter((p) => isActiveStatus(p.status)).length,
-  tournaments2026: (tournaments2026 as GeneratedTournament2026[]).length || 
+  teams: TEAMS_2026_SLUGS.size,
+  players: (players2026 as GeneratedPlayer[]).length,
+  playersActive: (players2026 as GeneratedPlayer[]).filter((p) => isActiveStatus(p.status)).length,
+  tournaments2026:
+    (tournaments2026 as GeneratedTournament2026[]).length ||
     (allTournaments as GeneratedTournament[]).filter((t) => is2026(t.startDate) || is2026(t.endDate)).length,
 };
 
@@ -182,18 +186,7 @@ const BSC_CORE_SLUGS = [
   "skcalalas",
 ];
 
-/** Teams active in tier B+ Liquipedia events */
-export function getCompetitiveTeamSlugs(): string[] {
-  const slugs = new Set<string>(BSC_CORE_SLUGS.filter((s) => KNOWN_TEAM_SLUGS.has(s)));
-  for (const t of getGeneratedTournaments()) {
-    if (!isTierBPlus(t) && !isFeaturedTournament(t)) continue;
-    for (const raw of t.participantSlugs ?? []) {
-      const n = normalizeParticipantSlug(raw);
-      if (n) slugs.add(n);
-    }
-  }
-  return [...slugs];
-}
+export { getCompetitiveTeamSlugs } from "./bsc-teams-played-2026";
 
 export function isFeaturedTournament(t: GeneratedTournament): boolean {
   const n = `${t.name} ${t.shortName} ${t.liquipediaPage}`.toLowerCase();

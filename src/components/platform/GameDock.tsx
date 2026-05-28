@@ -12,7 +12,7 @@ const DOCK: {
 }[] = [
   { href: "/", label: "Arena", icon: Home },
   { href: "/fantasy", label: "Fantasy", icon: Sparkles, accent: "gold" },
-  { href: "/predictions", label: "Votar", icon: Target, accent: "red" },
+  { href: "/predictions", label: "Predicciones", icon: Target, accent: "red" },
   { href: "/matches", label: "Partidos", icon: Swords },
   { href: "/tournaments", label: "Torneos", icon: Trophy },
   { href: "/teams", label: "Clubes", icon: Users },

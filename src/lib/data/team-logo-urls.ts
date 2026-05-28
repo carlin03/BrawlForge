@@ -22,6 +22,7 @@ export const TAIYORO_LOGOS: Record<string, string> = {
   "toxic-lotus": "https://taiyoro-prod-media.s3.amazonaws.com/team/5xKkvo8Z4w.png",
   "papara-supermassive": "https://taiyoro-prod-media.s3.amazonaws.com/team/JICOezSHuS.png",
   "bc-gaming-sa": "https://taiyoro-prod-media.s3.amazonaws.com/team/u8Z4JbKnQW.png",
+  "bc-gaming": "https://taiyoro-prod-media.s3.amazonaws.com/team/u8Z4JbKnQW.png",
   qlash: "https://taiyoro-prod-media.s3.amazonaws.com/team/djojUxS93I.png",
   skcalalas: "https://taiyoro-prod-media.s3.amazonaws.com/team/fsHB1i6l6W.png",
 };
@@ -30,7 +31,6 @@ export const ORG_OFFICIAL_LOGOS: Record<string, string> = {
   "bounty-hunters-esports":
     "https://dcdn-us.mitiendanube.com/stores/005/755/160/themes/common/logo-1895168094-1754889616-f340878967c6d193071f9fd53738e9821754889616.png",
   "eternal-esports": "https://www.eternalesports.org/assets/img/logo/logo-transperent.png",
-  "only-realm": "https://unavatar.io/x/OnlyRealmgg",
 };
 
 export const ROYALEAPI_LOGOS: Record<string, string> = {
@@ -98,6 +98,7 @@ export const FAVICON_LOGOS: Record<string, string> = {
 
 export const ALL_TEAM_SLUGS: readonly string[] = teamSlugs as string[];
 
+/** Cadena para scripts de descarga (incluye Liquipedia). No usar en <img> del cliente. */
 export function buildRemoteLogoChain(slug: string): string[] {
   const chain: string[] = [];
   if (TAIYORO_LOGOS[slug]) chain.push(TAIYORO_LOGOS[slug]);
@@ -107,6 +108,15 @@ export function buildRemoteLogoChain(slug: string): string[] {
   if (CATALOG_TEAM_LOGO_URLS[slug]) chain.push(CATALOG_TEAM_LOGO_URLS[slug]);
   if (LIQUIPEDIA_COMMONS_LOGOS[slug]) chain.push(LIQUIPEDIA_COMMONS_LOGOS[slug]);
   if (FAVICON_LOGOS[slug]) chain.push(FAVICON_LOGOS[slug]);
+  return [...new Set(chain)];
+}
+
+/** Solo PNG transparentes — para UI (TeamLogo, TournamentLogo). */
+export function buildTransparentLogoChain(slug: string): string[] {
+  const chain: string[] = [];
+  if (TAIYORO_LOGOS[slug]) chain.push(TAIYORO_LOGOS[slug]);
+  if (ORG_OFFICIAL_LOGOS[slug]) chain.push(ORG_OFFICIAL_LOGOS[slug]);
+  if (ROYALEAPI_LOGOS[slug]) chain.push(ROYALEAPI_LOGOS[slug]);
   return [...new Set(chain)];
 }
 

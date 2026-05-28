@@ -1,0 +1,11 @@
+{
+  "name": "BrawlForge",
+  "short_name": "BrawlForge",
+  "description": "Fantasy y predicciones del circuito Brawl Stars",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0c12",
+  "theme_color": "#0a0c12",
+  "orientation": "portrait-primary",
+  "lang": "es"
+}

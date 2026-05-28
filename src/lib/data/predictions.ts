@@ -49,14 +49,14 @@ export const userPredictorProfile = SHOW_DEMO_SOCIAL
 function buildOpenPredictions(): PredictionEvent[] {
   const upcoming = getUpcomingMatches();
   return upcoming.map((m, i) => {
-    const pickA = SHOW_DEMO_SOCIAL ? 35 + ((i * 13) % 40) : 50;
+    const pickA = SHOW_DEMO_SOCIAL ? 35 + ((i * 13) % 40) : 0;
     return {
       id: `vota-${m.id}-${i}`,
       matchId: m.id,
       teamASlug: m.teamASlug,
       teamBSlug: m.teamBSlug,
       pickAPct: pickA,
-      pickBPct: 100 - pickA,
+      pickBPct: pickA ? 100 - pickA : 0,
       totalVotes: SHOW_DEMO_SOCIAL ? 800 + ((i * 420) % 6000) : 0,
       rewardPoints: m.format.includes("5") ? 75 : m.format.includes("3") ? 50 : 35,
       featured: i < 3,
@@ -73,14 +73,14 @@ function buildClosedPredictions(): PredictionEvent[] {
   const recent = getRecentMatches(24);
   return recent.map((m, i) => {
     const correct: "A" | "B" = m.scoreA > m.scoreB ? "A" : "B";
-    const pickA = SHOW_DEMO_SOCIAL ? 35 + ((i * 11) % 45) : 50;
+    const pickA = SHOW_DEMO_SOCIAL ? 35 + ((i * 11) % 45) : 0;
     return {
       id: `vota-closed-${m.id}`,
       matchId: m.id,
       teamASlug: m.teamASlug,
       teamBSlug: m.teamBSlug,
       pickAPct: pickA,
-      pickBPct: 100 - pickA,
+      pickBPct: pickA ? 100 - pickA : 0,
       totalVotes: SHOW_DEMO_SOCIAL ? 2000 + ((i * 310) % 8000) : 0,
       rewardPoints: 50,
       deadline: m.date,
@@ -107,5 +107,5 @@ export function getPredictionTournament(event: PredictionEvent): string {
 }
 
 export function hasCommunityVotes(event: PredictionEvent): boolean {
-  return SHOW_DEMO_SOCIAL && event.totalVotes > 0;
+  return event.totalVotes > 0;
 }

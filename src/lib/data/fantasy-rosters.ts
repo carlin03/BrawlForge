@@ -1,35 +1,77 @@
 import { bscMatches } from "./bsc-matches";
 import { bsc2026Tournaments, BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
-import { getMatchesByTournament, getTournament, tournaments } from "./matches";
+import { BSC_FANTASY_PARTICIPANTS } from "./bsc-fantasy-participants";
+import { getMatchesByTournament, getTournament } from "./matches";
 import {
   getTournamentParticipants,
   resolveTournamentSlug,
   TEAM_ROSTER_ALIASES,
   normalizeParticipantList,
 } from "./catalog";
-import { getPlayersByTeam } from "./players";
+import { hasPlayedBsc2026 } from "./bsc-teams-played-2026";
+import { getPlayer, getPlayersByTeam } from "./players";
 import { getTeam, teams } from "./teams";
+import { CURATED_TEAMS } from "./teams-curated";
+import type { Region } from "../types";
 
 export { TEAM_ROSTER_ALIASES, normalizeParticipantSlug, normalizeParticipantList } from "./catalog";
-
-const KNOWN = new Set(teams.map((t) => t.slug));
 
 function rosterSourceSlug(teamSlug: string): string {
   return TEAM_ROSTER_ALIASES[teamSlug] ?? teamSlug;
 }
 
-/** Jugadores fichables de un equipo (roster Liquipedia + plantilla activa) */
-export function getFantasyTeamPlayerSlugs(teamSlug: string): string[] {
-  const source = rosterSourceSlug(teamSlug);
-  const team = getTeam(source) ?? getTeam(teamSlug);
-  const fromRoster = team?.roster ?? [];
-  const fromDb = getPlayersByTeam(source).map((p) => p.slug);
-  const fromDbAlias = source !== teamSlug ? getPlayersByTeam(teamSlug).map((p) => p.slug) : [];
+function isFantasyTeamSlug(slug: string): boolean {
+  const n = normalizeParticipantList([slug])[0];
+  if (!n) return false;
+  return hasPlayedBsc2026(n) || Boolean(getTeam(n)) || Boolean(CURATED_TEAMS[n]);
+}
 
-  const merged = [...new Set([...fromRoster, ...fromDb, ...fromDbAlias])].filter(Boolean);
-  if (merged.length > 0) return merged;
+function add2026Team(out: Set<string>, slug: string) {
+  const n = normalizeParticipantList([slug])[0];
+  if (n && isFantasyTeamSlug(n)) out.add(n);
+}
 
-  return getPlayersByTeam(teamSlug).map((p) => p.slug);
+/** Jugadores del club para fantasy (plantilla curada + JSON). */
+export function getFantasyTeamPlayerSlugs(teamSlug: string, _tournamentSlug?: string): string[] {
+  const canonical = rosterSourceSlug(teamSlug);
+  if (!isFantasyTeamSlug(canonical) && !isFantasyTeamSlug(teamSlug)) return [];
+
+  const slugs = new Set<string>();
+  const curatedRoster =
+    CURATED_TEAMS[canonical]?.roster ?? CURATED_TEAMS[teamSlug]?.roster;
+  if (curatedRoster?.length) {
+    for (const r of curatedRoster) {
+      if (r) slugs.add(r);
+    }
+  }
+
+  const team = getTeam(canonical) ?? getTeam(teamSlug);
+  for (const r of team?.roster ?? []) {
+    if (r) slugs.add(r);
+  }
+
+  for (const p of getPlayersByTeam(canonical)) {
+    if (p.status !== "retired") slugs.add(p.slug);
+  }
+  if (canonical !== teamSlug) {
+    for (const p of getPlayersByTeam(teamSlug)) {
+      if (p.status !== "retired") slugs.add(p.slug);
+    }
+  }
+
+  return [...slugs].filter((slug) => {
+    const p = getPlayer(slug);
+    return p && p.status !== "retired";
+  });
+}
+
+function teamsFromCuratedParticipants(tournamentSlug: string): string[] {
+  const resolved = resolveTournamentSlug(tournamentSlug);
+  const raw =
+    BSC_FANTASY_PARTICIPANTS[tournamentSlug] ??
+    BSC_FANTASY_PARTICIPANTS[resolved] ??
+    [];
+  return normalizeParticipantList(raw).filter((s) => isFantasyTeamSlug(s));
 }
 
 function teamsFromCuratedMatches(tournamentSlug: string): string[] {
@@ -38,8 +80,8 @@ function teamsFromCuratedMatches(tournamentSlug: string): string[] {
   const out = new Set<string>();
   for (const m of bscMatches) {
     if (!slugs.includes(m.tournamentSlug)) continue;
-    if (KNOWN.has(m.teamASlug)) out.add(m.teamASlug);
-    if (KNOWN.has(m.teamBSlug)) out.add(m.teamBSlug);
+    add2026Team(out, m.teamASlug);
+    add2026Team(out, m.teamBSlug);
   }
   return [...out];
 }
@@ -47,8 +89,8 @@ function teamsFromCuratedMatches(tournamentSlug: string): string[] {
 function teamsFromAllMatches(tournamentSlug: string): string[] {
   const out = new Set<string>();
   for (const m of getMatchesByTournament(tournamentSlug)) {
-    if (KNOWN.has(m.teamASlug)) out.add(m.teamASlug);
-    if (KNOWN.has(m.teamBSlug)) out.add(m.teamBSlug);
+    add2026Team(out, m.teamASlug);
+    add2026Team(out, m.teamBSlug);
   }
   return [...out];
 }
@@ -56,57 +98,82 @@ function teamsFromAllMatches(tournamentSlug: string): string[] {
 function teamsFromParticipants(tournamentSlug: string): string[] {
   const resolved = resolveTournamentSlug(tournamentSlug);
   const t = getTournament(resolved) ?? getTournament(tournamentSlug);
-  const raw = t?.participantSlugs?.length
-    ? t.participantSlugs
-    : getTournamentParticipants(resolved);
-  return normalizeParticipantList(raw);
+  const raw = t?.participantSlugs?.length ? t.participantSlugs : getTournamentParticipants(resolved);
+  return normalizeParticipantList(raw).filter((s) => isFantasyTeamSlug(s));
 }
 
-/** Equipos participantes reales por torneo — sin volcar toda la región */
+function teamsFromRegionPool(tournamentSlug: string): string[] {
+  const resolved = resolveTournamentSlug(tournamentSlug);
+  const t = getTournament(resolved) ?? getTournament(tournamentSlug);
+  if (!t) return [];
+
+  const region = t.region as Region;
+  const limit = Math.max(t.teams || 8, 4);
+
+  const ranked = teams
+    .filter((team) => hasPlayedBsc2026(team.slug))
+    .filter((team) => region === "GLOBAL" || team.region === region)
+    .sort((a, b) => (a.rank || 999) - (b.rank || 999));
+
+  return ranked.map((team) => team.slug).slice(0, limit);
+}
+
+function sortTeamSlugs(slugs: string[]): string[] {
+  return [...slugs].sort((a, b) => {
+    const ra = getTeam(a)?.rank ?? 999;
+    const rb = getTeam(b)?.rank ?? 999;
+    return ra - rb;
+  });
+}
+
+/** Une todas las fuentes: curado BSC → participantes JSON → partidos → pool regional */
 export function getFantasyTeamsForTournament(tournamentSlug: string): string[] {
   const resolved = resolveTournamentSlug(tournamentSlug);
   const slugCandidates = [...new Set([tournamentSlug, resolved])];
+  const out = new Set<string>();
 
   for (const slug of slugCandidates) {
-    const fromBsc = teamsFromCuratedMatches(slug);
-    if (fromBsc.length >= 2) return fromBsc;
+    for (const t of teamsFromCuratedParticipants(slug)) out.add(t);
+    for (const t of teamsFromParticipants(resolved)) out.add(t);
+    for (const t of teamsFromCuratedMatches(slug)) out.add(t);
+    for (const t of teamsFromAllMatches(slug)) out.add(t);
   }
 
-  for (const slug of slugCandidates) {
-    const fromMatches = teamsFromAllMatches(slug);
-    if (fromMatches.length >= 2) return fromMatches;
+  const t = getTournament(resolved) ?? getTournament(tournamentSlug);
+  const target = Math.max(t?.teams ?? 8, 4);
+  if (out.size < target) {
+    for (const ts of teamsFromRegionPool(resolved)) {
+      out.add(ts);
+      if (out.size >= target) break;
+    }
   }
 
-  const fromParticipants = teamsFromParticipants(resolved);
-  if (fromParticipants.length >= 2) return fromParticipants;
-
-  for (const slug of slugCandidates) {
-    const partial = teamsFromCuratedMatches(slug);
-    if (partial.length > 0) return partial;
-  }
-
-  return fromParticipants;
+  return sortTeamSlugs([...out]);
 }
 
 export function getFantasyPlayersForTournament(tournamentSlug: string): string[] {
   const teamSlugs = getFantasyTeamsForTournament(tournamentSlug);
-  const slugs = teamSlugs.flatMap((ts) => getFantasyTeamPlayerSlugs(ts));
+  const slugs = teamSlugs.flatMap((ts) => getFantasyTeamPlayerSlugs(ts, tournamentSlug));
   return [...new Set(slugs)];
+}
+
+export function getFantasyMarketByTeam(tournamentSlug: string): FantasyTeamGroup[] {
+  return getFantasyTeamsForTournament(tournamentSlug)
+    .map((teamSlug) => ({
+      teamSlug,
+      players: getFantasyTeamPlayerSlugs(teamSlug, tournamentSlug),
+    }))
+    .filter((g) => g.players.length > 0)
+    .sort((a, b) => {
+      const ta = getTeam(a.teamSlug)?.tag ?? a.teamSlug;
+      const tb = getTeam(b.teamSlug)?.tag ?? b.teamSlug;
+      return ta.localeCompare(tb);
+    });
 }
 
 export interface FantasyTeamGroup {
   teamSlug: string;
   players: string[];
-}
-
-export function getFantasyMarketByTeam(tournamentSlug: string): FantasyTeamGroup[] {
-  const pool = new Set(getFantasyPlayersForTournament(tournamentSlug));
-  return getFantasyTeamsForTournament(tournamentSlug)
-    .map((teamSlug) => ({
-      teamSlug,
-      players: getFantasyTeamPlayerSlugs(teamSlug).filter((p) => pool.has(p)),
-    }))
-    .filter((g) => g.players.length > 0);
 }
 
 export interface FantasyTournamentStats {
@@ -126,22 +193,28 @@ export function hasFantasyForTournament(tournamentSlug: string): boolean {
   return teamCount >= 2 && playerCount >= 3;
 }
 
-/** Torneos con fantasy propio — BSC 2026 + featured con plantilla real */
+const REGION_ORDER: Region[] = ["GLOBAL", "EMEA", "EA", "NA", "SA"];
+
 export function getFantasyTournamentSlugs(): string[] {
   const slugs = new Set<string>([
     "bsc-2026-brawl-cup",
     "world-finals-2026",
-    "world-finals-2025",
+    "bsc-2026-s3-emea-mf",
+    "bsc-2026-s3-ea-mf",
+    "bsc-2026-s3-na-mf",
     ...bsc2026Tournaments.map((t) => t.slug),
   ]);
 
-  for (const t of tournaments) {
-    if (t.featured || (t.tier != null && t.tier <= 2)) {
-      slugs.add(t.slug);
-    }
-  }
-
-  return [...slugs].filter((slug) => hasFantasyForTournament(slug));
+  return [...slugs]
+    .filter((slug) => hasFantasyForTournament(slug))
+    .sort((a, b) => {
+      const ta = getTournament(a);
+      const tb = getTournament(b);
+      const ra = REGION_ORDER.indexOf(ta?.region ?? "GLOBAL");
+      const rb = REGION_ORDER.indexOf(tb?.region ?? "GLOBAL");
+      if (ra !== rb) return ra - rb;
+      return (tb?.startDate ?? "").localeCompare(ta?.startDate ?? "");
+    });
 }
 
 export function isFantasyTournamentActive(slug: string): boolean {

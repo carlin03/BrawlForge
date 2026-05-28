@@ -36,16 +36,19 @@ export function getFantasyTournaments(activeOnly = false) {
   const list = FANTASY_TOURNAMENTS.map((cfg) => ({
     ...cfg,
     tournament: tournaments.find((t) => t.slug === cfg.slug)!,
-  })).filter((x) => x.tournament);
+  }))
+    .filter((x) => x.tournament)
+    .sort((a, b) => {
+      const statusOrder = { live: 0, upcoming: 1, finished: 2 };
+      const sa = statusOrder[a.tournament.status] - statusOrder[b.tournament.status];
+      if (sa !== 0) return sa;
+      return b.tournament.startDate.localeCompare(a.tournament.startDate);
+    });
 
   if (!activeOnly) return list;
 
   return list.filter(
-    (x) =>
-      x.fantasyActive &&
-      (x.tournament.status === "live" ||
-        x.tournament.status === "upcoming" ||
-        x.slug === "bsc-2026-brawl-cup"),
+    (x) => x.tournament.status === "live" || x.tournament.status === "upcoming",
   );
 }
 

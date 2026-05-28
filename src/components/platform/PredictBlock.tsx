@@ -28,7 +28,7 @@ export function PredictBlock({ event }: PredictBlockProps) {
         </button>
       </div>
       <Link href="/predictions" className="es-panel-link" style={{ display: "inline-block", marginTop: 8 }}>
-        +{event.rewardPoints} pts · Votar
+        +{event.rewardPoints} pts · Predecir
       </Link>
     </div>
   );

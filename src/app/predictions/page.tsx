@@ -1,6 +1,5 @@
-import { PredictionsView } from "@/components/platform/PredictionsView";
-import { closedPredictions, openPredictions } from "@/lib/data";
+import { PredictionsPageClient } from "@/components/platform/PredictionsPageClient";
 
 export default function PredictionsPage() {
-  return <PredictionsView open={openPredictions} closed={closedPredictions} />;
+  return <PredictionsPageClient />;
 }

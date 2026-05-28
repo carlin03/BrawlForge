@@ -1,0 +1,395 @@
+/* ═══ MOTION ULTRA — movimiento visible en toda la web ═══ */
+
+@keyframes bf-ambient-shift {
+  0%, 100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+  }
+  33% {
+    transform: scale(1.03) translate(2%, -1%);
+    opacity: 0.95;
+  }
+  66% {
+    transform: scale(1.02) translate(-1%, 2%);
+    opacity: 1;
+  }
+}
+
+@keyframes bf-orb-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translate(30px, -40px) scale(1.15);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.9);
+    opacity: 0.55;
+  }
+  75% {
+    transform: translate(15px, 35px) scale(1.08);
+    opacity: 0.7;
+  }
+}
+
+@keyframes fu-vs-beat {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 12px rgba(255, 23, 68, 0.5));
+  }
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 28px rgba(255, 23, 68, 0.9));
+  }
+}
+
+@keyframes fu-gold-text-pulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.25);
+  }
+}
+
+@keyframes fu-tilt-hover-idle {
+  0%, 100% {
+    transform: translateY(0) rotate(-0.5deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0.5deg);
+  }
+}
+
+@keyframes fu-logo-bob {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-14px) scale(1.05);
+  }
+}
+
+@keyframes fu-border-glow {
+  0%, 100% {
+    border-color: rgba(255, 200, 46, 0.2);
+    box-shadow: 0 0 20px rgba(255, 200, 46, 0.08);
+  }
+  50% {
+    border-color: rgba(255, 200, 46, 0.45);
+    box-shadow: 0 0 36px rgba(255, 200, 46, 0.2);
+  }
+}
+
+@keyframes fu-scan-sweep {
+  0% {
+    transform: translateX(-100%) skewX(-8deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(250%) skewX(-8deg);
+    opacity: 0;
+  }
+}
+
+@keyframes bf-nav-star-spin {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+}
+
+/* Ambiente global fijo */
+.bf-motion-app .bf-ambient-layer {
+  position: fixed;
+  inset: 0;
+  top: 48px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bf-motion-app .bf-ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: bf-orb-float 12s ease-in-out infinite;
+}
+.bf-motion-app .bf-ambient-orb--1 {
+  width: 320px;
+  height: 320px;
+  left: -8%;
+  top: 12%;
+  background: rgba(255, 23, 68, 0.22);
+  animation-duration: 14s;
+}
+.bf-motion-app .bf-ambient-orb--2 {
+  width: 280px;
+  height: 280px;
+  right: -5%;
+  top: 25%;
+  background: rgba(0, 153, 255, 0.18);
+  animation-duration: 16s;
+  animation-delay: -4s;
+}
+.bf-motion-app .bf-ambient-orb--3 {
+  width: 360px;
+  height: 360px;
+  left: 35%;
+  bottom: 5%;
+  background: rgba(255, 200, 46, 0.14);
+  animation-duration: 18s;
+  animation-delay: -7s;
+}
+
+.bf-motion-app .bp-main {
+  position: relative;
+  z-index: 1;
+}
+
+.bf-motion-app .bp-main::before {
+  animation: bf-ambient-shift 20s ease-in-out infinite;
+}
+
+/* Entrada por secciones */
+.bf-page-ultra > * {
+  animation: bf-fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.bf-page-ultra > *:nth-child(1) { animation-delay: 0.04s; }
+.bf-page-ultra > *:nth-child(2) { animation-delay: 0.1s; }
+.bf-page-ultra > *:nth-child(3) { animation-delay: 0.16s; }
+.bf-page-ultra > *:nth-child(4) { animation-delay: 0.22s; }
+.bf-page-ultra > *:nth-child(5) { animation-delay: 0.28s; }
+.bf-page-ultra > *:nth-child(6) { animation-delay: 0.34s; }
+.bf-page-ultra > *:nth-child(7) { animation-delay: 0.4s; }
+.bf-page-ultra > *:nth-child(8) { animation-delay: 0.46s; }
+
+.bf-stagger > * {
+  animation: bf-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.bf-stagger > *:nth-child(1) { animation-delay: 0.03s; }
+.bf-stagger > *:nth-child(2) { animation-delay: 0.07s; }
+.bf-stagger > *:nth-child(3) { animation-delay: 0.11s; }
+.bf-stagger > *:nth-child(4) { animation-delay: 0.15s; }
+.bf-stagger > *:nth-child(5) { animation-delay: 0.19s; }
+.bf-stagger > *:nth-child(6) { animation-delay: 0.23s; }
+.bf-stagger > *:nth-child(7) { animation-delay: 0.27s; }
+.bf-stagger > *:nth-child(8) { animation-delay: 0.31s; }
+.bf-stagger > *:nth-child(9) { animation-delay: 0.35s; }
+.bf-stagger > *:nth-child(10) { animation-delay: 0.39s; }
+.bf-stagger > *:nth-child(11) { animation-delay: 0.43s; }
+.bf-stagger > *:nth-child(12) { animation-delay: 0.47s; }
+
+/* Hero — orbes + borde vivo */
+.fu-hero.fu-hero-live {
+  animation: fu-border-glow 4s ease-in-out infinite;
+}
+
+.fu-hero-orbs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.fu-hero-orbs .fu-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: bf-orb-float 10s ease-in-out infinite;
+}
+.fu-hero-orbs .fu-orb-1 {
+  width: 140px;
+  height: 140px;
+  left: 5%;
+  top: 20%;
+  background: rgba(255, 23, 68, 0.35);
+}
+.fu-hero-orbs .fu-orb-2 {
+  width: 120px;
+  height: 120px;
+  right: 10%;
+  top: 10%;
+  background: rgba(0, 153, 255, 0.3);
+  animation-delay: -3s;
+  animation-duration: 12s;
+}
+.fu-hero-orbs .fu-orb-3 {
+  width: 100px;
+  height: 100px;
+  right: 30%;
+  bottom: 15%;
+  background: rgba(255, 200, 46, 0.25);
+  animation-delay: -6s;
+  animation-duration: 14s;
+}
+
+/* Sin barrido global en todo el hero (activaba sensación en bloque entero) */
+
+.fu-title em {
+  animation: fu-gold-text-pulse 3s ease-in-out infinite;
+}
+
+/* VS y duelos */
+.fu-duel-vs,
+.bp-match-featured-vs,
+.fu-spotlight-vs {
+  display: inline-block;
+  animation: fu-vs-beat 2.2s ease-in-out infinite;
+}
+
+.fu-duel-logo {
+  animation: fu-float 9s ease-in-out infinite;
+}
+.fu-duel-logo.fu-card-float-1 {
+  animation-delay: 0s;
+}
+.fu-duel-logo.fu-card-float-3 {
+  animation-delay: 0.8s;
+}
+
+.fu-card-float {
+  animation: fu-float 5s ease-in-out infinite;
+}
+.fu-card-float:nth-child(1) {
+  animation-delay: 0s;
+}
+.fu-card-float:nth-child(2) {
+  animation-delay: 0.5s;
+  animation-name: fu-logo-bob;
+  animation-duration: 4s;
+}
+.fu-card-float:nth-child(3) {
+  animation-delay: 1s;
+}
+
+/* Tarjetas interactivas — tilt 3D */
+.bf-motion-app .bf-tour-card-lg,
+.bf-motion-app .bp-match-featured,
+.bf-motion-app .bp-match-rich,
+.bf-motion-app .fu-news-feature,
+.bf-motion-app .fu-news-home-card,
+.bf-motion-app .bf-vote-card,
+.bf-motion-app .fu-panel-glow,
+.bf-motion-app .fu-spotlight {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.25s;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.bf-motion-app .bf-tour-card-lg:hover,
+.bf-motion-app .bp-match-featured:hover,
+.bf-motion-app .fu-news-feature:hover,
+.bf-motion-app .fu-news-home-card:hover {
+  transform: translateY(-10px) rotateX(3deg) rotateY(-2deg) scale(1.02);
+}
+
+.bf-motion-app .bp-match-rich:hover {
+  transform: translateX(8px) translateY(-4px) scale(1.01);
+}
+
+.bf-motion-app .bf-vote-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 24px 64px rgba(255, 23, 68, 0.2);
+}
+
+/* Brillo en paneles: solo con clase bf-shine-hover (no todos los fu-panel-glow) */
+
+/* Carruseles de logos — ritmo lento (legible) */
+.bf-motion-app .fu-marquee-track {
+  animation-duration: 110s !important;
+}
+.bf-motion-app .fu-tour-marquee-track {
+  animation-duration: 90s !important;
+}
+.bf-motion-app .fu-news-breaking-scroll {
+  animation-duration: 55s !important;
+}
+
+/* Nav logo */
+.bf-motion-app .bf-game-logo-star {
+  animation: bf-nav-star-spin 8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.bf-motion-app .bp-nav-link.is-on {
+  animation: bf-nav-glow 3s ease-in-out infinite;
+}
+
+.bf-motion-app .bf-premium-nav.bp-nav,
+.bf-motion-app .bf-game-nav.bp-nav {
+  z-index: 100;
+}
+
+/* Botones */
+.bf-motion-app .fu-btn,
+.bf-motion-app .bp-btn {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+.bf-motion-app .fu-btn:hover,
+.bf-motion-app .bp-btn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.03);
+}
+
+.bf-motion-app .fu-btn-gold:hover {
+  box-shadow: 0 0 40px rgba(255, 200, 46, 0.45), 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.bf-motion-app .fu-btn-red:hover {
+  box-shadow: 0 0 40px rgba(255, 23, 68, 0.45);
+}
+
+/* Stats: sin animación en bloque (evita “varias a la vez”) */
+.bf-motion-app .fu-stat:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 200, 46, 0.35);
+  transition: transform 0.2s ease, border-color 0.2s;
+}
+
+/* Cartas FUT — sin flotar en bucle (solo hover); el hero usa .fu-card-float */
+.bf-motion-app .bf-card.has-motion {
+  animation: none;
+}
+.bf-motion-app .fu-cards-showcase .bf-card.has-motion {
+  animation: none !important;
+}
+.bf-motion-app .bf-card.has-motion:hover {
+  animation: none;
+  transform: translateY(-14px) scale(1.06) rotate(-1deg) !important;
+}
+
+/* Live pulse */
+.bf-motion-app .bp-chip-live,
+.bf-motion-app .fu-spotlight.is-live,
+.bf-motion-app .bp-match-featured.is-live {
+  animation: fu-pulse-ring 2s ease infinite, fu-border-glow 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-motion-app .bf-ambient-orb,
+  .bf-motion-app .bp-main::before,
+  .bf-page-ultra > *,
+  .bf-stagger > *,
+  .fu-hero::after,
+  .fu-title em,
+  .fu-duel-vs,
+  .fu-card-float,
+  .fu-stat,
+  .bf-card.has-motion,
+  .bf-game-logo-star {
+    animation: none !important;
+  }
+  .bf-motion-app .bf-tour-card-lg:hover,
+  .bf-motion-app .bp-match-featured:hover {
+    transform: translateY(-4px);
+  }
+}

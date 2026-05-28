@@ -1,82 +1,99 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useGame } from "@/contexts/GameContext";
+import { buildPredictionEvents } from "@/lib/data/predictions-build";
 import Link from "next/link";
 import { FeaturedMatch } from "@/components/platform/ui";
 import { MatchCountdown } from "@/components/platform/MatchCountdown";
-import { ClubLogoRail } from "@/components/platform/ClubLogoRail";
-import { PlayerCard, PlayerCardMini } from "@/components/platform/PlayerCard";
+import { PlayerCardMini } from "@/components/platform/PlayerCard";
+import { PlayerCard } from "@/components/platform/PlayerCard";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
+import { CATALOG_STATS, catalogSyncedAt, getCompetitiveTeamSlugs, tierBadgeClass, tierLabel, tournamentName } from "@/lib/data";
 import {
-  CATALOG_STATS,
-  catalogSyncedAt,
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
   getCuratedHomeMatches,
-  getTeam,
-  getCompetitiveTeamSlugs,
+  getLatestNews,
   getLiveMatches,
   getSquadValue,
-  getTierBPlusTournaments,
-  getTopFantasyPlayers,
-  getUserSquad,
+  getUserSquadDisplay,
   getUpcomingMatches,
-  getPlayerPrice,
+  getTournamentFantasyProfile,
+  getTopActivePlayers,
   isKnownTeamSlug,
-  matches,
-  openPredictions,
   teamName,
   teams,
-  tierBadgeClass,
-  tierLabel,
-  tournamentName,
 } from "@/lib/data";
+import { NewsCover } from "@/components/news/NewsCover";
+import { getHomeTournaments } from "@/lib/data/home-tournaments";
+import { hasTeamLogoSource } from "@/lib/data/png-logo-urls";
+import { HomeSiteHeader } from "@/components/platform/HomeSiteHeader";
 
 type MatchTab = "live" | "upcoming" | "results";
 
-function formatSyncDate(iso: string | null): string {
-  if (!iso) return "Liquipedia";
-  try {
-    return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
-  } catch {
-    return "Liquipedia";
-  }
-}
+const BSC_CLUBS = [
+  "sk-gaming",
+  "team-heretics",
+  "crazy-raccoon",
+  "loud",
+  "tribe-gaming",
+  "zeta-division",
+  "fut-esports",
+  "natus-vincere",
+  "totem-esports",
+  "spacestation-gaming",
+  "novo-esports",
+  "hmble",
+  "reject",
+  "stmn-esports",
+  "papara-supermassive",
+  "toxic-lotus",
+  "revenant-xspark",
+  "qlash",
+  "skcalalas",
+  "bc-gaming",
+  "only-realm",
+];
 
-function cleanTournamentName(name: string): string {
-  return name.replace(/<!--[\s\S]*?-->/g, "").trim();
-}
-
-function spotlightStage(stage: string): string {
-  return stage.trim().toLowerCase() === "match" ? "Próximo duelo" : stage;
+function cleanName(raw: string): string {
+  return raw.replace(/<!--[\s\S]*?-->/g, "").trim();
 }
 
 export function HomeView() {
+  const { aggregates, game } = useGame();
   const [matchTab, setMatchTab] = useState<MatchTab>("upcoming");
 
   const live = getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug));
-  const squad = getUserSquad(DEFAULT_FANTASY_TOURNAMENT);
-  const squadVal = getSquadValue(squad, DEFAULT_FANTASY_TOURNAMENT);
-  const budgetLeft = FANTASY_BUDGET - squadVal;
-  const budgetLabel = budgetLeft >= 0 ? `$${budgetLeft.toFixed(1)}M libre` : `$${Math.abs(budgetLeft).toFixed(1)}M sobre cap`;
-  const capPct = Math.min(100, Math.round((squadVal / FANTASY_BUDGET) * 100));
+  const squad = getUserSquadDisplay(DEFAULT_FANTASY_TOURNAMENT);
+  const budgetLeft = FANTASY_BUDGET - getSquadValue(squad, DEFAULT_FANTASY_TOURNAMENT);
+  const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
+  const topPros = useMemo(() => getTopActivePlayers(3), []);
 
-  const competitiveSlugs = useMemo(() => new Set(getCompetitiveTeamSlugs()), []);
-  const circuitTeams = useMemo(
-    () =>
-      teams
-        .filter((t) => competitiveSlugs.has(t.slug) && isKnownTeamSlug(t.slug))
-        .sort((a, b) => a.rank - b.rank),
-    [competitiveSlugs],
-  );
+  const homeClubs = useMemo(() => {
+    const competitive = new Set(getCompetitiveTeamSlugs());
+    const bySlug = new Map(teams.filter((t) => competitive.has(t.slug)).map((t) => [t.slug, t]));
+    const ordered: typeof teams = [];
+    for (const slug of BSC_CLUBS) {
+      const t = bySlug.get(slug);
+      if (t && hasTeamLogoSource(slug)) ordered.push(t);
+    }
+    for (const t of teams) {
+      if (!ordered.some((x) => x.slug === t.slug) && hasTeamLogoSource(t.slug)) ordered.push(t);
+    }
+    return ordered.slice(0, 24);
+  }, []);
 
-  const tierEvents = useMemo(() => getTierBPlusTournaments(12), []);
-  const matchPool = getCuratedHomeMatches(matchTab, 6);
+  const marqueeClubs = useMemo(() => [...homeClubs, ...homeClubs], [homeClubs]);
+  const homeTournaments = useMemo(() => getHomeTournaments(), []);
+  const matchPool = useMemo(() => getCuratedHomeMatches(matchTab, 6), [matchTab]);
+  const topNews = useMemo(() => getLatestNews(3), []);
   const voteEvents = useMemo(() => {
+    const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
     const seen = new Set<string>();
-    return openPredictions
+    return open
       .filter((e) => isKnownTeamSlug(e.teamASlug) && isKnownTeamSlug(e.teamBSlug))
       .filter((e) => {
         const key = e.matchId || e.id;
@@ -85,244 +102,254 @@ export function HomeView() {
         return true;
       })
       .slice(0, 3);
-  }, []);
-  const showcasePros = useMemo(
-    () => getTopFantasyPlayers(12).filter((p) => p.teamSlug && isKnownTeamSlug(p.teamSlug)).slice(0, 3),
-    [],
-  );
+  }, [aggregates, game?.votes]);
 
-  const displayMatches = matches.filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)).length;
-  const spotlightMatch =
+  const spotlight =
     live[0] ?? getUpcomingMatches().find((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)) ?? null;
-  const isLive = spotlightMatch?.status === "live";
-  const spotlightTeamA = spotlightMatch ? getTeam(spotlightMatch.teamASlug) : null;
-  const spotlightTeamB = spotlightMatch ? getTeam(spotlightMatch.teamBSlug) : null;
-  const spotlightLabel = spotlightMatch
-    ? `${teamName(spotlightMatch.teamASlug)} vs ${teamName(spotlightMatch.teamBSlug)}`
-    : "Calendario sincronizando";
 
   return (
-    <div className="bf-home bf-home-arena-page">
-      <section className="bf-arena-hero bf-arena-hero--ultra">
-        <div className="bf-arena-hero-bg" aria-hidden />
-        <div className="bf-arena-hero-grid">
-          <div className="bf-arena-hero-copy">
-            <span className="bf-arena-kicker">Circuito BSC 2026 · {formatSyncDate(catalogSyncedAt)}</span>
-            <h1 className="bf-arena-title">
-              Brawl<span>Forge</span>
-            </h1>
-            <p className="bf-arena-lead">
-              Fantasy con {CATALOG_STATS.playersActive} pros del catálogo Liquipedia. {CATALOG_STATS.teams} equipos.
-              Torneos Tier B+ con logos PNG en cada club y competición.
-            </p>
+    <div className="bf-home-ultra bf-page-ultra">
+      <HomeSiteHeader />
 
-            <div className="bf-arena-command-strip" aria-label="Estado de la plataforma">
-              <div className="bf-arena-command-card is-live">
-                <span>Directo</span>
-                <strong>{live.length || "0"}</strong>
-                <em>{live.length === 1 ? "match activo" : "matches activos"}</em>
-              </div>
-              <div className="bf-arena-command-card">
-                <span>Spotlight</span>
-                <strong>{spotlightMatch ? spotlightStage(spotlightMatch.stage) : "BSC"}</strong>
-                <em>{spotlightLabel}</em>
-              </div>
-              <div className="bf-arena-command-card is-gold">
-                <span>Fantasy cap</span>
-                <strong>{capPct}%</strong>
-                <em>{budgetLabel}</em>
-              </div>
-            </div>
-
-            <div className="bf-arena-stats">
-              <div className="bf-arena-stat">
-                <strong>{CATALOG_STATS.playersActive}</strong>
-                <span>Jugadores</span>
-              </div>
-              <div className="bf-arena-stat">
-                <strong>{CATALOG_STATS.teams}</strong>
-                <span>Equipos</span>
-              </div>
-              <div className="bf-arena-stat">
-                <strong>{displayMatches}</strong>
-                <span>Partidos</span>
-              </div>
-              <div className="bf-arena-stat">
-                <strong>{CATALOG_STATS.tournaments2026}</strong>
-                <span>Torneos 2026</span>
-              </div>
-            </div>
-
-            <div className="bf-arena-ctas">
-              <Link href="/fantasy" className="bf-arena-cta bf-arena-cta-gold">Mi Arena</Link>
-              <Link href="/predictions" className="bf-arena-cta bf-arena-cta-red">
-                Votar ({openPredictions.length})
-              </Link>
-              <Link href="/players" className="bf-arena-cta bf-arena-cta-blue">
-                {CATALOG_STATS.playersActive} Pros
-              </Link>
-            </div>
-          </div>
-
-          <div className="bf-arena-cards-stage">
-            <div className="bf-arena-cards-glow" aria-hidden />
-            <div className="bf-arena-stage-badge" aria-hidden>
-              Cartas top fantasy
-            </div>
-            <div className="bf-arena-cards">
-              {showcasePros.map((p, i) => (
-                <div key={p.slug} className={`bf-arena-card-slot pos-${i}`}>
-                  <PlayerCard
-                    playerSlug={p.slug}
-                    size={i === 1 ? "hero" : "xl"}
-                    price={getPlayerPrice(p.slug)}
-                    href={`/players/${p.slug}`}
-                    featured={i === 0 ? "MVP" : i === 2 ? "HOT" : undefined}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+      <section className="fu-hero fu-hero-live bf-home-hero" id="home-hero">
+        <div className="fu-hero-orbs" aria-hidden>
+          <span className="fu-orb fu-orb-1" />
+          <span className="fu-orb fu-orb-2" />
+          <span className="fu-orb fu-orb-3" />
         </div>
-        <ClubLogoRail teams={circuitTeams} />
-      </section>
-
-      <section className="bf-arena-squad bf-arena-squad--premium">
-        <div className="bf-arena-squad-head">
+        <div className="fu-hero-bg" aria-hidden />
+        <div className="fu-hero-mesh" aria-hidden />
+        <div className="fu-hero-shine" aria-hidden />
+        <div className="fu-hero-grid">
           <div>
-            <span className="bf-home-eyebrow">Tu plantilla</span>
-            <h2 className="bf-home-block-title">Fantasy · Brawl Cup</h2>
-          </div>
-          <div className="bf-arena-squad-meta">
-            <span className={budgetLeft < 0 ? "is-over-cap" : ""}>{budgetLabel}</span>
-            <span>{capPct}% usado</span>
-            <Link href="/fantasy" className="bp-btn bp-btn-gold">Montar plantilla</Link>
-          </div>
-        </div>
-        <div className="bf-arena-squad-row">
-          {squad.map((s) => (
-            <PlayerCardMini key={s.playerSlug} playerSlug={s.playerSlug} isCaptain={s.isCaptain} />
-          ))}
-          {Array.from({ length: Math.max(0, 3 - squad.length) }).map((_, i) => (
-            <Link key={i} href="/fantasy" className="bf-card-mini bf-card-add">
-              <span className="bf-card-mini-avatar">+</span>
-              <span className="bf-card-mini-name">Fichar</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {spotlightMatch && (
-        <section className={`bf-home-hero bf-premium-spotlight ${isLive ? "is-live" : ""}`}>
-          <Link href={`/matches/${spotlightMatch.id}`} className="bf-home-hero-link">
-            <div className="bf-home-hero-glow" aria-hidden />
-            <div className="bf-home-hero-top">
-              <TournamentLogo slug={spotlightMatch.tournamentSlug} name={tournamentName(spotlightMatch.tournamentSlug)} size={40} />
-              <div className="bf-home-hero-meta">
-                <span className="bf-home-eyebrow">{isLive ? "En directo" : "Spotlight"}</span>
-                <strong>{tournamentName(spotlightMatch.tournamentSlug)}</strong>
-              </div>
-              {isLive ? (
-                <span className="bp-chip bp-chip-live"><span className="bp-live-dot" /> LIVE</span>
-              ) : (
-                <MatchCountdown dateStr={spotlightMatch.date} className="bf-home-hero-countdown" />
-              )}
+            <p className="fu-kicker">
+              <span className="bp-live-dot" /> Brawl Stars Championship · 2026
+            </p>
+            <h1 className="fu-title">
+              Brawl<em>Forge</em>
+            </h1>
+            <p className="fu-lead">
+              El hub definitivo del circuito pro: fantasy con plantilla real, predicciones en partidos BSC y
+              perfiles completos de cada club y jugador.
+            </p>
+            <div className="fu-cta-row">
+              <Link href="/fantasy" className="fu-btn fu-btn-gold">
+                Fantasy · ${budgetLeft.toFixed(1)}M libre
+              </Link>
+              <Link href="/predictions" className="fu-btn fu-btn-red">
+                Predicciones
+              </Link>
+              <Link href="/matches" className="fu-btn fu-btn-ghost">
+                Calendario
+              </Link>
             </div>
-            <div className="bf-home-hero-battle">
-              <div className="bf-home-hero-side">
-                <TeamLogo slug={spotlightMatch.teamASlug} name={teamName(spotlightMatch.teamASlug)} size="2xl" />
-                <strong>{teamName(spotlightMatch.teamASlug)}</strong>
-                {spotlightTeamA && <span>{spotlightTeamA.region} · {spotlightTeamA.tag}</span>}
+            <div className="fu-stats">
+              <div className="fu-stat">
+                <b>{homeClubs.length}</b>
+                <span>Equipos 2026</span>
               </div>
-              <span className="bf-home-hero-vs">VS</span>
-              <div className="bf-home-hero-side">
-                <TeamLogo slug={spotlightMatch.teamBSlug} name={teamName(spotlightMatch.teamBSlug)} size="2xl" />
-                <strong>{teamName(spotlightMatch.teamBSlug)}</strong>
-                {spotlightTeamB && <span>{spotlightTeamB.region} · {spotlightTeamB.tag}</span>}
+              <div className="fu-stat">
+                <b>{CATALOG_STATS.playersActive}</b>
+                <span>Pros activos</span>
+              </div>
+              <div className="fu-stat">
+                <b>{homeTournaments.length}</b>
+                <span>Eventos BSC</span>
+              </div>
+              <div className="fu-stat">
+                <b>{live.length || "—"}</b>
+                <span>En directo</span>
               </div>
             </div>
-          </Link>
-        </section>
-      )}
-
-      <section className="bf-home-hub bf-premium-section">
-        <div className="bf-home-block-head">
-          <h2 className="bf-home-block-title">Calendario</h2>
-          <Link href="/matches" className="bf-home-link">Ver todo</Link>
-        </div>
-        <div className="bf-home-tabs">
-          {(["live", "upcoming", "results"] as const).map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              className={`bf-home-tab ${matchTab === tab ? "is-on" : ""}`}
-              onClick={() => setMatchTab(tab)}
-            >
-              {tab === "live" ? `Directo (${live.length})` : tab === "upcoming" ? "Próximos" : "Resultados"}
-            </button>
-          ))}
-        </div>
-        <div className="bf-home-match-list">
-          {matchPool.length > 0 ? (
-            matchPool.map((m) => (
-              <FeaturedMatch key={m.id} match={m} tag={m.status === "live" ? "LIVE" : undefined} />
-            ))
-          ) : (
-            <div className="bf-home-empty">
-              No hay partidos en esta pestaña ahora mismo. Cambia de filtro o vuelve cuando Liquipedia actualice el calendario.
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="bf-home-tours bf-premium-section">
-        <div className="bf-home-block-head">
-          <h2 className="bf-home-block-title">Torneos Tier B+</h2>
-          <Link href="/tournaments" className="bf-home-link">Explorar</Link>
-        </div>
-        <div className="bf-home-tours-track">
-          {tierEvents.map((t) => (
-            <Link key={t.slug} href={`/tournaments/${t.slug}`} className="bf-home-tour-card">
-              <TournamentLogo slug={t.slug} name={cleanTournamentName(t.shortName)} size={48} />
-              <div className="bf-home-tour-body">
-                {t.tier != null && <span className={`bf-tier-badge ${tierBadgeClass(t.tier)}`}>{tierLabel(t.tier)}</span>}
-                <strong>{cleanTournamentName(t.shortName)}</strong>
-                <span>{t.prizePool}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {voteEvents.length > 0 && (
-        <section className="bf-home-predict bf-premium-section">
-          <div className="bf-home-block-head">
-            <h2 className="bf-home-block-title">Pronostica ahora</h2>
-            <Link href="/predictions" className="bf-home-link">Todas</Link>
           </div>
-          <div className="bf-predict-grid">
-            {voteEvents.map((e) => (
-              <InteractiveVoteCard key={e.id} event={e} />
+
+          <div className="fu-cards-showcase" aria-hidden={false}>
+            {topPros.map((p, i) => (
+              <div key={p.slug} className={`fu-card-float fu-card-float-${i + 1} bf-shine-hover`}>
+                <PlayerCard playerSlug={p.slug} size="md" />
+              </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
+
+      {spotlight && (
+        <Link
+          href={`/matches/${spotlight.id}`}
+          className={`fu-spotlight bf-shine-hover ${spotlight.status === "live" ? "is-live" : ""}`}
+        >
+          <div className="fu-spotlight-head">
+            <TournamentLogo slug={spotlight.tournamentSlug} name={tournamentName(spotlight.tournamentSlug)} size={44} />
+            <div className="fu-spotlight-meta">
+              <strong>{tournamentName(spotlight.tournamentSlug)}</strong>
+              <span>{spotlight.stage}</span>
+            </div>
+            {spotlight.status === "live" ? (
+              <span className="bp-chip bp-chip-live">LIVE</span>
+            ) : (
+              <MatchCountdown dateStr={spotlight.date} />
+            )}
+          </div>
+          <div className="fu-spotlight-battle">
+            <div className="fu-spotlight-team">
+              <TeamLogo slug={spotlight.teamASlug} name={teamName(spotlight.teamASlug)} size={80} />
+              <span>{teamName(spotlight.teamASlug)}</span>
+            </div>
+            <span className="fu-spotlight-vs">VS</span>
+            <div className="fu-spotlight-team">
+              <TeamLogo slug={spotlight.teamBSlug} name={teamName(spotlight.teamBSlug)} size={80} />
+              <span>{teamName(spotlight.teamBSlug)}</span>
+            </div>
+          </div>
+        </Link>
       )}
 
-      <section className="bf-home-circuit bf-premium-section">
-        <div className="bf-home-block-head">
-          <h2 className="bf-home-block-title">Clubes del circuito</h2>
-          <Link href="/teams" className="bf-home-link">Ver todos</Link>
+      <section className="fu-marquee-wrap">
+        <div className="fu-marquee-head">
+          <h2>Clubes del circuito 2026</h2>
         </div>
-        <div className="bf-home-club-grid">
-          {circuitTeams.slice(0, 24).map((t) => (
-            <Link key={t.slug} href={`/teams/${t.slug}`} className="bf-home-club-tile">
-              <TeamLogo slug={t.slug} name={t.name} size={52} />
-              <span className="bf-home-club-tag">{t.tag}</span>
-              <span className="bf-home-club-region">{t.region}</span>
+        <div className="fu-marquee-track">
+          {marqueeClubs.map((t, i) => (
+            <Link key={`${t.slug}-${i}`} href={`/teams/${t.slug}`} className="fu-marquee-item" title={t.name}>
+              <TeamLogo slug={t.slug} name={t.name} size={56} glow={false} />
+              <span className="fu-marquee-tag">{t.tag}</span>
             </Link>
           ))}
         </div>
       </section>
+
+      <section className="fu-panel fu-panel-tournaments">
+        <div className="fu-panel-head">
+          <div className="fu-tours-title-row">
+            <TournamentLogo slug="bsc-2026-brawl-cup" name="BSC" size={36} glow={false} />
+            <div>
+              <h2>Torneos BSC 2026</h2>
+              <p className="fu-panel-sub">Logos oficiales · calendario completo</p>
+            </div>
+          </div>
+          <Link href="/tournaments">Ver todos</Link>
+        </div>
+        <div className="fu-tours-scroll">
+          {homeTournaments.map((t) => (
+            <Link
+              key={t.slug}
+              href={`/tournaments/${t.slug}`}
+              className={`fu-tour-chip bf-shine-hover ${t.status === "live" ? "fu-tour-chip--live" : ""}`}
+            >
+              <TournamentLogo slug={t.slug} name={cleanName(t.shortName)} size={44} glow={false} />
+              <div className="fu-tour-chip-text">
+                {t.tier != null && (
+                  <span className={`bf-tier-badge ${tierBadgeClass(t.tier)}`} style={{ marginBottom: 4, display: "inline-block" }}>
+                    {tierLabel(t.tier)}
+                  </span>
+                )}
+                <strong>{cleanName(t.shortName)}</strong>
+                <span>
+                  {t.prizePool} · {t.status === "live" ? "En directo" : t.status === "upcoming" ? "Próximo" : "Finalizado"}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <div className="fu-bento">
+        <section className="fu-panel fu-panel-glow fu-bento-matches">
+          <div className="fu-panel-head">
+            <h2>Centro de partidos</h2>
+            <Link href="/matches">Ver todo</Link>
+          </div>
+          <div className="fu-tabs">
+            {(["live", "upcoming", "results"] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                className={`fu-tab ${matchTab === tab ? "is-on" : ""}`}
+                onClick={() => setMatchTab(tab)}
+              >
+                {tab === "live" ? `Directo (${live.length})` : tab === "upcoming" ? "Próximos" : "Resultados"}
+              </button>
+            ))}
+          </div>
+          <div className="fu-match-stack">
+            {matchPool.length > 0 ? (
+              matchPool.map((m) => <FeaturedMatch key={m.id} match={m} tag={m.status === "live" ? "LIVE" : undefined} />)
+            ) : (
+              <p className="bf-home-empty">No hay partidos en esta pestaña.</p>
+            )}
+          </div>
+        </section>
+
+        <section className="fu-panel fu-panel-glow fu-panel-squad">
+          <div className="fu-panel-head">
+            <h2>Tu plantilla</h2>
+            <Link href={`/fantasy?tournament=${DEFAULT_FANTASY_TOURNAMENT}`}>Gestionar</Link>
+          </div>
+          <p className="fu-panel-sub">{cleanName(tournamentName(DEFAULT_FANTASY_TOURNAMENT))}</p>
+          <div className="fu-squad-strip">
+            {squad.map((s) => (
+              <PlayerCardMini key={s.playerSlug} playerSlug={s.playerSlug} isCaptain={s.isCaptain} />
+            ))}
+            {Array.from({ length: Math.max(0, 3 - squad.length) }).map((_, i) => (
+              <Link
+                key={i}
+                href={`/fantasy?tournament=${DEFAULT_FANTASY_TOURNAMENT}`}
+                className="bf-card-mini bf-card-add"
+              >
+                <span className="bf-card-mini-avatar">+</span>
+                <span className="bf-card-mini-name">Fichar</span>
+              </Link>
+            ))}
+          </div>
+          <div className="fu-squad-footer">
+            <span className="fu-squad-pill">${budgetLeft.toFixed(1)}M disponible</span>
+            <span className="fu-squad-deadline">
+              Cierra {new Date(fantasyProfile.deadline).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+            </span>
+          </div>
+        </section>
+
+        {voteEvents.length > 0 && (
+          <section className="fu-panel fu-panel-glow" style={{ gridColumn: "1 / -1" }}>
+            <div className="fu-panel-head">
+              <h2>Predicciones · comunidad</h2>
+              <Link href="/predictions">Todas las predicciones</Link>
+            </div>
+            <div className="bf-predict-grid bf-predict-grid-home">
+              {voteEvents.map((e, i) => (
+                <InteractiveVoteCard key={e.id} event={e} featured={i === 0} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {topNews.length > 0 && (
+          <section className="fu-panel fu-panel-glow fu-bento-news">
+            <div className="fu-panel-head">
+              <h2>Noticias del circuito</h2>
+              <Link href="/news">Ver todas</Link>
+            </div>
+            <div className="fu-news-home-row">
+              {topNews.map((a) => (
+                <Link key={a.slug} href={`/news/${a.slug}`} className="fu-news-home-card bf-shine-hover">
+                  <div className="fu-news-home-cover">
+                    <NewsCover article={a} size="card" />
+                  </div>
+                  <span className={`bp-chip ${a.hot ? "bp-chip-break" : "bp-chip-gold"}`}>
+                    {a.hot ? "Hot" : a.category}
+                  </span>
+                  <strong>{a.title}</strong>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <p style={{ textAlign: "center", fontSize: 11, color: "var(--bp-dim)", marginTop: 4 }}>
+        Circuito BSC 2026 · actualizado{" "}
+        {catalogSyncedAt ? new Date(catalogSyncedAt).toLocaleDateString("es-ES") : "—"}
+      </p>
     </div>
   );
 }

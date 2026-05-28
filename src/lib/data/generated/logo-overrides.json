@@ -1,0 +1,45 @@
+{
+  "teams": {
+    "acre-lovers": {
+      "url": "https://liquipedia.net/commons/images/thumb/6/6f/Acre_Haters_allmode.png/800px-Acre_Haters_allmode.png",
+      "treatment": "strip-white"
+    },
+    "bounty-hunters-esports": {
+      "url": "https://liquipedia.net/commons/images/thumb/8/8c/Bounty_Hunters_Esports_full_darkmode.png/473px-Bounty_Hunters_Esports_full_darkmode.png",
+      "treatment": "strip-white"
+    },
+    "crazy-raccoon": {
+      "url": "https://liquipedia.net/commons/images/thumb/f/fc/Crazy_Raccoon_2021_allmode.png/454px-Crazy_Raccoon_2021_allmode.png",
+      "treatment": "strip-white"
+    },
+    "bc-gaming": {
+      "url": "https://liquipedia.net/commons/images/d/dc/BerlinCityClub_full_2024_allmode.png",
+      "treatment": "strip-white"
+    },
+    "bc-gaming-sa": {
+      "url": "https://liquipedia.net/commons/images/d/dc/BerlinCityClub_full_2024_allmode.png",
+      "treatment": "strip-white"
+    },
+    "alguem-segura": {
+      "url": "https://liquipedia.net/commons/images/3/32/Alguem_Segura_BSC_allmode.png",
+      "treatment": "strip-white"
+    },
+    "alpha7-esports": {
+      "url": "https://liquipedia.net/commons/images/1/1e/A7_eSports_darkmode.png",
+      "treatment": "strip-white"
+    },
+    "zurita-gang": {
+      "url": "https://liquipedia.net/commons/images/c/cd/Zurita_Gang_BSC_allmode.png",
+      "treatment": "strip-white"
+    },
+    "hmble": {
+      "url": "https://liquipedia.net/commons/images/thumb/4/46/HMBLE_2024_darkmode.png/600px-HMBLE_2024_darkmode.png",
+      "treatment": "strip-white"
+    },
+    "zeta-division-zero": {
+      "url": "https://liquipedia.net/commons/images/thumb/9/95/ZETA_DIVISION_darkmode.png/600px-ZETA_DIVISION_darkmode.png",
+      "treatment": "mono-white"
+    }
+  },
+  "tournaments": {}
+}
