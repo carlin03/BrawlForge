@@ -1,45 +1,11 @@
 {
-  "syncedAt": "2026-05-28T09:35:27.950Z",
+  "syncedAt": "2026-05-28T22:24:03.143Z",
   "source": "liquipedia.net/brawlstars/Brawl_Stars_Championship/2026",
   "pagesScanned": 72,
-  "pagesWithTeams": 1,
-  "pagesMissing": 72,
-  "teamCount": 15,
+  "pagesWithTeams": 0,
+  "pagesMissing": 0,
+  "teamCount": 0,
   "matchCount": 0,
-  "teamSlugs": [
-    "ace-xero",
-    "bc-gaming-sa",
-    "bounty-hunters-esports",
-    "crazy-raccoon",
-    "eternal-esports",
-    "fut-esports",
-    "hmble",
-    "loud",
-    "only-realm",
-    "revenant-xspark",
-    "toc-team",
-    "toxic-lotus",
-    "tribe-gaming",
-    "zeta-division",
-    "zurita-gang"
-  ],
-  "byPage": {
-    "Brawl_Stars_Championship/2026/Brawl_Cup": [
-      "hmble",
-      "fut-esports",
-      "tribe-gaming",
-      "zeta-division",
-      "only-realm",
-      "revenant-xspark",
-      "bounty-hunters-esports",
-      "crazy-raccoon",
-      "ace-xero",
-      "bc-gaming-sa",
-      "eternal-esports",
-      "toxic-lotus",
-      "toc-team",
-      "zurita-gang",
-      "loud"
-    ]
-  }
+  "teamSlugs": [],
+  "byPage": {}
 }

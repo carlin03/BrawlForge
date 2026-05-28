@@ -7,6 +7,7 @@
  */
 import circuitJson from "./generated/bsc-2026-circuit-teams.json";
 import { BSC_FANTASY_PARTICIPANTS } from "./bsc-fantasy-participants";
+import { BSC_2026_MQ_PARTICIPANT_SLUGS } from "./bsc-2026-mq-participants";
 
 /** Plantilla curada — orgs con partidos en MF/MQ/PSI/Brawl Cup/Challengers 2026 */
 export const BSC_2026_CIRCUIT_CURATED: string[] = [
@@ -86,6 +87,7 @@ export function getBsc2026CircuitTeamSlugs(): string[] {
   for (const s of slugsFromDiscoveryJson()) {
     if (s !== "toc-team") out.add(s);
   }
+  for (const s of BSC_2026_MQ_PARTICIPANT_SLUGS) out.add(s);
   return [...out].sort((a, b) => a.localeCompare(b));
 }
 

@@ -10,14 +10,16 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = path.join(root, "src", "lib", "data", "generated");
 const WRITE = process.argv.includes("--write");
 
-/** Mantener en sync con src/lib/data/bsc-2026-circuit-teams.ts */
+/** Mantener en sync con bsc-2026-circuit-teams.ts + bsc-2026-mq-participants.ts */
 const CURATED = [
   "hmble", "fut-esports", "tribe-gaming", "zeta-division", "crazy-raccoon", "only-realm",
   "bounty-hunters-esports", "ace-xero", "bc-gaming-sa", "eternal-esports", "revenant-xspark", "toxic-lotus",
   "sk-gaming", "team-heretics", "natus-vincere", "totem-esports", "novo-esports", "metizport", "big",
-  "big-talents", "kebap", "papara-supermassive", "qlash", "oddyssey", "reject", "fut-esports-academy",
-  "stmn-esports", "nova-esports", "spacestation-gaming", "vatic-esports", "zoos-esports", "team-elektros",
-  "skcalalas", "skcalalas-na", "loud", "elevate", "oddyssey", "zurita-gang", "olimpo-squad", "acre-lovers",
+  "big-talents", "kebap", "papara-supermassive", "qlash", "qlash-spain", "qlash-latam", "oddyssey", "reject",
+  "fut-esports-academy", "geng-esports", "cmm", "stmn-esports", "nova-esports", "nova-esports-china",
+  "spacestation-gaming", "vatic-esports", "zoos-esports", "team-elektros", "skcalalas", "skcalalas-na",
+  "only-realm-na", "loud", "elevate", "zurita-gang", "olimpo-squad", "acre-lovers", "intz", "eternal-fire",
+  "bc-gaming",
 ];
 
 const SKIP = new Set([

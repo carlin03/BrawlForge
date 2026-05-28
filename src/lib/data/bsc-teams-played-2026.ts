@@ -15,6 +15,7 @@ import {
 } from "./catalog";
 import type { GeneratedTeam } from "./catalog-types";
 import { BSC_2026_TEAM_SLUGS } from "./bsc-2026-rosters";
+import { TEAMS_2026_SLUGS } from "./teams-2026";
 
 const KNOWN_TEAM_SLUGS = new Set((allTeams as GeneratedTeam[]).map((t) => t.slug));
 
@@ -84,7 +85,8 @@ export function filterPlayedBsc2026Slugs(slugs: string[]): string[] {
   return normalizeParticipantList(slugs).filter((s) => hasPlayedBsc2026(s));
 }
 
-/** Listado público de clubes BSC 2026 con actividad real */
+/** Listado público de clubes BSC 2026 (catálogo 2026 + circuito) */
 export function getCompetitiveTeamSlugs(): string[] {
-  return [...getBsc2026PlayedTeamSlugs()].sort((a, b) => a.localeCompare(b));
+  const out = new Set<string>([...getBsc2026PlayedTeamSlugs(), ...TEAMS_2026_SLUGS]);
+  return [...out].sort((a, b) => a.localeCompare(b));
 }

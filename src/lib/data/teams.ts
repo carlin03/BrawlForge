@@ -1,7 +1,6 @@
 import type { Region } from "../types";
 import { toLiquipediaUrl } from "./catalog";
 import { getTeams2026, isTeam2026 } from "./teams-2026";
-import { getBsc2026PlayedTeamSlugs } from "./bsc-teams-played-2026";
 import { BSC_2026_ROSTERS } from "./bsc-2026-rosters";
 import { CURATED_TEAMS } from "./teams-curated";
 
@@ -21,10 +20,7 @@ export interface EsportsTeam {
 }
 
 function buildTeams(): EsportsTeam[] {
-  const played = getBsc2026PlayedTeamSlugs();
-  const list = getTeams2026()
-    .filter((t) => played.has(t.slug))
-    .map((t) => {
+  const list = getTeams2026().map((t) => {
     const curated = CURATED_TEAMS[t.slug];
     const base: EsportsTeam = {
       slug: t.slug,

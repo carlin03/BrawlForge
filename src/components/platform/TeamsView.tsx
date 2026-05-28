@@ -9,7 +9,7 @@ import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { Region } from "@/lib/types";
-import { getPlayersByTeam, getTeamPlatformMeta, getCompetitiveTeamSlugs, teamName } from "@/lib/data";
+import { getPlayersByTeam, getTeamPlatformMeta, teamName } from "@/lib/data";
 import { SHOW_DEMO_SOCIAL } from "@/lib/app-config";
 
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
@@ -17,11 +17,8 @@ const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
   const [region, setRegion] = useState<Region | "all">("all");
   const [query, setQuery] = useState("");
-  const competitive = useMemo(() => new Set(getCompetitiveTeamSlugs()), []);
-
   const sorted = useMemo(() => {
-    const base = teams.filter((t) => competitive.has(t.slug));
-    let filtered = region === "all" ? base : base.filter((t) => t.region === region);
+    let filtered = region === "all" ? teams : teams.filter((t) => t.region === region);
     const q = query.trim().toLowerCase();
     if (q) {
       filtered = filtered.filter(
@@ -32,7 +29,7 @@ export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
       );
     }
     return [...filtered].sort((a, b) => a.rank - b.rank);
-  }, [teams, region, competitive, query]);
+  }, [teams, region, query]);
 
   const spotlight = query.trim() ? [] : sorted.slice(0, 3);
   const rest = query.trim() ? sorted : sorted.slice(3);

@@ -43,10 +43,7 @@ export async function GET() {
       profilesTable: false,
       tablesOk: false,
       missingTables: REQUIRED_TABLES,
-      message:
-        hasUrl || hasKey
-          ? "NEXT_PUBLIC_SUPABASE_URL inválida en Vercel. Usa https://bkxxykztewquhnimpjgc.supabase.co (sin comillas ni espacios)."
-          : "Faltan variables en .env.local o Vercel (URL y clave publishable/anon).",
+      message: hasUrl || hasKey ? "Configuración de base de datos incorrecta." : "Servicio no configurado.",
     });
   }
 
@@ -81,11 +78,11 @@ export async function GET() {
   if (!auth) {
     message = "No se pudo conectar al Auth. Revisa URL y clave anon del mismo proyecto.";
   } else if (!profilesTable) {
-    message = "Falta la base de datos. Ejecuta supabase/ALL_IN_ONE_SETUP.sql en SQL Editor.";
+    message = "Base de datos incompleta.";
   } else if (!tablesOk) {
-    message = `Faltan tablas: ${missingTables.join(", ")}. Ejecuta ALL_IN_ONE_SETUP.sql completo.`;
+    message = "Base de datos incompleta. Contacta al administrador.";
   } else {
-    message = "Supabase listo: login, votos y fantasy.";
+    message = "Servicio listo.";
   }
 
   return NextResponse.json({

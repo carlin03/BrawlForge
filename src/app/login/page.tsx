@@ -4,11 +4,10 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { SupabaseStatus } from "@/components/auth/SupabaseStatus";
 
 function authErrorMessage(code: string | null): string {
-  if (code === "auth") return "No se pudo confirmar la sesión. Vuelve a intentar entrar.";
-  if (code === "config") return "Falta configurar Supabase en .env.local";
+  if (code === "auth") return "No se pudo confirmar la sesión. Vuelve a intentar.";
+  if (code === "config") return "Servicio no disponible. Inténtalo más tarde.";
   return "";
 }
 
@@ -36,9 +35,7 @@ function LoginForm() {
     setInfo("");
 
     if (!supabaseReady) {
-      setError(
-        "Supabase no configurado. En Vercel corrige NEXT_PUBLIC_SUPABASE_URL y ANON_KEY, guarda y Redeploy.",
-      );
+      setError("No se puede registrar ahora. Comprueba la conexión e inténtalo de nuevo.");
       return;
     }
 
@@ -60,9 +57,7 @@ function LoginForm() {
     }
 
     if ("needsEmailConfirmation" in res && res.needsEmailConfirmation) {
-      setInfo(
-        "Cuenta creada. Revisa tu email y pulsa el enlace de confirmación. Luego podrás entrar con tu contraseña.",
-      );
+      setInfo("Cuenta creada. Revisa tu email y confirma el enlace antes de entrar.");
       setMode("in");
       return;
     }
@@ -76,7 +71,7 @@ function LoginForm() {
     setError("");
     setInfo("");
     if (!supabaseReady) {
-      setError("Supabase no configurado.");
+      setError("Inicio con Google no disponible ahora.");
       return;
     }
     setLoading(true);
@@ -90,22 +85,8 @@ function LoginForm() {
       <div className="bf-auth-card">
         <h1>BrawlForge</h1>
         <p className="bf-auth-lead">
-          {mode === "in" ? "Entra con tu cuenta" : "Crea tu cuenta de jugador"}
+          {mode === "in" ? "Entra con tu cuenta" : "Crea tu cuenta"}
         </p>
-        <p className="bf-auth-hint" style={{ marginTop: 0 }}>
-          El SQL en Supabase prepara la base de datos. Aquí registras <strong>tu</strong> usuario (email y contraseña).
-        </p>
-
-        {!supabaseReady && (
-          <p className="bf-auth-warn">
-            Supabase no conectado. En <strong>Vercel → Settings → Environment Variables</strong> pon la URL{" "}
-            <code>https://bkxxykztewquhnimpjgc.supabase.co</code> y la clave <strong>anon</strong> de Supabase
-            (sin comillas). Luego <strong>Redeploy</strong>. En local: archivo <code>.env.local</code> y{" "}
-            <code>npm run dev</code>.
-          </p>
-        )}
-
-        <SupabaseStatus />
 
         <div className="bf-auth-tabs" role="tablist">
           <button
@@ -139,11 +120,11 @@ function LoginForm() {
         <form onSubmit={submit} className="bf-auth-form">
           {mode === "up" && (
             <label>
-              Nombre de jugador (IGN)
+              Nombre de jugador
               <input
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Tu nick en la app"
+                placeholder="Tu nick"
                 autoComplete="nickname"
                 required
               />
@@ -190,12 +171,6 @@ function LoginForm() {
         >
           Continuar con Google
         </button>
-        <p className="bf-auth-hint">
-          Supabase → Authentication → URL Configuration: Site URL{" "}
-          <code>https://brawl-forge-delta.vercel.app</code> y redirects{" "}
-          <code>https://brawl-forge-delta.vercel.app/auth/callback</code> y{" "}
-          <code>http://localhost:3000/auth/callback</code>.
-        </p>
 
         <Link href="/" className="bf-home-link" style={{ display: "block", marginTop: 16, textAlign: "center" }}>
           Volver al inicio

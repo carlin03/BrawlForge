@@ -11,7 +11,6 @@ import type { EsportsTeam } from "@/lib/data/teams";
 import type { Region } from "@/lib/types";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
-  getCompetitiveTeamSlugs,
   getPlayersByTeam,
   getTournamentFantasyProfile,
 } from "@/lib/data";
@@ -29,13 +28,10 @@ export function RankingsView({ teams }: { teams: EsportsTeam[] }) {
   const [region, setRegion] = useState<Region | "all">("all");
   const [fantasyBoard, setFantasyBoard] = useState<FantasyLeaderboardRow[]>([]);
 
-  const competitive = useMemo(() => new Set(getCompetitiveTeamSlugs()), []);
-
   const ranked = useMemo(() => {
-    const base = teams.filter((t) => competitive.has(t.slug));
-    const filtered = region === "all" ? base : base.filter((t) => t.region === region);
+    const filtered = region === "all" ? teams : teams.filter((t) => t.region === region);
     return [...filtered].sort((a, b) => a.rank - b.rank);
-  }, [teams, region, competitive]);
+  }, [teams, region]);
 
   const fantasyMeta = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
 

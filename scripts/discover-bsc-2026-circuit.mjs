@@ -23,16 +23,17 @@ const root = path.join(__dirname, "..");
 const outDir = path.join(root, "src", "lib", "data", "generated");
 const WRITE = process.argv.includes("--write");
 const BATCH = 30;
-const DELAY_MS = 900;
+const DELAY_MS = 2500;
 
 const REGIONS = ["EMEA", "East_Asia", "North_America", "South_America"];
 const MONTHS = [
   ["Season_1", "February"],
   ["Season_2", "March"],
   ["Season_3", "April"],
-  ["Season_4", "June"],
-  ["Season_5", "July"],
-  ["Season_6", "August"],
+  ["Season_4", "May"],
+  ["Season_5", "June"],
+  ["Season_6", "July"],
+  ["Season_7", "August"],
 ];
 
 function mqPages() {

@@ -11,7 +11,7 @@ import { PlayerCard } from "@/components/platform/PlayerCard";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { CATALOG_STATS, catalogSyncedAt, getCompetitiveTeamSlugs, tierBadgeClass, tierLabel, tournamentName } from "@/lib/data";
+import { CATALOG_STATS, catalogSyncedAt, tierBadgeClass, tierLabel, tournamentName } from "@/lib/data";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
@@ -73,8 +73,7 @@ export function HomeView() {
   const topPros = useMemo(() => getTopActivePlayers(3), []);
 
   const homeClubs = useMemo(() => {
-    const competitive = new Set(getCompetitiveTeamSlugs());
-    const bySlug = new Map(teams.filter((t) => competitive.has(t.slug)).map((t) => [t.slug, t]));
+    const bySlug = new Map(teams.map((t) => [t.slug, t]));
     const ordered: typeof teams = [];
     for (const slug of BSC_CLUBS) {
       const t = bySlug.get(slug);

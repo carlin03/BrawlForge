@@ -1,5 +1,4 @@
 import { liquipediaCommonsUrl } from "./tournament-logos";
-
 import { normalizeParticipantSlug, TEAM_ROSTER_ALIASES, resolveTournamentSlug, getTournamentLogoFile } from "./catalog";
 
 import { isValidLogoSlug } from "./logo-slugs";
@@ -24,9 +23,9 @@ import {
 
 } from "./logo-manifest";
 
-import { getTeam2026, isTeam2026 } from "./teams-2026";
+import { isTeam2026 } from "./teams-2026";
 
-import { TAIYORO_LOGOS, ROYALEAPI_LOGOS, ORG_OFFICIAL_LOGOS } from "./team-logo-urls";
+import { buildRemoteLogoChain } from "./team-logo-urls";
 
 
 
@@ -98,32 +97,6 @@ function getTournamentOverride(slug: string, cfg?: LogoRuntimeConfig): string | 
 
 
 
-function transparentRemoteTeamUrls(slug: string): string[] {
-
-  const out: string[] = [];
-
-  if (TAIYORO_LOGOS[slug]) out.push(TAIYORO_LOGOS[slug]);
-
-  if (ORG_OFFICIAL_LOGOS[slug]) out.push(ORG_OFFICIAL_LOGOS[slug]);
-
-  if (ROYALEAPI_LOGOS[slug]) out.push(ROYALEAPI_LOGOS[slug]);
-
-  const t = getTeam2026(slug);
-
-  if (t?.logoFile) {
-
-    const commons = liquipediaCommonsUrl(t.logoFile);
-
-    if (commons) out.push(commons);
-
-  }
-
-  return out;
-
-}
-
-
-
 /** Misma fuente en Home, Equipos, Fantasy, partidos… */
 
 export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): string[] {
@@ -166,23 +139,15 @@ export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): str
 
 
 
-  if (sources.length > 0) return sources;
-
-
-
   for (const s of candidates) {
 
-    if (!isTeam2026(s)) continue;
-
-    for (const url of transparentRemoteTeamUrls(s)) {
+    for (const url of buildRemoteLogoChain(s)) {
 
       if (!sources.includes(url)) sources.push(url);
 
     }
 
   }
-
-
 
   return sources;
 
