@@ -83,8 +83,6 @@ export const CURATED_TEAMS: Record<
   reject: { rank: 13, roster: ["levi", "melty", "shu"] },
 
 
-  "spacestation-gaming": { rank: 12, roster: ["bobby", "chino", "sans"] },
-
   "stmn-esports": { rank: 14, roster: ["cyrad", "fen", "trappz"] },
 
   skcalalas: { rank: 16, roster: ["juan-carlos", "kristian", "rhz"] },
@@ -95,7 +93,7 @@ export const CURATED_TEAMS: Record<
 
   "bounty-hunters-esports": { rank: 20, roster: ["portox", "prozy", "wesley"] },
 
-  "only-realm": { rank: 17, roster: ["patchy", "ryuk", "storm"] },
+  "only-realm": { rank: 17, roster: ["bobby", "patchy", "sans"] },
 
   "eternal-esports": { rank: 21, roster: ["cauebr", "jubileu", "mohtep"] },
 
@@ -146,8 +144,9 @@ export const CURATED_PLAYERS: Record<
   filippo: { teamSlug: "papara-supermassive", fantasyPoints: 82, fantasyOwnership: 40, rating: 1.15 },
   tomzy: { teamSlug: "papara-supermassive", fantasyPoints: 78, fantasyOwnership: 28, rating: 1.1, realName: "Woodland Tom Edward" },
   woodland: { teamSlug: "papara-supermassive", fantasyPoints: 77, fantasyOwnership: 26, rating: 1.09 },
-  chino: { teamSlug: "spacestation-gaming", fantasyPoints: 80, fantasyOwnership: 38, rating: 1.12 },
-  sans: { teamSlug: "spacestation-gaming", fantasyPoints: 79, fantasyOwnership: 36, rating: 1.11 },
+  patchy: { teamSlug: "only-realm", fantasyPoints: 82, fantasyOwnership: 39, rating: 1.13 },
+  bobby: { teamSlug: "only-realm", fantasyPoints: 81, fantasyOwnership: 37, rating: 1.12 },
+  sans: { teamSlug: "only-realm", fantasyPoints: 79, fantasyOwnership: 36, rating: 1.11 },
   cyrad: { teamSlug: "stmn-esports", fantasyPoints: 81, fantasyOwnership: 40, rating: 1.13 },
   fen: { teamSlug: "stmn-esports", fantasyPoints: 79, fantasyOwnership: 35, rating: 1.1 },
   trappz: { teamSlug: "stmn-esports", fantasyPoints: 78, fantasyOwnership: 33, rating: 1.09 },
@@ -161,7 +160,6 @@ export const CURATED_PLAYERS: Record<
   nob: { teamSlug: "fut-esports", fantasyPoints: 80, fantasyOwnership: 36, rating: 1.11 },
   guesti: { teamSlug: "fut-esports", fantasyPoints: 83, fantasyOwnership: 44, rating: 1.16 },
   angelboy: { teamSlug: "fut-esports", fantasyPoints: 87, fantasyOwnership: 48, rating: 1.19 },
-  bobby: { teamSlug: "spacestation-gaming", fantasyPoints: 81, fantasyOwnership: 37, rating: 1.12 },
   walkthrough: { teamSlug: "revenant-xspark", fantasyPoints: 76, fantasyOwnership: 28, rating: 1.08 },
   zee: { teamSlug: "vatic-esports", fantasyPoints: 77, fantasyOwnership: 30, rating: 1.09 },
   ray092: { teamSlug: "bc-gaming-sa", fantasyPoints: 75, fantasyOwnership: 25, rating: 1.07 },

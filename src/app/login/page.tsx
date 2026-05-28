@@ -34,6 +34,24 @@ function LoginForm() {
     if (user) router.replace("/");
   }, [user, router]);
 
+  useEffect(() => {
+    if (!supabaseReady) router.replace("/?preview=public");
+  }, [supabaseReady, router]);
+
+  if (!supabaseReady) {
+    return (
+      <div className="bf-auth-page">
+        <div className="bf-auth-card">
+          <h1>BrawlForge</h1>
+          <p className="bf-auth-lead">Abriendo la preview pública...</p>
+          <Link href="/" className="bp-btn bp-btn-gold bf-auth-submit" style={{ display: "block", textAlign: "center" }}>
+            Ir al inicio
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");

@@ -44,7 +44,6 @@ export const BSC_2026_CIRCUIT_CURATED: string[] = [
   "nova-esports",
 
   // ── North America ──
-  "spacestation-gaming",
   "vatic-esports",
   "zoos-esports",
   "team-elektros",
@@ -86,6 +85,7 @@ function slugsFromDiscoveryJson(): string[] {
  */
 export const BSC_2026_EXCLUDED_TEAM_SLUGS = new Set([
   "qlash",
+  "spacestation-gaming",
 ]);
 
 /** Slugs únicos del circuito BSC 2026 (curado + discovery Liquipedia + fantasy) */

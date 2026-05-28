@@ -1,10 +1,12 @@
 import teams2026Data from "./generated/teams-2026.json";
 import teamsData from "./generated/teams.json";
+import catalogData from "./generated/catalog.json";
 import type { GeneratedTeam } from "./catalog-types";
 import { normalizeParticipantSlug, TEAM_ROSTER_ALIASES } from "./catalog";
 
 const TEAMS_2026 = teams2026Data as GeneratedTeam[];
 const ALL_TEAMS = teamsData as GeneratedTeam[];
+const CATALOG_TEAMS = ((catalogData as { teams?: GeneratedTeam[] }).teams ?? []) as GeneratedTeam[];
 
 /**
  * Equipos BSC 2026 confirmados en Liquipedia MF/MQ que el snapshot 2026 inicial
@@ -18,10 +20,14 @@ const EXTRA_BSC_2026_TEAM_SLUGS = [
 
 function buildTeams2026(): GeneratedTeam[] {
   const seen = new Set(TEAMS_2026.map((t) => t.slug));
-  const out = [...TEAMS_2026];
+  const out = TEAMS_2026.map((team) => {
+    const catalogTeam = CATALOG_TEAMS.find((t) => t.slug === team.slug);
+    if (!catalogTeam?.roster?.length || team.roster?.length) return team;
+    return { ...team, roster: catalogTeam.roster };
+  });
   for (const slug of EXTRA_BSC_2026_TEAM_SLUGS) {
     if (seen.has(slug)) continue;
-    const team = ALL_TEAMS.find((t) => t.slug === slug);
+    const team = ALL_TEAMS.find((t) => t.slug === slug) ?? CATALOG_TEAMS.find((t) => t.slug === slug);
     if (team) {
       out.push(team);
       seen.add(slug);
