@@ -16,19 +16,14 @@ function LoginForm() {
   const { signIn, signUp, signInWithGoogle, supabaseReady, user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [mode, setMode] = useState<"in" | "up">("in");
+  const urlError = authErrorMessage(searchParams.get("error"));
+  const [mode, setMode] = useState<"in" | "up">(searchParams.get("tab") === "registro" ? "up" : "in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (searchParams.get("tab") === "registro") setMode("up");
-    const urlError = authErrorMessage(searchParams.get("error"));
-    if (urlError) setError(urlError);
-  }, [searchParams]);
 
   useEffect(() => {
     if (user) router.replace("/");
@@ -187,7 +182,7 @@ function LoginForm() {
               placeholder={mode === "up" ? "Mínimo 6 caracteres" : ""}
             />
           </label>
-          {error && <p className="bf-auth-error">{error}</p>}
+          {(error || urlError) && <p className="bf-auth-error">{error || urlError}</p>}
           <button type="submit" className="bp-btn bp-btn-gold bf-auth-submit" disabled={loading}>
             {loading ? "…" : mode === "in" ? "Entrar" : "Crear cuenta"}
           </button>
