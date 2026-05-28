@@ -6,8 +6,16 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-if (process.env.VERCEL === "1" || process.env.CI === "true" || process.env.SKIP_LOGO_DOWNLOAD === "1") {
-  console.log("[postinstall] Omitido download-logos (Vercel/CI). La app usa logos remotos.");
+const onVercel =
+  process.env.SKIP_LOGO_DOWNLOAD === "1" ||
+  process.env.VERCEL === "1" ||
+  !!process.env.VERCEL_ENV ||
+  !!process.env.VERCEL_URL ||
+  process.env.CI === "true" ||
+  process.env.CI === "1";
+
+if (onVercel) {
+  console.log("[postinstall] Skip en Vercel/CI — logos remotos (bsc-2026.png ya está en el repo).");
   process.exit(0);
 }
 
