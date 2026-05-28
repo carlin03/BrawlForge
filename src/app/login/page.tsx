@@ -36,7 +36,9 @@ function LoginForm() {
     setInfo("");
 
     if (!supabaseReady) {
-      setError("Supabase no está configurado. Revisa .env.local y reinicia npm run dev.");
+      setError(
+        "Supabase no configurado. En Vercel corrige NEXT_PUBLIC_SUPABASE_URL y ANON_KEY, guarda y Redeploy.",
+      );
       return;
     }
 
@@ -96,8 +98,10 @@ function LoginForm() {
 
         {!supabaseReady && (
           <p className="bf-auth-warn">
-            Falta <code>NEXT_PUBLIC_SUPABASE_URL</code> y <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> en{" "}
-            <code>brawlforge/.env.local</code>. Reinicia <code>npm run dev</code> después de guardar.
+            Supabase no conectado. En <strong>Vercel → Settings → Environment Variables</strong> pon la URL{" "}
+            <code>https://bkxxykztewquhnimpjgc.supabase.co</code> y la clave <strong>anon</strong> de Supabase
+            (sin comillas). Luego <strong>Redeploy</strong>. En local: archivo <code>.env.local</code> y{" "}
+            <code>npm run dev</code>.
           </p>
         )}
 
@@ -187,9 +191,10 @@ function LoginForm() {
           Continuar con Google
         </button>
         <p className="bf-auth-hint">
-          En Supabase → Authentication → URL Configuration, añade{" "}
-          <code>http://localhost:3000/auth/callback</code> como redirect. Para Google, activa el proveedor
-          Google en el mismo panel.
+          Supabase → Authentication → URL Configuration: Site URL{" "}
+          <code>https://brawl-forge-delta.vercel.app</code> y redirects{" "}
+          <code>https://brawl-forge-delta.vercel.app/auth/callback</code> y{" "}
+          <code>http://localhost:3000/auth/callback</code>.
         </p>
 
         <Link href="/" className="bf-home-link" style={{ display: "block", marginTop: 16, textAlign: "center" }}>
