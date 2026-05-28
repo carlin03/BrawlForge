@@ -16,19 +16,15 @@ function LoginForm() {
   const { signIn, signUp, signInWithGoogle, supabaseReady, user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [mode, setMode] = useState<"in" | "up">("in");
+  const tabFromUrl = searchParams.get("tab");
+  const errorFromUrl = authErrorMessage(searchParams.get("error"));
+  const [mode, setMode] = useState<"in" | "up">(() => (tabFromUrl === "registro" ? "up" : "in"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(() => errorFromUrl);
   const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (searchParams.get("tab") === "registro") setMode("up");
-    const urlError = authErrorMessage(searchParams.get("error"));
-    if (urlError) setError(urlError);
-  }, [searchParams]);
 
   useEffect(() => {
     if (user) router.replace("/");

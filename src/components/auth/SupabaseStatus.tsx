@@ -6,7 +6,8 @@ type Status = {
   connected: boolean;
   auth: boolean;
   profilesTable: boolean;
-  profilesError?: string | null;
+  tablesOk?: boolean;
+  missingTables?: string[];
   projectRef?: string;
   message: string;
 };
@@ -35,7 +36,7 @@ export function SupabaseStatus() {
   }
   if (!status) return null;
 
-  const ok = status.connected && status.profilesTable;
+  const ok = status.connected && status.profilesTable && status.tablesOk !== false;
   const cls = ok ? "is-ok" : status.connected ? "is-warn" : "is-error";
 
   return (
@@ -49,7 +50,7 @@ export function SupabaseStatus() {
           Proyecto: <code>{status.projectRef}</code> — comprueba que es el mismo en el dashboard.
         </p>
       )}
-      {!status.profilesTable && status.connected && (
+      {status.connected && !ok && (
         <ol className="bf-supabase-status-steps">
           <li>
             Abre{" "}
@@ -60,23 +61,25 @@ export function SupabaseStatus() {
             >
               SQL Editor
             </a>{" "}
-            en ese proyecto.
+            en tu proyecto Supabase.
           </li>
           <li>
-            Pega y ejecuta{" "}
-            <code>20260528000000_initial.sql</code> y luego{" "}
-            <code>20260529100000_game_data.sql</code> (fantasy + votos)
+            Copia <strong>todo</strong> el archivo{" "}
+            <a
+              href="https://raw.githubusercontent.com/carlin03/BrawlForge/main/supabase/ALL_IN_ONE_SETUP.sql"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ALL_IN_ONE_SETUP.sql
+            </a>{" "}
+            (GitHub) → pega → <strong>Run</strong>.
           </li>
-          <li>
-            Los usuarios registrados están en <strong>Authentication → Users</strong>, no en Table Editor
-            hasta que exista la tabla <code>profiles</code>.
-          </li>
-          <li>
-            Si ya tenías cuenta antes del SQL, ejecuta también{" "}
-            <code>supabase/migrations/20260528100000_backfill_profiles.sql</code> o vuelve a entrar en la
-            app (crea tu fila automáticamente).
-          </li>
-          <li>Recarga esta página: debe poner &quot;Conectado&quot; en verde.</li>
+          {status.missingTables?.length ? (
+            <li>
+              Faltan tablas: <code>{status.missingTables.join(", ")}</code>
+            </li>
+          ) : null}
+          <li>Recarga esta página hasta ver &quot;Supabase listo&quot; en verde.</li>
         </ol>
       )}
     </div>

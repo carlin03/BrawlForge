@@ -1,5 +1,35 @@
 import { NextResponse } from "next/server";
 
+const REQUIRED_TABLES = [
+  "profiles",
+  "prediction_votes",
+  "fantasy_entries",
+  "fantasy_squad_slots",
+] as const;
+
+async function tableOk(
+  url: string,
+  headers: Record<string, string>,
+  table: string,
+): Promise<{ ok: boolean; missing: boolean; message?: string }> {
+  try {
+    const res = await fetch(`${url}/rest/v1/${table}?select=id&limit=1`, {
+      headers,
+      cache: "no-store",
+    });
+    if (res.ok) return { ok: true, missing: false };
+    const body = await res.json().catch(() => ({}));
+    const msg = (body as { message?: string; code?: string }).message ?? "";
+    const missing =
+      (body as { code?: string }).code === "42P01" ||
+      msg.includes("Could not find the table") ||
+      msg.includes("does not exist");
+    return { ok: false, missing, message: msg || `HTTP ${res.status}` };
+  } catch (e) {
+    return { ok: false, missing: false, message: e instanceof Error ? e.message : "Error de red" };
+  }
+}
+
 export async function GET() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -9,7 +39,9 @@ export async function GET() {
       connected: false,
       auth: false,
       profilesTable: false,
-      message: "Faltan variables en .env.local (URL y clave publishable/anon).",
+      tablesOk: false,
+      missingTables: REQUIRED_TABLES,
+      message: "Faltan variables en .env.local o Vercel (URL y clave publishable/anon).",
     });
   }
 
@@ -19,9 +51,6 @@ export async function GET() {
   };
 
   let auth = false;
-  let profilesTable = false;
-  let profilesError: string | null = null;
-
   try {
     const health = await fetch(`${url}/auth/v1/health`, { headers, cache: "no-store" });
     auth = health.ok;
@@ -29,36 +58,36 @@ export async function GET() {
     auth = false;
   }
 
-  try {
-    const profiles = await fetch(`${url}/rest/v1/profiles?select=id&limit=1`, {
-      headers,
-      cache: "no-store",
-    });
-    if (profiles.ok) {
-      profilesTable = true;
-    } else {
-      const body = await profiles.json().catch(() => ({}));
-      profilesError = (body as { message?: string }).message ?? `HTTP ${profiles.status}`;
-      if (profilesError.includes("Could not find the table")) {
-        profilesError = "La tabla public.profiles no existe — ejecuta la migración SQL.";
-      }
+  const missingTables: string[] = [];
+  for (const table of REQUIRED_TABLES) {
+    const t = await tableOk(url, headers, table);
+    if (!t.ok) {
+      if (t.missing) missingTables.push(table);
     }
-  } catch (e) {
-    profilesError = e instanceof Error ? e.message : "Error de red";
   }
 
+  const profilesTable = !missingTables.includes("profiles");
+  const tablesOk = missingTables.length === 0;
   const projectRef = url.replace("https://", "").replace(".supabase.co", "");
+
+  let message: string;
+  if (!auth) {
+    message = "No se pudo conectar al Auth. Revisa URL y clave anon del mismo proyecto.";
+  } else if (!profilesTable) {
+    message = "Falta la base de datos. Ejecuta supabase/ALL_IN_ONE_SETUP.sql en SQL Editor.";
+  } else if (!tablesOk) {
+    message = `Faltan tablas: ${missingTables.join(", ")}. Ejecuta ALL_IN_ONE_SETUP.sql completo.`;
+  } else {
+    message = "Supabase listo: login, votos y fantasy.";
+  }
 
   return NextResponse.json({
     connected: auth,
     auth,
     profilesTable,
-    profilesError,
+    tablesOk,
+    missingTables,
     projectRef,
-    message: !auth
-      ? "No se pudo conectar al Auth de Supabase. Revisa URL y clave del mismo proyecto."
-      : profilesTable
-        ? "Conectado. Los usuarios nuevos tendrán fila en profiles."
-        : "Auth conectado, pero falta la tabla profiles (migración SQL). Sin ella el registro puede fallar.",
+    message,
   });
 }

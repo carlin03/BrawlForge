@@ -1,6 +1,7 @@
+#!/usr/bin/env node
 /**
- * Comprueba conexión a Supabase (lee brawlforge/.env.local vía dotenv manual).
- * Uso: node scripts/check-supabase.mjs
+ * Comprueba Supabase: auth, tablas y funciones RPC.
+ * Uso: npm run supabase:check
  */
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
@@ -14,13 +15,24 @@ function loadEnv() {
     const raw = readFileSync(envPath, "utf8");
     for (const line of raw.split("\n")) {
       const m = line.match(/^([A-Z_]+)=(.*)$/);
-      if (m) process.env[m[1]] = m[2].trim();
+      if (m) process.env[m[1]] = m[2].trim().replace(/^["']|["']$/g, "");
     }
   } catch {
     console.error("No se encontró .env.local en", envPath);
     process.exit(1);
   }
 }
+
+const TABLES = [
+  "profiles",
+  "prediction_votes",
+  "fantasy_entries",
+  "fantasy_squad_slots",
+  "teams_catalog",
+  "players_catalog",
+];
+
+const RPCS = ["prediction_vote_aggregates", "fantasy_leaderboard"];
 
 loadEnv();
 
@@ -33,18 +45,49 @@ if (!url || !key) {
 }
 
 const headers = { apikey: key, Authorization: `Bearer ${key}` };
+let failed = false;
 
 const health = await fetch(`${url}/auth/v1/health`, { headers });
 console.log("Auth:", health.ok ? "OK" : `ERROR ${health.status}`);
+if (!health.ok) failed = true;
 
-const profiles = await fetch(`${url}/rest/v1/profiles?select=id&limit=1`, { headers });
-const body = await profiles.json().catch(() => ({}));
-if (profiles.ok) {
-  console.log("Tabla profiles: OK");
-} else {
-  console.log("Tabla profiles:", body.message ?? profiles.status);
-  console.log("\n→ Ejecuta supabase/migrations/20260528000000_initial.sql en SQL Editor");
-  console.log("→ Usuarios: dashboard → Authentication → Users (no Table Editor)");
+for (const table of TABLES) {
+  const res = await fetch(`${url}/rest/v1/${table}?select=*&limit=0`, { headers });
+  const ok = res.ok || res.status === 200;
+  const missing = res.status === 404 || (await res.clone().json().catch(() => ({})))?.code === "42P01";
+  if (ok) {
+    console.log(`Tabla ${table}: OK`);
+  } else if (missing) {
+    console.log(`Tabla ${table}: FALTA`);
+    failed = true;
+  } else {
+    const body = await res.json().catch(() => ({}));
+    console.log(`Tabla ${table}:`, body.message ?? res.status);
+    if (!res.ok) failed = true;
+  }
+}
+
+for (const fn of RPCS) {
+  const res = await fetch(`${url}/rest/v1/rpc/${fn}`, {
+    method: "POST",
+    headers: { ...headers, "Content-Type": "application/json" },
+    body: fn === "fantasy_leaderboard" ? JSON.stringify({ p_tournament: "bsc-2026-brawl-cup", p_limit: 1 }) : "{}",
+  });
+  if (res.ok) {
+    console.log(`RPC ${fn}: OK`);
+  } else {
+    const body = await res.json().catch(() => ({}));
+    console.log(`RPC ${fn}:`, body.message ?? res.status);
+    failed = true;
+  }
 }
 
 console.log("\nProyecto:", url.replace("https://", "").replace(".supabase.co", ""));
+
+if (failed) {
+  console.log("\n→ Ejecuta TODO supabase/ALL_IN_ONE_SETUP.sql en SQL Editor (un solo pegado + Run).");
+  console.log("→ O desde GitHub: raw.githubusercontent.com/carlin03/BrawlForge/main/supabase/ALL_IN_ONE_SETUP.sql");
+  process.exit(1);
+}
+
+console.log("\nSupabase listo para BrawlForge.");

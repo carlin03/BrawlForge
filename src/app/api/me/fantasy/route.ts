@@ -73,7 +73,12 @@ export async function PUT(request: NextRequest) {
       })
       .select("id, transfers_used")
       .single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    if (error) {
+      const msg = error.message?.includes("does not exist")
+        ? "Ejecuta ALL_IN_ONE_SETUP.sql en Supabase (tablas fantasy)."
+        : error.message;
+      return NextResponse.json({ error: msg }, { status: 400 });
+    }
     entry = created;
   } else {
     await supabase
@@ -93,7 +98,12 @@ export async function PUT(request: NextRequest) {
         event_points: 0,
       })),
     );
-    if (slotErr) return NextResponse.json({ error: slotErr.message }, { status: 400 });
+    if (slotErr) {
+      const msg = slotErr.message?.includes("does not exist")
+        ? "Ejecuta ALL_IN_ONE_SETUP.sql en Supabase."
+        : slotErr.message;
+      return NextResponse.json({ error: msg }, { status: 400 });
+    }
   }
 
   return NextResponse.json({ ok: true, entryId: entry.id });

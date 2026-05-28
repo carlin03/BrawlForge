@@ -16,7 +16,21 @@ export async function GET() {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  await syncPredictorScores(supabase, user.id);
-  const state = await fetchUserGameState(supabase, user.id, DEFAULT_FANTASY_TOURNAMENT);
-  return NextResponse.json(state);
+  try {
+    await syncPredictorScores(supabase, user.id);
+    const state = await fetchUserGameState(supabase, user.id, DEFAULT_FANTASY_TOURNAMENT);
+    return NextResponse.json(state);
+  } catch {
+    return NextResponse.json({
+      votes: {},
+      fantasy: {},
+      predictPoints: 0,
+      predictStreak: 0,
+      predictCorrect: 0,
+      predictAttempts: 0,
+      fantasyPoints: 0,
+      fantasyRank: null,
+      setupRequired: true,
+    });
+  }
 }

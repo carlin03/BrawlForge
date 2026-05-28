@@ -32,7 +32,12 @@ export async function POST(request: NextRequest) {
     { onConflict: "user_id,match_id" },
   );
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error) {
+    const msg = error.message?.includes("does not exist")
+      ? "Ejecuta ALL_IN_ONE_SETUP.sql en Supabase (tabla prediction_votes)."
+      : error.message;
+    return NextResponse.json({ error: msg }, { status: 400 });
+  }
 
   await syncPredictorScores(supabase, user.id);
   return NextResponse.json({ ok: true, matchId, pick });

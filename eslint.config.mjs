@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "scripts/nuxt-main.js",
+    "scripts/event-page.html",
+    "scripts/bsc-i18n-en.json",
+    "public/logos/**",
   ]),
 ]);
 

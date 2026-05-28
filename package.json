@@ -33,7 +33,7 @@
     "data:audit:bsc": "node scripts/audit-bsc-players.mjs",
     "data:sync:logos": "node scripts/sync-liquipedia-full.mjs --logos-only",
     "bsc:sync": "node scripts/sync-supercell-bsc.mjs",
-    "postinstall": "node scripts/download-logos.mjs"
+    "postinstall": "node scripts/postinstall.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

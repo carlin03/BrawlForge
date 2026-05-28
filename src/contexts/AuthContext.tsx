@@ -78,13 +78,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const displayName = meta?.display_name || u.email?.split("@")[0] || "Jugador";
       const ign = meta?.ign || displayName;
 
-      let { data, error } = await supabase
-        .from("profiles")
-        .select(
-          "id, display_name, ign, favorite_team_slug, avatar_url, is_admin, predict_points, predict_streak, predict_correct, predict_attempts",
-        )
-        .eq("id", u.id)
-        .maybeSingle();
+      const fullSelect =
+        "id, display_name, ign, favorite_team_slug, avatar_url, is_admin, predict_points, predict_streak, predict_correct, predict_attempts";
+      let { data, error } = await supabase.from("profiles").select(fullSelect).eq("id", u.id).maybeSingle();
+
+      if (error?.message?.includes("predict_")) {
+        ({ data, error } = await supabase
+          .from("profiles")
+          .select("id, display_name, ign, favorite_team_slug, avatar_url, is_admin")
+          .eq("id", u.id)
+          .maybeSingle());
+      }
 
       if (error) {
         console.error("[auth] profiles select:", error.message);
