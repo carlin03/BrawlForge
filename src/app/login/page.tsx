@@ -90,6 +90,9 @@ function LoginForm() {
         <p className="bf-auth-lead">
           {mode === "in" ? "Entra con tu cuenta" : "Crea tu cuenta de jugador"}
         </p>
+        <p className="bf-auth-hint" style={{ marginTop: 0 }}>
+          El SQL en Supabase prepara la base de datos. Aquí registras <strong>tu</strong> usuario (email y contraseña).
+        </p>
 
         {!supabaseReady && (
           <p className="bf-auth-warn">

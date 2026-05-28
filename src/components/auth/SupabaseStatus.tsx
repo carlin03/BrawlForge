@@ -18,14 +18,26 @@ export function SupabaseStatus() {
 
   useEffect(() => {
     fetch("/api/supabase/status")
-      .then((r) => r.json())
-      .then((data: Status) => setStatus(data))
+      .then(async (r) => {
+        if (r.status === 404) {
+          setStatus({
+            connected: false,
+            auth: false,
+            profilesTable: false,
+            message:
+              "La web en Vercel es una versión antigua (sin login). Haz Redeploy del último commit en GitHub o usa localhost.",
+          });
+          return;
+        }
+        const data = (await r.json()) as Status;
+        setStatus(data);
+      })
       .catch(() =>
         setStatus({
           connected: false,
           auth: false,
           profilesTable: false,
-          message: "No se pudo comprobar la conexión.",
+          message: "No se pudo comprobar la conexión. Revisa variables en Vercel o usa npm run dev en el PC.",
         }),
       )
       .finally(() => setLoading(false));
