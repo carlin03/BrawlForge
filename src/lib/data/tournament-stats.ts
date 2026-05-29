@@ -4,7 +4,6 @@ import {
   getTournamentParticipantSlugs,
   type EsportsMatch,
 } from "./matches";
-import { getFantasyTeamsForTournament } from "./fantasy-rosters";
 
 export interface TournamentStandingRow {
   rank: number;
@@ -84,20 +83,7 @@ function parsePrizeBreakdown(prizePool: string): { place: string; prize: string 
 }
 
 export function resolveTournamentParticipants(slug: string): string[] {
-  const fromApi = getTournamentParticipantSlugs(slug);
-  if (fromApi.length >= 2) return fromApi;
-
-  const fromFantasy = getFantasyTeamsForTournament(slug);
-  if (fromFantasy.length >= 2) return fromFantasy;
-
-  const fromMatches = [
-    ...new Set(
-      getMatchesByTournament(slug)
-        .flatMap((m) => [m.teamASlug, m.teamBSlug])
-        .filter((s) => s && s !== "tbd"),
-    ),
-  ];
-  return fromMatches;
+  return getTournamentParticipantSlugs(slug);
 }
 
 export function getTournamentStats(slug: string): TournamentStats {

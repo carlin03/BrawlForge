@@ -1,5 +1,6 @@
 import type { Region } from "../types";
 import { bsc2026Tournaments, BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
+import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
 import { bscMatches } from "./bsc-matches";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
@@ -159,6 +160,7 @@ function buildTournaments(): EsportsTournament[] {
 
   for (const t of bsc2026Tournaments) {
     const existing = map.get(t.slug);
+    const participants = getBscTournamentParticipantSlugs(t.slug);
     map.set(t.slug, {
       ...existing,
       ...t,
@@ -166,7 +168,20 @@ function buildTournaments(): EsportsTournament[] {
       featured: true,
       tier: existing?.tier ?? 1,
       logoFile: existing?.logoFile ?? t.logoFile,
-      participantSlugs: existing?.participantSlugs ?? t.participantSlugs,
+      participantSlugs: participants.length ? participants : existing?.participantSlugs,
+      teams: participants.length || t.teams,
+    });
+  }
+
+  for (const [alias, canonical] of Object.entries(BSC_TOURNAMENT_ALIASES)) {
+    const base = map.get(canonical);
+    if (!base) continue;
+    const participants = getBscTournamentParticipantSlugs(alias);
+    map.set(alias, {
+      ...base,
+      slug: alias,
+      participantSlugs: participants.length ? participants : base.participantSlugs,
+      teams: participants.length || base.teams,
     });
   }
 
@@ -278,8 +293,23 @@ export function getUpcomingMatches(): EsportsMatch[] {
 }
 
 export function getTournamentParticipantSlugs(slug: string): string[] {
+  if (/^bsc-2026|^world-finals-2026/.test(slug)) {
+    const bsc = getBscTournamentParticipantSlugs(slug);
+    if (bsc.length) return bsc;
+  }
+
   const t = getTournament(slug);
   if (t?.participantSlugs?.length) return normalizeParticipantList(t.participantSlugs);
+
+  const fromMatches = [
+    ...new Set(
+      getMatchesByTournament(slug)
+        .flatMap((m) => [m.teamASlug, m.teamBSlug])
+        .filter((s) => s && s !== "tbd"),
+    ),
+  ];
+  if (fromMatches.length >= 2) return normalizeParticipantList(fromMatches);
+
   return getTournamentParticipants(slug);
 }
 
