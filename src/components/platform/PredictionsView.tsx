@@ -119,7 +119,13 @@ export function PredictionsView({
 
       {featuredEvent && <FeaturedPredictionDuel event={featuredEvent} />}
 
-      {playoffBracket && <PredictionsPlayoffBracket bracket={playoffBracket} />}
+      {playoffBracket && (
+        <PredictionsPlayoffBracket
+          bracket={playoffBracket}
+          votes={votes}
+          events={openEnriched.concat(closedEnriched)}
+        />
+      )}
 
       {syncing && <p className="bf-predict-sync-banner" aria-live="polite">Actualizando votos…</p>}
 

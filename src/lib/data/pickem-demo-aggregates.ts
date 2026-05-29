@@ -6,6 +6,7 @@ export const PICKEM_DEMO_AGGREGATES: Record<string, VoteAggregate> = {
   "chal-es-gs-1": { match_id: "chal-es-gs-1", votes_a: 612, votes_b: 588, total_votes: 1200 },
   "chal-es-gs-3": { match_id: "chal-es-gs-3", votes_a: 421, votes_b: 779, total_votes: 1200 },
   "mf26-jun-emea-sf1": { match_id: "mf26-jun-emea-sf1", votes_a: 1102, votes_b: 498, total_votes: 1600 },
+  "mf26-jun-emea-sf2": { match_id: "mf26-jun-emea-sf2", votes_a: 640, votes_b: 560, total_votes: 1200 },
   "mf26-jun-emea-gf": { match_id: "mf26-jun-emea-gf", votes_a: 534, votes_b: 666, total_votes: 1200 },
   "mf26-jun-emea-qf2": { match_id: "mf26-jun-emea-qf2", votes_a: 720, votes_b: 480, total_votes: 1200 },
   "mf26-jun-ea-gf": { match_id: "mf26-jun-ea-gf", votes_a: 891, votes_b: 309, total_votes: 1200 },

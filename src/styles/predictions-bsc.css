@@ -2757,6 +2757,187 @@
   }
 }
 
+/* Bracket árbol: 2 semis arriba → final centrada abajo */
+.bf-bracket-quarters-row {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bf-bracket-quarters-row .bf-bracket-flow-duels {
+  margin-top: 4px;
+}
+.bf-bracket-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.bf-bracket-tree-semis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+  width: 100%;
+}
+.bf-bracket-semi-card {
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bf-bracket-semi-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bsc-blue-bright);
+  text-align: center;
+}
+.bf-bracket-semi-duel,
+.bf-bracket-final-duel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.bf-bracket-pick-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 8px;
+  min-width: 0;
+  flex: 1;
+  max-width: 88px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  color: inherit;
+}
+.bf-bracket-pick-team:hover:not(:disabled) {
+  border-color: rgba(0, 153, 255, 0.35);
+  background: rgba(0, 40, 80, 0.25);
+}
+.bf-bracket-pick-team.is-selected {
+  border-color: var(--bsc-blue-bright);
+  background: rgba(0, 80, 160, 0.25);
+  box-shadow: 0 0 14px rgba(0, 153, 255, 0.2);
+}
+.bf-bracket-pick-team:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.bf-bracket-pick-name {
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  color: var(--bp-muted);
+}
+.bf-bracket-pick-team.is-selected .bf-bracket-pick-name {
+  color: var(--bp-text);
+}
+.bf-bracket-semi-winner {
+  margin: 6px 0 0;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--bp-dim);
+}
+.bf-bracket-semi-winner strong {
+  color: var(--bsc-blue-bright);
+}
+.bf-bracket-tree-connectors {
+  position: relative;
+  width: 72%;
+  height: 20px;
+  margin: 2px 0;
+}
+.bf-bracket-tree-connectors .bf-bracket-line {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 12px;
+  background: rgba(0, 153, 255, 0.35);
+}
+.bf-bracket-tree-connectors .bf-bracket-line:first-child {
+  left: 25%;
+}
+.bf-bracket-tree-connectors .bf-bracket-line:nth-child(2) {
+  right: 25%;
+}
+.bf-bracket-tree-connectors .bf-bracket-line-h {
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  background: rgba(0, 153, 255, 0.35);
+}
+.bf-bracket-tree-final {
+  width: 100%;
+  max-width: 240px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+.bf-bracket-tree-final.is-ready {
+  border-style: solid;
+  border-color: rgba(255, 193, 7, 0.35);
+  background: rgba(40, 30, 0, 0.2);
+  box-shadow: 0 0 16px rgba(255, 193, 7, 0.08);
+}
+.bf-bracket-tree-final .bf-bracket-flow-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--bp-gold);
+}
+.bf-bracket-final-placeholder p {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bp-muted);
+}
+.bf-bracket-final-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+  color: var(--bp-dim);
+}
+.bf-bracket-final-note {
+  margin: 8px 0 0;
+  font-size: 9px;
+  line-height: 1.35;
+  color: var(--bp-dim);
+}
+.bf-bracket-final-note.is-synced {
+  color: rgba(0, 200, 120, 0.9);
+}
+.bf-bracket-final-note a {
+  color: var(--bsc-blue-bright);
+  margin-left: 4px;
+}
+.bf-bracket-error {
+  margin: 8px 0 0;
+  width: 100%;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ff6b6b;
+  text-align: center;
+}
+
 /* Atajos rápidos (cierran pronto / populares) */
 .bf-predict-sync-banner {
   margin: 0 0 12px;
