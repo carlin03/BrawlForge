@@ -192,6 +192,13 @@ function buildTournaments(): EsportsTournament[] {
 
 export const tournaments: EsportsTournament[] = buildTournaments();
 
+function matchDedupeKey(m: EsportsMatch): string {
+  const a = m.teamASlug;
+  const b = m.teamBSlug;
+  const pair = a < b ? `${a}|${b}` : `${b}|${a}`;
+  return `${m.tournamentSlug}|${pair}|${m.date.slice(0, 10)}`;
+}
+
 function buildMatches(): EsportsMatch[] {
   const manual2026 = [
     {
@@ -221,11 +228,14 @@ function buildMatches(): EsportsMatch[] {
       format: "Bo3",
     },
   ];
-  const bscIds = new Set(bscMatches.map((m) => m.id));
-  const wikiMatches = getBscEnrichedMatches().filter((m) => !bscIds.has(m.id) && isBscCircuitSlug(m.tournamentSlug));
-  const extra = [...bscMatches, ...wikiMatches, ...manual2026].filter((m) =>
-    isBscCircuitSlug(m.tournamentSlug),
+  const wikiMatches = getBscEnrichedMatches().filter(
+    (m) => isBscCircuitSlug(m.tournamentSlug) && isDisplayableMatch(m),
   );
+  const keys = new Set(wikiMatches.map(matchDedupeKey));
+  const manualFallback = [...bscMatches, ...manual2026].filter(
+    (m) => isBscCircuitSlug(m.tournamentSlug) && isDisplayableMatch(m) && !keys.has(matchDedupeKey(m)),
+  );
+  const extra = [...wikiMatches, ...manualFallback];
   return extra.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 

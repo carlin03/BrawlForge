@@ -2,6 +2,7 @@
  * Participantes BSC 2026 por torneo — fuente de verdad para /tournaments.
  */
 import { bscMatches } from "./bsc-matches";
+import { getBscEnrichedMatches, getBscTournamentEnrichment } from "./bsc-tournaments-enriched";
 import { BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 import { isBsc2026ActiveTeam } from "./bsc-2026-active-teams";
@@ -281,7 +282,7 @@ export function extractTournamentParticipantsFromMatches(tournamentSlug: string)
   const extra2026 = getGeneratedMatches().filter(
     (m) => m.date?.startsWith("2026") && /^bsc-2026|^world-finals-2026/i.test(m.tournamentSlug),
   );
-  for (const m of [...bscMatches, ...extra2026]) {
+  for (const m of [...bscMatches, ...getBscEnrichedMatches(), ...extra2026]) {
     if (!slugs.has(m.tournamentSlug)) continue;
     if (m.teamASlug && m.teamASlug !== "tbd" && isBsc2026ActiveTeam(m.teamASlug)) found.add(m.teamASlug);
     if (m.teamBSlug && m.teamBSlug !== "tbd" && isBsc2026ActiveTeam(m.teamBSlug)) found.add(m.teamBSlug);
@@ -296,8 +297,15 @@ function resolveCurated(slug: string): string[] {
   return raw?.length ? normalizeParticipantList([...raw]) : [];
 }
 
-/** Lista final: curada BSC primero; partidos solo si no hay entrada curada. */
+/** Lista final: Liquipedia (sync) → curada → partidos parseados. */
 export function getBscTournamentParticipantSlugs(slug: string): string[] {
+  for (const s of tournamentSlugsForLookup(slug)) {
+    const wiki = getBscTournamentEnrichment(s)?.participantSlugs;
+    if (wiki?.length) {
+      const norm = normalizeParticipantList(wiki.filter((t) => isBsc2026ActiveTeam(t)));
+      if (norm.length >= 2) return norm;
+    }
+  }
   const curated = resolveCurated(slug);
   if (curated.length) return curated;
   return extractTournamentParticipantsFromMatches(slug);

@@ -274,35 +274,81 @@ export function parseParticipantTeams(wikitext) {
   return [...names];
 }
 
-/** Parse match rows from wikitext */
+function extractOpponentName(raw) {
+  if (!raw) return "";
+  const teamOpp = raw.match(/\{\{TeamOpponent\|([^}|\n]+)/i);
+  if (teamOpp) return teamOpp[1].trim();
+  const team = raw.match(/\{\{Team\|([^}|\n]+)/i);
+  if (team) return team[1].trim();
+  return raw
+    .replace(/\[\[([^|\]]+)(?:\|[^\]]+)?\]\]/g, "$1")
+    .replace(/\{\{[^}]+\}\}/g, "")
+    .trim();
+}
+
+function countSeriesWinsFromMaps(chunk) {
+  let winsA = 0;
+  let winsB = 0;
+  const mapBlocks = chunk.match(/\|map\d+\s*=\s*\{\{Map[\s\S]*?(?=\|map\d+\s*=|\}\})/gi) ?? [];
+  for (const block of mapBlocks) {
+    const s1 = Number(block.match(/\|score1\s*=\s*(\d+)/i)?.[1] ?? NaN);
+    const s2 = Number(block.match(/\|score2\s*=\s*(\d+)/i)?.[1] ?? NaN);
+    if (Number.isNaN(s1) || Number.isNaN(s2)) continue;
+    if (s1 > s2) winsA++;
+    else if (s2 > s1) winsB++;
+  }
+  return { winsA, winsB };
+}
+
+/** Parse {{Match}} rows (Liquipedia BSC 2026 — opponent1/opponent2 + map scores). */
 export function parseMatchesFromWikitext(wikitext, tournamentSlug, region, resolveTeam) {
   const out = [];
   const today = new Date().toISOString().slice(0, 10);
-  const chunks = wikitext.split(/\{\{Match2?/i).slice(1);
+  const chunks = wikitext.split(/\{\{Match\b/i).slice(1);
+
   for (const chunk of chunks) {
-    const fields = {};
-    const re = /\|([a-zA-Z0-9_]+)\s*=\s*([^\n|]*)/g;
-    let m;
-    const slice = chunk.slice(0, 1200);
-    while ((m = re.exec(slice)) !== null) {
-      fields[m[1].toLowerCase()] = m[2].trim();
-    }
-    const t1 = fields.team1 || fields.team1score?.team1;
-    const t2 = fields.team2;
+    const opp1Raw = chunk.match(/\|opponent1\s*=\s*([^\n]+)/i)?.[1] ?? "";
+    const opp2Raw = chunk.match(/\|opponent2\s*=\s*([^\n]+)/i)?.[1] ?? "";
+    const t1 = extractOpponentName(opp1Raw);
+    const t2 = extractOpponentName(opp2Raw);
     if (!t1 || !t2) continue;
+
     const teamASlug = resolveTeam(t1);
     const teamBSlug = resolveTeam(t2);
-    if (!teamASlug || !teamBSlug) continue;
-    const scoreA = Number(fields.score1 ?? fields.team1score ?? 0) || 0;
-    const scoreB = Number(fields.score2 ?? fields.team2score ?? 0) || 0;
-    let date = fields.date || fields.datetime || fields.matchdate || "";
-    date = date.replace(/ /g, "T").slice(0, 19);
+    if (!teamASlug || !teamBSlug || teamASlug === teamBSlug) continue;
+
+    const fields = {};
+    const fieldRe = /\|([a-zA-Z0-9_]+)\s*=\s*([^\n|]*)/g;
+    let fm;
+    const header = chunk.slice(0, 900);
+    while ((fm = fieldRe.exec(header)) !== null) {
+      fields[fm[1].toLowerCase()] = fm[2].trim();
+    }
+
+    let scoreA = Number(fields.score1 ?? fields.opponent1score ?? NaN);
+    let scoreB = Number(fields.score2 ?? fields.opponent2score ?? NaN);
+    const fromMaps = countSeriesWinsFromMaps(chunk);
+    if (fromMaps.winsA + fromMaps.winsB > 0) {
+      scoreA = fromMaps.winsA;
+      scoreB = fromMaps.winsB;
+    }
+    if (Number.isNaN(scoreA)) scoreA = 0;
+    if (Number.isNaN(scoreB)) scoreB = 0;
+
+    let date = (fields.date || fields.datetime || fields.matchdate || "").replace(/\{\{[^}]+\}\}/g, "").trim();
+    date = date.replace(/ - /, "T").replace(/ /g, "T").slice(0, 19);
     if (date && !date.includes("T")) date += "T12:00:00";
-    if (!date) date = `${today}T12:00:00Z`;
-    else if (!date.endsWith("Z")) date += "Z";
-    const finished = fields.finished === "true" || (scoreA + scoreB > 0 && fields.winner);
-    const status = finished ? "finished" : date.slice(0, 10) >= today ? "upcoming" : "finished";
-    const id = `${tournamentSlug}-${teamASlug}-${teamBSlug}-${date.slice(0, 10)}`.replace(/[^a-z0-9-]/gi, "-");
+    if (!date) date = `${today}T12:00:00`;
+    if (!date.endsWith("Z")) date += "Z";
+
+    const hasResult = scoreA + scoreB > 0 && scoreA !== scoreB;
+    const finished = fields.finished === "true" || hasResult;
+    const status = finished ? "finished" : date.slice(0, 10) > today ? "upcoming" : scoreA + scoreB > 0 ? "finished" : "upcoming";
+
+    const stage = cleanLabel(fields.round || fields.stage || fields.tab || fields.title || "Match");
+    const bestof = fields.bestof || fields.bo || "";
+    const id = `lp-${tournamentSlug}-${teamASlug}-vs-${teamBSlug}-${date.slice(0, 10)}`.replace(/[^a-z0-9-]/gi, "-");
+
     out.push({
       id,
       teamASlug,
@@ -310,15 +356,47 @@ export function parseMatchesFromWikitext(wikitext, tournamentSlug, region, resol
       scoreA,
       scoreB,
       tournamentSlug,
-      stage: fields.round || fields.stage || fields.tab || "Match",
+      stage,
       date,
       status,
       region,
-      format: fields.bestof ? `Bo${fields.bestof}` : "Bo3",
+      format: bestof ? `Bo${bestof}` : "Bo5",
     });
   }
   return out;
 }
+
+/** Nombres Liquipedia → slug BrawlForge */
+const LIQUIPEDIA_TEAM_ALIASES = {
+  "big talents": "big",
+  navi: "natus-vincere",
+  "natus vincere": "natus-vincere",
+  hmble: "hmble",
+  "fut esports": "fut-esports",
+  "fut esports academy": "fut-esports-academy",
+  "sk gaming": "sk-gaming",
+  "team heretics": "team-heretics",
+  "crazy raccoon": "crazy-raccoon",
+  "zeta division": "zeta-division",
+  "tribe gaming": "tribe-gaming",
+  "only realm": "only-realm",
+  "bounty hunters esports": "bounty-hunters-esports",
+  "bounty hunters": "bounty-hunters-esports",
+  madrid: "madridmira",
+  "madrid mira": "madridmira",
+  "totem esports": "totem-esports",
+  "novo esports": "novo-esports",
+  "eternal esports": "eternal-esports",
+  "revenant xspark": "revenant-xspark",
+  "ace xero": "ace-xero",
+  "toxic lotus": "toxic-lotus",
+  "bc* gaming sa": "bc-gaming-sa",
+  "bc gaming sa": "bc-gaming-sa",
+  "stmn esports": "stmn-esports",
+  "zoos esports": "f-a-homeless",
+  loud: "loud",
+  reject: "reject",
+};
 
 export function buildTeamResolver(teams) {
   const map = new Map();
@@ -329,12 +407,15 @@ export function buildTeamResolver(teams) {
     map.set(pageToSlug(t.name), t.slug);
     map.set(pageToSlug(t.liquipediaPage?.replace(/_/g, " ") || t.name), t.slug);
   }
+  for (const [alias, slug] of Object.entries(LIQUIPEDIA_TEAM_ALIASES)) {
+    if (map.has(slug) || teams.some((t) => t.slug === slug)) map.set(alias, slug);
+  }
   return (name) => {
     const clean = name.replace(/\[\[([^|\]]+)(?:\|[^\]]+)?\]\]/g, "$1").trim();
     const key = clean.toLowerCase();
     if (map.has(key)) return map.get(key);
     const slug = pageToSlug(clean.replace(/\*/g, ""));
     if (map.has(slug)) return map.get(slug);
-    return slug;
+    return map.get(slug) ?? slug;
   };
 }

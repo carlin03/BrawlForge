@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-05-29T08:16:10.501Z",
+  "syncedAt": "2026-05-29T09:51:07.409Z",
   "source": "liquipedia.net/brawlstars",
   "tournaments": {
     "bsc-2026-brawl-cup": {
@@ -36,9 +36,9 @@
         "tribe-gaming",
         "toxic-lotus"
       ],
-      "matchCount": 0,
+      "matchCount": 19,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:05.953Z"
+      "syncedAt": "2026-05-29T09:51:02.844Z"
     },
     "bsc-2026-rtbc-sa-west": {
       "slug": "bsc-2026-rtbc-sa-west",
@@ -73,7 +73,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:05.954Z"
+      "syncedAt": "2026-05-29T09:51:02.845Z"
     },
     "bsc-2026-challengers-dach": {
       "slug": "bsc-2026-challengers-dach",
@@ -168,9 +168,9 @@
         "sk-gaming",
         "totem-esports"
       ],
-      "matchCount": 0,
+      "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:05.956Z"
+      "syncedAt": "2026-05-29T09:51:02.845Z"
     },
     "bsc-2026-psi-ea": {
       "slug": "bsc-2026-psi-ea",
@@ -199,9 +199,9 @@
         "accept",
         "skcalalas-ea"
       ],
-      "matchCount": 0,
+      "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:05.956Z"
+      "syncedAt": "2026-05-29T09:51:02.846Z"
     },
     "bsc-2026-psi-na": {
       "slug": "bsc-2026-psi-na",
@@ -231,9 +231,9 @@
         "kds-esports",
         "stmn"
       ],
-      "matchCount": 0,
+      "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:05.957Z"
+      "syncedAt": "2026-05-29T09:51:02.846Z"
     },
     "bsc-2026-psi-sa": {
       "slug": "bsc-2026-psi-sa",
@@ -262,9 +262,9 @@
         "skcalalas",
         "eternal-esports"
       ],
-      "matchCount": 0,
+      "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:05.957Z"
+      "syncedAt": "2026-05-29T09:51:02.846Z"
     },
     "bsc-2026-cn-february-mf": {
       "slug": "bsc-2026-cn-february-mf",
@@ -323,12 +323,12 @@
         "hmble",
         "big",
         "totem-esports",
-        "navi",
+        "natus-vincere",
         "totem"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.224Z"
+      "syncedAt": "2026-05-29T09:51:05.139Z"
     },
     "bsc-2026-february-ea-mf": {
       "slug": "bsc-2026-february-ea-mf",
@@ -365,9 +365,9 @@
         "crazy-raccoon",
         "abc-ea-team"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.225Z"
+      "syncedAt": "2026-05-29T09:51:05.140Z"
     },
     "bsc-2026-february-na-mf": {
       "slug": "bsc-2026-february-na-mf",
@@ -404,9 +404,9 @@
         "stmn",
         "crows-nest-esports"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.226Z"
+      "syncedAt": "2026-05-29T09:51:05.141Z"
     },
     "bsc-2026-february-sa-mf": {
       "slug": "bsc-2026-february-sa-mf",
@@ -443,9 +443,9 @@
         "bounty-hunters-esports",
         "new-heights-gaming"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.226Z"
+      "syncedAt": "2026-05-29T09:51:05.142Z"
     },
     "bsc-2026-march-emea-mf": {
       "slug": "bsc-2026-march-emea-mf",
@@ -476,15 +476,15 @@
         "fut-esports",
         "kebap",
         "team-heretics",
-        "navi",
+        "natus-vincere",
         "hmble",
         "madrid",
         "reply-totem",
         "novo-esports"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.227Z"
+      "syncedAt": "2026-05-29T09:51:05.142Z"
     },
     "bsc-2026-march-ea-mf": {
       "slug": "bsc-2026-march-ea-mf",
@@ -521,9 +521,9 @@
         "crazy-raccoon",
         "reject"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.227Z"
+      "syncedAt": "2026-05-29T09:51:05.143Z"
     },
     "bsc-2026-march-na-mf": {
       "slug": "bsc-2026-march-na-mf",
@@ -561,9 +561,9 @@
         "zoos-esports",
         "tribe"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.228Z"
+      "syncedAt": "2026-05-29T09:51:05.143Z"
     },
     "bsc-2026-march-sa-mf": {
       "slug": "bsc-2026-march-sa-mf",
@@ -600,9 +600,9 @@
         "olimpo-squad",
         "eternal-esports"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.228Z"
+      "syncedAt": "2026-05-29T09:51:05.144Z"
     },
     "bsc-2026-april-emea-mf": {
       "slug": "bsc-2026-april-emea-mf",
@@ -623,17 +623,17 @@
       "status": "upcoming",
       "participantSlugs": [
         "hmble",
-        "big-talents",
-        "navi",
+        "big",
+        "natus-vincere",
         "sk-gaming",
         "fut-esports",
         "fut-esports-academy",
         "team-heretics",
         "madrid"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.229Z"
+      "syncedAt": "2026-05-29T09:51:05.145Z"
     },
     "bsc-2026-april-ea-mf": {
       "slug": "bsc-2026-april-ea-mf",
@@ -662,9 +662,9 @@
         "fennel",
         "rival-esports"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.229Z"
+      "syncedAt": "2026-05-29T09:51:05.145Z"
     },
     "bsc-2026-april-na-mf": {
       "slug": "bsc-2026-april-na-mf",
@@ -693,9 +693,9 @@
         "tribe-gaming",
         "stmn-esports"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.229Z"
+      "syncedAt": "2026-05-29T09:51:05.146Z"
     },
     "bsc-2026-april-sa-mf": {
       "slug": "bsc-2026-april-sa-mf",
@@ -724,9 +724,9 @@
         "loud",
         "olimpo-squad"
       ],
-      "matchCount": 0,
+      "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.230Z"
+      "syncedAt": "2026-05-29T09:51:05.146Z"
     },
     "bsc-2026-may-emea-mf": {
       "slug": "bsc-2026-may-emea-mf",
@@ -748,7 +748,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.230Z"
+      "syncedAt": "2026-05-29T09:51:05.146Z"
     },
     "bsc-2026-may-ea-mf": {
       "slug": "bsc-2026-may-ea-mf",
@@ -770,7 +770,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.230Z"
+      "syncedAt": "2026-05-29T09:51:05.147Z"
     },
     "bsc-2026-may-na-mf": {
       "slug": "bsc-2026-may-na-mf",
@@ -792,7 +792,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.231Z"
+      "syncedAt": "2026-05-29T09:51:05.147Z"
     },
     "bsc-2026-may-sa-mf": {
       "slug": "bsc-2026-may-sa-mf",
@@ -814,7 +814,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.231Z"
+      "syncedAt": "2026-05-29T09:51:05.147Z"
     },
     "bsc-2026-june-emea-mf": {
       "slug": "bsc-2026-june-emea-mf",
@@ -836,7 +836,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:08.231Z"
+      "syncedAt": "2026-05-29T09:51:05.147Z"
     },
     "bsc-2026-june-ea-mf": {
       "slug": "bsc-2026-june-ea-mf",
@@ -858,7 +858,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:10.499Z"
+      "syncedAt": "2026-05-29T09:51:07.407Z"
     },
     "bsc-2026-june-na-mf": {
       "slug": "bsc-2026-june-na-mf",
@@ -880,7 +880,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:10.500Z"
+      "syncedAt": "2026-05-29T09:51:07.407Z"
     },
     "bsc-2026-june-sa-mf": {
       "slug": "bsc-2026-june-sa-mf",
@@ -902,7 +902,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:10.500Z"
+      "syncedAt": "2026-05-29T09:51:07.407Z"
     },
     "bsc-2026-july-emea-mf": {
       "slug": "bsc-2026-july-emea-mf",
@@ -924,7 +924,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:10.500Z"
+      "syncedAt": "2026-05-29T09:51:07.408Z"
     },
     "bsc-2026-july-ea-mf": {
       "slug": "bsc-2026-july-ea-mf",
@@ -946,7 +946,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:10.501Z"
+      "syncedAt": "2026-05-29T09:51:07.408Z"
     },
     "bsc-2026-july-na-mf": {
       "slug": "bsc-2026-july-na-mf",
@@ -968,7 +968,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:10.501Z"
+      "syncedAt": "2026-05-29T09:51:07.408Z"
     },
     "bsc-2026-july-sa-mf": {
       "slug": "bsc-2026-july-sa-mf",
@@ -990,7 +990,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T08:16:10.501Z"
+      "syncedAt": "2026-05-29T09:51:07.408Z"
     },
     "bsc-2026-august-emea-mf": {
       "slug": "bsc-2026-august-emea-mf",
@@ -1017,5 +1017,1501 @@
       "missing": true
     }
   },
-  "matches": []
+  "matches": [
+    {
+      "id": "lp-bsc-2026-brawl-cup-bounty-hunters-esports-vs-hmble-2026-05-15",
+      "teamASlug": "bounty-hunters-esports",
+      "teamBSlug": "hmble",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-15T13:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-bounty-hunters-esports-vs-ace-xero-2026-05-15",
+      "teamASlug": "bounty-hunters-esports",
+      "teamBSlug": "ace-xero",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-15T14:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-hmble-vs-ace-xero-2026-05-15",
+      "teamASlug": "hmble",
+      "teamBSlug": "ace-xero",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-15T15:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-only-realm-vs-zeta-division-2026-05-15",
+      "teamASlug": "only-realm",
+      "teamBSlug": "zeta-division",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-15T16:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-only-realm-vs-bc-gaming-sa-2026-05-15",
+      "teamASlug": "only-realm",
+      "teamBSlug": "bc-gaming-sa",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-15T16:45Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-zeta-division-vs-bc-gaming-sa-2026-05-15",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "bc-gaming-sa",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-15T17:30Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-crazy-raccoon-vs-eternal-esports-2026-05-16",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "eternal-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-16T13:30Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-crazy-raccoon-vs-revenant-xspark-2026-05-16",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "revenant-xspark",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-16T14:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-eternal-esports-vs-revenant-xspark-2026-05-16",
+      "teamASlug": "eternal-esports",
+      "teamBSlug": "revenant-xspark",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-16T15:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-fut-esports-vs-tribe-gaming-2026-05-16",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "tribe-gaming",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-16T15:30Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-fut-esports-vs-toxic-lotus-2026-05-16",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "toxic-lotus",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-16T16:45Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-tribe-gaming-vs-toxic-lotus-2026-05-16",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "toxic-lotus",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-16T17:30Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-hmble-vs-only-realm-2026-05-17",
+      "teamASlug": "hmble",
+      "teamBSlug": "only-realm",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-17T13:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-tribe-gaming-vs-revenant-xspark-2026-05-17",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "revenant-xspark",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-17T14:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-zeta-division-vs-bounty-hunters-esports-2026-05-17",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "bounty-hunters-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-17T15:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-crazy-raccoon-vs-fut-esports-2026-05-17",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "fut-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-17T15:30Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-hmble-vs-tribe-gaming-2026-05-17",
+      "teamASlug": "hmble",
+      "teamBSlug": "tribe-gaming",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-17T16:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-zeta-division-vs-fut-esports-2026-05-17",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "fut-esports",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-17T17:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-brawl-cup-hmble-vs-fut-esports-2026-05-17",
+      "teamASlug": "hmble",
+      "teamBSlug": "fut-esports",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-brawl-cup",
+      "stage": "Match",
+      "date": "2026-05-17T17:30Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-emea-hmble-vs-team-heretics-2026-01-24",
+      "teamASlug": "hmble",
+      "teamBSlug": "team-heretics",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-psi-emea",
+      "stage": "Match",
+      "date": "2026-01-24T14:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-emea-sk-gaming-vs-totem-esports-2026-01-24",
+      "teamASlug": "sk-gaming",
+      "teamBSlug": "totem-esports",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-psi-emea",
+      "stage": "Match",
+      "date": "2026-01-24T15:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-emea-hmble-vs-sk-gaming-2026-01-24",
+      "teamASlug": "hmble",
+      "teamBSlug": "sk-gaming",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-psi-emea",
+      "stage": "Match",
+      "date": "2026-01-24T16:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-ea-crazy-raccoon-vs-legend-ken-g-2026-01-24",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "legend-ken-g",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-psi-ea",
+      "stage": "Match",
+      "date": "2026-01-24T19:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-ea-accept-vs-skcalalas-ea-2026-01-24",
+      "teamASlug": "accept",
+      "teamBSlug": "skcalalas-ea",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-psi-ea",
+      "stage": "Match",
+      "date": "2026-01-24T20:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-ea-legend-ken-g-vs-skcalalas-ea-2026-01-24",
+      "teamASlug": "legend-ken-g",
+      "teamBSlug": "skcalalas-ea",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-psi-ea",
+      "stage": "Match",
+      "date": "2026-01-24T20:45Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-na-tribe-gaming-vs-stmn-esports-2026-01-25",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "stmn-esports",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-psi-na",
+      "stage": "Match",
+      "date": "2026-01-25T14:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-na-vatic-esports-vs-kds-esports-2026-01-25",
+      "teamASlug": "vatic-esports",
+      "teamBSlug": "kds-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-psi-na",
+      "stage": "Match",
+      "date": "2026-01-25T14:45Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-na-stmn-vs-vatic-esports-2026-01-25",
+      "teamASlug": "stmn",
+      "teamBSlug": "vatic-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-psi-na",
+      "stage": "Match",
+      "date": "2026-01-25T15:30Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-sa-loud-vs-kaioperro-2026-01-25",
+      "teamASlug": "loud",
+      "teamBSlug": "kaioperro",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-psi-sa",
+      "stage": "Match",
+      "date": "2026-01-25T20:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-sa-skcalalas-vs-eternal-esports-2026-01-25",
+      "teamASlug": "skcalalas",
+      "teamBSlug": "eternal-esports",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-psi-sa",
+      "stage": "Match",
+      "date": "2026-01-25T21:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-psi-sa-loud-vs-eternal-esports-2026-01-25",
+      "teamASlug": "loud",
+      "teamBSlug": "eternal-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-psi-sa",
+      "stage": "Match",
+      "date": "2026-01-25T22:00Z",
+      "status": "finished",
+      "region": "GLOBAL",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-emea-mf-sk-gaming-vs-cmm-2026-02-15",
+      "teamASlug": "sk-gaming",
+      "teamBSlug": "cmm",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-emea-mf",
+      "stage": "Match",
+      "date": "2026-02-15T13:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-february-emea-mf-team-heretics-vs-fut-esports-2026-02-15",
+      "teamASlug": "team-heretics",
+      "teamBSlug": "fut-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-emea-mf",
+      "stage": "Match",
+      "date": "2026-02-15T14:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-emea-mf-hmble-vs-big-2026-02-15",
+      "teamASlug": "hmble",
+      "teamBSlug": "big",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-february-emea-mf",
+      "stage": "Match",
+      "date": "2026-02-15T15:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-emea-mf-totem-esports-vs-natus-vincere-2026-02-15",
+      "teamASlug": "totem-esports",
+      "teamBSlug": "natus-vincere",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-february-emea-mf",
+      "stage": "Match",
+      "date": "2026-02-15T16:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-emea-mf-cmm-vs-fut-esports-2026-02-15",
+      "teamASlug": "cmm",
+      "teamBSlug": "fut-esports",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-emea-mf",
+      "stage": "Match",
+      "date": "2026-02-15T17:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-emea-mf-hmble-vs-totem-2026-02-15",
+      "teamASlug": "hmble",
+      "teamBSlug": "totem",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-emea-mf",
+      "stage": "Match",
+      "date": "2026-02-15T17:30Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-emea-mf-fut-esports-vs-hmble-2026-02-15",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "hmble",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-february-emea-mf",
+      "stage": "Match",
+      "date": "2026-02-15T18:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-ea-mf-zeta-division-vs-effort-result-2026-02-14",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "effort-result",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-ea-mf",
+      "stage": "Match",
+      "date": "2026-02-14T16:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-february-ea-mf-skcalalas-ea-vs-rival-esports-2026-02-14",
+      "teamASlug": "skcalalas-ea",
+      "teamBSlug": "rival-esports",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-ea-mf",
+      "stage": "Match",
+      "date": "2026-02-14T17:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-ea-mf-reject-vs-wwl-esports-2026-02-14",
+      "teamASlug": "reject",
+      "teamBSlug": "wwl-esports",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-ea-mf",
+      "stage": "Match",
+      "date": "2026-02-14T18:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-ea-mf-crazy-raccoon-vs-abc-ea-team-2026-02-14",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "abc-ea-team",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-ea-mf",
+      "stage": "Match",
+      "date": "2026-02-14T19:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-ea-mf-zeta-division-vs-rival-esports-2026-02-14",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "rival-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-ea-mf",
+      "stage": "Match",
+      "date": "2026-02-14T19:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-ea-mf-wwl-esports-vs-abc-ea-team-2026-02-14",
+      "teamASlug": "wwl-esports",
+      "teamBSlug": "abc-ea-team",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-ea-mf",
+      "stage": "Match",
+      "date": "2026-02-14T20:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-ea-mf-zeta-division-vs-abc-ea-team-2026-02-14",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "abc-ea-team",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-february-ea-mf",
+      "stage": "Match",
+      "date": "2026-02-14T20:55Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-na-mf-tribe-gaming-vs-elevate-2026-02-22",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "elevate",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-na-mf",
+      "stage": "Match",
+      "date": "2026-02-22T20:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-february-na-mf-team-elektros-vs-vatic-esports-2026-02-22",
+      "teamASlug": "team-elektros",
+      "teamBSlug": "vatic-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-na-mf",
+      "stage": "Match",
+      "date": "2026-02-22T21:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-na-mf-kds-esports-vs-only-realm-2026-02-22",
+      "teamASlug": "kds-esports",
+      "teamBSlug": "only-realm",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-na-mf",
+      "stage": "Match",
+      "date": "2026-02-22T21:30Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-na-mf-stmn-vs-crows-nest-esports-2026-02-22",
+      "teamASlug": "stmn",
+      "teamBSlug": "crows-nest-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-na-mf",
+      "stage": "Match",
+      "date": "2026-02-22T22:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-na-mf-tribe-gaming-vs-team-elektros-2026-02-22",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "team-elektros",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-na-mf",
+      "stage": "Match",
+      "date": "2026-02-22T22:30Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-na-mf-kds-esports-vs-stmn-2026-02-22",
+      "teamASlug": "kds-esports",
+      "teamBSlug": "stmn",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-na-mf",
+      "stage": "Match",
+      "date": "2026-02-22T23:30Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-na-mf-team-elektros-vs-stmn-2026-02-23",
+      "teamASlug": "team-elektros",
+      "teamBSlug": "stmn",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-na-mf",
+      "stage": "Match",
+      "date": "2026-02-23T00:30Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-sa-mf-loud-vs-ninguem-segura-2026-02-21",
+      "teamASlug": "loud",
+      "teamBSlug": "ninguem-segura",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-february-sa-mf",
+      "stage": "Match",
+      "date": "2026-02-21T16:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-february-sa-mf-olimpo-squad-vs-eternal-esports-2026-02-21",
+      "teamASlug": "olimpo-squad",
+      "teamBSlug": "eternal-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-sa-mf",
+      "stage": "Match",
+      "date": "2026-02-21T17:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-sa-mf-skcalalas-vs-sonhadores-2026-02-21",
+      "teamASlug": "skcalalas",
+      "teamBSlug": "sonhadores",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-february-sa-mf",
+      "stage": "Match",
+      "date": "2026-02-21T17:45Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-sa-mf-bounty-hunters-esports-vs-new-heights-gaming-2026-02-21",
+      "teamASlug": "bounty-hunters-esports",
+      "teamBSlug": "new-heights-gaming",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-sa-mf",
+      "stage": "Match",
+      "date": "2026-02-21T18:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-sa-mf-loud-vs-eternal-esports-2026-02-21",
+      "teamASlug": "loud",
+      "teamBSlug": "eternal-esports",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-sa-mf",
+      "stage": "Match",
+      "date": "2026-02-21T19:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-sa-mf-skcalalas-vs-new-heights-gaming-2026-02-21",
+      "teamASlug": "skcalalas",
+      "teamBSlug": "new-heights-gaming",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-february-sa-mf",
+      "stage": "Match",
+      "date": "2026-02-21T20:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-february-sa-mf-eternal-esports-vs-new-heights-gaming-2026-02-21",
+      "teamASlug": "eternal-esports",
+      "teamBSlug": "new-heights-gaming",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-february-sa-mf",
+      "stage": "Match",
+      "date": "2026-02-21T21:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-emea-mf-fut-esports-vs-kebap-2026-03-15",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "kebap",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-emea-mf",
+      "stage": "Match",
+      "date": "2026-03-15T13:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-march-emea-mf-team-heretics-vs-natus-vincere-2026-03-15",
+      "teamASlug": "team-heretics",
+      "teamBSlug": "natus-vincere",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-march-emea-mf",
+      "stage": "Match",
+      "date": "2026-03-15T13:30Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-emea-mf-hmble-vs-madrid-2026-03-15",
+      "teamASlug": "hmble",
+      "teamBSlug": "madrid",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-emea-mf",
+      "stage": "Match",
+      "date": "2026-03-15T14:45Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-emea-mf-reply-totem-vs-novo-esports-2026-03-15",
+      "teamASlug": "reply-totem",
+      "teamBSlug": "novo-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-emea-mf",
+      "stage": "Match",
+      "date": "2026-03-15T15:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-emea-mf-fut-esports-vs-team-heretics-2026-03-15",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "team-heretics",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-march-emea-mf",
+      "stage": "Match",
+      "date": "2026-03-15T16:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-emea-mf-hmble-vs-novo-esports-2026-03-15",
+      "teamASlug": "hmble",
+      "teamBSlug": "novo-esports",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-march-emea-mf",
+      "stage": "Match",
+      "date": "2026-03-15T17:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-emea-mf-fut-esports-vs-hmble-2026-03-15",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "hmble",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-emea-mf",
+      "stage": "Match",
+      "date": "2026-03-15T18:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-ea-mf-zeta-division-vs-dropeados-f-a-2026-03-14",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "dropeados-f-a",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-ea-mf",
+      "stage": "Match",
+      "date": "2026-03-14T16:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-march-ea-mf-skcalalas-ea-vs-rival-esports-2026-03-14",
+      "teamASlug": "skcalalas-ea",
+      "teamBSlug": "rival-esports",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-march-ea-mf",
+      "stage": "Match",
+      "date": "2026-03-14T16:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-ea-mf-wwl-esports-vs-feasible-gaming-2026-03-14",
+      "teamASlug": "wwl-esports",
+      "teamBSlug": "feasible-gaming",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-ea-mf",
+      "stage": "Match",
+      "date": "2026-03-14T17:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-ea-mf-crazy-raccoon-vs-reject-2026-03-14",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "reject",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-march-ea-mf",
+      "stage": "Match",
+      "date": "2026-03-14T18:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-ea-mf-zeta-division-vs-skcalalas-ea-2026-03-14",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "skcalalas-ea",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-ea-mf",
+      "stage": "Match",
+      "date": "2026-03-14T19:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-ea-mf-feasible-gaming-vs-crazy-raccoon-2026-03-14",
+      "teamASlug": "feasible-gaming",
+      "teamBSlug": "crazy-raccoon",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-ea-mf",
+      "stage": "Match",
+      "date": "2026-03-14T20:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-ea-mf-zeta-division-vs-crazy-raccoon-2026-03-14",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "crazy-raccoon",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-ea-mf",
+      "stage": "Match",
+      "date": "2026-03-14T21:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-na-mf-team-elektros-vs-enosis-esports-2026-03-22",
+      "teamASlug": "team-elektros",
+      "teamBSlug": "enosis-esports",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-march-na-mf",
+      "stage": "Match",
+      "date": "2026-03-22T19:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-march-na-mf-vatic-esports-vs-tribe-gaming-2026-03-22",
+      "teamASlug": "vatic-esports",
+      "teamBSlug": "tribe-gaming",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-na-mf",
+      "stage": "Match",
+      "date": "2026-03-22T20:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-na-mf-only-realm-na-vs-legacy-esports-2026-03-22",
+      "teamASlug": "only-realm-na",
+      "teamBSlug": "legacy-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-na-mf",
+      "stage": "Match",
+      "date": "2026-03-22T21:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-na-mf-vic-day-vs-zoos-esports-2026-03-22",
+      "teamASlug": "vic-day",
+      "teamBSlug": "zoos-esports",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-na-mf",
+      "stage": "Match",
+      "date": "2026-03-22T21:30Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-na-mf-team-elektros-vs-tribe-2026-03-22",
+      "teamASlug": "team-elektros",
+      "teamBSlug": "tribe",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-na-mf",
+      "stage": "Match",
+      "date": "2026-03-22T22:45Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-na-mf-only-realm-na-vs-zoos-esports-2026-03-22",
+      "teamASlug": "only-realm-na",
+      "teamBSlug": "zoos-esports",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-march-na-mf",
+      "stage": "Match",
+      "date": "2026-03-22T23:45Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-na-mf-tribe-gaming-vs-only-realm-na-2026-03-23",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "only-realm-na",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-march-na-mf",
+      "stage": "Match",
+      "date": "2026-03-23T01:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-sa-mf-new-heights-gaming-vs-acre-lovers-2026-03-21",
+      "teamASlug": "new-heights-gaming",
+      "teamBSlug": "acre-lovers",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-sa-mf",
+      "stage": "Match",
+      "date": "2026-03-21T16:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-march-sa-mf-elevate-vs-bounty-hunters-esports-2026-03-21",
+      "teamASlug": "elevate",
+      "teamBSlug": "bounty-hunters-esports",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-march-sa-mf",
+      "stage": "Match",
+      "date": "2026-03-21T16:30Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-sa-mf-loud-vs-skcalalas-2026-03-21",
+      "teamASlug": "loud",
+      "teamBSlug": "skcalalas",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-sa-mf",
+      "stage": "Match",
+      "date": "2026-03-21T17:30Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-sa-mf-olimpo-squad-vs-eternal-esports-2026-03-21",
+      "teamASlug": "olimpo-squad",
+      "teamBSlug": "eternal-esports",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-march-sa-mf",
+      "stage": "Match",
+      "date": "2026-03-21T18:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-sa-mf-new-heights-gaming-vs-elevate-2026-03-21",
+      "teamASlug": "new-heights-gaming",
+      "teamBSlug": "elevate",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-march-sa-mf",
+      "stage": "Match",
+      "date": "2026-03-21T19:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-sa-mf-loud-vs-olimpo-squad-2026-03-21",
+      "teamASlug": "loud",
+      "teamBSlug": "olimpo-squad",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-march-sa-mf",
+      "stage": "Match",
+      "date": "2026-03-21T19:45Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-march-sa-mf-new-heights-gaming-vs-loud-2026-03-21",
+      "teamASlug": "new-heights-gaming",
+      "teamBSlug": "loud",
+      "scoreA": 3,
+      "scoreB": 2,
+      "tournamentSlug": "bsc-2026-march-sa-mf",
+      "stage": "Match",
+      "date": "2026-03-21T20:30Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-emea-mf-hmble-vs-big-2026-04-12",
+      "teamASlug": "hmble",
+      "teamBSlug": "big",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-emea-mf",
+      "stage": "Match",
+      "date": "2026-04-12T12:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-april-emea-mf-natus-vincere-vs-sk-gaming-2026-04-12",
+      "teamASlug": "natus-vincere",
+      "teamBSlug": "sk-gaming",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-emea-mf",
+      "stage": "Match",
+      "date": "2026-04-12T13:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-emea-mf-fut-esports-vs-fut-esports-academy-2026-04-12",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "fut-esports-academy",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-emea-mf",
+      "stage": "Match",
+      "date": "2026-04-12T13:40Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-emea-mf-team-heretics-vs-madrid-2026-04-12",
+      "teamASlug": "team-heretics",
+      "teamBSlug": "madrid",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-emea-mf",
+      "stage": "Match",
+      "date": "2026-04-12T14:05Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-emea-mf-big-vs-natus-vincere-2026-04-12",
+      "teamASlug": "big",
+      "teamBSlug": "natus-vincere",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-emea-mf",
+      "stage": "Match",
+      "date": "2026-04-12T15:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-emea-mf-fut-esports-vs-madrid-2026-04-12",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "madrid",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-emea-mf",
+      "stage": "Match",
+      "date": "2026-04-12T17:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-emea-mf-big-vs-fut-esports-2026-04-12",
+      "teamASlug": "big",
+      "teamBSlug": "fut-esports",
+      "scoreA": 0,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-emea-mf",
+      "stage": "Match",
+      "date": "2026-04-12T18:00Z",
+      "status": "finished",
+      "region": "EMEA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-ea-mf-zeta-division-vs-kcn-2026-04-11",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "kcn",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-ea-mf",
+      "stage": "Match",
+      "date": "2026-04-11T16:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-april-ea-mf-skcalalas-ea-vs-reject-2026-04-11",
+      "teamASlug": "skcalalas-ea",
+      "teamBSlug": "reject",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-april-ea-mf",
+      "stage": "Match",
+      "date": "2026-04-11T16:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-ea-mf-crazy-raccoon-vs-insomnia-2026-04-11",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "insomnia",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-ea-mf",
+      "stage": "Match",
+      "date": "2026-04-11T17:30Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-ea-mf-fennel-vs-rival-esports-2026-04-11",
+      "teamASlug": "fennel",
+      "teamBSlug": "rival-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-ea-mf",
+      "stage": "Match",
+      "date": "2026-04-11T18:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-ea-mf-zeta-division-vs-skcalalas-ea-2026-04-11",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "skcalalas-ea",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-ea-mf",
+      "stage": "Match",
+      "date": "2026-04-11T19:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-ea-mf-crazy-raccoon-vs-rival-esports-2026-04-11",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "rival-esports",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-april-ea-mf",
+      "stage": "Match",
+      "date": "2026-04-11T20:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-ea-mf-skcalalas-ea-vs-crazy-raccoon-2026-04-11",
+      "teamASlug": "skcalalas-ea",
+      "teamBSlug": "crazy-raccoon",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-ea-mf",
+      "stage": "Match",
+      "date": "2026-04-11T21:00Z",
+      "status": "finished",
+      "region": "EA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-na-mf-team-elektros-vs-legacy-esports-2026-04-19",
+      "teamASlug": "team-elektros",
+      "teamBSlug": "legacy-esports",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-na-mf",
+      "stage": "Match",
+      "date": "2026-04-19T19:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-april-na-mf-f-a-homeless-vs-vatic-esports-2026-04-19",
+      "teamASlug": "f-a-homeless",
+      "teamBSlug": "vatic-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-na-mf",
+      "stage": "Match",
+      "date": "2026-04-19T20:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-na-mf-only-realm-vs-vic-day-2026-04-19",
+      "teamASlug": "only-realm",
+      "teamBSlug": "vic-day",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-april-na-mf",
+      "stage": "Match",
+      "date": "2026-04-19T21:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-na-mf-tribe-gaming-vs-stmn-esports-2026-04-19",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "stmn-esports",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-na-mf",
+      "stage": "Match",
+      "date": "2026-04-19T22:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-na-mf-legacy-esports-vs-vatic-esports-2026-04-19",
+      "teamASlug": "legacy-esports",
+      "teamBSlug": "vatic-esports",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-na-mf",
+      "stage": "Match",
+      "date": "2026-04-19T23:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-na-mf-only-realm-vs-tribe-gaming-2026-04-19",
+      "teamASlug": "only-realm",
+      "teamBSlug": "tribe-gaming",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-na-mf",
+      "stage": "Match",
+      "date": "2026-04-19T23:55Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-na-mf-vatic-esports-vs-tribe-gaming-2026-04-20",
+      "teamASlug": "vatic-esports",
+      "teamBSlug": "tribe-gaming",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-april-na-mf",
+      "stage": "Match",
+      "date": "2026-04-20T01:00Z",
+      "status": "finished",
+      "region": "NA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-sa-mf-bounty-hunters-esports-vs-acre-lovers-2026-04-18",
+      "teamASlug": "bounty-hunters-esports",
+      "teamBSlug": "acre-lovers",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-april-sa-mf",
+      "stage": "Match",
+      "date": "2026-04-18T16:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo3"
+    },
+    {
+      "id": "lp-bsc-2026-april-sa-mf-skcalalas-vs-topa-tudo-por-dinheiro-2026-04-18",
+      "teamASlug": "skcalalas",
+      "teamBSlug": "topa-tudo-por-dinheiro",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-sa-mf",
+      "stage": "Match",
+      "date": "2026-04-18T17:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-sa-mf-eternal-esports-vs-oddyssey-2026-04-18",
+      "teamASlug": "eternal-esports",
+      "teamBSlug": "oddyssey",
+      "scoreA": 3,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-april-sa-mf",
+      "stage": "Match",
+      "date": "2026-04-18T17:30Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-sa-mf-loud-vs-olimpo-squad-2026-04-18",
+      "teamASlug": "loud",
+      "teamBSlug": "olimpo-squad",
+      "scoreA": 1,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-sa-mf",
+      "stage": "Match",
+      "date": "2026-04-18T18:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-sa-mf-bounty-hunters-esports-vs-skcalalas-2026-04-18",
+      "teamASlug": "bounty-hunters-esports",
+      "teamBSlug": "skcalalas",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-april-sa-mf",
+      "stage": "Match",
+      "date": "2026-04-18T19:00Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-sa-mf-eternal-esports-vs-olimpo-squad-2026-04-18",
+      "teamASlug": "eternal-esports",
+      "teamBSlug": "olimpo-squad",
+      "scoreA": 3,
+      "scoreB": 1,
+      "tournamentSlug": "bsc-2026-april-sa-mf",
+      "stage": "Match",
+      "date": "2026-04-18T19:45Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    },
+    {
+      "id": "lp-bsc-2026-april-sa-mf-bounty-hunters-esports-vs-eternal-esports-2026-04-18",
+      "teamASlug": "bounty-hunters-esports",
+      "teamBSlug": "eternal-esports",
+      "scoreA": 2,
+      "scoreB": 3,
+      "tournamentSlug": "bsc-2026-april-sa-mf",
+      "stage": "Match",
+      "date": "2026-04-18T20:30Z",
+      "status": "finished",
+      "region": "SA",
+      "format": "Bo5"
+    }
+  ]
 }

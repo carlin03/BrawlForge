@@ -106,8 +106,6 @@ async function main() {
         continue;
       }
       const info = parseLeagueInfobox(wikitext);
-      const participantNames = parseParticipantTeams(wikitext);
-      const participantSlugs = [...new Set(participantNames.map(resolveTeam).filter(Boolean))];
       const region =
         slug.includes("-emea-") || slug.endsWith("-emea-mf")
           ? "EMEA"
@@ -118,7 +116,11 @@ async function main() {
               : slug.includes("-sa-")
                 ? "SA"
                 : "GLOBAL";
+      const participantNames = parseParticipantTeams(wikitext);
       const parsedMatches = parseMatchesFromWikitext(wikitext, slug, mapRegion(region), resolveTeam);
+      const fromNames = participantNames.map(resolveTeam).filter(Boolean);
+      const fromMatches = parsedMatches.flatMap((m) => [m.teamASlug, m.teamBSlug]);
+      const participantSlugs = [...new Set([...fromNames, ...fromMatches])];
       allMatches.push(...parsedMatches);
 
       const status = tournamentStatus(info.startDate, info.endDate);
