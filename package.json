@@ -11,6 +11,8 @@
     "supabase:apply:storage": "node scripts/apply-logo-storage-migration.mjs",
     "deploy:check": "npm run supabase:check && npm run build",
     "supabase:seed:catalog": "node scripts/seed-supabase-catalog.mjs",
+    "supabase:export:csv": "node scripts/export-catalog-csv.mjs",
+    "supabase:import:csv": "node scripts/import-supabase-csv.mjs",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",

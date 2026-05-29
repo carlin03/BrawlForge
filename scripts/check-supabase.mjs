@@ -30,6 +30,7 @@ const TABLES = [
   "fantasy_squad_slots",
   "teams_catalog",
   "players_catalog",
+  "news_catalog",
 ];
 
 const RPCS = ["prediction_vote_aggregates", "fantasy_leaderboard"];

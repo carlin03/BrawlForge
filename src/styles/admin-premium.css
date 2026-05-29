@@ -439,6 +439,44 @@
   color: var(--bp-text);
   background: rgba(255, 200, 46, 0.1);
 }
+.bf-admin-import {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 720px;
+}
+.bf-admin-import-templates h3,
+.bf-admin-import-form h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+.bf-admin-import-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bf-admin-import-file {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--bp-line);
+  background: var(--bp-panel);
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+.bf-admin-import-file-label {
+  font-weight: 700;
+  font-size: 14px;
+}
+.bf-admin-import-file input[type="file"] {
+  font-size: 13px;
+}
+
 .bf-admin-new-badge {
   display: inline-block;
   margin-right: 4px;
