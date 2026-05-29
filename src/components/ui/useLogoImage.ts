@@ -76,6 +76,10 @@ export function useLogoImage(sources: string[]) {
         currentSrc?.includes("taiyoro-prod-media.s3.amazonaws.com") ||
         currentSrc?.includes("cdn.royaleapi.com") ||
         currentSrc?.includes("upload.wikimedia.org") ||
+        currentSrc?.includes("supabase.co") ||
+        currentSrc?.includes("supabase.in") ||
+        currentSrc?.includes("mitiendanube.com") ||
+        currentSrc?.includes("eternalesports.org") ||
         currentSrc?.includes("mWB0X8mVG2.png");
       if (!trusted && hasWhiteBackground(img)) {
         advanceOrFail();

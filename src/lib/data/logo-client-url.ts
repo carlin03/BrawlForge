@@ -6,6 +6,8 @@ const DIRECT_HOSTS = [
   "upload.wikimedia.org",
   "supabase.co",
   "supabase.in",
+  "mitiendanube.com",
+  "eternalesports.org",
 ];
 
 function needsImageProxy(url: string): boolean {
