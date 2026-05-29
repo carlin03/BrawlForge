@@ -1,16 +1,11 @@
 /**
  * Equipos BSC 2026 — Tier B+ con actividad real (PSI, Preseason, MQ, MF, Brawl Cup).
- * Solo orgs que han jugado el circuito oficial 2026 (BSEN / Liquipedia).
+ * Regiones y plantillas: bsc-2026-team-registry.ts + bsc-2026-rosters.ts
  */
 export const BSC_2026_ACTIVE_TEAM_SLUGS: readonly string[] = [
+  // EMEA
   "hmble",
   "fut-esports",
-  "tribe-gaming",
-  "zeta-division",
-  "crazy-raccoon",
-  "only-realm",
-  "bounty-hunters-esports",
-
   "sk-gaming",
   "team-heretics",
   "natus-vincere",
@@ -20,46 +15,57 @@ export const BSC_2026_ACTIVE_TEAM_SLUGS: readonly string[] = [
   "big-talents",
   "cmm",
   "fut-esports-academy",
+  "kebap",
+  "metizport",
+  "madridmira",
 
+  // East Asia
+  "crazy-raccoon",
+  "zeta-division",
   "reject",
   "skcalalas-ea",
   "rival-esports",
-  "effort-result",
-  "abc-ea-team",
   "wwl-esports",
   "feasible-gaming",
   "frenzy-esports",
+  "fennel",
+  "insomnia",
+  "ace-xero",
+  "toxic-lotus",
 
-  "vatic-esports",
-  "team-elektros",
-  "kds-esports",
+  // North America
+  "tribe-gaming",
+  "only-realm",
   "stmn-esports",
+  "team-elektros",
+  "vatic-esports",
   "elevate",
+  "f-a-homeless",
+  "vic-day",
+  "legacy-esports",
 
+  // South America
   "loud",
   "skcalalas",
   "new-heights-gaming",
   "kaioperro",
   "eternal-esports",
   "alguem-segura",
-  "zurita-gang",
-  "enosis-esports",
   "olimpo-squad",
+  "bounty-hunters-esports",
+  "enosis-esports",
   "bc-gaming-sa",
   "level-esports",
+  "oddyssey",
+  "acre-lovers",
+  "f-a-zurita-gaming",
 
-  "kebap",
-  "metizport",
-  "zoos-esports",
-
-  "ace-xero",
-  "toxic-lotus",
+  // Global / multi-región en Brawl Cup
   "revenant-xspark",
 ] as const;
 
 /**
  * Fuera del circuito BSC 2026 — no listar en clubes, fantasy ni predicciones.
- * QLASH nunca jugó; Papara/SSG/Nova/etc. no son el circuito actual.
  */
 export const BSC_2026_EXCLUDED_TEAM_SLUGS: readonly string[] = [
   "qlash",
@@ -71,9 +77,7 @@ export const BSC_2026_EXCLUDED_TEAM_SLUGS: readonly string[] = [
   "enterprise-esports",
   "alpha7-esports",
   "chasmac-gaming-br",
-  "oddyssey",
   "intz",
-  "acre-lovers",
   "spacestation-gaming",
   "spacestation-gaming-brazil",
   "spacestation-gaming-sea",
@@ -83,9 +87,13 @@ export const BSC_2026_EXCLUDED_TEAM_SLUGS: readonly string[] = [
   "skcalalas-na",
   "eternal-fire",
   "bc-gaming",
-  "fennel",
   "tribe-gaming-eu",
   "stmn-esports-eu",
+  "kds-esports",
+  "zoos-esports",
+  "effort-result",
+  "abc-ea-team",
+  "zurita-gang",
 ] as const;
 
 export const BSC_2026_ACTIVE_SLUG_SET = new Set<string>(BSC_2026_ACTIVE_TEAM_SLUGS);

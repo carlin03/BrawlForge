@@ -1,7 +1,9 @@
 /**
- * Plantillas BSC 2026 — BSEN / Liquipedia (MF, PSI, preseason, roster trackers).
- * Fuente de verdad para fantasy y fichajes (teamSlug forzado aunque Liquipedia esté desactualizado).
+ * Plantillas BSC 2026 — BSEN / Liquipedia (MF, PSI, preseason).
+ * Fuente de verdad para fantasy (teamSlug forzado).
  */
+import { BSC_2026_TEAM_REGISTRY } from "./bsc-2026-team-registry";
+
 export const BSC_2026_ROSTERS: Record<string, string[]> = {
   "sk-gaming": ["nowy297", "ope", "yoshi"],
   "team-heretics": ["ikaoss", "marco", "subeme"],
@@ -14,46 +16,57 @@ export const BSC_2026_ROSTERS: Record<string, string[]> = {
   cmm: ["kellow", "mine", "dompe"],
   "novo-esports": ["filippo", "meow", "terry"],
   "fut-esports-academy": ["ferissa", "master", "zeyrox"],
+  madridmira: ["rup", "yoko", "jusorange"],
+  kebap: ["dede", "yuffy", "ray092"],
+  metizport: ["decaii", "ciro", "kellow"],
 
   "zeta-division": ["battoman", "sitetampo", "sizuku"],
   "crazy-raccoon": ["milkreo", "moya", "tensai"],
   reject: ["levi", "melty", "shu"],
   "skcalalas-ea": ["ghost-t", "kuru", "naipishu"],
   "rival-esports": ["ryohei", "totoron", "yutapin"],
-  "effort-result": ["jene-azure", "wahochi", "koga"],
-  "abc-ea-team": ["achapi", "i-see", "ken-g"],
   "wwl-esports": ["cookie", "minzzun", "nenne"],
   "feasible-gaming": ["nyades", "sigemyon", "drake"],
   "frenzy-esports": ["danshari", "mira", "toridesu"],
+  fennel: ["achapi", "i-see", "ken-g"],
+  insomnia: ["jene-azure", "koga", "wahochi"],
+  "ace-xero": ["david", "galaxy", "coldrink"],
+  "toxic-lotus": ["engine", "toc", "ou"],
 
   "tribe-gaming": ["diegogamer", "lxffy", "rbm"],
-  "kds-esports": [],
   "stmn-esports": ["juan-carlos", "pain", "tacos"],
   "team-elektros": ["doin", "memen", "snoiy"],
-  "vatic-esports": ["belal", "ezlivi", "rafiki"],
+  "vatic-esports": ["belal", "ezlivi", "duckie"],
   "only-realm": ["bobby", "patchy", "sans"],
-  elevate: ["duckie", "vegeta", "og"],
+  elevate: ["vegeta", "og", "portox"],
+  "f-a-homeless": ["ducky", "tyrant", "xemp"],
+  "vic-day": ["belal", "ezlivi", "kapi"],
+  "legacy-esports": ["rafiki", "zoulan", "zeus"],
 
   loud: ["edinho", "firecrow", "kaiodog"],
   skcalalas: ["kristian", "pekka", "rhz"],
   "new-heights-gaming": ["portox", "wesley", "prozy"],
   kaioperro: ["derrp", "doritos", "loko"],
   "eternal-esports": ["cauebr", "jubileu", "mohtep"],
-  "alguem-segura": ["nubis", "tufa", "zeus"],
+  "alguem-segura": ["nubis", "tufa", "satisfyer"],
   "olimpo-squad": ["brabao", "golden", "icecrow"],
   "bounty-hunters-esports": ["redzin", "bicho", "rei-do-fut"],
-  "zurita-gang": ["bryan", "meliodas", "exic"],
   "enosis-esports": ["b4st", "deykon", "gun"],
   "bc-gaming-sa": ["leo", "mica", "tomz"],
   "level-esports": ["nouthz", "darke-san", "satisfyer"],
+  oddyssey: ["dreww", "lipizin", "magic"],
+  "acre-lovers": ["fire-murilo", "satisfyer", "sennin"],
+  "f-a-zurita-gaming": ["bryan", "exic", "jxcr"],
 
-  kebap: ["dede", "yuffy", "ray092"],
-  metizport: ["decaii", "ciro", "kellow"],
-  "zoos-esports": ["tyrant", "xemp"],
-  "ace-xero": ["david", "galaxy", "coldrink"],
-  "toxic-lotus": ["engine", "toc", "ou"],
   "revenant-xspark": ["sergeant-clash", "hiroshii", "walkthrough"],
 };
+
+// Asegurar plantillas del registro (por si falta alguna clave arriba)
+for (const [slug, entry] of Object.entries(BSC_2026_TEAM_REGISTRY)) {
+  if (!BSC_2026_ROSTERS[slug]?.length) {
+    BSC_2026_ROSTERS[slug] = [...entry.roster];
+  }
+}
 
 export const BSC_2026_TEAM_SLUGS = Object.keys(BSC_2026_ROSTERS);
 

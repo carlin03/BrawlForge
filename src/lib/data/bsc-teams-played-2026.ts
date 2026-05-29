@@ -10,6 +10,7 @@ import {
   BSC_2026_EXCLUDED_SLUG_SET,
   isBsc2026ActiveTeam,
 } from "./bsc-2026-active-teams";
+import { BSC_2026_REGISTRY_SLUGS } from "./bsc-2026-team-registry";
 import {
   getGeneratedMatches,
   normalizeParticipantList,
@@ -26,7 +27,9 @@ function canonicalTeamSlug(raw: string): string | null {
   const n = normalizeParticipantSlug(raw) ?? raw.trim().toLowerCase();
   if (!n || BSC_2026_EXCLUDED_SLUG_SET.has(n)) return null;
   const canon = TEAM_ROSTER_ALIASES[n] ?? n;
-  const resolved = KNOWN_TEAM_SLUGS.has(canon) ? canon : KNOWN_TEAM_SLUGS.has(n) ? n : null;
+  const inCatalog = KNOWN_TEAM_SLUGS.has(canon) || KNOWN_TEAM_SLUGS.has(n);
+  const inRegistry = BSC_2026_REGISTRY_SLUGS.has(canon) || BSC_2026_REGISTRY_SLUGS.has(n);
+  const resolved = inCatalog || inRegistry ? canon : null;
   if (!resolved || !isBsc2026ActiveTeam(resolved)) return null;
   return resolved;
 }

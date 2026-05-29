@@ -16,10 +16,10 @@ export const BSC_FANTASY_PARTICIPANTS: Record<string, string[]> = {
     "ace-xero",
     "toxic-lotus",
   ],
-  "bsc-2026-psi-emea": ["sk-gaming", "team-heretics", "hmble", "fut-esports"],
-  "bsc-2026-psi-ea": ["crazy-raccoon", "zeta-division", "reject", "skcalalas-ea"],
-  "bsc-2026-psi-na": ["tribe-gaming", "kds-esports", "loud", "skcalalas"],
-  "bsc-2026-psi-sa": ["loud", "skcalalas", "bc-gaming-sa", "bounty-hunters-esports"],
+  "bsc-2026-psi-emea": ["sk-gaming", "team-heretics", "hmble", "fut-esports", "madridmira"],
+  "bsc-2026-psi-ea": ["crazy-raccoon", "zeta-division", "reject", "skcalalas-ea", "fennel", "insomnia"],
+  "bsc-2026-psi-na": ["tribe-gaming", "only-realm", "f-a-homeless", "legacy-esports", "vic-day"],
+  "bsc-2026-psi-sa": ["loud", "skcalalas", "bc-gaming-sa", "bounty-hunters-esports", "oddyssey", "acre-lovers"],
   "world-finals-2026": [
     "crazy-raccoon",
     "sk-gaming",
@@ -31,7 +31,6 @@ export const BSC_FANTASY_PARTICIPANTS: Record<string, string[]> = {
     "team-heretics",
     "natus-vincere",
     "reject",
-    "kds-esports",
     "skcalalas",
   ],
 };
@@ -44,9 +43,13 @@ const MF_EMEA = [
   "natus-vincere",
   "totem-esports",
   "big",
+  "big-talents",
   "novo-esports",
   "kebap",
   "metizport",
+  "madridmira",
+  "cmm",
+  "fut-esports-academy",
 ];
 
 const MF_EA = [
@@ -55,20 +58,25 @@ const MF_EA = [
   "reject",
   "skcalalas-ea",
   "rival-esports",
-  "effort-result",
-  "abc-ea-team",
   "wwl-esports",
+  "feasible-gaming",
+  "frenzy-esports",
+  "fennel",
+  "insomnia",
+  "ace-xero",
+  "toxic-lotus",
 ];
 
 const MF_NA = [
   "tribe-gaming",
-  "kds-esports",
+  "only-realm",
   "stmn-esports",
   "team-elektros",
   "vatic-esports",
-  "only-realm",
   "elevate",
-  "zoos-esports",
+  "f-a-homeless",
+  "vic-day",
+  "legacy-esports",
 ];
 
 const MF_SA = [
@@ -80,6 +88,11 @@ const MF_SA = [
   "alguem-segura",
   "olimpo-squad",
   "bounty-hunters-esports",
+  "oddyssey",
+  "acre-lovers",
+  "f-a-zurita-gaming",
+  "level-esports",
+  "enosis-esports",
 ];
 
 const MF_MONTHS = [
@@ -102,6 +115,7 @@ for (const month of MF_MONTHS) {
 BSC_FANTASY_PARTICIPANTS["bsc-2026-s3-emea-mf"] = [...MF_EMEA];
 BSC_FANTASY_PARTICIPANTS["bsc-2026-s3-ea-mf"] = [...MF_EA];
 BSC_FANTASY_PARTICIPANTS["bsc-2026-s3-na-mf"] = [...MF_NA];
+BSC_FANTASY_PARTICIPANTS["bsc-2026-s3-sa-mf"] = [...MF_SA];
 
 for (const month of ["february", "march", "april", "may"] as const) {
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-cn-${month}-mf`] = [

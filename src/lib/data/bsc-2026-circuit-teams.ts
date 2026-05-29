@@ -9,7 +9,8 @@ import {
 } from "./bsc-2026-active-teams";
 
 /** Número oficial de clubes del circuito mostrado en home y stats. */
-export const BSC_2026_CLUB_COUNT = 46;
+
+export const BSC_2026_CLUB_COUNT = BSC_2026_ACTIVE_TEAM_SLUGS.length;
 
 export { BSC_2026_ACTIVE_TEAM_SLUGS as BSC_2026_CIRCUIT_CURATED };
 

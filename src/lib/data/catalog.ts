@@ -24,7 +24,9 @@ export const TEAM_ROSTER_ALIASES: Record<string, string> = {
   "bounty-hunters": "bounty-hunters-esports",
   "f-a-kaioperro": "kaioperro",
   "reply-totem": "totem-esports",
-  fennel: "abc-ea-team",
+  madrid: "madridmira",
+  "zoos-esports": "f-a-homeless",
+  "zurita-gang": "f-a-zurita-gaming",
 };
 
 const KNOWN_TEAM_SLUGS = new Set((allTeams as GeneratedTeam[]).map((t) => t.slug));

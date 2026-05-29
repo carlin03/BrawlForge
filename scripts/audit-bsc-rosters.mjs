@@ -2,6 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.join(import.meta.dirname, "..");
+
+function parseActiveSlugs(src) {
+  const m = src.match(/BSC_2026_ACTIVE_TEAM_SLUGS[^[]*\[([\s\S]*?)\]\s*as const/);
+  if (!m) return [];
+  return [...m[1].matchAll(/"([a-z0-9-]+)"/g)].map((x) => x[1]);
+}
 const teams = JSON.parse(fs.readFileSync(path.join(root, "src/lib/data/generated/teams-2026.json"), "utf8"));
 const rosterSrc = fs.readFileSync(path.join(root, "src/lib/data/bsc-2026-rosters.ts"), "utf8");
 const rosters = {};
@@ -46,10 +52,7 @@ console.log("Duplicate players across teams:", dups.length);
 for (const [p, t] of dups) console.log(p, "->", t.join(", "));
 
 const activeSrc = fs.readFileSync(path.join(root, "src/lib/data/bsc-2026-active-teams.ts"), "utf8");
-const active = [...activeSrc.matchAll(/"([a-z0-9-]+)"/g)]
-  .map((m) => m[1])
-  .filter((s) => s.includes("-") || s.length > 3);
-const activeSet = new Set(active);
+const activeSet = new Set(parseActiveSlugs(activeSrc));
 console.log("Active BSC teams:", activeSet.size);
 const noRoster = [...activeSet].filter((s) => !rosters[s]);
 const noIn2026 = [...activeSet].filter((s) => !teamMap.has(s));
