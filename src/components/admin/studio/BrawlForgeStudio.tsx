@@ -32,9 +32,10 @@ import { StudioHomePanel } from "@/components/admin/studio/StudioHomePanel";
 import { StudioFantasyPanel } from "@/components/admin/studio/StudioFantasyPanel";
 import { StudioPredictionsPanel } from "@/components/admin/studio/StudioPredictionsPanel";
 import { StudioMediaPanel } from "@/components/admin/studio/StudioMediaPanel";
-import { StudioCardsPanel } from "@/components/admin/studio/StudioCardsPanel";
+import { StudioCardsVisualPanel } from "@/components/admin/studio/StudioCardsVisualPanel";
 import { StudioAutomationPanel } from "@/components/admin/studio/StudioAutomationPanel";
 import { StudioDashboard } from "@/components/admin/studio/StudioDashboard";
+import { AdminTournamentsPanel } from "@/components/admin/AdminTournamentsPanel";
 
 export type StudioModule =
   | "inicio"
@@ -49,9 +50,10 @@ export type StudioModule =
   | "cards"
   | "automation"
   | "ajustes"
-  | "platform";
+  | "platform"
+  | "tournaments";
 
-type OpsTab = "teams" | "players" | "logos" | "news" | "import" | "users";
+type OpsTab = "teams" | "players" | "tournaments" | "logos" | "news" | "import" | "users";
 
 const MODULE_NAV: {
   id: StudioModule;
@@ -60,12 +62,13 @@ const MODULE_NAV: {
   lead: string;
 }[] = [
   { id: "inicio", label: "Inicio", icon: LayoutDashboard, lead: "Accesos rápidos a las tareas más habituales." },
-  { id: "operations", label: "Contenido", icon: LayoutGrid, lead: "Equipos, jugadores, logos, noticias y usuarios." },
+  { id: "operations", label: "Contenido", icon: LayoutGrid, lead: "Equipos, jugadores, torneos, logos y noticias." },
+  { id: "tournaments", label: "Torneos", icon: Trophy, lead: "Crear torneos, participantes, fechas y premios." },
   { id: "matches", label: "Partidos", icon: Calendar, lead: "Crea enfrentamientos con un formulario guiado." },
   { id: "home_builder", label: "Página de inicio", icon: Layers, lead: "Secciones y cantidad de partidos en la portada." },
   { id: "theme", label: "Colores", icon: Palette, lead: "Paleta visual del sitio con selectores de color." },
   { id: "seo", label: "Búsqueda (SEO)", icon: Sparkles, lead: "Título y descripción para Google y redes." },
-  { id: "cards", label: "Tarjetas", icon: LayoutGrid, lead: "Diseño de fichas de equipos y jugadores." },
+  { id: "cards", label: "Tarjetas y fondos", icon: LayoutGrid, lead: "Colores de carta por club, fotos y banners." },
   { id: "fantasy_config", label: "Fantasy", icon: Trophy, lead: "Presupuesto, plantilla y reglas de la temporada." },
   { id: "predictions_config", label: "Predicciones", icon: Target, lead: "Puntos por acertar resultados." },
   { id: "media", label: "Imágenes", icon: Image, lead: "Biblioteca de fotos y banners." },
@@ -75,6 +78,7 @@ const MODULE_NAV: {
 const OPS_LINKS: { tab: OpsTab; label: string; icon: typeof Users }[] = [
   { tab: "teams", label: "Equipos", icon: Users },
   { tab: "players", label: "Jugadores", icon: User },
+  { tab: "tournaments", label: "Torneos", icon: Trophy },
   { tab: "logos", label: "Logos", icon: Image },
   { tab: "news", label: "Noticias", icon: Newspaper },
   { tab: "import", label: "Importar datos", icon: FileSpreadsheet },
@@ -205,7 +209,8 @@ export function BrawlForgeStudio() {
         {module === "theme" && <StudioThemePanel />}
         {module === "seo" && <StudioSeoPanel />}
         {module === "home_builder" && <StudioHomePanel />}
-        {module === "cards" && <StudioCardsPanel />}
+        {module === "cards" && <StudioCardsVisualPanel />}
+        {module === "tournaments" && <AdminTournamentsPanel teams={[]} />}
         {module === "fantasy_config" && <StudioFantasyPanel />}
         {module === "predictions_config" && <StudioPredictionsPanel />}
         {module === "media" && <StudioMediaPanel />}

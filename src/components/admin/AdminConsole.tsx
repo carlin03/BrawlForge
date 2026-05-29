@@ -15,7 +15,11 @@ import {
   Home,
   FileSpreadsheet,
   UserCircle,
+  Trophy,
 } from "lucide-react";
+import { AdminEntityCreateDialog } from "@/components/admin/AdminEntityCreateDialog";
+import { AdminTournamentsPanel } from "@/components/admin/AdminTournamentsPanel";
+import { buildPlayerMeta, buildTeamMeta } from "@/lib/data/profile-wiki";
 import { AdminUsersPanel } from "@/components/admin/AdminUsersPanel";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminLogoPanel } from "@/components/admin/AdminLogoPanel";
@@ -37,7 +41,7 @@ import {
   type PlayerWikiState,
 } from "@/components/admin/AdminPlayerWikiForm";
 
-type Tab = "teams" | "players" | "logos" | "news" | "import" | "users";
+type Tab = "teams" | "players" | "tournaments" | "logos" | "news" | "import" | "users";
 
 type NewsRow = {
   slug: string;
@@ -72,7 +76,7 @@ const TAB_CONFIG: { id: Tab; label: string; icon: typeof Users }[] = [
   { id: "users", label: "Usuarios", icon: UserCircle },
 ];
 
-const TAB_IDS: Tab[] = ["teams", "players", "logos", "news", "import", "users"];
+const TAB_IDS: Tab[] = ["teams", "players", "tournaments", "logos", "news", "import", "users"];
 
 function tabFromQuery(raw: string | null): Tab | null {
   if (raw && TAB_IDS.includes(raw as Tab)) return raw as Tab;
@@ -212,22 +216,50 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
   const teamBySlug = (slug: string) => teams.find((t) => t.slug === slug);
 
   function saveTeamWiki(team: TeamWikiState) {
+    const meta = {
+      ...team.meta,
+      ...buildTeamMeta(team.profile, { coach: team.coach }),
+    };
     save("team", {
       ...team,
       achievements: team.achievements,
       social: team.social,
       profile: team.profile,
-      meta: team.profile,
+      meta,
     });
   }
 
   function savePlayerWiki(player: PlayerWikiState) {
+    const meta = {
+      ...player.meta,
+      ...buildPlayerMeta(player.profile, player.photo_url),
+    };
     save("player", {
       ...player,
       social: player.social,
       profile: player.profile,
-      meta: player.profile,
+      meta,
     });
+  }
+
+  async function deleteCatalog(entity: "team" | "player", slug: string) {
+    if (!confirm(`¿Eliminar "${slug}" del catálogo en Supabase?`)) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/catalog?entity=${entity}&slug=${encodeURIComponent(slug)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setSelectedTeam(null);
+      setSelectedPlayer(null);
+      setMsg(data.message || "Eliminado");
+      await load();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error");
+      setMsgError(true);
+    }
+    setLoading(false);
   }
 
   return (
@@ -299,9 +331,29 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
 
       {tab === "users" && <AdminUsersPanel />}
 
+      {tab === "tournaments" && (
+        <AdminTournamentsPanel
+          embedded
+          teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag }))}
+        />
+      )}
+
       {tab === "teams" && (
         <div className="bf-admin-split">
           <aside className="bf-admin-sidebar">
+            <AdminEntityCreateDialog
+              kind="team"
+              label="Nuevo equipo"
+              disabled={loading}
+              onCreated={async (slug) => {
+                const res = await fetch("/api/admin/catalog?type=teams");
+                const data = await res.json();
+                const merged = mergeAdminTeamRows(data.teams ?? null);
+                setTeams(merged);
+                const row = merged.find((t) => t.slug === slug);
+                if (row) setSelectedTeam(teamRowToWikiState(row as AdminTeamCatalogRow & Record<string, unknown>));
+              }}
+            />
             <div className="bf-admin-region-filters" role="group" aria-label="Filtrar equipos">
               {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
                 <button
@@ -369,6 +421,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                   window.history.replaceState(null, "", url.pathname + url.search);
                 }
               }}
+              onDelete={() => deleteCatalog("team", selectedTeam.slug)}
             />
           ) : (
             <div className="bf-admin-empty-editor">Selecciona un equipo de la lista</div>
@@ -379,6 +432,23 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       {tab === "players" && (
         <div className="bf-admin-split">
           <aside className="bf-admin-sidebar">
+            <AdminEntityCreateDialog
+              kind="player"
+              label="Nuevo jugador"
+              teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag }))}
+              disabled={loading}
+              onCreated={async (slug) => {
+                const res = await fetch("/api/admin/catalog?type=players");
+                const data = await res.json();
+                const merged = mergeAdminPlayerRows(data.players ?? null);
+                setPlayers(merged);
+                const row = merged.find((p) => p.slug === slug);
+                if (row)
+                  setSelectedPlayer(
+                    playerRowToWikiState(row as AdminPlayerCatalogRow & Record<string, unknown>),
+                  );
+              }}
+            />
             <div className="bf-admin-region-filters" role="group" aria-label="Filtrar jugadores">
               {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
                 <button
@@ -442,6 +512,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
               loading={loading}
               onChange={setSelectedPlayer}
               onSave={() => savePlayerWiki(selectedPlayer)}
+              onDelete={() => deleteCatalog("player", selectedPlayer.slug)}
             />
           ) : (
             <div className="bf-admin-empty-editor">Selecciona un jugador de la lista</div>

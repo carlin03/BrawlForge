@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Save } from "lucide-react";
+import { Save, Trash2 } from "lucide-react";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import type { AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
@@ -53,12 +53,14 @@ export function AdminPlayerWikiForm({
   loading,
   onChange,
   onSave,
+  onDelete,
 }: {
   player: PlayerWikiState;
   teams: { slug: string; name: string; tag: string }[];
   loading: boolean;
   onChange: (p: PlayerWikiState) => void;
   onSave: () => void;
+  onDelete?: () => void;
 }) {
   const [tab, setTab] = useState<Tab>("basico");
   const p = player.profile;
@@ -339,6 +341,11 @@ export function AdminPlayerWikiForm({
         <Link href={`/players/${player.slug}`} className="bp-btn bp-btn-ghost" target="_blank">
           Ver en la web
         </Link>
+        {onDelete && (
+          <button type="button" className="bp-btn bp-btn-ghost" style={{ color: "var(--bp-red-bright)" }} onClick={onDelete}>
+            <Trash2 size={16} /> Eliminar del catálogo
+          </button>
+        )}
       </div>
     </form>
   );

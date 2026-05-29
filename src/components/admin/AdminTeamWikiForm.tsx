@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Image, Save } from "lucide-react";
+import { Image, Save, Trash2 } from "lucide-react";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import type { AdminTeamCatalogRow } from "@/lib/data/admin-catalog-fields";
@@ -60,6 +60,7 @@ export function AdminTeamWikiForm({
   onChange,
   onSave,
   onOpenLogos,
+  onDelete,
 }: {
   team: TeamWikiState;
   players: { slug: string; ign: string; team_slug: string | null }[];
@@ -67,6 +68,7 @@ export function AdminTeamWikiForm({
   onChange: (t: TeamWikiState) => void;
   onSave: () => void;
   onOpenLogos: () => void;
+  onDelete?: () => void;
 }) {
   const [tab, setTab] = useState<Tab>("basico");
   const p = team.profile;
@@ -301,6 +303,11 @@ export function AdminTeamWikiForm({
         <Link href={`/teams/${team.slug}`} className="bp-btn bp-btn-ghost" target="_blank">
           Ver en la web
         </Link>
+        {onDelete && (
+          <button type="button" className="bp-btn bp-btn-ghost" style={{ color: "var(--bp-red-bright)" }} onClick={onDelete}>
+            <Trash2 size={16} /> Eliminar del catálogo
+          </button>
+        )}
       </div>
     </form>
   );

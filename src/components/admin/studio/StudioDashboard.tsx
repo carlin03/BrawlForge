@@ -18,6 +18,8 @@ import { StudioCard, StudioPanel } from "./studio-ui";
 const QUICK_LINKS = [
   { module: "operations", tab: "teams", label: "Equipos", desc: "Historia, palmarés, redes y galería", icon: Users },
   { module: "operations", tab: "players", label: "Jugadores", desc: "Biografía larga, carrera y brawlers", icon: Users },
+  { module: "tournaments", label: "Torneos", desc: "Crear, participantes y premios", icon: Trophy },
+  { module: "cards", label: "Tarjetas y fondos", desc: "Colores, fotos y banners", icon: Image },
   { module: "matches", label: "Partidos", desc: "Crear y editar enfrentamientos", icon: Calendar },
   { module: "home_builder", label: "Página de inicio", desc: "Ordenar secciones de la home", icon: Layers },
   { module: "operations", tab: "news", label: "Noticias", desc: "Publicar novedades", icon: Newspaper },

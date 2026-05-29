@@ -100,7 +100,21 @@ function themeFromHue(slug: string): TeamCardTheme {
 }
 
 /** Colores del club; no usa región (evita EA=rojo en logos azules, etc.). */
-export function getTeamCardTheme(teamSlug: string, _region?: Region): TeamCardTheme {
+export function getTeamCardTheme(
+  teamSlug: string,
+  _region?: Region,
+  catalogMeta?: Record<string, unknown> | null,
+): TeamCardTheme {
+  const fromMeta = catalogMeta?.card_theme;
+  if (fromMeta && typeof fromMeta === "object") {
+    const t = fromMeta as Record<string, unknown>;
+    const primary = String(t.primary ?? "").trim();
+    const secondary = String(t.secondary ?? "").trim();
+    const glow = String(t.glow ?? "").trim();
+    if (primary && secondary && glow) {
+      return { primary, secondary, glow };
+    }
+  }
   if (TEAM_COLORS[teamSlug]) return TEAM_COLORS[teamSlug];
   return themeFromHue(teamSlug);
 }

@@ -1133,3 +1133,64 @@
   object-fit: cover;
   border-radius: 10px;
 }
+
+.bf-admin-btn-new {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.bf-admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.bf-admin-modal {
+  width: min(520px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  border: 1px solid var(--bp-line);
+  background: var(--bp-panel);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+}
+.bf-admin-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--bp-line);
+}
+.bf-admin-modal-head h3 {
+  margin: 0;
+  font-family: var(--bp-head);
+}
+.bf-admin-modal-close {
+  border: none;
+  background: transparent;
+  color: var(--bp-muted);
+  cursor: pointer;
+  padding: 6px;
+}
+.bf-admin-modal-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bf-admin-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--bp-line);
+}
+
+.bf-admin-tournament-teams {
+  max-height: 280px;
+}

@@ -7,7 +7,7 @@ import { TeamCardWatermark } from "@/components/ui/TeamCardWatermark";
 import { CountryFlag } from "@/components/ui/CountryFlag";
 import { getTeam, teamName, getFantasyRole } from "@/lib/data";
 import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
-import { useResolvedPlayer } from "@/hooks/useResolvedEntity";
+import { useResolvedPlayer, useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { PriceDelta } from "@/components/platform/ui";
 
 export type CardTier = "legend" | "epic" | "rare" | "common";
@@ -57,10 +57,15 @@ export function PlayerCard({
 }) {
   const p = useResolvedPlayer(playerSlug);
   const displayClub = clubSlug ?? p?.teamSlug;
+  const resolvedClub = useResolvedTeam(displayClub ?? "");
   if (!p || !displayClub) return null;
 
   const club = getTeam(displayClub);
-  const theme = getTeamCardTheme(displayClub, club?.region ?? p.region);
+  const theme = getTeamCardTheme(
+    displayClub,
+    club?.region ?? p.region,
+    resolvedClub?.meta as Record<string, unknown> | undefined,
+  );
   const tier = getCardTier(p.rating, p.fantasyPoints);
   const role = getFantasyRole(playerSlug).toUpperCase();
   const ovr = p.fantasyPoints;
