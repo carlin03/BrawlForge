@@ -19,6 +19,8 @@ import {
   Target,
   Trophy,
   Sparkles,
+  LayoutDashboard,
+  Sliders,
 } from "lucide-react";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminConsole } from "@/components/admin/AdminConsole";
@@ -32,10 +34,11 @@ import { StudioPredictionsPanel } from "@/components/admin/studio/StudioPredicti
 import { StudioMediaPanel } from "@/components/admin/studio/StudioMediaPanel";
 import { StudioCardsPanel } from "@/components/admin/studio/StudioCardsPanel";
 import { StudioAutomationPanel } from "@/components/admin/studio/StudioAutomationPanel";
+import { StudioDashboard } from "@/components/admin/studio/StudioDashboard";
 
 export type StudioModule =
+  | "inicio"
   | "operations"
-  | "platform"
   | "matches"
   | "home_builder"
   | "theme"
@@ -44,7 +47,9 @@ export type StudioModule =
   | "seo"
   | "media"
   | "cards"
-  | "automation";
+  | "automation"
+  | "ajustes"
+  | "platform";
 
 type OpsTab = "teams" | "players" | "logos" | "news" | "import" | "users";
 
@@ -52,20 +57,19 @@ const MODULE_NAV: {
   id: StudioModule;
   label: string;
   icon: typeof Settings2;
-  status: "active" | "planned";
-  phase: string;
+  lead: string;
 }[] = [
-  { id: "operations", label: "Operaciones", icon: LayoutGrid, status: "active", phase: "0" },
-  { id: "platform", label: "Plataforma", icon: Settings2, status: "active", phase: "0" },
-  { id: "matches", label: "Partidos", icon: Calendar, status: "active", phase: "1" },
-  { id: "theme", label: "Theme Engine", icon: Palette, status: "active", phase: "2" },
-  { id: "seo", label: "SEO", icon: Sparkles, status: "active", phase: "3" },
-  { id: "home_builder", label: "Home Builder", icon: Layers, status: "active", phase: "4" },
-  { id: "cards", label: "Card Builder", icon: LayoutGrid, status: "active", phase: "6" },
-  { id: "fantasy_config", label: "Fantasy", icon: Trophy, status: "active", phase: "7" },
-  { id: "predictions_config", label: "Predicciones", icon: Target, status: "active", phase: "7" },
-  { id: "media", label: "Media", icon: Image, status: "active", phase: "8" },
-  { id: "automation", label: "Automatización", icon: Sparkles, status: "active", phase: "10" },
+  { id: "inicio", label: "Inicio", icon: LayoutDashboard, lead: "Accesos rápidos a las tareas más habituales." },
+  { id: "operations", label: "Contenido", icon: LayoutGrid, lead: "Equipos, jugadores, logos, noticias y usuarios." },
+  { id: "matches", label: "Partidos", icon: Calendar, lead: "Crea enfrentamientos con un formulario guiado." },
+  { id: "home_builder", label: "Página de inicio", icon: Layers, lead: "Secciones y cantidad de partidos en la portada." },
+  { id: "theme", label: "Colores", icon: Palette, lead: "Paleta visual del sitio con selectores de color." },
+  { id: "seo", label: "Búsqueda (SEO)", icon: Sparkles, lead: "Título y descripción para Google y redes." },
+  { id: "cards", label: "Tarjetas", icon: LayoutGrid, lead: "Diseño de fichas de equipos y jugadores." },
+  { id: "fantasy_config", label: "Fantasy", icon: Trophy, lead: "Presupuesto, plantilla y reglas de la temporada." },
+  { id: "predictions_config", label: "Predicciones", icon: Target, lead: "Puntos por acertar resultados." },
+  { id: "media", label: "Imágenes", icon: Image, lead: "Biblioteca de fotos y banners." },
+  { id: "automation", label: "Automatizaciones", icon: Sparkles, lead: "Tareas automáticas del sistema." },
 ];
 
 const OPS_LINKS: { tab: OpsTab; label: string; icon: typeof Users }[] = [
@@ -73,13 +77,16 @@ const OPS_LINKS: { tab: OpsTab; label: string; icon: typeof Users }[] = [
   { tab: "players", label: "Jugadores", icon: User },
   { tab: "logos", label: "Logos", icon: Image },
   { tab: "news", label: "Noticias", icon: Newspaper },
-  { tab: "import", label: "Import CSV", icon: FileSpreadsheet },
+  { tab: "import", label: "Importar datos", icon: FileSpreadsheet },
   { tab: "users", label: "Usuarios", icon: UserCircle },
 ];
 
+const MODULE_IDS = new Set(MODULE_NAV.map((m) => m.id));
+
 function moduleFromQuery(raw: string | null): StudioModule {
-  if (raw && MODULE_NAV.some((m) => m.id === raw)) return raw as StudioModule;
-  return "operations";
+  if (raw === "platform") return "ajustes";
+  if (raw && MODULE_IDS.has(raw as StudioModule)) return raw as StudioModule;
+  return "inicio";
 }
 
 function tabFromQuery(raw: string | null): OpsTab {
@@ -97,7 +104,7 @@ export function BrawlForgeStudio() {
   const syncUrl = useCallback(
     (nextModule: StudioModule, nextTab?: OpsTab) => {
       const p = new URLSearchParams();
-      p.set("module", nextModule);
+      p.set("module", nextModule === "ajustes" ? "ajustes" : nextModule);
       if (nextModule === "operations" && nextTab) p.set("tab", nextTab);
       router.replace(`/admin?${p.toString()}`, { scroll: false });
     },
@@ -105,10 +112,8 @@ export function BrawlForgeStudio() {
   );
 
   useEffect(() => {
-    const m = moduleFromQuery(searchParams.get("module"));
-    const t = tabFromQuery(searchParams.get("tab"));
-    setModule(m);
-    setOpsTab(t);
+    setModule(moduleFromQuery(searchParams.get("module")));
+    setOpsTab(tabFromQuery(searchParams.get("tab")));
   }, [searchParams]);
 
   const activeModuleMeta = useMemo(() => MODULE_NAV.find((m) => m.id === module), [module]);
@@ -124,13 +129,15 @@ export function BrawlForgeStudio() {
     syncUrl("operations", tab);
   }
 
+  const showTopbar = module !== "inicio" && module !== "operations";
+
   return (
     <div className="bf-studio">
       <aside className="bf-studio-sidebar" aria-label="BrawlForge Studio">
         <div className="bf-studio-brand">
           <BrandMark size={36} />
           <div>
-            <span className="bf-studio-brand-kicker">Control Center</span>
+            <span className="bf-studio-brand-kicker">Panel de gestión</span>
             <strong>
               Brawl<em>Forge</em> Studio
             </strong>
@@ -138,24 +145,22 @@ export function BrawlForgeStudio() {
         </div>
 
         <nav className="bf-studio-nav">
-          {MODULE_NAV.map(({ id, label, icon: Icon, status, phase }) => (
+          {MODULE_NAV.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               type="button"
-              className={`bf-studio-nav-item ${module === id ? "is-on" : ""} is-${status}`}
+              className={`bf-studio-nav-item ${module === id ? "is-on" : ""}`}
               onClick={() => selectModule(id)}
-              title={status === "planned" ? `Planificado — Fase ${phase}` : label}
             >
               <Icon size={18} />
               <span>{label}</span>
-              {status === "planned" && <span className="bf-studio-badge">F{phase}</span>}
             </button>
           ))}
         </nav>
 
         {module === "operations" && (
           <div className="bf-studio-subnav">
-            <span className="bf-studio-subnav-title">Operaciones</span>
+            <span className="bf-studio-subnav-title">Contenido</span>
             {OPS_LINKS.map(({ tab, label, icon: Icon }) => (
               <button
                 key={tab}
@@ -170,23 +175,32 @@ export function BrawlForgeStudio() {
         )}
 
         <div className="bf-studio-sidebar-foot">
-          <Link href="/" className="bp-btn bp-btn-ghost bf-studio-home-link">
+          <button
+            type="button"
+            className={`bf-studio-nav-item ${module === "ajustes" ? "is-on" : ""}`}
+            onClick={() => selectModule("ajustes")}
+          >
+            <Sliders size={18} />
+            <span>Ajustes del sistema</span>
+          </button>
+          <Link href="/" className="bp-btn bp-btn-ghost bf-studio-home-link" target="_blank">
             <Home size={16} /> Ver web pública
           </Link>
         </div>
       </aside>
 
       <div className="bf-studio-main">
-        <header className="bf-studio-topbar">
-          <div>
-            <h1 className="bf-studio-title">{activeModuleMeta?.label ?? "Studio"}</h1>
-            <p className="bf-studio-lead">
-              Evolución del panel admin — configuración progresiva sin cambiar la experiencia de los usuarios.
-            </p>
-          </div>
-        </header>
+        {showTopbar && (
+          <header className="bf-studio-topbar">
+            <div>
+              <h1 className="bf-studio-title">{activeModuleMeta?.label ?? "Studio"}</h1>
+              <p className="bf-studio-lead">{activeModuleMeta?.lead}</p>
+            </div>
+          </header>
+        )}
 
-        {module === "platform" && <StudioPlatformPanel />}
+        {module === "inicio" && <StudioDashboard />}
+        {module === "ajustes" && <StudioPlatformPanel />}
         {module === "matches" && <StudioMatchesPanel />}
         {module === "theme" && <StudioThemePanel />}
         {module === "seo" && <StudioSeoPanel />}
@@ -199,6 +213,12 @@ export function BrawlForgeStudio() {
 
         {module === "operations" && (
           <div className="bf-studio-embed">
+            <header className="bf-studio-topbar">
+              <div>
+                <h1 className="bf-studio-title">Contenido</h1>
+                <p className="bf-studio-lead">Equipos, jugadores, logos, noticias y usuarios.</p>
+              </div>
+            </header>
             <AdminConsole embedded initialTab={opsTab} />
           </div>
         )}

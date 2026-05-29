@@ -1,16 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { RefreshCw } from "lucide-react";
+import { StudioEmpty, StudioLoading, StudioPanel, StudioToast } from "./studio-ui";
 
 type Props = {
   title: string;
-  description: string;
+  lead: string;
   apiPath: string;
-  children?: (data: Record<string, unknown>, reload: () => void) => React.ReactNode;
+  children?: (data: Record<string, unknown>, reload: () => void) => ReactNode;
+  emptyTitle?: string;
+  emptyHint?: string;
 };
 
-export function StudioModulePanel({ title, description, apiPath, children }: Props) {
+export function StudioModulePanel({
+  title,
+  lead,
+  apiPath,
+  children,
+  emptyTitle = "Todo listo por ahora",
+  emptyHint = "Usa los controles de arriba para empezar.",
+}: Props) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Record<string, unknown>>({});
   const [msg, setMsg] = useState("");
@@ -23,10 +33,10 @@ export function StudioModulePanel({ title, description, apiPath, children }: Pro
     try {
       const res = await fetch(apiPath);
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Error al cargar");
+      if (!res.ok) throw new Error(json.error || "No se pudo cargar. Comprueba que iniciaste sesión como admin.");
       setData(json);
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Error");
+      setMsg(e instanceof Error ? e.message : "Error al cargar");
       setError(true);
     }
     setLoading(false);
@@ -37,24 +47,25 @@ export function StudioModulePanel({ title, description, apiPath, children }: Pro
   }, [load]);
 
   return (
-    <div className="bf-studio-panel">
-      <div className="bf-studio-panel-head">
-        <div>
-          <h2>{title}</h2>
-          <p className="bf-studio-lead">{description}</p>
-        </div>
+    <StudioPanel
+      title={title}
+      lead={lead}
+      actions={
         <button type="button" className="bp-btn bp-btn-ghost" onClick={load} disabled={loading}>
-          <RefreshCw size={16} /> Actualizar
+          <RefreshCw size={16} /> Actualizar lista
         </button>
-      </div>
-      {msg && <p className={error ? "bf-studio-msg is-error" : "bf-studio-msg"}>{msg}</p>}
+      }
+    >
+      <StudioToast message={msg} error={error} />
       {loading ? (
-        <p className="bf-studio-muted">Cargando…</p>
+        <StudioLoading />
       ) : children ? (
         children(data, load)
       ) : (
-        <pre className="bf-studio-json">{JSON.stringify(data, null, 2)}</pre>
+        <StudioEmpty title={emptyTitle}>
+          <p className="bf-studio-muted">{emptyHint}</p>
+        </StudioEmpty>
       )}
-    </div>
+    </StudioPanel>
   );
 }

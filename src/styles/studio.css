@@ -82,17 +82,11 @@
   color: var(--bp-text);
 }
 
-.bf-studio-nav-item.is-planned {
-  opacity: 0.72;
-}
-
-.bf-studio-badge {
-  margin-left: auto;
+.bf-studio-badge-default {
   font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--bp-dim);
+  color: var(--bp-gold);
+  margin-top: 4px;
+  display: inline-block;
 }
 
 .bf-studio-subnav {
@@ -365,14 +359,426 @@
   font-size: 13px;
 }
 
-.bf-studio-json {
-  background: #0e121a;
+/* ——— UI amigable (no desarrolladores) ——— */
+
+.bf-studio-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  border-radius: var(--bp-r-sm);
+  font-size: 14px;
+}
+
+.bf-studio-toast.is-ok {
+  background: rgba(52, 208, 106, 0.12);
+  border: 1px solid rgba(52, 208, 106, 0.35);
+  color: #b8f5cc;
+}
+
+.bf-studio-toast.is-error {
+  background: rgba(255, 23, 68, 0.1);
+  border: 1px solid rgba(255, 23, 68, 0.35);
+  color: #ffb3c0;
+}
+
+.bf-studio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bf-studio-field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bp-text);
+}
+
+.bf-studio-field-hint {
+  font-size: 12px;
+  color: var(--bp-dim);
+}
+
+.bf-studio-input {
+  width: 100%;
+  background: var(--bp-panel);
   border: 1px solid var(--bp-line);
   border-radius: 10px;
-  padding: 12px;
+  padding: 10px 12px;
+  color: var(--bp-text);
+  font-size: 14px;
+}
+
+.bf-studio-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.bf-studio-stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.bf-studio-stat {
+  padding: 16px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+  text-align: center;
+}
+
+.bf-studio-stat.is-ok {
+  border-color: rgba(52, 208, 106, 0.4);
+}
+
+.bf-studio-stat.is-warn {
+  border-color: rgba(255, 200, 46, 0.4);
+}
+
+.bf-studio-stat-value {
+  display: block;
+  font-family: var(--bp-head);
+  font-size: 1.4rem;
+  color: var(--bp-gold);
+}
+
+.bf-studio-stat-label {
+  font-size: 12px;
+  color: var(--bp-muted);
+}
+
+.bf-studio-card {
+  padding: 18px;
+  margin-bottom: 16px;
+  border-radius: var(--bp-r);
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+}
+
+.bf-studio-card-title {
+  font-family: var(--bp-head);
+  font-size: 1rem;
+  margin: 0 0 12px;
+}
+
+.bf-studio-empty {
+  padding: 32px 20px;
+  text-align: center;
+  border-radius: var(--bp-r);
+  border: 1px dashed var(--bp-line);
+}
+
+.bf-studio-empty-title {
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.bf-studio-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 24px;
+  color: var(--bp-muted);
+}
+
+.bf-studio-spin {
+  animation: bf-studio-spin 0.8s linear infinite;
+}
+
+@keyframes bf-studio-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bf-studio-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bf-studio-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--bp-line);
+  background: transparent;
+  color: var(--bp-muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.bf-studio-pill.is-on {
+  background: var(--bp-blue-soft);
+  border-color: var(--bp-blue);
+  color: var(--bp-text);
+}
+
+.bf-studio-advanced {
+  margin-top: 28px;
+  border-top: 1px solid var(--bp-line);
+  padding-top: 16px;
+}
+
+.bf-studio-advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  background: none;
+  color: var(--bp-dim);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.bf-studio-advanced-toggle svg.is-open {
+  transform: rotate(180deg);
+}
+
+.bf-studio-advanced-note {
+  margin-left: auto;
   font-size: 11px;
-  overflow: auto;
-  max-height: 400px;
+  color: var(--bp-dim);
+}
+
+.bf-studio-advanced-body {
+  padding: 12px 0;
+}
+
+.bf-studio-advanced-body .bf-studio-flag-row code {
+  display: none;
+}
+
+.bf-studio-activity {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-studio-activity li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bp-line);
+  font-size: 13px;
+}
+
+.bf-studio-activity time {
+  font-size: 11px;
+  color: var(--bp-dim);
+}
+
+.bf-studio-dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.bf-studio-dash-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+  color: var(--bp-text);
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.bf-studio-dash-card:hover {
+  border-color: var(--bp-gold);
+  transform: translateY(-2px);
+}
+
+.bf-studio-dash-card svg {
+  color: var(--bp-gold);
+}
+
+.bf-studio-dash-card span {
+  font-size: 12px;
+  color: var(--bp-muted);
+}
+
+.bf-studio-dash-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.bf-studio-form-visual {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.bf-studio-vs {
+  font-family: var(--bp-head);
+  font-size: 1.2rem;
+  color: var(--bp-gold);
+  text-align: center;
+}
+
+.bf-studio-score-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.bf-studio-match-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-studio-match-item {
+  padding: 12px 14px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-surface, #131824);
+  border: 1px solid var(--bp-line);
+  margin-bottom: 8px;
+}
+
+.bf-studio-match-meta {
+  display: block;
+  font-size: 12px;
+  color: var(--bp-muted);
+  margin-top: 4px;
+}
+
+.bf-studio-list-title {
+  font-family: var(--bp-head);
+  font-size: 1rem;
+  margin: 20px 0 10px;
+}
+
+.bf-studio-color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+
+.bf-studio-color-picker .bf-studio-color-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.bf-studio-color-picker input[type="color"] {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.bf-studio-theme-preview {
+  padding: 20px;
+  border-radius: var(--bp-r);
+  border: 2px solid;
+  margin-bottom: 16px;
+}
+
+.bf-studio-block-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-studio-block-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-surface, #131824);
+  border: 1px solid var(--bp-line);
+  margin-bottom: 8px;
+}
+
+.bf-studio-block-item.is-off {
+  opacity: 0.5;
+}
+
+.bf-studio-block-grip {
+  color: var(--bp-dim);
+}
+
+.bf-studio-block-item strong {
+  display: block;
+}
+
+.bf-studio-block-item span {
+  font-size: 12px;
+  color: var(--bp-muted);
+}
+
+.bf-studio-media-preview {
+  margin: 12px 0;
+  max-width: 280px;
+  border-radius: var(--bp-r-sm);
+  overflow: hidden;
+  border: 1px solid var(--bp-line);
+}
+
+.bf-studio-media-preview img {
+  width: 100%;
+  display: block;
+}
+
+.bf-studio-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.bf-studio-media-thumb {
+  border-radius: var(--bp-r-sm);
+  overflow: hidden;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+  text-align: center;
+  font-size: 11px;
+  padding-bottom: 8px;
+}
+
+.bf-studio-media-thumb img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.bf-studio-template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-studio-template-card {
+  padding: 14px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+}
+
+.bf-studio-template-type {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--bp-dim);
 }
 
 .bf-studio-list {

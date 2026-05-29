@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { StudioField, StudioInput, StudioTextarea, StudioToast, StudioCard } from "./studio-ui";
 import { StudioModulePanel } from "./StudioModulePanel";
 
 export function StudioSeoPanel() {
@@ -9,6 +10,7 @@ export function StudioSeoPanel() {
     "Fantasy, predicciones y seguimiento competitivo de Brawl Stars.",
   );
   const [msg, setMsg] = useState("");
+  const [error, setError] = useState(false);
 
   async function save() {
     const res = await fetch("/api/cms/admin/seo", {
@@ -17,26 +19,29 @@ export function StudioSeoPanel() {
       body: JSON.stringify({ globalSeo: { title, description, themeColor: "#0a0c12" } }),
     });
     const data = await res.json();
-    setMsg(res.ok ? data.message : data.error);
+    setMsg(res.ok ? "Textos de Google y redes guardados." : data.error);
+    setError(!res.ok);
   }
 
   return (
     <StudioModulePanel
-      title="SEO & Routing (Fase 3)"
-      description="Meta global, redirects y announcement bars."
+      title="Búsqueda y redes (SEO)"
+      lead="Título y descripción que aparecen en Google y al compartir el enlace."
       apiPath="/api/cms/admin/seo"
     >
       {() => (
-        <>
-          <div className="bf-studio-form-grid">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="title" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
-          </div>
+        <StudioCard title="Textos principales del sitio">
+          <StudioField label="Título del sitio" hint="Aparece en la pestaña del navegador y en Google">
+            <StudioInput value={title} onChange={(e) => setTitle(e.target.value)} />
+          </StudioField>
+          <StudioField label="Descripción corta" hint="Resumen en buscadores (máx. ~160 caracteres recomendado)">
+            <StudioTextarea value={description} onChange={(e) => setDescription(e.target.value)} />
+          </StudioField>
           <button type="button" className="bp-btn bp-btn-gold" onClick={save}>
-            Guardar SEO global
+            Guardar textos SEO
           </button>
-          {msg && <p className="bf-studio-msg">{msg}</p>}
-        </>
+          <StudioToast message={msg} error={error} />
+        </StudioCard>
       )}
     </StudioModulePanel>
   );
