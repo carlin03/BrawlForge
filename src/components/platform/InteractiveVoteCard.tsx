@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { getPredictionLabel, getPredictionTournament } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
+import { getMatch } from "@/lib/data/matches";
+import { formatPredictMatchTime } from "@/lib/data/predictions-ui";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,6 +31,9 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
   const closed = event.status === "closed";
   const labelA = getPredictionLabel(event, "A");
   const labelB = getPredictionLabel(event, "B");
+  const match = getMatch(event.matchId);
+  const matchTime = formatPredictMatchTime(match?.date ?? event.deadline);
+  const isLive = match?.status === "live";
 
   async function vote(side: "A" | "B") {
     if (closed || saving) return;
@@ -67,7 +72,10 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
         <TournamentLogo slug={event.tournamentSlug} name={getPredictionTournament(event)} size={featured ? 36 : 28} />
         <div className="bf-vote-card-meta">
           <span className="bf-bsc-vote-tourney">{getPredictionTournament(event)}</span>
-          <strong>{event.stage}</strong>
+          <strong>
+            {event.stage}
+            {isLive ? " · EN DIRECTO" : ` · ${matchTime}`}
+          </strong>
         </div>
         <span className="bf-vote-reward bf-vote-reward-gold">+{event.rewardPoints}</span>
       </header>

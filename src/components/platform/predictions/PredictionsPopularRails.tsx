@@ -1,19 +1,13 @@
 "use client";
 
-import { BarChart3, Scale, Sparkles, Users } from "lucide-react";
+import { Scale, Users } from "lucide-react";
 import type { EnrichedPrediction, PopularPickCategory } from "@/lib/data/predictions-ui";
 import { PredictCompactPickCard } from "@/components/platform/predictions/PredictCompactPickCard";
 
-const RAILS: {
-  id: PopularPickCategory;
-  title: string;
-  hint: string;
-  icon: typeof Users;
-}[] = [
-  { id: "most_voted", title: "Más votados", hint: "Donde más opina la comunidad", icon: Users },
-  { id: "controversial", title: "Más polémicos", hint: "50/50 — cualquier lado puede ganar", icon: Scale },
-  { id: "even", title: "Más igualados", hint: "Porcentajes casi idénticos", icon: BarChart3 },
-  { id: "upset", title: "Mayor sorpresa", hint: "Underdog con opciones reales", icon: Sparkles },
+const RAILS: { id: PopularPickCategory; title: string; icon: typeof Users }[] = [
+  { id: "most_voted", title: "Más votados", icon: Users },
+  { id: "even", title: "Más igualados", icon: Scale },
+  { id: "controversial", title: "Más polémicos", icon: Scale },
 ];
 
 export function PredictionsPopularRails({
@@ -27,30 +21,29 @@ export function PredictionsPopularRails({
   if (!hasAny) return null;
 
   return (
-    <div className="bf-predict-popular-block">
-      <h2 className="bf-predict-v2-section-title">Partidos con más tensión</h2>
-      <div className="bf-predict-popular-rails">
+    <section className="bf-predict-popular-compact" aria-labelledby="predict-popular-title">
+      <h2 id="predict-popular-title" className="bf-predict-pickem-section-title">
+        Partidos populares
+      </h2>
+      <div className="bf-predict-popular-compact-grid">
         {RAILS.map((rail) => {
-          const list = buckets[rail.id].filter((e) => e.matchId !== excludeId).slice(0, 4);
+          const list = buckets[rail.id].filter((e) => e.matchId !== excludeId).slice(0, 3);
           if (!list.length) return null;
           const Icon = rail.icon;
           return (
-            <section key={rail.id} className="bf-predict-popular-rail">
-              <div className="bf-predict-popular-rail-head">
-                <h3>
-                  <Icon size={14} aria-hidden /> {rail.title}
-                </h3>
-                <span>{rail.hint}</span>
-              </div>
-              <div className="bf-predict-popular-scroll">
+            <div key={rail.id} className="bf-predict-popular-col">
+              <h3>
+                <Icon size={12} aria-hidden /> {rail.title}
+              </h3>
+              <div className="bf-predict-popular-col-list">
                 {list.map((e) => (
                   <PredictCompactPickCard key={e.id} event={e} />
                 ))}
               </div>
-            </section>
+            </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
