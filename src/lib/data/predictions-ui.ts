@@ -23,10 +23,20 @@ export type EnrichedPrediction = PredictionEvent & {
   displayStatus?: PredictDisplayStatus;
 };
 
+export type PlayoffBracketSlot = {
+  matchId?: string;
+  teamASlug?: string;
+  teamBSlug?: string;
+  status: "set" | "tbd";
+  /** Reserva si faltan slugs */
+  label?: string;
+};
+
 export type PlayoffBracketRound = {
   key: "quarter" | "semi" | "final" | "grand_final";
   title: string;
-  slots: { label: string; matchId?: string; status: "set" | "tbd" }[];
+  shortTitle: string;
+  slots: PlayoffBracketSlot[];
 };
 
 export type PlayoffBracketView = {
@@ -212,9 +222,12 @@ export function pickPlayoffTournamentSlug(events: EnrichedPrediction[]): string 
   return max >= 2 ? best : null;
 }
 
-function slotLabel(event: EnrichedPrediction): string {
-  return `${getPredictionLabel(event, "A")} vs ${getPredictionLabel(event, "B")}`;
-}
+const ROUND_SHORT: Record<PlayoffBracketRound["key"], string> = {
+  quarter: "Cuartos",
+  semi: "Semis",
+  final: "Final",
+  grand_final: "Final",
+};
 
 export function buildPlayoffBracket(
   tournamentSlug: string,
@@ -232,7 +245,7 @@ export function buildPlayoffBracket(
   const roundDefs: { key: PlayoffBracketRound["key"]; title: string }[] = [
     { key: "quarter", title: "Cuartos de final" },
     { key: "semi", title: "Semifinales" },
-    { key: "grand_final", title: "Final" },
+    { key: "grand_final", title: "Gran final" },
   ];
 
   const rounds: PlayoffBracketRound[] = [];
@@ -241,21 +254,21 @@ export function buildPlayoffBracket(
       def.key === "grand_final"
         ? [...byRound("grand_final"), ...byRound("final")]
         : byRound(def.key);
-    if (!matches.length && def.key !== "grand_final") continue;
+    if (!matches.length) continue;
     rounds.push({
       key: def.key,
       title: def.title,
-      slots: matches.length
-        ? matches.map((e) => ({
-            label: slotLabel(e),
-            matchId: e.matchId,
-            status: e.status === "open" ? "set" : "set",
-          }))
-        : [{ label: "Por decidir", status: "tbd" }],
+      shortTitle: ROUND_SHORT[def.key],
+      slots: matches.map((e) => ({
+        matchId: e.matchId,
+        teamASlug: e.teamASlug,
+        teamBSlug: e.teamBSlug,
+        status: "set" as const,
+      })),
     });
   }
 
-  if (!rounds.length) return null;
+  if (rounds.length < 2) return null;
 
   return {
     tournamentSlug,

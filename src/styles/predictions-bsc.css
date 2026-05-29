@@ -2618,69 +2618,143 @@
   text-decoration: underline;
 }
 
-/* Bracket playoffs */
-.bf-predict-bracket {
-  margin-bottom: 18px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(0, 153, 255, 0.2);
-  background: rgba(0, 20, 45, 0.35);
+/* Bracket playoff — fila horizontal, 1 chip = 1 duelo */
+.bf-predict-bracket.is-compact {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 153, 255, 0.18);
+  background: rgba(0, 16, 36, 0.45);
 }
 .bf-predict-bracket-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
-.bf-predict-bracket-region {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--bp-dim);
-  text-transform: uppercase;
-}
-.bf-predict-bracket-lanes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-}
-.bf-predict-bracket-round h3 {
-  margin: 0 0 8px;
-  font-size: 10px;
+.bf-predict-bracket-title {
+  margin: 0;
+  font-size: 11px;
   font-weight: 900;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--bsc-blue-bright);
 }
-.bf-predict-bracket-round.is-semi h3,
-.bf-predict-bracket-round.is-grand_final h3 {
-  color: var(--bp-gold);
+.bf-predict-bracket-sub {
+  margin: 2px 0 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--bp-dim);
 }
-.bf-predict-bracket-round ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.bf-bracket-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.bf-bracket-flow-group {
+  display: contents;
+}
+.bf-bracket-flow-arrow {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(0, 153, 255, 0.45);
+  line-height: 1;
+  user-select: none;
+}
+.bf-bracket-flow-stage {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
-.bf-predict-bracket-round li {
-  padding: 8px 10px;
+.bf-bracket-flow-label {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+}
+.bf-bracket-flow-stage.is-semi .bf-bracket-flow-label,
+.bf-bracket-flow-stage.is-grand_final .bf-bracket-flow-label {
+  color: var(--bp-gold);
+}
+.bf-bracket-flow-duels {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+}
+.bf-bracket-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 6px;
+  min-width: 0;
   border-radius: 8px;
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  color: var(--bp-text);
+  transition: border-color 0.15s, background 0.15s;
 }
-.bf-predict-bracket-round li.is-tbd {
+.bf-bracket-chip:hover {
+  border-color: rgba(0, 153, 255, 0.45);
+  background: rgba(0, 40, 80, 0.35);
+}
+.bf-bracket-chip.is-tbd {
+  min-width: 52px;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
   color: var(--bp-dim);
   font-style: italic;
 }
-.bf-predict-bracket-round a {
-  color: var(--bp-text);
-  text-decoration: none;
+.bf-bracket-chip-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 44px;
 }
-.bf-predict-bracket-round a:hover {
-  color: var(--bsc-blue-bright);
+.bf-bracket-chip-name {
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  color: var(--bp-muted);
+}
+.bf-bracket-chip-vs {
+  flex-shrink: 0;
+  font-size: 8px;
+  font-weight: 900;
+  color: var(--bp-dim);
+  opacity: 0.85;
+}
+.bf-bracket-flow-stage.is-grand_final .bf-bracket-chip {
+  border-color: rgba(255, 193, 7, 0.25);
+  box-shadow: 0 0 12px rgba(255, 193, 7, 0.08);
+}
+@media (max-width: 520px) {
+  .bf-bracket-chip-name {
+    font-size: 6px;
+    max-width: 36px;
+  }
+  .bf-bracket-flow-arrow {
+    font-size: 12px;
+  }
 }
 
 /* Atajos rápidos (cierran pronto / populares) */
