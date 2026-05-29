@@ -2371,8 +2371,12 @@
   }
 }
 .bf-predict-bracket-final-block {
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto;
+  width: 100%;
+}
+.bf-predict-bracket-final-block .bf-vote-arena {
+  grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
 }
 .bf-predict-bracket-final-block .bf-bsc-vote-card {
   border-color: rgba(255, 200, 46, 0.35);

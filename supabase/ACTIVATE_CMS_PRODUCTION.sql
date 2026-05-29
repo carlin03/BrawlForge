@@ -57,3 +57,19 @@ on conflict do nothing;
 
 -- Corregir budget fantasy (100M, no 50000000)
 update public.fantasy_rulesets set budget = 100 where id = 'bsc-2026-default';
+
+-- Pick'em: puntos por fase (grupos / cuartos / semis / final) — bracket 4+2+1 VS
+insert into public.prediction_scoring (id, base_points, streak_bonus, rules, is_active) values
+  (
+    'default',
+    10,
+    '{"3":5,"5":10}'::jsonb,
+    '{"correct_winner":10,"points_group":35,"points_quarter":55,"points_semi":70,"points_final":85}'::jsonb,
+    true
+  )
+on conflict (id) do update set
+  base_points = excluded.base_points,
+  streak_bonus = excluded.streak_bonus,
+  rules = excluded.rules,
+  is_active = true,
+  updated_at = now();

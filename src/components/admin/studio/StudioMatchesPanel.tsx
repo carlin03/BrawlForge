@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getBscCircuitTournaments } from "@/lib/data/matches";
 import { teamName } from "@/lib/data";
-import { PICKEM_STAGE_OPTIONS } from "@/lib/data/pickem-reward-points";
+import { DEFAULT_PICKEM_STAGE_POINTS, PICKEM_STAGE_OPTIONS } from "@/lib/data/pickem-reward-points";
 import {
   StudioCard,
   StudioField,
@@ -206,7 +206,7 @@ export function StudioMatchesPanel() {
                   >
                     {PICKEM_STAGE_OPTIONS.map((o) => (
                       <option key={o.id} value={o.id}>
-                        {o.label}
+                        {o.label} (+{DEFAULT_PICKEM_STAGE_POINTS[o.pointsKey]} pts)
                       </option>
                     ))}
                   </StudioSelect>

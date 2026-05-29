@@ -902,9 +902,19 @@ insert into public.cms_block_registry (block_type, label, description, default_p
   ('custom_json', 'JSON custom', 'Bloque avanzado', '{}', '4')
 on conflict (block_type) do nothing;
 
-insert into public.prediction_scoring (id, base_points, streak_bonus, rules) values
-  ('default', 10, '{"3":5,"5":10}', '{"correct_winner":10}')
-on conflict (id) do nothing;
+insert into public.prediction_scoring (id, base_points, streak_bonus, rules, is_active) values
+  (
+    'default',
+    10,
+    '{"3":5,"5":10}',
+    '{"correct_winner":10,"points_group":35,"points_quarter":55,"points_semi":70,"points_final":85}',
+    true
+  )
+on conflict (id) do update set
+  rules = excluded.rules,
+  streak_bonus = excluded.streak_bonus,
+  is_active = true,
+  updated_at = now();
 
 insert into public.fantasy_seasons (id, name, tournament_slug, is_active) values
   ('bsc-2026', 'BSC 2026', 'world-finals-2026', true)

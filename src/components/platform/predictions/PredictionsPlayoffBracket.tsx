@@ -273,10 +273,13 @@ export function PredictionsPlayoffBracket({
         {bracket.tournamentName}
         {bracket.region ? ` · ${bracket.region}` : ""}
         {" — "}
-        {qfCount > 0 && `${qfCount} cuartos`}
-        {qfCount > 0 && sfCount > 0 && " · "}
-        {sfCount > 0 && `${sfCount} semifinales`}
-        {(qfCount > 0 || sfCount > 0) && " · 1 final"}
+        {[
+          qfCount > 0 ? `${qfCount} VS cuartos` : "",
+          sfCount > 0 ? `${sfCount} VS semis` : "",
+          bracket.final || sfCount > 0 ? "1 VS final (grande)" : "",
+        ]
+          .filter(Boolean)
+          .join(" · ")}
       </p>
 
       {qfCount > 0 && (

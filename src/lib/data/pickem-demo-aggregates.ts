@@ -9,6 +9,8 @@ export const PICKEM_DEMO_AGGREGATES: Record<string, VoteAggregate> = {
   "mf26-jun-emea-sf2": { match_id: "mf26-jun-emea-sf2", votes_a: 640, votes_b: 560, total_votes: 1200 },
   "mf26-jun-emea-gf": { match_id: "mf26-jun-emea-gf", votes_a: 534, votes_b: 666, total_votes: 1200 },
   "mf26-jun-emea-qf2": { match_id: "mf26-jun-emea-qf2", votes_a: 720, votes_b: 480, total_votes: 1200 },
+  "mf26-jun-emea-qf3": { match_id: "mf26-jun-emea-qf3", votes_a: 510, votes_b: 690, total_votes: 1200 },
+  "mf26-jun-emea-qf4": { match_id: "mf26-jun-emea-qf4", votes_a: 402, votes_b: 798, total_votes: 1200 },
   "mf26-jun-ea-gf": { match_id: "mf26-jun-ea-gf", votes_a: 891, votes_b: 309, total_votes: 1200 },
   "mf26-jun-ea-sf": { match_id: "mf26-jun-ea-sf", votes_a: 552, votes_b: 548, total_votes: 1100 },
   "mf26-jun-na-gf": { match_id: "mf26-jun-na-gf", votes_a: 445, votes_b: 755, total_votes: 1200 },
