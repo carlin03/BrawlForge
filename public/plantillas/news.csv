@@ -1,2 +1,7 @@
+# Noticias (news_catalog)
+# BrawlForge — edita en Excel o Google Sheets. Guarda como CSV UTF-8.
+# Las filas que empiezan por # y las filas _ayuda / _ejemplo NO se importan.
+# En listas usa el carácter | entre valores (ej. jugador1|jugador2).
 slug,title,excerpt,body,category,published_at,author,read_minutes,cover_accent,related_teams,related_tournament,hot
-ejemplo-noticia,Título de la noticia,Resumen corto que aparece en la lista,Primer párrafo del artículo.|||Segundo párrafo (usa ||| entre párrafos).,Esports,2026-05-29,BrawlForge,3,gold,sk-gaming|hmble,bsc-2026-brawl-cup,false
+_ayuda,Titular,Resumen en listado,Párrafo1|||Párrafo2,Esports|Fantasy|Torneos,AAAA-MM-DD,Firma,minutos,gold|blue|red|green,slug1|slug2,slug torneo BSC,true|false
+_ejemplo,HMBLE conquista el Brawl Cup 2026,La gran final dejó al campeón europeo en lo más alto del circuito.,"En una serie vibrante, HMBLE cerró el torneo con autoridad.|||Los analistas destacan su consistencia en picks y macro a lo largo del evento.",Resultados,2026-05-29,BrawlForge,4,gold,hmble|fut-esports,bsc-2026-brawl-cup,true

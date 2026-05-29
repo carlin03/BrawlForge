@@ -1,5 +1,22 @@
 /** Parseo CSV → filas Supabase (misma lógica que scripts/lib/catalog-csv.mjs) */
 
+const SKIP_SLUGS = new Set([
+  "_ayuda",
+  "_columna",
+  "_descripcion",
+  "_ejemplo",
+  "ejemplo-noticia",
+]);
+
+/** Filas de ayuda, comentarios y ejemplos — no se importan a Supabase */
+export function shouldSkipCatalogCsvRow(obj: Record<string, string>): boolean {
+  const slug = (obj.slug ?? "").trim().toLowerCase();
+  if (!slug) return true;
+  if (slug.startsWith("#")) return true;
+  if (SKIP_SLUGS.has(slug) || slug.startsWith("_ejemplo")) return true;
+  return false;
+}
+
 export function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
@@ -76,7 +93,8 @@ export function csvToObjects(text: string): Record<string, string>[] {
         obj[h] = String(cells[idx] ?? "").trim();
       });
       return obj;
-    });
+    })
+    .filter((obj) => !shouldSkipCatalogCsvRow(obj));
 }
 
 function splitList(raw: string | undefined): string[] {

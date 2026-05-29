@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Upload, FileSpreadsheet } from "lucide-react";
+import { Upload, FileSpreadsheet } from "lucide-react";
+import { AdminCsvTemplates } from "@/components/admin/AdminCsvTemplates";
+import { getCsvTemplate } from "@/lib/admin/catalog-csv-schema";
 
 export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
   const [teamsFile, setTeamsFile] = useState<File | null>(null);
@@ -51,28 +53,12 @@ export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
           <code>.env.local</code>).
         </p>
         <p style={{ marginTop: 8, fontSize: 12, color: "var(--bp-dim)" }}>
-          Tablas: <code>teams_catalog</code>, <code>players_catalog</code>, <code>news_catalog</code>. En el cuerpo
-          de noticias usa <code>|||</code> entre párrafos. Plantillas en <code>plantillas/</code>.
+          Tablas: <code>teams_catalog</code>, <code>players_catalog</code>, <code>news_catalog</code>. Filas{" "}
+          <code>#</code>, <code>_ayuda</code> y <code>_ejemplo</code> se ignoran al importar.
         </p>
       </div>
 
-      <div className="bf-admin-import-templates">
-        <h3>
-          <Download size={18} /> Plantillas CSV
-        </h3>
-        <p className="bf-admin-field-hint">Descarga, edita en Excel o Google Sheets y vuelve a subir.</p>
-        <div className="bf-admin-import-links">
-          <a href="/plantillas/teams.csv" download className="bp-btn bp-btn-ghost">
-            teams.csv
-          </a>
-          <a href="/plantillas/players.csv" download className="bp-btn bp-btn-ghost">
-            players.csv
-          </a>
-          <a href="/plantillas/news.csv" download className="bp-btn bp-btn-ghost">
-            news.csv
-          </a>
-        </div>
-      </div>
+      <AdminCsvTemplates />
 
       <form onSubmit={(e) => void submit(e)} className="bf-admin-import-form">
         <h3>
@@ -80,17 +66,17 @@ export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
         </h3>
         <AdminFileRow
           label="Equipos (teams.csv)"
-          hint="slug, name, tag, region, roster_slugs (jugadores separados por |)"
+          hint={getCsvTemplate("teams")?.fields.filter((f) => f.required).map((f) => f.key).join(", ") ?? ""}
           onChange={setTeamsFile}
         />
         <AdminFileRow
           label="Jugadores (players.csv)"
-          hint="slug, ign, team_slug, fantasy_points, bio, photo_url…"
+          hint={getCsvTemplate("players")?.fields.filter((f) => f.required).map((f) => f.key).join(", ") ?? ""}
           onChange={setPlayersFile}
         />
         <AdminFileRow
           label="Noticias (news.csv)"
-          hint="slug, title, body con ||| entre párrafos"
+          hint="title, excerpt, body (párrafos con |||), related_teams"
           onChange={setNewsFile}
         />
         {msg && <div className={`bf-admin-toast ${msg.includes("Error") ? "is-error" : ""}`}>{msg}</div>}

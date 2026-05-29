@@ -65,17 +65,40 @@ export function parseCsv(text) {
   return rows;
 }
 
+const SKIP_SLUGS = new Set([
+  "_ayuda",
+  "_columna",
+  "_descripcion",
+  "_ejemplo",
+  "ejemplo-noticia",
+]);
+
+export function shouldSkipCatalogCsvRow(obj) {
+  const slug = String(obj.slug ?? "").trim().toLowerCase();
+  if (!slug) return true;
+  if (slug.startsWith("#")) return true;
+  if (SKIP_SLUGS.has(slug) || slug.startsWith("_ejemplo")) return true;
+  return false;
+}
+
 export function csvToObjects(text) {
   const rows = parseCsv(text.replace(/^\uFEFF/, ""));
   if (!rows.length) return [];
   const headers = rows[0].map((h) => h.trim().toLowerCase());
-  return rows.slice(1).filter((r) => r.some((c) => String(c).trim())).map((cells) => {
-    const obj = {};
-    headers.forEach((h, idx) => {
-      obj[h] = String(cells[idx] ?? "").trim();
-    });
-    return obj;
-  });
+  return rows
+    .slice(1)
+    .filter((r) => {
+      const first = String(r[0] ?? "").trim();
+      return r.some((c) => String(c).trim()) && first && !first.startsWith("#");
+    })
+    .map((cells) => {
+      const obj = {};
+      headers.forEach((h, idx) => {
+        obj[h] = String(cells[idx] ?? "").trim();
+      });
+      return obj;
+    })
+    .filter((obj) => !shouldSkipCatalogCsvRow(obj));
 }
 
 export function escapeCsvCell(value) {

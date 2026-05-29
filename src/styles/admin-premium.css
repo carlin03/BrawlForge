@@ -443,7 +443,234 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 720px;
+  max-width: 960px;
+}
+
+/* Plantillas CSV — guía visual */
+.bf-csv-hub {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bf-csv-hub-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bf-csv-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bf-csv-card {
+  border: 1px solid var(--bp-line);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+.bf-csv-card.is-open {
+  border-color: rgba(255, 200, 46, 0.25);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.bf-csv-card-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+}
+.bf-csv-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 200, 46, 0.12);
+  color: var(--bp-gold);
+}
+.bf-csv-card-titles h3 {
+  margin: 0 0 4px;
+  font-family: var(--bp-head);
+  font-size: 1.15rem;
+}
+.bf-csv-card-titles p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--bp-muted);
+}
+.bf-csv-card-meta {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--bp-dim);
+}
+.bf-csv-card-meta code {
+  font-size: 10px;
+}
+.bf-csv-dl {
+  white-space: nowrap;
+}
+.bf-csv-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--bp-line);
+  background: transparent;
+  color: var(--bp-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bf-csv-card-body {
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--bp-line);
+}
+.bf-csv-card-note {
+  margin: 14px 0;
+  font-size: 13px;
+  color: var(--bp-muted);
+  line-height: 1.5;
+}
+.bf-csv-preview {
+  margin-bottom: 16px;
+}
+.bf-csv-preview-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-gold);
+  margin-bottom: 8px;
+}
+.bf-csv-preview-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 200, 46, 0.2);
+  background: linear-gradient(145deg, rgba(255, 200, 46, 0.06), rgba(0, 0, 0, 0.4));
+}
+.bf-csv-preview-card h4 {
+  margin: 6px 0 8px;
+  font-family: var(--bp-head);
+  font-size: 1.25rem;
+}
+.bf-csv-preview-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--bp-muted);
+  line-height: 1.55;
+}
+.bf-csv-preview-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bp-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.bf-csv-preview-chips {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--bp-gold);
+}
+.bf-csv-preview-hot {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  background: var(--bp-red, #ff3d5a);
+  color: #fff;
+}
+.bf-csv-fields-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--bp-line);
+}
+.bf-csv-fields {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.bf-csv-fields th {
+  text-align: left;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--bp-gold);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.bf-csv-fields td {
+  padding: 10px 12px;
+  border-top: 1px solid var(--bp-line);
+  vertical-align: top;
+}
+.bf-csv-fields td code {
+  font-size: 11px;
+}
+.bf-csv-ex {
+  color: var(--bp-muted);
+}
+.bf-csv-req {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: rgba(255, 200, 46, 0.15);
+  color: var(--bp-gold);
+}
+
+.bf-plantillas-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+.bf-plantillas-hero {
+  margin-bottom: 28px;
+}
+.bf-plantillas-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--bp-muted);
+  margin-bottom: 16px;
+}
+.bf-plantillas-brand {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.bf-plantillas-kicker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--bp-gold);
+  margin: 0 0 6px;
+}
+.bf-plantillas-hero h1 {
+  margin: 0 0 8px;
+  font-family: var(--bp-head);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+}
+.bf-plantillas-hero p {
+  margin: 0;
+  color: var(--bp-muted);
+  max-width: 520px;
+  line-height: 1.5;
 }
 .bf-admin-import-templates h3,
 .bf-admin-import-form h3 {

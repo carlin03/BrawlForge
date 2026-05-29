@@ -1,4 +1,10 @@
+# Jugadores BSC 2026 (players_catalog)
+# BrawlForge — edita en Excel o Google Sheets. Guarda como CSV UTF-8.
+# Las filas que empiezan por # y las filas _ayuda / _ejemplo NO se importan.
+# En listas usa el carácter | entre valores (ej. jugador1|jugador2).
 slug,ign,real_name,team_slug,region,role,status,fantasy_points,fantasy_ownership,rating,bio,photo_url
+_ayuda,Nombre en juego,Nombre real,slug del equipo,EMEA|EA|NA|SA,Player,active|inactive|retired,0-100,0-100,0-2,Bio en perfil,URL foto
+_ejemplo,Yoshi,,sk-gaming,EMEA,Player,active,92,28,1.18,Jugador estrella de SK Gaming. Capitán habitual en Monthly Finals.,
 drake,Drake,,feasible-gaming,EA,Player,active,96,47,1.22,,
 zeyrox,Zeyrox,,fut-esports-academy,EMEA,Player,active,96,22,1.07,,
 gero,GeRo,Łukasz Gerek,natus-vincere,EMEA,Player,active,96,22,1.17,,

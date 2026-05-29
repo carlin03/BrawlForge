@@ -5,10 +5,65 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { objectsToCsv } from "./lib/catalog-csv.mjs";
+import {
+  buildCatalogTemplateCsv,
+  TEAM_HINTS,
+  TEAM_EXAMPLE,
+  PLAYER_HINTS,
+  PLAYER_EXAMPLE,
+  NEWS_HINTS,
+  NEWS_EXAMPLE,
+} from "./lib/csv-template-builder.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const outDir = resolve(root, "data", "import");
+const outDirs = [
+  resolve(root, "data", "import"),
+  resolve(root, "public", "plantillas"),
+];
+
+const TEAM_HEADERS = [
+  "slug",
+  "name",
+  "tag",
+  "region",
+  "country",
+  "earnings",
+  "rank",
+  "rank_change",
+  "description",
+  "logo_url",
+  "roster_slugs",
+];
+
+const PLAYER_HEADERS = [
+  "slug",
+  "ign",
+  "real_name",
+  "team_slug",
+  "region",
+  "role",
+  "status",
+  "fantasy_points",
+  "fantasy_ownership",
+  "rating",
+  "bio",
+  "photo_url",
+];
+
+const NEWS_HEADERS = [
+  "slug",
+  "title",
+  "excerpt",
+  "body",
+  "category",
+  "published_at",
+  "author",
+  "read_minutes",
+  "cover_accent",
+  "related_teams",
+  "related_tournament",
+  "hot",
+];
 
 function parseActiveSlugs() {
   const src = readFileSync(resolve(root, "src/lib/data/bsc-2026-active-teams.ts"), "utf8");
@@ -105,86 +160,39 @@ for (const p of players2026) {
   });
 }
 
-mkdirSync(outDir, { recursive: true });
+for (const dir of outDirs) mkdirSync(dir, { recursive: true });
 
-writeFileSync(
-  resolve(outDir, "teams.csv"),
-  objectsToCsv(
-    [
-      "slug",
-      "name",
-      "tag",
-      "region",
-      "country",
-      "earnings",
-      "rank",
-      "rank_change",
-      "description",
-      "logo_url",
-      "roster_slugs",
-    ],
-    teamObjects,
-  ),
-);
+const teamsCsv = buildCatalogTemplateCsv({
+  title: "Equipos BSC 2026 (teams_catalog)",
+  headers: TEAM_HEADERS,
+  hints: TEAM_HINTS,
+  example: TEAM_EXAMPLE,
+  rows: teamObjects,
+});
 
-writeFileSync(
-  resolve(outDir, "players.csv"),
-  objectsToCsv(
-    [
-      "slug",
-      "ign",
-      "real_name",
-      "team_slug",
-      "region",
-      "role",
-      "status",
-      "fantasy_points",
-      "fantasy_ownership",
-      "rating",
-      "bio",
-      "photo_url",
-    ],
-    playerObjects,
-  ),
-);
+const playersCsv = buildCatalogTemplateCsv({
+  title: "Jugadores BSC 2026 (players_catalog)",
+  headers: PLAYER_HEADERS,
+  hints: PLAYER_HINTS,
+  example: PLAYER_EXAMPLE,
+  rows: playerObjects,
+});
 
-writeFileSync(
-  resolve(outDir, "news.csv"),
-  objectsToCsv(
-    [
-      "slug",
-      "title",
-      "excerpt",
-      "body",
-      "category",
-      "published_at",
-      "author",
-      "read_minutes",
-      "cover_accent",
-      "related_teams",
-      "related_tournament",
-      "hot",
-    ],
-    [
-      {
-        slug: "ejemplo-noticia",
-        title: "Título de la noticia",
-        excerpt: "Resumen corto que aparece en la lista",
-        body: "Primer párrafo del artículo.|||Segundo párrafo (usa ||| entre párrafos).",
-        category: "Esports",
-        published_at: "2026-05-29",
-        author: "BrawlForge",
-        read_minutes: 3,
-        cover_accent: "gold",
-        related_teams: "sk-gaming|hmble",
-        related_tournament: "bsc-2026-brawl-cup",
-        hot: "false",
-      },
-    ],
-  ),
-);
+const newsCsv = buildCatalogTemplateCsv({
+  title: "Noticias (news_catalog)",
+  headers: NEWS_HEADERS,
+  hints: NEWS_HINTS,
+  example: NEWS_EXAMPLE,
+  rows: [],
+});
 
-console.log(`Plantillas en ${outDir}`);
+for (const dir of outDirs) {
+  writeFileSync(resolve(dir, "teams.csv"), teamsCsv);
+  writeFileSync(resolve(dir, "players.csv"), playersCsv);
+  writeFileSync(resolve(dir, "news.csv"), newsCsv);
+}
+
+console.log(`Plantillas en ${outDirs.join(" y ")}`);
 console.log(`  teams.csv    → ${teamObjects.length} equipos BSC`);
 console.log(`  players.csv  → ${playerObjects.length} jugadores`);
 console.log(`  news.csv     → ejemplo + cabeceras`);
