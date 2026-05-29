@@ -10,6 +10,7 @@ import type { GeneratedTeam, GeneratedPlayer, GeneratedTournament } from "./cata
 import { MAX_DISPLAY_TIER } from "../app-config";
 import { isTeam2026, TEAMS_2026_SLUGS } from "./teams-2026";
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
+import { BSC_2026_CLUB_COUNT } from "./bsc-2026-circuit-teams";
 
 export type { GeneratedTeam, GeneratedPlayer, GeneratedTournament };
 
@@ -84,7 +85,7 @@ const isActiveStatus = (status?: string) => {
 };
 
 export const CATALOG_STATS = {
-  teams: TEAMS_2026_SLUGS.size,
+  teams: BSC_2026_CLUB_COUNT,
   players: (players2026 as GeneratedPlayer[]).length,
   playersActive: (players2026 as GeneratedPlayer[]).filter((p) => isActiveStatus(p.status)).length,
   tournaments2026:

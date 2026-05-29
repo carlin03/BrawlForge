@@ -11,7 +11,15 @@ import { PlayerCard } from "@/components/platform/PlayerCard";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { CATALOG_STATS, catalogSyncedAt, tierBadgeClass, tierLabel, tournamentName } from "@/lib/data";
+import {
+  BSC_2026_CLUB_COUNT,
+  CATALOG_STATS,
+  catalogSyncedAt,
+  getBsc2026CircuitTeamSlugs,
+  tierBadgeClass,
+  tierLabel,
+  tournamentName,
+} from "@/lib/data";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
@@ -80,14 +88,22 @@ export function HomeView() {
   const homeClubs = useMemo(() => {
     const bySlug = new Map(teams.map((t) => [t.slug, t]));
     const ordered: typeof teams = [];
-    for (const slug of BSC_CLUBS) {
+    const priority = [...BSC_CLUBS, ...getBsc2026CircuitTeamSlugs()];
+    const seen = new Set<string>();
+    for (const slug of priority) {
+      if (seen.has(slug)) continue;
+      seen.add(slug);
       const t = bySlug.get(slug);
       if (t && hasTeamLogoSource(slug)) ordered.push(t);
     }
     for (const t of teams) {
-      if (!ordered.some((x) => x.slug === t.slug) && hasTeamLogoSource(t.slug)) ordered.push(t);
+      if (ordered.length >= BSC_2026_CLUB_COUNT) break;
+      if (!seen.has(t.slug) && hasTeamLogoSource(t.slug)) {
+        seen.add(t.slug);
+        ordered.push(t);
+      }
     }
-    return ordered.slice(0, 24);
+    return ordered.slice(0, BSC_2026_CLUB_COUNT);
   }, []);
 
   const marqueeClubs = useMemo(() => [...homeClubs, ...homeClubs], [homeClubs]);
@@ -133,8 +149,8 @@ export function HomeView() {
               Brawl<em>Forge</em>
             </h1>
             <p className="fu-lead">
-              El hub definitivo del circuito pro: fantasy con plantilla real, predicciones en partidos BSC y
-              perfiles completos de cada club y jugador.
+              El hub del circuito BSC 2026: {BSC_2026_CLUB_COUNT} equipos, fantasy con plantilla real, predicciones
+              en cada partido y perfiles de clubes y jugadores.
             </p>
             <div className="fu-cta-row">
               <Link href="/fantasy" className="fu-btn fu-btn-gold">
@@ -149,7 +165,7 @@ export function HomeView() {
             </div>
             <div className="fu-stats">
               <div className="fu-stat">
-                <b>{homeClubs.length}</b>
+                <b>{BSC_2026_CLUB_COUNT}</b>
                 <span>Equipos 2026</span>
               </div>
               <div className="fu-stat">
@@ -216,7 +232,7 @@ export function HomeView() {
 
       <section className="fu-marquee-wrap">
         <div className="fu-marquee-head">
-          <h2>Clubes del circuito 2026</h2>
+          <h2>{BSC_2026_CLUB_COUNT} clubes del circuito 2026</h2>
         </div>
         <div className="fu-marquee-track">
           {marqueeClubs.map((t, i) => (
