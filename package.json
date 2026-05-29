@@ -12,6 +12,7 @@
     "deploy:check": "npm run supabase:check && npm run build",
     "supabase:build:catalog": "node scripts/build-bsc-catalog-enriched.mjs --write",
     "supabase:seed:catalog": "node scripts/build-bsc-catalog-enriched.mjs --write && node scripts/seed-supabase-catalog.mjs",
+    "cms:seed:phase0": "echo Run POST /api/cms/admin/seed-phase0 from Studio Platform after migration",
     "supabase:export:csv": "node scripts/export-catalog-csv.mjs",
     "supabase:import:csv": "node scripts/import-supabase-csv.mjs",
     "favicon:gen": "node scripts/generate-favicon.mjs",

@@ -73,14 +73,26 @@ function tabFromQuery(raw: string | null): Tab | null {
   return null;
 }
 
-export function AdminConsole() {
+type AdminConsoleProps = {
+  /** Dentro de BrawlForge Studio: oculta cabecera duplicada */
+  embedded?: boolean;
+  initialTab?: Tab;
+};
+
+export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps) {
   const searchParams = useSearchParams();
-  const [tab, setTab] = useState<Tab>(() => tabFromQuery(searchParams.get("tab")) ?? "teams");
+  const [tab, setTab] = useState<Tab>(() =>
+    embedded && initialTab ? initialTab : (tabFromQuery(searchParams.get("tab")) ?? "teams"),
+  );
 
   useEffect(() => {
+    if (embedded && initialTab) {
+      setTab(initialTab);
+      return;
+    }
     const next = tabFromQuery(searchParams.get("tab"));
     if (next) setTab(next);
-  }, [searchParams]);
+  }, [embedded, initialTab, searchParams]);
   const [msg, setMsg] = useState("");
   const [msgError, setMsgError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -194,7 +206,8 @@ export function AdminConsole() {
   const teamBySlug = (slug: string) => teams.find((t) => t.slug === slug);
 
   return (
-    <div className="bf-admin-page bf-admin-console">
+    <div className={`bf-admin-page bf-admin-console ${embedded ? "is-embedded" : ""}`}>
+      {!embedded && (
       <header className="bf-admin-hero">
         <div className="bf-admin-hero-bg" aria-hidden />
         <div className="bf-admin-hero-inner">
@@ -228,7 +241,10 @@ export function AdminConsole() {
           </div>
         </div>
       </header>
+      )}
 
+      {!embedded && (
+        <>
       <div className="bf-admin-tabs-brand">
         <BrandMark size={40} />
         <span>
@@ -247,6 +263,8 @@ export function AdminConsole() {
           </button>
         ))}
       </nav>
+        </>
+      )}
 
       {msg && <div className={`bf-admin-toast ${msgError ? "is-error" : ""}`}>{msg}</div>}
 

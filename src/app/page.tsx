@@ -1,5 +1,5 @@
-import { HomeView } from "@/components/platform/HomeView";
+import { HomePageRouter } from "@/components/platform/HomePageRouter";
 
 export default function Page() {
-  return <HomeView />;
+  return <HomePageRouter />;
 }

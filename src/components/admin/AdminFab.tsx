@@ -12,10 +12,10 @@ export function AdminFab() {
 
   return (
     <Link
-      href="/admin?tab=logos"
+      href="/admin?module=operations&tab=logos"
       className="bf-admin-fab"
-      title="Editar logos y panel admin"
-      aria-label="Editar logos — panel de administración"
+      title="BrawlForge Studio — logos y operaciones"
+      aria-label="BrawlForge Studio — panel de administración"
     >
       <Image size={20} aria-hidden />
       <span>Logos</span>

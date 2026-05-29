@@ -11,6 +11,7 @@ import { bscMatches } from "./bsc-matches";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
 import { toLiquipediaUrl, normalizeParticipantList } from "./catalog";
+import { getMatchPool } from "./match-pool";
 
 export interface EsportsMatch {
   id: string;
@@ -291,21 +292,21 @@ export function getTierBPlusTournaments(limit = 32): EsportsTournament[] {
 }
 
 export function getMatch(id: string): EsportsMatch | undefined {
-  return matches.find((m) => m.id === id);
+  return getMatchPool().find((m) => m.id === id);
 }
 
 export function getMatchesByTournament(tournamentSlug: string): EsportsMatch[] {
   const alias = BSC_TOURNAMENT_ALIASES[tournamentSlug];
   const slugs = alias ? [tournamentSlug, alias] : [tournamentSlug];
-  return matches.filter((m) => slugs.includes(m.tournamentSlug));
+  return getMatchPool().filter((m) => slugs.includes(m.tournamentSlug));
 }
 
 export function getLiveMatches(): EsportsMatch[] {
-  return matches.filter((m) => m.status === "live");
+  return getMatchPool().filter((m) => m.status === "live");
 }
 
 export function getUpcomingMatches(): EsportsMatch[] {
-  return [...matches]
+  return [...getMatchPool()]
     .filter((m) => m.status === "upcoming" || m.status === "live")
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
@@ -332,7 +333,7 @@ export function getTournamentParticipantSlugs(slug: string): string[] {
 }
 
 export function getRecentMatches(limit = 8): EsportsMatch[] {
-  return [...matches]
+  return [...getMatchPool()]
     .filter((m) => m.status === "finished")
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit);
@@ -361,12 +362,13 @@ export function getCuratedHomeMatches(
   limit = 8,
 ): EsportsMatch[] {
   let pool: EsportsMatch[];
+  const all = getMatchPool();
   if (tab === "live") {
-    pool = matches.filter((m) => m.status === "live");
+    pool = all.filter((m) => m.status === "live");
   } else if (tab === "upcoming") {
-    pool = matches.filter((m) => m.status === "upcoming");
+    pool = all.filter((m) => m.status === "upcoming");
   } else {
-    pool = matches.filter((m) => m.status === "finished");
+    pool = all.filter((m) => m.status === "finished");
   }
 
   return pool

@@ -3,6 +3,7 @@
 @import "../styles/motion.css";
 @import "../styles/motion-ultra.css";
 @import "../styles/game.css";
+@import "../styles/studio.css";
 
 @layer base {
   html, body {

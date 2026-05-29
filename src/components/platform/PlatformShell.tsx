@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { MAIN_NAV } from "@/lib/nav-config";
+import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 import { PlayerProfileMenu } from "@/components/platform/PlayerProfileMenu";
 import { AdminFab } from "@/components/admin/AdminFab";
 import { MotionAmbience } from "@/components/platform/MotionAmbience";
@@ -19,6 +20,17 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { isAdmin, loading: authLoading, isLoggedIn } = useAuth();
+  const cms = useOptionalCmsRuntime();
+  const navItems =
+    cms?.navigation?.map((item) => ({
+      label: item.label,
+      href: item.href,
+      ...("accent" in item && item.accent ? { accent: item.accent } : {}),
+    })) ?? MAIN_NAV;
+
+  if (pathname.startsWith("/admin")) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="bp-app bf-game-app bf-ultra-app bf-premium-app bf-motion-app">
@@ -33,7 +45,7 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
           </Link>
 
           <nav className="bp-nav-links" aria-label="Principal">
-            {MAIN_NAV.map((item) => {
+            {navItems.map((item) => {
               const on = isActive(pathname, item.href);
               const accent = "accent" in item ? item.accent : undefined;
               const cls = [
@@ -61,7 +73,7 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className={`bp-nav-mobile ${open ? "is-open" : ""}`} aria-label="Móvil">
-          {MAIN_NAV.map((item) => (
+          {navItems.map((item) => (
             <Link key={item.href} href={item.href} className="bp-nav-link" onClick={() => setOpen(false)}>
               {item.label}
             </Link>

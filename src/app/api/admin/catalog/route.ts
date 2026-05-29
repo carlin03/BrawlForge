@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { logCmsAudit } from "@/lib/cms/audit";
 import { requireAdmin } from "@/lib/supabase/admin-auth";
 import { teams, getTeam } from "@/lib/data/teams";
 import { players, getPlayer } from "@/lib/data/players";
@@ -101,6 +102,12 @@ export async function POST(request: Request) {
     };
     const { error } = await supabase.from("teams_catalog").upsert(payload);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await logCmsAudit({
+      action: "catalog.upsert",
+      entityType: "team",
+      entityId: payload.slug,
+      diff: { name: payload.name },
+    });
     return NextResponse.json({ ok: true, message: `Equipo ${payload.name} guardado` });
   }
 
@@ -148,6 +155,12 @@ export async function POST(request: Request) {
       }));
     }
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await logCmsAudit({
+      action: "catalog.upsert",
+      entityType: "player",
+      entityId: payload.slug,
+      diff: { ign: payload.ign },
+    });
     return NextResponse.json({ ok: true, message: `Jugador ${payload.ign} guardado` });
   }
 
@@ -171,6 +184,12 @@ export async function POST(request: Request) {
     };
     const { error } = await supabase.from("news_catalog").upsert(payload);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await logCmsAudit({
+      action: "catalog.upsert",
+      entityType: "news",
+      entityId: payload.slug,
+      diff: { title: payload.title },
+    });
     return NextResponse.json({ ok: true, message: `Noticia ${payload.slug} guardada` });
   }
 

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { AdminConsole } from "@/components/admin/AdminConsole";
+import { BrawlForgeStudio } from "@/components/admin/studio/BrawlForgeStudio";
 import { createClient } from "@/lib/supabase/server";
 import { resolveIsAdmin } from "@/lib/admin-access";
 
@@ -63,7 +63,7 @@ export default async function AdminPage() {
 
   return (
     <Suspense fallback={<div className="bf-auth-page">Cargando panel…</div>}>
-      <AdminConsole />
+      <BrawlForgeStudio />
     </Suspense>
   );
 }

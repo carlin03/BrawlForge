@@ -1,0 +1,408 @@
+/* BrawlForge Studio — Control Center (Fase 0) */
+
+.bf-studio {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  background: var(--bp-bg-deep, #06080d);
+}
+
+.bf-studio-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 12px;
+  border-right: 1px solid var(--bp-line);
+  background: linear-gradient(180deg, #0e121a 0%, #0a0c12 100%);
+  position: sticky;
+  top: 0;
+  align-self: start;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.bf-studio-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 6px 12px;
+}
+
+.bf-studio-brand-kicker {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bp-gold);
+  font-weight: 600;
+}
+
+.bf-studio-brand strong {
+  font-family: var(--bp-head);
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.bf-studio-brand em {
+  color: var(--bp-gold);
+  font-style: normal;
+}
+
+.bf-studio-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bf-studio-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: var(--bp-r-sm);
+  background: transparent;
+  color: var(--bp-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.bf-studio-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--bp-text);
+}
+
+.bf-studio-nav-item.is-on {
+  background: var(--bp-blue-soft);
+  color: var(--bp-text);
+}
+
+.bf-studio-nav-item.is-planned {
+  opacity: 0.72;
+}
+
+.bf-studio-badge {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--bp-dim);
+}
+
+.bf-studio-subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--bp-line);
+}
+
+.bf-studio-subnav-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--bp-dim);
+  padding: 8px 12px 4px;
+}
+
+.bf-studio-subnav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--bp-r-sm);
+  background: transparent;
+  color: var(--bp-muted);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.bf-studio-subnav-item.is-on {
+  color: var(--bp-gold);
+  background: var(--bp-gold-soft);
+}
+
+.bf-studio-sidebar-foot {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.bf-studio-home-link {
+  width: 100%;
+  justify-content: center;
+}
+
+.bf-studio-main {
+  min-width: 0;
+  padding: 0 0 48px;
+}
+
+.bf-studio-topbar {
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid var(--bp-line);
+}
+
+.bf-studio-title {
+  font-family: var(--bp-head);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.bf-studio-lead {
+  margin: 6px 0 0;
+  color: var(--bp-muted);
+  font-size: 14px;
+  max-width: 56ch;
+}
+
+.bf-studio-embed .bf-admin-page.is-embedded {
+  padding: 0;
+  max-width: none;
+}
+
+.bf-studio-embed .bf-admin-console.is-embedded {
+  padding: 16px 24px 32px;
+}
+
+.bf-studio-platform,
+.bf-studio-placeholder {
+  padding: 20px 24px 32px;
+}
+
+.bf-studio-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.bf-studio-section {
+  margin-bottom: 28px;
+}
+
+.bf-studio-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--bp-head);
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+
+.bf-studio-hint {
+  color: var(--bp-muted);
+  font-size: 13px;
+  margin: 0 0 14px;
+  max-width: 65ch;
+}
+
+.bf-studio-alert {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: var(--bp-r);
+  background: rgba(255, 200, 46, 0.08);
+  border: 1px solid rgba(255, 200, 46, 0.25);
+  font-size: 13px;
+}
+
+.bf-studio-alert p {
+  margin: 4px 0 0;
+  color: var(--bp-muted);
+}
+
+.bf-studio-flag-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bf-studio-flag-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+  cursor: pointer;
+}
+
+.bf-studio-flag-row code {
+  display: block;
+  font-size: 11px;
+  color: var(--bp-dim);
+  margin-top: 4px;
+}
+
+.bf-studio-meta {
+  font-size: 12px;
+  color: var(--bp-dim);
+  margin-top: 12px;
+}
+
+.bf-studio-module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.bf-studio-module-card {
+  padding: 14px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+}
+
+.bf-studio-module-card strong {
+  display: block;
+  margin: 6px 0 4px;
+}
+
+.bf-studio-module-card p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--bp-muted);
+}
+
+.bf-studio-module-phase {
+  font-size: 10px;
+  color: var(--bp-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.bf-studio-module-status {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--bp-gold);
+}
+
+.bf-studio-module-card.is-planned {
+  opacity: 0.85;
+}
+
+.bf-studio-audit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-studio-audit-list li {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bp-line);
+  font-size: 12px;
+}
+
+.bf-studio-audit-action {
+  font-weight: 600;
+  color: var(--bp-gold);
+}
+
+.bf-studio-placeholder {
+  text-align: left;
+  max-width: 48ch;
+}
+
+.bf-studio-placeholder h2 {
+  font-family: var(--bp-head);
+}
+
+.bf-studio-panel-loading {
+  padding: 32px 24px;
+  color: var(--bp-muted);
+}
+
+.bf-studio-panel {
+  padding: 0 24px 32px;
+}
+
+.bf-studio-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.bf-studio-panel-head h2 {
+  font-family: var(--bp-head);
+  margin: 0 0 6px;
+}
+
+.bf-studio-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.bf-studio-form-grid input,
+.bf-studio-form-grid select,
+.bf-studio-form-grid textarea {
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--bp-text);
+  font-size: 13px;
+}
+
+.bf-studio-json {
+  background: #0e121a;
+  border: 1px solid var(--bp-line);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 11px;
+  overflow: auto;
+  max-height: 400px;
+}
+
+.bf-studio-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bf-studio-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--bp-line);
+  font-size: 13px;
+}
+
+.bf-studio-muted {
+  color: var(--bp-muted);
+  font-size: 13px;
+}
+
+.bf-studio-msg.is-error {
+  color: var(--bp-red, #ff1744);
+}
+
+@media (max-width: 900px) {
+  .bf-studio {
+    grid-template-columns: 1fr;
+  }
+  .bf-studio-sidebar {
+    position: relative;
+    min-height: auto;
+    max-height: none;
+  }
+}
