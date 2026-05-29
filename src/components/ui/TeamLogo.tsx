@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   buildTeamLogoSources,
   prependTeamLogoSources,
   resolveTeamLogoSlug,
 } from "@/lib/data/png-logo-urls";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
+import { teamLogoOverrideUrl } from "@/lib/data/logo-overrides";
 import { useLogoConfig } from "@/contexts/LogoConfigContext";
 import { useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { getLogoTreatment } from "@/lib/data/logo-branding";
@@ -14,7 +15,6 @@ import { isValidLogoSlug } from "@/lib/data/logo-slugs";
 import { getTeam } from "@/lib/data/teams";
 import { LogoFrame } from "@/components/ui/LogoFrame";
 import { useLogoImage } from "@/components/ui/useLogoImage";
-import { isRemoteLogoSrc } from "@/lib/data/logo-client-url";
 import { usesRemoteLogoPipeline } from "@/lib/data/local-logos";
 import { teamLogoProxyUrl } from "@/lib/team-logo-server";
 
@@ -36,8 +36,72 @@ interface TeamLogoProps {
   size?: number | LogoSize;
   className?: string;
   glow?: boolean;
-  /** Marquee / above-the-fold: carga inmediata */
   priority?: boolean;
+}
+
+function TeamLogoRemote({
+  slug,
+  name,
+  tag,
+  pixelSize,
+  className,
+  glow,
+  priority,
+  cacheVersion,
+}: {
+  slug: string;
+  name?: string;
+  tag?: string;
+  pixelSize: number;
+  className: string;
+  glow: boolean;
+  priority: boolean;
+  cacheVersion: string;
+}) {
+  const resolvedSlug = resolveTeamLogoSlug(slug);
+  const team = getTeam(slug) ?? getTeam(resolvedSlug);
+  const displayName = name || team?.name || slug;
+  const treatment = getLogoTreatment(resolvedSlug);
+  const overrideUrl = teamLogoOverrideUrl(resolvedSlug) ?? teamLogoOverrideUrl(slug);
+  const [src, setSrc] = useState(() => teamLogoProxyUrl(resolvedSlug, cacheVersion));
+  const [failed, setFailed] = useState(false);
+
+  if (failed || !src) {
+    return (
+      <LogoFrame size={pixelSize} kind="team" glow={false} className={`logo-missing ${className}`.trim()} title={displayName}>
+        <span className="logo-missing-tag">{tag ?? team?.tag ?? displayName.slice(0, 2).toUpperCase()}</span>
+      </LogoFrame>
+    );
+  }
+
+  return (
+    <LogoFrame
+      size={pixelSize}
+      kind="team"
+      glow={glow}
+      className={`${className} logo-treatment-${treatment} logo-remote is-loaded`.trim()}
+      title={displayName}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={displayName}
+        width={pixelSize - 6}
+        height={pixelSize - 6}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+        className="logo-img"
+        onError={() => {
+          if (overrideUrl && src !== overrideUrl) {
+            setSrc(overrideUrl);
+            return;
+          }
+          setFailed(true);
+        }}
+      />
+    </LogoFrame>
+  );
 }
 
 export function TeamLogo({
@@ -51,17 +115,30 @@ export function TeamLogo({
 }: TeamLogoProps) {
   const pixelSize = typeof size === "number" ? size : LOGO_SIZES[size];
   const valid = isValidLogoSlug(slug);
+  const remote = usesRemoteLogoPipeline();
+  const logoConfig = useLogoConfig();
+  const cacheVersion = logoConfig.cacheVersion ?? LOGO_CACHE_VERSION;
+
+  if (valid && remote) {
+    return (
+      <TeamLogoRemote
+        slug={slug}
+        name={name}
+        tag={tag}
+        pixelSize={pixelSize}
+        className={className}
+        glow={glow}
+        priority={priority}
+        cacheVersion={cacheVersion}
+      />
+    );
+  }
+
   const resolvedSlug = valid ? resolveTeamLogoSlug(slug) : slug;
   const team = valid ? (getTeam(slug) ?? getTeam(resolvedSlug)) : undefined;
   const catalogTeam = useResolvedTeam(slug);
-  const logoConfig = useLogoConfig();
-  const cacheVersion = logoConfig.cacheVersion ?? LOGO_CACHE_VERSION;
   const sources = useMemo(() => {
     if (!valid) return [];
-    if (usesRemoteLogoPipeline()) {
-      const canonical = resolveTeamLogoSlug(slug);
-      return [teamLogoProxyUrl(canonical, cacheVersion)];
-    }
     const base = buildTeamLogoSources(slug, logoConfig);
     return prependTeamLogoSources(base, [catalogTeam?.logoUrl], cacheVersion);
   }, [slug, valid, cacheVersion, logoConfig.cacheVersion, logoConfig.overrides, catalogTeam?.logoUrl]);
@@ -69,7 +146,6 @@ export function TeamLogo({
   const displayName = name || team?.name || (valid ? slug : "TBD");
   const loaded = status === "ready" && !!src;
   const treatment = valid ? getLogoTreatment(resolvedSlug) : "border-only";
-  const remoteLogo = usesRemoteLogoPipeline() && isRemoteLogoSrc(src);
 
   if (!valid || status === "failed" || !src) {
     return (
@@ -84,7 +160,7 @@ export function TeamLogo({
       size={pixelSize}
       kind="team"
       glow={glow && loaded}
-      className={`${className} ${loaded ? "is-loaded" : ""} logo-treatment-${treatment} ${remoteLogo ? "logo-remote" : ""}`.trim()}
+      className={`${className} ${loaded ? "is-loaded" : ""} logo-treatment-${treatment}`.trim()}
       title={displayName}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
