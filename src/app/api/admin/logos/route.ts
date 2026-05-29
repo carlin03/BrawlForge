@@ -20,10 +20,13 @@ const UA = { "User-Agent": "BrawlForge/1.0" };
 function readLocalOverrides(root: string) {
   const overridesPath = path.join(root, "src", "lib", "data", "generated", "logo-overrides.json");
   if (!fs.existsSync(overridesPath)) {
-    return { teams: {} as Record<string, { url?: string; treatment?: string }>, tournaments: {} as Record<string, { url?: string }> };
+    return {
+      teams: {} as Record<string, { url?: string; treatment?: string; customOnly?: boolean }>,
+      tournaments: {} as Record<string, { url?: string }>,
+    };
   }
   return JSON.parse(fs.readFileSync(overridesPath, "utf8")) as {
-    teams: Record<string, { url?: string; treatment?: string }>;
+    teams: Record<string, { url?: string; treatment?: string; customOnly?: boolean }>;
     tournaments: Record<string, { url?: string }>;
   };
 }
@@ -109,7 +112,7 @@ export async function POST(request: Request) {
 
       if (canWriteLocalProjectFiles()) {
         const overrides = readLocalOverrides(root);
-        overrides.teams[slug] = { url: imageUrl, treatment };
+        overrides.teams[slug] = { url: persistedUrl.split("?")[0], treatment, customOnly: true };
         if (!writeLogoOverrides(root, overrides)) warnings.push("Overrides locales no escritos");
         try {
           const local = await writeProcessedTeamLogo(root, slug, treatment, imageUrl);

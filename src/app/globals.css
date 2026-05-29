@@ -46,7 +46,8 @@ table { border-spacing: 0; }
 /* PNG locales en /logos/ ya vienen procesados */
 .logo-treatment-mono-white:not(.logo-remote) .logo-img,
 .logo-treatment-strip-white:not(.logo-remote) .logo-img,
-.logo-treatment-border-only:not(.logo-remote) .logo-img {
+.logo-treatment-border-only:not(.logo-remote) .logo-img,
+.logo-treatment-raw:not(.logo-remote) .logo-img {
   filter: none;
 }
 
@@ -58,7 +59,9 @@ table { border-spacing: 0; }
   /* Fondo blanco CDN: oscurecer blancos sin mix-blend (falla en algunos GPUs) */
   filter: contrast(1.15) brightness(1.05);
 }
-.logo-remote.logo-treatment-border-only .logo-img {
+.logo-remote.logo-treatment-border-only .logo-img,
+.logo-remote.logo-treatment-raw .logo-img,
+.logo-treatment-raw .logo-img {
   filter: none;
 }
 .logo-missing-tag {

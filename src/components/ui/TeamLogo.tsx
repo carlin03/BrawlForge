@@ -10,7 +10,7 @@ import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 import { teamLogoOverrideUrl } from "@/lib/data/logo-overrides";
 import { useLogoConfig } from "@/contexts/LogoConfigContext";
 import { useResolvedTeam } from "@/hooks/useResolvedEntity";
-import { getLogoTreatment } from "@/lib/data/logo-branding";
+import { resolveLogoTreatment } from "@/lib/data/logo-branding";
 import { isValidLogoSlug } from "@/lib/data/logo-slugs";
 import { getTeam } from "@/lib/data/teams";
 import { LogoFrame } from "@/components/ui/LogoFrame";
@@ -48,6 +48,7 @@ function TeamLogoRemote({
   glow,
   priority,
   cacheVersion,
+  logoConfig,
 }: {
   slug: string;
   name?: string;
@@ -57,12 +58,18 @@ function TeamLogoRemote({
   glow: boolean;
   priority: boolean;
   cacheVersion: string;
+  logoConfig: ReturnType<typeof useLogoConfig>;
 }) {
   const resolvedSlug = resolveTeamLogoSlug(slug);
   const team = getTeam(slug) ?? getTeam(resolvedSlug);
   const displayName = name || team?.name || slug;
-  const treatment = getLogoTreatment(resolvedSlug);
-  const overrideUrl = teamLogoOverrideUrl(resolvedSlug) ?? teamLogoOverrideUrl(slug);
+  const overrideEntry =
+    logoConfig.overrides?.teams[resolvedSlug] ?? logoConfig.overrides?.teams[slug];
+  const treatment = resolveLogoTreatment(resolvedSlug, overrideEntry);
+  const overrideUrl =
+    overrideEntry?.url?.trim() ||
+    teamLogoOverrideUrl(resolvedSlug) ||
+    teamLogoOverrideUrl(slug);
   const [src, setSrc] = useState(() => teamLogoProxyUrl(resolvedSlug, cacheVersion));
   const [failed, setFailed] = useState(false);
 
@@ -133,6 +140,7 @@ export function TeamLogo({
         glow={glow}
         priority={priority}
         cacheVersion={cacheVersion}
+        logoConfig={logoConfig}
       />
     );
   }
@@ -142,13 +150,19 @@ export function TeamLogo({
   const catalogTeam = useResolvedTeam(slug);
   const sources = useMemo(() => {
     if (!valid) return [];
+    const manual = catalogTeam?.logoUrl?.trim();
+    if (manual) {
+      return prependTeamLogoSources([], [manual], cacheVersion);
+    }
     const base = buildTeamLogoSources(slug, logoConfig);
-    return prependTeamLogoSources(base, [catalogTeam?.logoUrl], cacheVersion);
+    return prependTeamLogoSources(base, [], cacheVersion);
   }, [slug, valid, cacheVersion, logoConfig.cacheVersion, logoConfig.overrides, catalogTeam?.logoUrl]);
   const { src, status, onLoad, onError, imgRef } = useLogoImage(sources);
   const displayName = name || team?.name || (valid ? slug : "TBD");
   const loaded = status === "ready" && !!src;
-  const treatment = valid ? getLogoTreatment(resolvedSlug) : "border-only";
+  const overrideEntry =
+    logoConfig.overrides?.teams[resolvedSlug] ?? logoConfig.overrides?.teams[slug];
+  const treatment = valid ? resolveLogoTreatment(resolvedSlug, overrideEntry) : "border-only";
 
   if (!valid || status === "failed" || !src) {
     return (

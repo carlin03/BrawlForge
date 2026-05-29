@@ -75,14 +75,18 @@ function localTeamUrl(slug: string, cacheVersion: string): string {
 
 
 
+function getTeamOverrideEntry(slug: string, cfg?: LogoRuntimeConfig) {
+  return cfg?.overrides?.teams[slug] ?? (teamLogoOverrideUrl(slug) ? { url: teamLogoOverrideUrl(slug) } : undefined);
+}
+
 function getTeamOverride(slug: string, cfg?: LogoRuntimeConfig): string | undefined {
+  const entry = getTeamOverrideEntry(slug, cfg);
+  return entry?.url?.trim() || teamLogoOverrideUrl(slug);
+}
 
-  const fromRuntime = cfg?.overrides?.teams[slug]?.url?.trim();
-
-  if (fromRuntime) return fromRuntime;
-
-  return teamLogoOverrideUrl(slug);
-
+function isCustomOnlyTeamOverride(slug: string, cfg?: LogoRuntimeConfig): boolean {
+  if (cfg?.overrides?.teams[slug]?.customOnly && getTeamOverride(slug, cfg)) return true;
+  return false;
 }
 
 
@@ -130,6 +134,14 @@ export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): str
   const candidates = [...new Set([canonical, slug])];
 
   const sources: string[] = [];
+
+  for (const s of candidates) {
+    if (!isCustomOnlyTeamOverride(s, cfg)) continue;
+    const overrideUrl = getTeamOverride(s, cfg);
+    if (!overrideUrl) continue;
+    const busted = bust(overrideUrl, cacheVersion);
+    return toClientLogoSources([busted]);
+  }
 
 
 

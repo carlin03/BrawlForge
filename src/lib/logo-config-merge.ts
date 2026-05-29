@@ -25,7 +25,11 @@ export function mergeLogoOverridesFile(base: LogoOverridesFile, extra: LogoOverr
     if (!url) continue;
     const prev = out.teams[slug]?.url;
     if (shouldApplyDbLogoUrl(prev, url)) {
-      out.teams[slug] = { url, treatment: entry.treatment ?? out.teams[slug]?.treatment ?? "strip-white" };
+      out.teams[slug] = {
+        url,
+        customOnly: entry.customOnly ?? true,
+        treatment: entry.treatment ?? "raw",
+      };
     }
   }
   for (const [slug, entry] of Object.entries(extra.tournaments ?? {})) {

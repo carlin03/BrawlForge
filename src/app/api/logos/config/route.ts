@@ -56,7 +56,7 @@ export async function GET() {
       const url = String(row.logo_url).split("?")[0];
       const prev = overrides.teams[row.slug]?.url;
       if (shouldApplyDbLogoUrl(prev, url)) {
-        overrides.teams[row.slug] = { url, treatment: "strip-white" };
+        overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
       }
     }
 
@@ -67,7 +67,8 @@ export async function GET() {
       if (shouldApplyDbLogoUrl(prev, url)) {
         overrides.teams[row.slug] = {
           url,
-          treatment: row.treatment ?? "strip-white",
+          customOnly: true,
+          treatment: row.treatment ?? "raw",
         };
       }
     }

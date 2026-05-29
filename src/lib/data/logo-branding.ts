@@ -14,7 +14,8 @@ export const TEAM_LOGO_TREATMENT: Record<string, LogoTreatment> = {
 
   "sk-gaming": "mono-white",
   hmble: "mono-white",
-  "fut-esports": "mono-white",
+  "fut-esports": "border-only",
+  "fut-esports-academy": "border-only",
   "zeta-division": "mono-white",
   "zeta-division-one": "mono-white",
   "zeta-division-zero": "mono-white",
@@ -47,7 +48,20 @@ export const TEAM_LOGO_TREATMENT: Record<string, LogoTreatment> = {
 };
 
 export function getLogoTreatment(slug: string): LogoTreatment {
-  return TEAM_LOGO_TREATMENT[slug] ?? "strip-white";
+  return TEAM_LOGO_TREATMENT[slug] ?? "border-only";
+}
+
+/** Tratamiento efectivo: override admin (raw) > mapa por equipo. */
+export function resolveLogoTreatment(
+  slug: string,
+  override?: { treatment?: string; customOnly?: boolean },
+): LogoTreatment {
+  if (override?.customOnly) return "raw";
+  const t = override?.treatment?.trim();
+  if (t === "border-only" || t === "strip-white" || t === "mono-white" || t === "raw") {
+    return t;
+  }
+  return getLogoTreatment(slug);
 }
 
 export function shouldInvertLogo(_slug: string): boolean {

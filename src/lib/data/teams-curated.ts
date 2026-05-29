@@ -44,7 +44,7 @@ export const CURATED_TEAMS: Record<
   "stmn-esports": { rank: 14, roster: ["juan-carlos", "pain", "tacos"] },
   skcalalas: { rank: 16, roster: ["kristian", "pekka", "rhz"] },
   "bounty-hunters-esports": { rank: 20, roster: ["redzin", "bicho", "rei-do-fut"] },
-  "only-realm": { rank: 17, roster: ["david", "razuen", "ducky"] },
+  "only-realm": { rank: 17, roster: ["bobby", "patchy", "sans"] },
   "eternal-esports": { rank: 21, roster: ["cauebr", "jubileu", "mohtep"] },
   "novo-esports": { rank: 18, roster: ["filippo", "enraged", "terry"] },
   "bc-gaming-sa": { rank: 22, roster: ["leo", "mica", "tomz"] },

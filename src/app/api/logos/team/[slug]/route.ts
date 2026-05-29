@@ -24,7 +24,7 @@ async function loadRuntimeOverrides(): Promise<LogoOverridesFile> {
     if (!row.slug || !row.logo_url) continue;
     const url = String(row.logo_url).split("?")[0];
     if (shouldApplyDbLogoUrl(overrides.teams[row.slug]?.url, url)) {
-      overrides.teams[row.slug] = { url, treatment: "strip-white" };
+      overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
     }
   }
   for (const row of teamsRes.data ?? []) {
@@ -33,7 +33,8 @@ async function loadRuntimeOverrides(): Promise<LogoOverridesFile> {
     if (shouldApplyDbLogoUrl(overrides.teams[row.slug]?.url, url)) {
       overrides.teams[row.slug] = {
         url,
-        treatment: row.treatment ?? "strip-white",
+        customOnly: true,
+        treatment: row.treatment ?? "raw",
       };
     }
   }

@@ -27,11 +27,11 @@ export const BSC_2026_ROSTERS: Record<string, string[]> = {
   "frenzy-esports": ["danshari", "mira", "toridesu"],
 
   "tribe-gaming": ["diegogamer", "lxffy", "rbm"],
-  "kds-esports": ["bobby", "patchy", "sans"],
+  "kds-esports": [],
   "stmn-esports": ["juan-carlos", "pain", "tacos"],
   "team-elektros": ["doin", "memen", "snoiy"],
   "vatic-esports": ["belal", "ezlivi", "rafiki"],
-  "only-realm": ["david", "razuen", "ducky"],
+  "only-realm": ["bobby", "patchy", "sans"],
   elevate: ["duckie", "vegeta", "og"],
 
   loud: ["edinho", "firecrow", "kaiodog"],
@@ -49,7 +49,7 @@ export const BSC_2026_ROSTERS: Record<string, string[]> = {
 
   kebap: ["dede", "yuffy", "ray092"],
   metizport: ["decaii", "ciro", "kellow"],
-  "zoos-esports": ["ducky", "tyrant", "xemp"],
+  "zoos-esports": ["tyrant", "xemp"],
   "ace-xero": ["david", "galaxy", "coldrink"],
   "toxic-lotus": ["engine", "toc", "ou"],
   "revenant-xspark": ["sergeant-clash", "hiroshii", "walkthrough"],
