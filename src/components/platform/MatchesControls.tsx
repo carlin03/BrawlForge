@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
+import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import type { Region } from "@/lib/types";
 import type { MatchTab } from "@/lib/data/matches-hub";
 
@@ -35,6 +36,9 @@ export function MatchesControls({
   query: string;
   onQueryChange: (q: string) => void;
 }) {
+  const activeTour =
+    tournamentSlug !== "all" ? tournaments.find((t) => t.slug === tournamentSlug) : null;
+
   const tabs: { id: MatchTab; label: string; count: number }[] = [
     { id: "live", label: "En directo", count: counts.live },
     { id: "upcoming", label: "Próximos", count: counts.upcoming },
@@ -77,19 +81,35 @@ export function MatchesControls({
           ) : null}
         </label>
 
-        <select
-          className="bf-matches-select"
-          value={tournamentSlug}
-          onChange={(e) => onTournamentChange(e.target.value)}
-          aria-label="Filtrar por torneo"
-        >
-          <option value="all">Todos los torneos</option>
-          {tournaments.map((t) => (
-            <option key={t.slug} value={t.slug}>
-              {t.label} ({t.count})
-            </option>
-          ))}
-        </select>
+        {activeTour ? (
+          <div className="bf-matches-tour-pill">
+            <TournamentLogo slug={activeTour.slug} name={activeTour.label} size={28} glow={false} />
+            <span>{activeTour.label}</span>
+            <span className="bf-matches-tour-pill-count">{activeTour.count}</span>
+            <button
+              type="button"
+              className="bf-matches-tour-pill-clear"
+              onClick={() => onTournamentChange("all")}
+              aria-label="Quitar filtro de torneo"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ) : (
+          <select
+            className="bf-matches-select bf-matches-select--mobile"
+            value={tournamentSlug}
+            onChange={(e) => onTournamentChange(e.target.value)}
+            aria-label="Filtrar por torneo"
+          >
+            <option value="all">Todos los torneos</option>
+            {tournaments.map((t) => (
+              <option key={t.slug} value={t.slug}>
+                {t.label} ({t.count})
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="bf-matches-region-row" role="group" aria-label="Región">

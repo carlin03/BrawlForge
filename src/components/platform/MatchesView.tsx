@@ -11,6 +11,7 @@ import { MatchesControls } from "@/components/platform/MatchesControls";
 import { MatchSpotlightCard } from "@/components/platform/MatchSpotlightCard";
 import { MatchHubRow } from "@/components/platform/MatchHubRow";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
+import { MatchesTournamentsPanel } from "@/components/platform/MatchesTournamentsPanel";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import {
@@ -25,15 +26,9 @@ import {
   isKnownTeamSlug,
   getRecentMatches,
   getTierBPlusTournaments,
-  tierBadgeClass,
-  tierLabel,
   teamName,
 } from "@/lib/data";
 import { getMatchEnrichment } from "@/lib/data/match-meta";
-
-function cleanName(s: string) {
-  return s.replace(/<!--[\s\S]*?-->/g, "").trim();
-}
 
 export function MatchesView() {
   const { aggregates, game } = useGame();
@@ -61,7 +56,8 @@ export function MatchesView() {
   const listRest = spotlight ? filtered.slice(1) : filtered;
   const groups = useMemo(() => groupMatchesByTournament(listRest), [listRest]);
 
-  const tierTours = useMemo(() => getTierBPlusTournaments(12), []);
+  const [tourQuery, setTourQuery] = useState("");
+  const tierTours = useMemo(() => getTierBPlusTournaments(48), []);
 
   const hotVote = useMemo(() => {
     const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
@@ -248,28 +244,13 @@ export function MatchesView() {
         </div>
 
         <aside className="bf-matches-hub-aside">
-          <div className="bf-matches-hub-aside-panel">
-            <div className="bf-matches-hub-aside-head">
-              <h2>Torneos 2026</h2>
-              <Link href="/tournaments">Todos</Link>
-            </div>
-            <ul className="bf-matches-hub-tour-list">
-              {tierTours.map((t) => (
-                <li key={t.slug}>
-                  <Link href={`/tournaments/${t.slug}`} className="bf-matches-hub-tour-item">
-                    <TournamentLogo slug={t.slug} name={cleanName(t.shortName)} size={36} glow={false} />
-                    <div>
-                      <strong>{cleanName(t.shortName)}</strong>
-                      <span>{t.prizePool}</span>
-                    </div>
-                    {t.tier != null && (
-                      <span className={`bf-tier-badge ${tierBadgeClass(t.tier)}`}>{tierLabel(t.tier)}</span>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <MatchesTournamentsPanel
+            tournaments={tierTours}
+            selectedSlug={tournamentSlug}
+            onSelect={setTournamentSlug}
+            query={tourQuery}
+            onQueryChange={setTourQuery}
+          />
         </aside>
       </div>
     </PageUltraShell>
