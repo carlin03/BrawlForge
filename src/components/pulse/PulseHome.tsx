@@ -10,7 +10,6 @@ import {
   getLiveMatches,
   getUpcomingMatches,
   getCuratedHomeMatches,
-  getLatestNews,
   getPlayer,
   openPredictions,
   teams,
@@ -29,6 +28,7 @@ import {
   getTournamentFantasyProfile,
   getPlayerPrice,
 } from "@/lib/data/fantasy";
+import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 
 export function PulseHome() {
   const live = getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug));
@@ -39,7 +39,7 @@ export function PulseHome() {
   const squad = getUserSquad(DEFAULT_FANTASY_TOURNAMENT);
   const picks = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
   const squadVal = getSquadValue(squad);
-  const news = getLatestNews(4);
+  const news = useLatestNewsMerged(4);
   const votes = openPredictions.filter((e) => isKnownTeamSlug(e.teamASlug) && isKnownTeamSlug(e.teamBSlug)).slice(0, 2);
   const topTeams = teams.slice(0, 6);
 

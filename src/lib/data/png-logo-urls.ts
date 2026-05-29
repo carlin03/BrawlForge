@@ -101,6 +101,22 @@ function getTournamentOverride(slug: string, cfg?: LogoRuntimeConfig): string | 
 
 /** Misma fuente en Home, Equipos, Fantasy, partidos… */
 
+/** Prioridad máxima: URL del catálogo admin (mismo orden en Vercel y localhost). */
+export function prependTeamLogoSources(
+  sources: string[],
+  extraUrls: (string | null | undefined)[],
+  cacheVersion: string,
+): string[] {
+  const out = [...sources];
+  for (const raw of extraUrls) {
+    const url = raw?.trim();
+    if (!url) continue;
+    const busted = bust(url, cacheVersion);
+    if (!out.includes(busted)) out.unshift(busted);
+  }
+  return toClientLogoSources(out);
+}
+
 export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): string[] {
 
   if (!isValidLogoSlug(slug)) return [];

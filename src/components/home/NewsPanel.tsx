@@ -2,10 +2,11 @@ import Link from "next/link";
 import { Panel } from "@/components/ui/Panel";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { getLatestNews, tournaments, teamName } from "@/lib/data";
+import { tournaments, teamName } from "@/lib/data";
+import { loadMergedNews } from "@/lib/news-loader";
 
-export function NewsPanel() {
-  const articles = getLatestNews(4);
+export async function NewsPanel() {
+  const articles = (await loadMergedNews()).slice(0, 4);
   const featured = articles[0];
   const rest = articles.slice(1);
 

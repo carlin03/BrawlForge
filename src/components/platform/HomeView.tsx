@@ -24,7 +24,6 @@ import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
   getCuratedHomeMatches,
-  getLatestNews,
   getLiveMatches,
   getSquadValue,
   getUserSquadDisplay,
@@ -40,6 +39,8 @@ import {
 import { NewsCover } from "@/components/news/NewsCover";
 import { getHomeTournaments } from "@/lib/data/home-tournaments";
 import { hasTeamLogoSource } from "@/lib/data/png-logo-urls";
+import { useLogoConfig } from "@/contexts/LogoConfigContext";
+import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 import { HomeSiteHeader } from "@/components/platform/HomeSiteHeader";
 
 type MatchTab = "live" | "upcoming" | "results";
@@ -71,6 +72,7 @@ function cleanName(raw: string): string {
 }
 
 export function HomeView() {
+  const logoConfig = useLogoConfig();
   const { aggregates, game } = useGame();
   const [matchTab, setMatchTab] = useState<MatchTab>("upcoming");
 
@@ -94,22 +96,22 @@ export function HomeView() {
       if (seen.has(slug)) continue;
       seen.add(slug);
       const t = bySlug.get(slug);
-      if (t && hasTeamLogoSource(slug)) ordered.push(t);
+      if (t && hasTeamLogoSource(slug, logoConfig)) ordered.push(t);
     }
     for (const t of teams) {
       if (ordered.length >= BSC_2026_CLUB_COUNT) break;
-      if (!seen.has(t.slug) && hasTeamLogoSource(t.slug)) {
+      if (!seen.has(t.slug) && hasTeamLogoSource(t.slug, logoConfig)) {
         seen.add(t.slug);
         ordered.push(t);
       }
     }
     return ordered.slice(0, BSC_2026_CLUB_COUNT);
-  }, []);
+  }, [logoConfig]);
 
   const marqueeClubs = useMemo(() => [...homeClubs, ...homeClubs], [homeClubs]);
   const homeTournaments = useMemo(() => getHomeTournaments(), []);
   const matchPool = useMemo(() => getCuratedHomeMatches(matchTab, 6), [matchTab]);
-  const topNews = useMemo(() => getLatestNews(3), []);
+  const topNews = useLatestNewsMerged(3);
   const voteEvents = useMemo(() => {
     const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
     const seen = new Set<string>();

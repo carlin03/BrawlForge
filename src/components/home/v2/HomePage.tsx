@@ -4,13 +4,13 @@ import { ForgeCard, ForgeSection } from "@/components/forge/ForgeCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
-  getLatestNews,
   getUpcomingMatches,
   getRecentMatches,
   tournaments,
   teamName,
 } from "@/lib/data";
 import { openPredictions } from "@/lib/data/predictions";
+import { loadMergedNews } from "@/lib/news-loader";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   userSquad,
@@ -275,8 +275,8 @@ function PickemsAndTournaments() {
   );
 }
 
-function NewsBlock() {
-  const articles = getLatestNews(4);
+async function NewsBlock() {
+  const articles = (await loadMergedNews()).slice(0, 4);
   const featured = articles[0];
   const rest = articles.slice(1);
 
@@ -305,7 +305,7 @@ function NewsBlock() {
   );
 }
 
-export function HomePageV2() {
+export async function HomePageV2() {
   return (
     <>
       <Hero />

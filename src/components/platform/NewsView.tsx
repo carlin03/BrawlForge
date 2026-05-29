@@ -7,7 +7,8 @@ import { NewsCover } from "@/components/news/NewsCover";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { getLatestNews, teamName, tournamentName, type NewsArticle } from "@/lib/data";
+import { teamName, tournamentName, type NewsArticle } from "@/lib/data";
+import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 
 const CATEGORIES = ["Todo", "Resultados", "Torneos", "Fichajes", "Fantasy", "Esports"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -24,7 +25,7 @@ function formatDate(date: string) {
 }
 
 export function NewsView() {
-  const articles = getLatestNews(32);
+  const articles = useLatestNewsMerged(32);
   const [category, setCategory] = useState<Category>("Todo");
 
   const filtered = useMemo(() => {

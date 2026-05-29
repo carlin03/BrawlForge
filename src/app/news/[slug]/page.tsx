@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NewsCover } from "@/components/news/NewsCover";
-import { getNews, getLatestNews, teamName } from "@/lib/data";
+import { teamName, tournamentName } from "@/lib/data";
 import { formatNewsDate } from "@/lib/news-ui";
+import { getMergedNews, loadMergedNews } from "@/lib/news-loader";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { tournamentName } from "@/lib/data";
+
+export const dynamic = "force-dynamic";
 
 export default async function NewsArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = getNews(slug);
+  const article = await getMergedNews(slug);
   if (!article) notFound();
 
-  const related = getLatestNews(6).filter((a) => a.slug !== slug).slice(0, 4);
+  const all = await loadMergedNews();
+  const related = all.filter((a) => a.slug !== slug).slice(0, 4);
 
   return (
     <article className="bf-news-article">

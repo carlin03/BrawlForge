@@ -28,10 +28,19 @@ export async function GET() {
 
   const supabase = await createClient();
   if (supabase) {
-    const [teamsRes, toursRes] = await Promise.all([
+    const [catalogTeamsRes, teamsRes, toursRes] = await Promise.all([
+      supabase.from("teams_catalog").select("slug, logo_url").not("logo_url", "is", null),
       supabase.from("team_logo_overrides").select("slug, public_url, treatment"),
       supabase.from("tournament_logo_overrides").select("slug, public_url"),
     ]);
+
+    for (const row of catalogTeamsRes.data ?? []) {
+      if (!row.slug || !row.logo_url) continue;
+      const url = String(row.logo_url).split("?")[0];
+      if (!overrides.teams[row.slug]?.url) {
+        overrides.teams[row.slug] = { url, treatment: "strip-white" };
+      }
+    }
 
     for (const row of teamsRes.data ?? []) {
       if (!row.slug || !row.public_url) continue;

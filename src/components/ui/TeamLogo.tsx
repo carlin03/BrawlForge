@@ -1,8 +1,14 @@
 "use client";
 
 import { useMemo } from "react";
-import { buildTeamLogoSources, resolveTeamLogoSlug } from "@/lib/data/png-logo-urls";
+import {
+  buildTeamLogoSources,
+  prependTeamLogoSources,
+  resolveTeamLogoSlug,
+} from "@/lib/data/png-logo-urls";
+import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 import { useLogoConfig } from "@/contexts/LogoConfigContext";
+import { useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { getLogoTreatment } from "@/lib/data/logo-branding";
 import { isValidLogoSlug } from "@/lib/data/logo-slugs";
 import { getTeam } from "@/lib/data/teams";
@@ -34,11 +40,14 @@ export function TeamLogo({ slug, name, tag, size = "md", className = "", glow = 
   const valid = isValidLogoSlug(slug);
   const resolvedSlug = valid ? resolveTeamLogoSlug(slug) : slug;
   const team = valid ? (getTeam(slug) ?? getTeam(resolvedSlug)) : undefined;
+  const catalogTeam = useResolvedTeam(slug);
   const logoConfig = useLogoConfig();
-  const sources = useMemo(
-    () => (valid ? buildTeamLogoSources(slug, logoConfig) : []),
-    [slug, valid, logoConfig.cacheVersion, logoConfig.overrides],
-  );
+  const cacheVersion = logoConfig.cacheVersion ?? LOGO_CACHE_VERSION;
+  const sources = useMemo(() => {
+    if (!valid) return [];
+    const base = buildTeamLogoSources(slug, logoConfig);
+    return prependTeamLogoSources(base, [catalogTeam?.logoUrl], cacheVersion);
+  }, [slug, valid, cacheVersion, logoConfig.cacheVersion, logoConfig.overrides, catalogTeam?.logoUrl]);
   const { src, status, onLoad, onError, imgRef } = useLogoImage(sources);
   const displayName = name || team?.name || (valid ? slug : "TBD");
   const loaded = status === "ready" && !!src;

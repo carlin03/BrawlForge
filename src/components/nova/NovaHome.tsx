@@ -15,7 +15,6 @@ import {
   getUpcomingMatches,
   getCuratedHomeMatches,
   getTopFantasyPlayers,
-  getLatestNews,
   getPlayer,
   openPredictions,
   teams,
@@ -32,6 +31,7 @@ import {
   getTournamentFantasyProfile,
   getPlayerPrice,
 } from "@/lib/data/fantasy";
+import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 
 export function NovaHome() {
   const live = getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug));
@@ -43,7 +43,7 @@ export function NovaHome() {
   const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
   const squadValue = getSquadValue(squad);
   const topPros = getTopFantasyPlayers(6);
-  const news = getLatestNews(5);
+  const news = useLatestNewsMerged(5);
   const votes = openPredictions
     .filter((e) => isKnownTeamSlug(e.teamASlug) && isKnownTeamSlug(e.teamBSlug))
     .slice(0, 4);

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 import { Widget } from "./Widget";
 import { MatchTable } from "./MatchTable";
 import { TeamLogo } from "@/components/ui/TeamLogo";
@@ -12,7 +13,6 @@ import {
   getUpcomingMatches,
   getRecentMatches,
   getTopFantasyPlayers,
-  getLatestNews,
   getPlayer,
   openPredictions,
   teams,
@@ -46,7 +46,7 @@ export function CommandCenter() {
   const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
   const squadValue = getSquadValue(squad);
   const topPros = getTopFantasyPlayers(6);
-  const news = getLatestNews(6);
+  const news = useLatestNewsMerged(6);
   const votes = openPredictions.slice(0, 3);
   const topTeams = teams.slice(0, 8);
 

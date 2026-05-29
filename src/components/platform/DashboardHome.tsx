@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { Panel } from "@/components/platform/Panel";
@@ -13,7 +15,6 @@ import {
   getUpcomingMatches,
   getRecentMatches,
   getTopFantasyPlayers,
-  getLatestNews,
   getPlayer,
   openPredictions,
   teams,
@@ -29,6 +30,7 @@ import {
   getTournamentFantasyProfile,
   getPlayerPrice,
 } from "@/lib/data/fantasy";
+import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 
 export function DashboardHome() {
   const live = getLiveMatches();
@@ -36,7 +38,7 @@ export function DashboardHome() {
   const recent = getRecentMatches(6);
   const matchFeed = [...live, ...upcoming.slice(0, 10), ...recent];
   const topPros = getTopFantasyPlayers(8);
-  const news = getLatestNews(5);
+  const news = useLatestNewsMerged(5);
   const votes = openPredictions.filter((p) => p.featured).slice(0, 2);
   const voteList = votes.length ? votes : openPredictions.slice(0, 2);
   const topTeams = teams.slice(0, 6);
