@@ -1,0 +1,305 @@
+.bf-tours-hub { max-width: 1280px; margin: 0 auto; }
+
+.bf-tours-hub-hero {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: clamp(20px, 4vw, 32px);
+  border-radius: var(--bp-radius-lg);
+  background: linear-gradient(135deg, rgba(12, 18, 32, 0.95), rgba(8, 12, 22, 0.88));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media (min-width: 900px) {
+  .bf-tours-hub-hero {
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: auto auto;
+    align-items: start;
+  }
+  .bf-tours-hub-hero > div:first-child { grid-column: 1; grid-row: 1 / 3; }
+  .bf-tours-hub-hero-stats { grid-column: 2; grid-row: 1; }
+  .bf-tours-hub-hero-actions { grid-column: 2; grid-row: 2; }
+  .bf-tours-hub-hero-logo { grid-column: 3; grid-row: 1 / 3; }
+}
+
+.bf-tours-hub-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-gold);
+}
+
+.bf-tours-hub-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 900;
+}
+
+.bf-tours-hub-hero h1 em {
+  font-style: normal;
+  color: var(--bp-gold);
+}
+
+.bf-tours-hub-hero > div:first-child p {
+  margin: 0;
+  max-width: 48ch;
+  font-size: 14px;
+  color: var(--bp-muted);
+}
+
+.bf-tours-hub-hero-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.bf-tours-hub-hero-stats > div {
+  min-width: 68px;
+  padding: 10px 12px;
+  text-align: center;
+  border-radius: var(--bp-radius);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bf-tours-hub-hero-stats b {
+  display: block;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.bf-tours-hub-hero-stats span {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+}
+
+.bf-tours-hub-hero-stats .has-live b {
+  color: var(--bp-red-bright);
+}
+
+.bf-tours-hub-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bf-tours-hub-hero-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--bp-radius-lg);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.bf-tours-hub-hero-logo:hover {
+  border-color: rgba(255, 215, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+.bf-tours-hub-hero-logo span:not(.bf-tier-badge) {
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.bf-tours-hub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.bf-tours-hub-tab {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--bp-muted);
+  cursor: pointer;
+}
+
+.bf-tours-hub-tab.is-on {
+  background: rgba(255, 215, 0, 0.12);
+  border-color: rgba(255, 215, 0, 0.35);
+  color: var(--bp-gold);
+}
+
+.bf-tours-hub-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 720px) {
+  .bf-tours-hub-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.bf-tour-hub-card {
+  border-radius: var(--bp-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(8, 12, 22, 0.85);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.bf-tour-hub-card:hover {
+  border-color: rgba(255, 215, 0, 0.22);
+}
+
+.bf-tour-hub-card.status-live {
+  border-color: rgba(255, 80, 80, 0.3);
+}
+
+.bf-tour-hub-card-link {
+  display: block;
+  padding: 18px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.bf-tour-hub-card-head {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.bf-tour-hub-logo-wrap {
+  flex-shrink: 0;
+  padding: 8px;
+  border-radius: var(--bp-radius);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bf-tour-hub-card-titles {
+  min-width: 0;
+  flex: 1;
+}
+
+.bf-tour-hub-card-titles strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.bf-tour-hub-card-full {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--bp-dim);
+  line-height: 1.3;
+}
+
+.bf-tour-hub-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  align-items: center;
+}
+
+.bf-tour-hub-status {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.bf-tour-hub-status.status-live {
+  color: var(--bp-red-bright);
+  background: rgba(255, 60, 60, 0.15);
+}
+
+.bf-tour-hub-facts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 14px;
+  margin: 0 0 14px;
+  padding: 12px;
+  border-radius: var(--bp-radius);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.bf-tour-hub-facts .wide {
+  grid-column: 1 / -1;
+}
+
+.bf-tour-hub-facts dt {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-dim);
+}
+
+.bf-tour-hub-facts dd {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bp-text);
+}
+
+.bf-tour-hub-teams {
+  margin-bottom: 12px;
+}
+
+.bf-tour-hub-teams-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-dim);
+}
+
+.bf-tour-hub-teams-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.bf-tour-hub-teams-names {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  font-size: 11px;
+  color: var(--bp-muted);
+}
+
+.bf-tour-hub-teams-names .is-more {
+  color: var(--bp-gold);
+  font-weight: 800;
+}
+
+.bf-tour-hub-cta {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--bp-gold);
+}

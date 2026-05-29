@@ -7,6 +7,11 @@
 @import "./admin-premium.css";
 @import "./site-premium.css";
 @import "./predictions-bsc.css";
+@import "./matches-hub.css";
+@import "./tournaments-hub.css";
+@import "./teams-showcase.css";
+@import "./rankings-hub.css";
+@import "./news-hub.css";
 
 @keyframes bf-float {
   0%, 100% { transform: translateY(0) scale(1); }

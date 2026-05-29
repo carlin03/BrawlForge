@@ -81,16 +81,17 @@ export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
         }
         showcase={
           topThree.length >= 3 ? (
-            <div className="fu-cards-showcase" style={{ minHeight: 260 }}>
+            <div className="bf-teams-showcase fu-cards-showcase">
               {[topThree[1], topThree[0], topThree[2]].map((t, i) => (
                 <Link
                   key={t.slug}
                   href={`/teams/${t.slug}`}
-                  className={`fu-card-float fu-card-float-${i === 1 ? 2 : i === 0 ? 1 : 3}`}
-                  style={{ textDecoration: "none" }}
+                  className={`bf-teams-showcase-card fu-card-float fu-card-float-${i === 1 ? 2 : i === 0 ? 1 : 3}`}
                 >
-                  <TeamLogo slug={t.slug} name={t.name} size={i === 1 ? 88 : 72} glow />
-                  <span style={{ fontWeight: 800, fontSize: 12 }}>{t.tag}</span>
+                  <span className="bf-teams-showcase-rank">#{i === 1 ? 1 : i === 0 ? 2 : 3}</span>
+                  <TeamLogo slug={t.slug} name={t.name} size={i === 1 ? 128 : 104} glow />
+                  <strong>{t.name}</strong>
+                  <span className="bf-teams-showcase-tag">{t.tag}</span>
                 </Link>
               ))}
             </div>

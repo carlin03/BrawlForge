@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, Crown, Medal, Trophy } from "lucide-react";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
-import { PageUltraHero } from "@/components/platform/PageUltraHero";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
+import { FormDots } from "@/components/platform/ui";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { Region } from "@/lib/types";
 import {
@@ -45,142 +45,111 @@ export function RankingsView({ teams }: { teams: EsportsTeam[] }) {
 
   const myRank = game?.fantasyRank ?? null;
   const myPoints = game?.fantasyPoints ?? 0;
-
   const podium = ranked.slice(0, 3);
+  const rest = ranked.slice(3);
 
   return (
-    <PageUltraShell className="bf-rankings-page">
-      <PageUltraHero
-        kicker={
-          <>
-            <BarChart3 size={14} /> Rankings BSC
-          </>
-        }
-        title={
-          <>
+    <PageUltraShell className="bf-rankings-hub">
+      <header className="bf-rankings-hub-hero">
+        <div>
+          <p className="bf-rankings-hub-kicker">
+            <BarChart3 size={14} aria-hidden /> Rankings BSC
+          </p>
+          <h1>
             Clasificación <em>elite</em>
-          </>
-        }
-        lead="Power ranking de clubes y tabla fantasy del torneo principal."
-        stats={
-          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-            <div className="fu-stat">
-              <b>{ranked.length}</b>
-              <span>Equipos</span>
-            </div>
-            <div className="fu-stat">
-              <b>{fantasyBoard.length || "—"}</b>
-              <span>Managers</span>
-            </div>
-            <div className="fu-stat">
-              <b>{isLoggedIn && myRank != null ? `#${myRank}` : "—"}</b>
-              <span>Tu puesto</span>
-            </div>
+          </h1>
+          <p>Power ranking de clubes y managers fantasy del circuito 2026.</p>
+        </div>
+        <div className="bf-rankings-hub-stats">
+          <div>
+            <b>{ranked.length}</b>
+            <span>Clubes</span>
           </div>
-        }
-        actions={
-          <>
-            <Link href={tab === "teams" ? "/teams" : "/fantasy"} className="fu-btn fu-btn-gold">
-              {tab === "teams" ? "Clubes" : "Mi plantilla"}
-            </Link>
-            <Link href="/predictions" className="fu-btn fu-btn-red">
-              Predicciones
-            </Link>
-          </>
-        }
-        showcase={
-          tab === "teams" && podium.length >= 3 ? (
-            <div className="fu-cards-showcase" style={{ minHeight: 240 }}>
-              {[podium[1], podium[0], podium[2]].map((t, i) => (
-                <Link
-                  key={t.slug}
-                  href={`/teams/${t.slug}`}
-                  className={`fu-card-float fu-card-float-${i === 1 ? 2 : i === 0 ? 1 : 3}`}
-                  style={{ textDecoration: "none" }}
-                >
-                  <TeamLogo slug={t.slug} name={t.name} size={i === 1 ? 80 : 64} glow />
-                  <span style={{ fontWeight: 800, fontSize: 11 }}>#{i === 1 ? 1 : i === 0 ? 2 : 3}</span>
-                </Link>
-              ))}
-            </div>
-          ) : undefined
-        }
-      />
+          <div>
+            <b>{fantasyBoard.length || "—"}</b>
+            <span>Managers</span>
+          </div>
+          <div>
+            <b>{isLoggedIn && myRank != null ? `#${myRank}` : "—"}</b>
+            <span>Tu puesto</span>
+          </div>
+        </div>
+        <div className="bf-rankings-hub-actions">
+          <Link href={tab === "teams" ? "/teams" : "/fantasy"} className="fu-btn fu-btn-gold">
+            {tab === "teams" ? "Ver clubes" : "Mi plantilla"}
+          </Link>
+          <Link href="/predictions" className="fu-btn fu-btn-red">
+            Predicciones
+          </Link>
+        </div>
+      </header>
 
-      <div className="fu-tabs">
-        <button
-          type="button"
-          className={`fu-tab ${tab === "teams" ? "is-on" : ""}`}
-          onClick={() => setTab("teams")}
-        >
-          Equipos <span className="bf-home-tab-count">{ranked.length}</span>
+      <div className="bf-rankings-hub-tabs">
+        <button type="button" className={`bf-rankings-hub-tab ${tab === "teams" ? "is-on" : ""}`} onClick={() => setTab("teams")}>
+          Equipos <span>{ranked.length}</span>
         </button>
-        <button
-          type="button"
-          className={`fu-tab ${tab === "fantasy" ? "is-on" : ""}`}
-          onClick={() => setTab("fantasy")}
-        >
-          Fantasy <span className="bf-home-tab-count">{fantasyBoard.length}</span>
+        <button type="button" className={`bf-rankings-hub-tab ${tab === "fantasy" ? "is-on" : ""}`} onClick={() => setTab("fantasy")}>
+          Fantasy <span>{fantasyBoard.length}</span>
         </button>
       </div>
 
       {tab === "teams" && (
         <>
-          <div className="fu-tabs">
+          <div className="bf-rankings-hub-regions">
             {REGIONS.map((r) => (
               <button
                 key={r}
                 type="button"
-                className={`fu-tab ${region === r ? "is-on" : ""}`}
+                className={`bf-rankings-region-chip ${region === r ? "is-on" : ""}`}
                 onClick={() => setRegion(r)}
               >
                 {r === "all" ? "Global" : r}
               </button>
             ))}
           </div>
-          <div className="bf-rank-table-wrap fu-panel fu-panel-glow">
-            <table className="bf-rank-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Equipo</th>
-                  <th>Región</th>
-                  <th>Roster</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {ranked.map((t, i) => {
-                  const roster = getPlayersByTeam(t.slug).length;
-                  const pos = i + 1;
-                  return (
-                    <tr key={t.slug} className={pos <= 3 ? `is-top-${pos}` : ""}>
-                      <td className="bf-rank-pos">
-                        <span className="bf-rank-num">{pos}</span>
-                      </td>
-                      <td>
-                        <Link href={`/teams/${t.slug}`} className="bf-rank-team">
-                          <TeamLogo slug={t.slug} name={t.name} size={40} />
-                          <div>
-                            <strong>{t.tag}</strong>
-                            <span>{t.name}</span>
-                          </div>
-                        </Link>
-                      </td>
-                      <td>
-                        <RegionBadge region={t.region} />
-                      </td>
-                      <td className="bf-rank-roster">{roster} jugadores</td>
-                      <td>
-                        <Link href={`/teams/${t.slug}`} className="bf-rank-link">
-                          Ver
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+
+          {podium.length >= 3 && (
+            <div className="bf-rankings-podium">
+              {[podium[1], podium[0], podium[2]].map((t, i) => {
+                const pos = i === 1 ? 1 : i === 0 ? 2 : 3;
+                const Icon = pos === 1 ? Crown : pos === 2 ? Medal : Trophy;
+                return (
+                  <Link
+                    key={t.slug}
+                    href={`/teams/${t.slug}`}
+                    className={`bf-rankings-podium-slot pos-${pos} ${pos === 1 ? "is-champ" : ""}`}
+                  >
+                    <Icon size={pos === 1 ? 22 : 16} className="bf-rankings-podium-icon" aria-hidden />
+                    <span className="bf-rankings-podium-num">#{pos}</span>
+                    <TeamLogo slug={t.slug} name={t.name} size={pos === 1 ? 96 : 72} glow />
+                    <strong>{t.tag}</strong>
+                    <span>{t.name}</span>
+                    <RegionBadge region={t.region} />
+                    {t.form && <FormDots form={t.form} />}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="bf-rankings-list">
+            {rest.map((t, i) => {
+              const pos = i + 4;
+              const roster = getPlayersByTeam(t.slug).length;
+              return (
+                <Link key={t.slug} href={`/teams/${t.slug}`} className="bf-rankings-row">
+                  <span className="bf-rankings-row-pos">{pos}</span>
+                  <TeamLogo slug={t.slug} name={t.name} size={44} glow={false} />
+                  <div className="bf-rankings-row-main">
+                    <strong>{t.tag}</strong>
+                    <span>{t.name}</span>
+                  </div>
+                  <RegionBadge region={t.region} />
+                  {t.form && <FormDots form={t.form} />}
+                  <span className="bf-rankings-row-meta">{roster} jugadores</span>
+                </Link>
+              );
+            })}
           </div>
           {ranked.length === 0 && <p className="bf-home-empty">No hay equipos en esta región.</p>}
         </>
@@ -188,55 +157,39 @@ export function RankingsView({ teams }: { teams: EsportsTeam[] }) {
 
       {tab === "fantasy" && (
         <>
-          <p className="bf-rankings-fantasy-meta">
+          <p className="bf-rankings-fantasy-banner">
             Torneo: <strong>{fantasyMeta.teamName}</strong>
             {isLoggedIn && myRank != null && (
               <>
                 {" "}
-                · Tu posición #{myRank.toLocaleString()} · {myPoints} pts
+                · Tu posición <strong>#{myRank.toLocaleString()}</strong> · {myPoints} pts
               </>
             )}
             {!isLoggedIn && (
               <>
                 {" "}
-                · <Link href="/login?next=/rankings">Inicia sesión</Link> para ver tu puesto
+                · <Link href="/login?next=/rankings">Inicia sesión</Link>
               </>
             )}
           </p>
-          <div className="bf-rank-table-wrap fu-panel fu-panel-glow">
-            <table className="bf-rank-table bf-rank-table-fantasy">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Manager</th>
-                  <th>IGN</th>
-                  <th>Puntos</th>
-                </tr>
-              </thead>
-              <tbody>
-                {fantasyBoard.map((row) => (
-                  <tr key={row.user_id} className={row.rank <= 3 ? `is-top-${row.rank}` : ""}>
-                    <td className="bf-rank-pos">
-                      <span className="bf-rank-num">{row.rank}</span>
-                    </td>
-                    <td>
-                      <strong>{row.team_name || row.display_name}</strong>
-                    </td>
-                    <td>{row.ign}</td>
-                    <td className="bf-rank-points">{row.total_points.toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="bf-rankings-fantasy-list">
+            {fantasyBoard.map((row) => (
+              <div key={row.user_id} className={`bf-rankings-fantasy-row ${row.rank <= 3 ? `is-top-${row.rank}` : ""}`}>
+                <span className="bf-rankings-row-pos">{row.rank}</span>
+                <div className="bf-rankings-fantasy-main">
+                  <strong>{row.team_name || row.display_name}</strong>
+                  <span>{row.ign}</span>
+                </div>
+                <span className="bf-rankings-fantasy-pts">{row.total_points.toLocaleString()} pts</span>
+              </div>
+            ))}
           </div>
           {fantasyBoard.length === 0 && (
-            <p className="bf-home-empty">Aún no hay managers en este torneo. Sé el primero en /fantasy.</p>
+            <p className="bf-home-empty">Aún no hay managers. Entra en /fantasy y crea tu plantilla.</p>
           )}
-          <div className="bf-rankings-fantasy-cta">
-            <Link href="/fantasy" className="bp-btn bp-btn-gold">
-              Ir a Fantasy
-            </Link>
-          </div>
+          <Link href="/fantasy" className="fu-btn fu-btn-gold bf-rankings-fantasy-cta">
+            Ir a Fantasy
+          </Link>
         </>
       )}
     </PageUltraShell>

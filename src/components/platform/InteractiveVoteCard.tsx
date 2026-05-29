@@ -69,7 +69,7 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
           <span className="bf-bsc-vote-tourney">{getPredictionTournament(event)}</span>
           <strong>{event.stage}</strong>
         </div>
-        <span className="bf-vote-reward">+{event.rewardPoints}</span>
+        <span className="bf-vote-reward bf-vote-reward-gold">+{event.rewardPoints}</span>
       </header>
 
       <div className="bf-vote-arena">
@@ -78,11 +78,13 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
           className={`bf-vote-side bf-vote-side-a ${pick === "A" ? "is-picked" : ""} ${closed && event.correctPick === "A" ? "is-winner" : ""}`}
           onClick={() => void vote("A")}
           disabled={closed || saving}
-          aria-label={`Votar AZUL — ${labelA}`}
+          aria-label={`Votar por ${labelA}`}
         >
-          <span className="bf-vote-side-tag bf-vote-side-tag-a">AZUL</span>
+          <span className="bf-vote-side-tag bf-vote-side-tag-a" title="Lado izquierdo">
+            {labelA}
+          </span>
           <TeamLogo slug={event.teamASlug} name={labelA} size={featured ? 72 : 56} />
-          <span className="bf-vote-name">{labelA}</span>
+          <span className="bf-vote-name bf-vote-name-lg">{labelA}</span>
           {hasVotes ? (
             <span className="bf-vote-pct">{event.pickAPct}%</span>
           ) : (
@@ -121,8 +123,8 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
 
       {hasVotes && (
         <div className="bf-bsc-poll" role="presentation" aria-label={`Comunidad: ${labelA} ${event.pickAPct}% · ${labelB} ${event.pickBPct}%`}>
-          <div className="bf-bsc-poll-a" style={{ flex: `${event.pickAPct} 1 0` }} title={`AZUL ${event.pickAPct}%`} />
-          <div className="bf-bsc-poll-b" style={{ flex: `${event.pickBPct} 1 0` }} title={`ROJO ${event.pickBPct}%`} />
+          <div className="bf-bsc-poll-a" style={{ flex: `${event.pickAPct} 1 0` }} title={`${labelA} ${event.pickAPct}%`} />
+          <div className="bf-bsc-poll-b" style={{ flex: `${event.pickBPct} 1 0` }} title={`${labelB} ${event.pickBPct}%`} />
         </div>
       )}
 

@@ -525,15 +525,15 @@
     radial-gradient(ellipse at 12% 25%, rgba(0, 153, 255, 0.18), transparent 55%),
     radial-gradient(ellipse at 88% 25%, rgba(255, 23, 68, 0.18), transparent 55%) !important;
 }
-.bf-predict-bsc .bf-bsc-vote-card .bf-vote-reward {
+.bf-predict-bsc .bf-bsc-vote-card .bf-vote-reward,
+.bf-predict-bsc .bf-bsc-vote-card .bf-vote-reward-gold {
   font-family: var(--bp-head);
   font-weight: 900;
   font-size: 14px;
-  background: linear-gradient(90deg, var(--bsc-blue-bright), var(--bsc-red-bright));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: var(--bp-gold) !important;
+  -webkit-text-fill-color: var(--bp-gold) !important;
+  background: none !important;
+  text-shadow: 0 0 12px rgba(255, 200, 46, 0.35);
 }
 .bf-predict-bsc .bf-bsc-vote-tourney {
   display: block;
@@ -702,23 +702,33 @@
   transition: flex 0.35s ease;
 }
 
-/* Tags AZUL / ROJO */
+/* Etiqueta con nombre del club */
 .bf-vote-side-tag {
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  padding: 4px 10px;
-  border-radius: 4px;
+  max-width: 100%;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 5px 10px;
+  border-radius: 6px;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .bf-vote-side-tag-a {
   color: var(--bsc-blue-bright);
-  background: rgba(0, 153, 255, 0.25);
-  border: 1px solid rgba(0, 195, 255, 0.4);
+  background: rgba(0, 153, 255, 0.2);
+  border: 1px solid rgba(0, 195, 255, 0.35);
 }
 .bf-vote-side-tag-b {
   color: var(--bsc-red-bright);
-  background: rgba(255, 23, 68, 0.25);
-  border: 1px solid rgba(255, 69, 105, 0.4);
+  background: rgba(255, 23, 68, 0.2);
+  border: 1px solid rgba(255, 69, 105, 0.35);
+}
+.bf-predict-bsc .bf-vote-name-lg {
+  font-size: clamp(11px, 2.5vw, 14px);
+  max-width: 120px;
 }
 .bf-vote-no-pct {
   font-size: 10px;

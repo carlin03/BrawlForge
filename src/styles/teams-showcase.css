@@ -1,0 +1,61 @@
+.bf-teams-showcase {
+  min-height: 340px !important;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.bf-teams-showcase-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 16px 18px;
+  min-width: 140px;
+  border-radius: var(--bp-radius-lg);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.bf-teams-showcase-card:hover {
+  border-color: rgba(255, 215, 0, 0.35);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.bf-teams-showcase .fu-card-float:nth-child(2) .bf-teams-showcase-card {
+  padding: 24px 18px 22px;
+  border-color: rgba(255, 215, 0, 0.25);
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.08), rgba(0, 0, 0, 0.5));
+}
+
+.bf-teams-showcase-rank {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--bp-gold);
+}
+
+.bf-teams-showcase-card strong {
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 130px;
+}
+
+.bf-teams-showcase-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--bp-dim);
+  letter-spacing: 0.06em;
+}
+
+@media (min-width: 768px) {
+  .bf-teams-showcase {
+    min-height: 380px !important;
+    max-width: 620px;
+  }
+}

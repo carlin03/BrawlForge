@@ -41,13 +41,13 @@ export function PredictionsView({ open, closed }: { open: PredictionEvent[]; clo
               Predicciones BSC 2026
             </p>
             <h1 className="bf-bsc-predict-title">
-              <span className="bf-bsc-predict-title-blue">Azul</span>
-              <span className="bf-bsc-predict-title-vs">vs</span>
-              <span className="bf-bsc-predict-title-red">Rojo</span>
+              <span className="bf-bsc-predict-title-blue">Predice</span>
+              <span className="bf-bsc-predict-title-vs">el</span>
+              <span className="bf-bsc-predict-title-red">ganador</span>
             </h1>
             <p className="bf-bsc-predict-lead">
-              Elige el ganador de cada partido. Lado izquierdo <strong className="is-blue">AZUL</strong>, derecho{" "}
-              <strong className="is-red">ROJO</strong>. Las barras solo muestran votos reales de la comunidad.
+              Toca el club que crees que gana. Cada tarjeta muestra el nombre de ambos equipos; los puntos{" "}
+              <strong className="is-gold">+50 / +75</strong> aparecen en dorado. Solo barras con votos reales.
             </p>
             <div className="bf-bsc-predict-stats">
               <div className="bf-bsc-predict-stat is-blue">
@@ -84,13 +84,11 @@ export function PredictionsView({ open, closed }: { open: PredictionEvent[]; clo
               <div className="bf-bsc-predict-duel-side is-blue">
                 <TeamLogo slug={featured.teamASlug} name={teamName(featured.teamASlug)} size={96} glow />
                 <span>{teamName(featured.teamASlug)}</span>
-                <em>AZUL</em>
               </div>
               <span className="bf-bsc-predict-duel-vs">VS</span>
               <div className="bf-bsc-predict-duel-side is-red">
                 <TeamLogo slug={featured.teamBSlug} name={teamName(featured.teamBSlug)} size={96} glow />
                 <span>{teamName(featured.teamBSlug)}</span>
-                <em>ROJO</em>
               </div>
             </div>
           ) : (
@@ -187,11 +185,11 @@ export function PredictionsView({ open, closed }: { open: PredictionEvent[]; clo
             <ul>
               <li>
                 <span className="dot is-blue" aria-hidden />
-                Toca el lado <strong>AZUL</strong> (equipo A)
+                Elige el club que crees que gana el partido
               </li>
               <li>
                 <span className="dot is-red" aria-hidden />
-                o el lado <strong>ROJO</strong> (equipo B)
+                Los nombres de equipo están en cada lado de la tarjeta
               </li>
               <li>Más puntos en finales Bo5 que en grupos Bo3</li>
               <li>Sin votos = sin porcentajes inventados</li>

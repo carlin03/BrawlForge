@@ -2,23 +2,32 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Calendar, Radio, Target } from "lucide-react";
+import { CalendarDays, Radio, Target, Trophy } from "lucide-react";
+import type { Region } from "@/lib/types";
 import { useGame } from "@/contexts/GameContext";
 import { buildPredictionEvents } from "@/lib/data/predictions-build";
-import { MatchLine, FeaturedMatch } from "@/components/platform/ui";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
+import { MatchesControls } from "@/components/platform/MatchesControls";
+import { MatchSpotlightCard } from "@/components/platform/MatchSpotlightCard";
+import { MatchHubRow } from "@/components/platform/MatchHubRow";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
-import { PageUltraHero } from "@/components/platform/PageUltraHero";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { TeamLogo } from "@/components/ui/TeamLogo";
-import { tierBadgeClass, tierLabel } from "@/lib/data";
 import {
-  getLiveMatches,
-  getRecentMatches,
-  getCuratedHomeMatches,
+  countHubMatches,
+  filterHubMatches,
+  groupMatchesByTournament,
+  tournamentsInMatches,
+  type MatchTab,
+} from "@/lib/data/matches-hub";
+import {
+  matches,
   isKnownTeamSlug,
-  teamName,
+  getRecentMatches,
   getTierBPlusTournaments,
+  tierBadgeClass,
+  tierLabel,
+  teamName,
 } from "@/lib/data";
 import { getMatchEnrichment } from "@/lib/data/match-meta";
 
@@ -28,10 +37,32 @@ function cleanName(s: string) {
 
 export function MatchesView() {
   const { aggregates, game } = useGame();
-  const live = getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug));
-  const [tab, setTab] = useState<"live" | "upcoming" | "results">(live.length ? "live" : "upcoming");
+  const displayable = useMemo(() => matches.filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)), []);
+  const counts = useMemo(() => countHubMatches(displayable), [displayable]);
+
+  const [tab, setTab] = useState<MatchTab>(counts.live > 0 ? "live" : "upcoming");
+  const [region, setRegion] = useState<Region | "all">("all");
+  const [tournamentSlug, setTournamentSlug] = useState("all");
+  const [query, setQuery] = useState("");
+
+  const tabPool = useMemo(
+    () => filterHubMatches(displayable, { tab, region, tournamentSlug: "all", query: "" }),
+    [displayable, tab, region],
+  );
+
+  const tournamentOptions = useMemo(() => tournamentsInMatches(tabPool), [tabPool]);
+
+  const filtered = useMemo(
+    () => filterHubMatches(displayable, { tab, region, tournamentSlug, query }),
+    [displayable, tab, region, tournamentSlug, query],
+  );
+
+  const spotlight = filtered[0] ?? null;
+  const listRest = spotlight ? filtered.slice(1) : filtered;
+  const groups = useMemo(() => groupMatchesByTournament(listRest), [listRest]);
+
   const tierTours = useMemo(
-    () => getTierBPlusTournaments(10).filter((t) => t.startDate?.startsWith("2026")),
+    () => getTierBPlusTournaments(12).filter((t) => t.startDate?.startsWith("2026")),
     [],
   );
 
@@ -40,13 +71,9 @@ export function MatchesView() {
     return open.find((e) => isKnownTeamSlug(e.teamASlug) && isKnownTeamSlug(e.teamBSlug));
   }, [aggregates, game?.votes]);
 
-  const list = useMemo(() => getCuratedHomeMatches(tab, 12), [tab]);
-  const spotlight = list[0] ?? null;
-  const listRest = spotlight ? list.slice(1) : list;
-
   const upsets = useMemo(
     () =>
-      getRecentMatches(30)
+      getRecentMatches(40)
         .filter((m) => isKnownTeamSlug(m.teamASlug) && m.status === "finished")
         .filter((m) => {
           const enrich = getMatchEnrichment(m);
@@ -54,156 +81,197 @@ export function MatchesView() {
           const communityFavA = enrich.communityPickA >= 50;
           return winnerIsA !== communityFavA;
         })
-        .slice(0, 4),
+        .slice(0, 5),
     [],
   );
 
+  const emptyCopy =
+    tab === "live"
+      ? "No hay partidos en directo ahora. Revisa Próximos o Resultados."
+      : tab === "upcoming"
+        ? "Sin partidos programados con estos filtros."
+        : "Sin resultados con estos filtros.";
+
   return (
-    <PageUltraShell className="bf-matches-page bf-matches-ultra bf-arena-page bf-arena-static">
-      <PageUltraHero
-        kicker={
-          <>
-            <span className="bp-live-dot" /> Calendario BSC
-          </>
-        }
-        title={
-          <>
-            Centro de <em>partidos</em>
-          </>
-        }
-        lead="Directo, próximos y resultados del circuito pro 2026. Solo clubes con actividad en la temporada."
-        stats={
-          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-            <div className="fu-stat">
-              <b>{live.length || "—"}</b>
-              <span>En directo</span>
-            </div>
-            <div className="fu-stat">
-              <b>{list.length}</b>
-              <span>En esta vista</span>
-            </div>
-            <div className="fu-stat">
-              <b>{tierTours.length}</b>
-              <span>Torneos activos</span>
-            </div>
+    <PageUltraShell className="bf-matches-page bf-matches-hub">
+      <header className="bf-matches-hero">
+        <div className="bf-matches-hero-text">
+          <p className="bf-matches-hero-kicker">
+            <CalendarDays size={14} aria-hidden /> BSC 2026 · Calendario
+          </p>
+          <h1>
+            Partidos <em>pro</em>
+          </h1>
+          <p className="bf-matches-hero-lead">
+            Directo, calendario y resultados del circuito. Filtra por región, torneo o club.
+          </p>
+        </div>
+
+        <div className="bf-matches-hero-stats">
+          <div className={`bf-matches-stat ${counts.live > 0 ? "has-live" : ""}`}>
+            <b>{counts.live}</b>
+            <span>En directo</span>
           </div>
-        }
-        actions={
-          <>
-            <Link href="/predictions" className="fu-btn fu-btn-red">
-              <Target size={14} style={{ marginRight: 6, verticalAlign: -2 }} />
-              Predicciones
-            </Link>
-            <Link href="/fantasy" className="fu-btn fu-btn-gold">
-              Fantasy
-            </Link>
-          </>
-        }
-        showcase={
-          spotlight ? (
-            <div className="bf-arena-duel-static" aria-hidden={false}>
-              <div className="bf-arena-duel-side">
-                <TeamLogo slug={spotlight.teamASlug} name={teamName(spotlight.teamASlug)} size={88} glow />
-                <span>{teamName(spotlight.teamASlug)}</span>
-              </div>
-              <span className="fu-duel-vs">VS</span>
-              <div className="bf-arena-duel-side">
-                <TeamLogo slug={spotlight.teamBSlug} name={teamName(spotlight.teamBSlug)} size={88} glow />
-                <span>{teamName(spotlight.teamBSlug)}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="bf-arena-duel-static bf-arena-duel-empty">
-              <Calendar size={48} color="var(--bp-gold)" />
-              <span>Calendario 2026</span>
-            </div>
-          )
-        }
+          <div className="bf-matches-stat">
+            <b>{counts.upcoming}</b>
+            <span>Próximos</span>
+          </div>
+          <div className="bf-matches-stat">
+            <b>{counts.results}</b>
+            <span>Resultados</span>
+          </div>
+        </div>
+
+        <div className="bf-matches-hero-actions">
+          <Link href="/predictions" className="fu-btn fu-btn-red">
+            <Target size={14} aria-hidden />
+            Predicciones
+          </Link>
+          <Link href="/fantasy" className="fu-btn fu-btn-gold">
+            Fantasy
+          </Link>
+        </div>
+      </header>
+
+      <MatchesControls
+        tab={tab}
+        onTabChange={setTab}
+        counts={counts}
+        region={region}
+        onRegionChange={setRegion}
+        tournamentSlug={tournamentSlug}
+        onTournamentChange={setTournamentSlug}
+        tournaments={tournamentOptions}
+        query={query}
+        onQueryChange={setQuery}
       />
 
-      <div className="fu-tabs bf-arena-tabs">
-        {(["live", "upcoming", "results"] as const).map((t) => (
-          <button
-            key={t}
-            type="button"
-            className={`fu-tab ${tab === t ? "is-on" : ""} ${t === "live" && live.length ? "has-live" : ""}`}
-            onClick={() => setTab(t)}
-          >
-            {t === "live" ? `Directo (${live.length})` : t === "upcoming" ? "Próximos" : "Resultados"}
-          </button>
-        ))}
-      </div>
-
-      <div className="bf-matches-layout">
-        <div className="bf-matches-main">
+      <div className="bf-matches-hub-layout">
+        <div className="bf-matches-hub-main">
           {spotlight && (
-            <section className="bf-matches-spotlight-block">
-              <h2 className="bf-arena-section-title">
-                {spotlight.status === "live" ? "En directo" : "Partido destacado"}
+            <section className="bf-matches-hub-spotlight" aria-labelledby="matches-spotlight-title">
+              <h2 id="matches-spotlight-title" className="bf-matches-hub-section-title">
+                {spotlight.status === "live" ? (
+                  <>
+                    <Radio size={16} aria-hidden /> En directo ahora
+                  </>
+                ) : tab === "upcoming" ? (
+                  "Siguiente en el calendario"
+                ) : (
+                  "Último destacado"
+                )}
               </h2>
-              <FeaturedMatch match={spotlight} tag={spotlight.status === "live" ? "EN DIRECTO" : "Destacado"} />
+              <MatchSpotlightCard match={spotlight} />
             </section>
           )}
 
           {hotVote && tab !== "results" && (
-            <section className="bf-matches-vote-block bf-predict-bsc">
-              <div className="fu-panel-head" style={{ marginBottom: 12 }}>
-                <h2>
-                  <Radio size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
-                  Predicción · azul vs rojo
-                </h2>
-                <Link href="/predictions">Todas</Link>
+            <section className="bf-matches-hub-vote bf-predict-bsc">
+              <div className="bf-matches-hub-vote-head">
+                <h2>Predicción rápida</h2>
+                <Link href="/predictions">Ver todas</Link>
               </div>
               <InteractiveVoteCard event={hotVote} featured />
             </section>
           )}
 
-          <section className="bf-matches-feed">
-            <h2 className="bf-arena-section-title">
-              {tab === "live" ? "Todos en directo" : tab === "upcoming" ? "Próximos partidos" : "Resultados"}
-            </h2>
-            {listRest.length > 0 ? (
-              listRest.map((m) => <MatchLine key={m.id} match={m} rich />)
-            ) : !spotlight ? (
-              <p className="bf-home-empty">Sin partidos en esta pestaña.</p>
-            ) : null}
+          <section className="bf-matches-hub-list" aria-labelledby="matches-list-title">
+            <div className="bf-matches-hub-list-head">
+              <h2 id="matches-list-title">
+                {tab === "live" ? "Todos en directo" : tab === "upcoming" ? "Calendario" : "Historial"}
+              </h2>
+              <span className="bf-matches-hub-count">{filtered.length} partidos</span>
+            </div>
 
-            {upsets.length > 0 && tab === "results" && (
-              <div className="bf-matches-upsets">
-                <span className="fu-kicker">Upsets</span>
-                {upsets.map((m) => (
-                  <Link key={m.id} href={`/matches/${m.id}`} className="bf-matches-upset-row bf-shine-hover">
-                    <TeamLogo slug={m.teamASlug} name={teamName(m.teamASlug)} size={32} />
-                    <span className="bf-matches-score">
-                      {m.scoreA} – {m.scoreB}
-                    </span>
-                    <TeamLogo slug={m.teamBSlug} name={teamName(m.teamBSlug)} size={32} />
-                    <span className="bp-chip bp-chip-gold">Upset</span>
+            {filtered.length === 0 ? (
+              <div className="bf-matches-hub-empty">
+                <CalendarDays size={40} aria-hidden />
+                <p>{emptyCopy}</p>
+                {(query || tournamentSlug !== "all" || region !== "all") && (
+                  <button
+                    type="button"
+                    className="fu-btn fu-btn-ghost"
+                    onClick={() => {
+                      setQuery("");
+                      setTournamentSlug("all");
+                      setRegion("all");
+                    }}
+                  >
+                    Quitar filtros
+                  </button>
+                )}
+              </div>
+            ) : groups.length > 0 ? (
+              groups.map((g) => (
+                <div key={g.tournamentSlug} className="bf-matches-hub-group">
+                  <Link href={`/tournaments/${g.tournamentSlug}`} className="bf-matches-hub-group-head">
+                    <TournamentLogo slug={g.tournamentSlug} name={g.label} size={32} glow={false} />
+                    <div>
+                      <strong>{g.label}</strong>
+                      <span>
+                        {g.matches.length} partido{g.matches.length !== 1 ? "s" : ""}
+                      </span>
+                    </div>
+                    <Trophy size={16} className="bf-matches-hub-group-icon" aria-hidden />
                   </Link>
+                  <div className="bf-matches-hub-rows">
+                    {g.matches.map((m) => (
+                      <MatchHubRow key={m.id} match={m} />
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="bf-matches-hub-rows">
+                {listRest.map((m) => (
+                  <MatchHubRow key={m.id} match={m} />
                 ))}
               </div>
             )}
           </section>
+
+          {upsets.length > 0 && tab === "results" && !query && tournamentSlug === "all" && (
+            <section className="bf-matches-hub-upsets">
+              <h2 className="bf-matches-hub-section-title">Upsets recientes</h2>
+              <p className="bf-matches-hub-upsets-lead">La comunidad no acertó el favorito.</p>
+              <div className="bf-matches-hub-upsets-grid">
+                {upsets.map((m) => (
+                  <Link key={m.id} href={`/matches/${m.id}`} className="bf-matches-hub-upset-card">
+                    <TeamLogo slug={m.teamASlug} name={teamName(m.teamASlug)} size={28} glow={false} />
+                    <span className="bf-matches-hub-upset-score">
+                      {m.scoreA} – {m.scoreB}
+                    </span>
+                    <TeamLogo slug={m.teamBSlug} name={teamName(m.teamBSlug)} size={28} glow={false} />
+                    <span className="bp-chip bp-chip-gold">Upset</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
-        <aside className="bf-fantasy-aside">
-          <div className="fu-panel">
-            <div className="fu-panel-head">
-              <h2>Torneos BSC 2026</h2>
+        <aside className="bf-matches-hub-aside">
+          <div className="bf-matches-hub-aside-panel">
+            <div className="bf-matches-hub-aside-head">
+              <h2>Torneos 2026</h2>
               <Link href="/tournaments">Todos</Link>
             </div>
-            {tierTours.slice(0, 8).map((t) => (
-              <Link key={t.slug} href={`/tournaments/${t.slug}`} className="bf-matches-tour-row">
-                <TournamentLogo slug={t.slug} name={cleanName(t.shortName)} size={36} />
-                <div>
-                  <strong>{cleanName(t.shortName)}</strong>
-                  <span>{t.prizePool}</span>
-                </div>
-                {t.tier != null && (
-                  <span className={`bf-tier-badge ${tierBadgeClass(t.tier)}`}>{tierLabel(t.tier)}</span>
-                )}
-              </Link>
-            ))}
+            <ul className="bf-matches-hub-tour-list">
+              {tierTours.map((t) => (
+                <li key={t.slug}>
+                  <Link href={`/tournaments/${t.slug}`} className="bf-matches-hub-tour-item">
+                    <TournamentLogo slug={t.slug} name={cleanName(t.shortName)} size={36} glow={false} />
+                    <div>
+                      <strong>{cleanName(t.shortName)}</strong>
+                      <span>{t.prizePool}</span>
+                    </div>
+                    {t.tier != null && (
+                      <span className={`bf-tier-badge ${tierBadgeClass(t.tier)}`}>{tierLabel(t.tier)}</span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </aside>
       </div>
