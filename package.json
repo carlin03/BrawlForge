@@ -8,6 +8,7 @@
     "mobile:link": "node scripts/mobile-link.mjs",
     "mobile:tunnel": "node scripts/mobile-link.mjs --tunnel",
     "supabase:check": "node scripts/check-supabase.mjs",
+    "supabase:apply:storage": "node scripts/apply-logo-storage-migration.mjs",
     "deploy:check": "npm run supabase:check && npm run build",
     "supabase:seed:catalog": "node scripts/seed-supabase-catalog.mjs",
     "build": "next build --webpack",
