@@ -1,31 +1,10 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import {
-  BookOpen,
-  ExternalLink,
-  Globe,
-  MessageCircle,
-  Share2,
-  Trophy,
-  Video,
-} from "lucide-react";
+import { BookOpen, Trophy } from "lucide-react";
 import type { CareerHighlight, WikiAchievement, WikiSection } from "@/lib/data/profile-wiki";
 
 export type InfoboxRow = { label: string; value: ReactNode; highlight?: boolean };
-
-const SOCIAL_META: Record<
-  string,
-  { label: string; icon: typeof Globe; short: string }
-> = {
-  twitter: { label: "X / Twitter", icon: MessageCircle, short: "X" },
-  youtube: { label: "YouTube", icon: Video, short: "YT" },
-  discord: { label: "Discord", icon: MessageCircle, short: "DC" },
-  twitch: { label: "Twitch", icon: Video, short: "TW" },
-  instagram: { label: "Instagram", icon: Share2, short: "IG" },
-  tiktok: { label: "TikTok", icon: Globe, short: "TT" },
-  website: { label: "Web", icon: Globe, short: "WEB" },
-};
 
 function slugifyTitle(title: string) {
   return title
@@ -219,44 +198,12 @@ export function ProfileAchievementsShowcase({
   );
 }
 
-export function ProfileSocialHub({ social, liquipediaUrl }: { social: Record<string, string>; liquipediaUrl?: string | null }) {
-  const entries = Object.entries(social).filter(([, v]) => v?.trim());
-  if (!entries.length && !liquipediaUrl) return null;
-  return (
-    <section className="bf-ep-social-hub">
-      <h3>Enlaces</h3>
-      <div className="bf-ep-social-grid">
-        {entries.map(([key, href]) => {
-          const meta = SOCIAL_META[key] ?? { label: key, icon: Globe, short: key.slice(0, 2).toUpperCase() };
-          const Icon = meta.icon;
-          return (
-            <a
-              key={key}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bf-ep-social-btn"
-              title={meta.label}
-            >
-              <Icon size={18} />
-              <span>{meta.label}</span>
-            </a>
-          );
-        })}
-        {liquipediaUrl?.trim() && (
-          <a
-            href={liquipediaUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bf-ep-social-btn is-liquipedia"
-          >
-            <ExternalLink size={18} />
-            <span>Liquipedia</span>
-          </a>
-        )}
-      </div>
-    </section>
-  );
+/** Enlaces externos desactivados en la web pública (solo contenido en BrawlForge). */
+export function ProfileSocialHub(_props: {
+  social: Record<string, string>;
+  liquipediaUrl?: string | null;
+}) {
+  return null;
 }
 
 export function ProfileBrawlerPool({ brawlers }: { brawlers: string[] }) {
@@ -370,13 +317,10 @@ export function ProfileHistoryTab({
     (achievements?.length ?? 0) > 0 ||
     (career?.length ?? 0) > 0 ||
     playstyle?.trim() ||
-    (brawlers?.length ?? 0) > 0 ||
-    Object.keys(social).length > 0 ||
-    liquipediaUrl;
+    (brawlers?.length ?? 0) > 0;
 
   const aside = (
     <>
-      <ProfileSocialHub social={social} liquipediaUrl={liquipediaUrl} />
       <ProfileBrawlerPool brawlers={brawlers ?? []} />
       <ProfilePlaystyleCard text={playstyle ?? ""} />
       {achievements && achievements.length > 0 && (

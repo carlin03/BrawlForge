@@ -13,8 +13,10 @@ import {
   MATCH_STATUS_OPTIONS,
 } from "./studio-ui";
 import { StudioModulePanel } from "./StudioModulePanel";
+import { AdminTeamLogoPicker } from "@/components/admin/AdminTeamLogoPicker";
+import { TeamLogo } from "@/components/ui/TeamLogo";
 
-type TeamOption = { slug: string; name: string };
+type TeamOption = { slug: string; name: string; tag: string; region?: string };
 
 type MatchRow = {
   id: string;
@@ -50,8 +52,15 @@ export function StudioMatchesPanel() {
     fetch("/api/admin/catalog?type=teams")
       .then((r) => r.json())
       .then((data) => {
-        const list = (data.teams ?? []) as { slug: string; name?: string }[];
-        setTeams(list.map((t) => ({ slug: t.slug, name: t.name || teamName(t.slug) })));
+        const list = (data.teams ?? []) as { slug: string; name?: string; tag?: string; region?: string }[];
+        setTeams(
+          list.map((t) => ({
+            slug: t.slug,
+            name: t.name || teamName(t.slug),
+            tag: t.tag || teamName(t.slug).slice(0, 3).toUpperCase(),
+            region: t.region,
+          })),
+        );
       })
       .catch(() => setTeams([]));
   }, []);
@@ -105,36 +114,53 @@ export function StudioMatchesPanel() {
         return (
           <>
             <StudioCard title="Nuevo partido">
-              <div className="bf-studio-form-visual">
-                <StudioField label="Equipo local (azul)" hint="Lado izquierdo en la web">
-                  <StudioSelect
-                    value={form.team_a_slug}
-                    onChange={(e) => setForm({ ...form, team_a_slug: e.target.value })}
-                  >
-                    <option value="">— Elige equipo —</option>
-                    {teams.map((t) => (
-                      <option key={t.slug} value={t.slug}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </StudioSelect>
-                </StudioField>
-
+              <div className="bf-studio-match-pick-head">
+                <div className={`bf-studio-match-picked ${form.team_a_slug ? "has-team" : ""}`}>
+                  {form.team_a_slug ? (
+                    <TeamLogo slug={form.team_a_slug} name={teamName(form.team_a_slug)} size={48} />
+                  ) : (
+                    <span className="bf-studio-match-picked-empty">Local</span>
+                  )}
+                  <span>{form.team_a_slug ? teamName(form.team_a_slug) : "Equipo A"}</span>
+                </div>
                 <span className="bf-studio-vs">VS</span>
+                <div className={`bf-studio-match-picked ${form.team_b_slug ? "has-team" : ""}`}>
+                  {form.team_b_slug ? (
+                    <TeamLogo slug={form.team_b_slug} name={teamName(form.team_b_slug)} size={48} />
+                  ) : (
+                    <span className="bf-studio-match-picked-empty">Visitante</span>
+                  )}
+                  <span>{form.team_b_slug ? teamName(form.team_b_slug) : "Equipo B"}</span>
+                </div>
+              </div>
 
-                <StudioField label="Equipo visitante (rojo)" hint="Lado derecho">
-                  <StudioSelect
-                    value={form.team_b_slug}
-                    onChange={(e) => setForm({ ...form, team_b_slug: e.target.value })}
-                  >
-                    <option value="">— Elige equipo —</option>
-                    {teams.map((t) => (
-                      <option key={t.slug} value={t.slug}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </StudioSelect>
+              <div className="bf-studio-form-visual bf-studio-match-teams-pick">
+                <StudioField label="Equipo local (azul)" hint="Clic en el escudo — lado izquierdo en web y predicciones">
+                  <AdminTeamLogoPicker
+                    teams={teams}
+                    selected={form.team_a_slug}
+                    onChange={(slug) => setForm({ ...form, team_a_slug: slug })}
+                    disabledSlugs={form.team_b_slug ? [form.team_b_slug] : []}
+                    maxHeight="220px"
+                    compact
+                    showRegionFilter={false}
+                  />
                 </StudioField>
+
+                <StudioField label="Equipo visitante (rojo)" hint="Clic en el escudo — lado derecho">
+                  <AdminTeamLogoPicker
+                    teams={teams}
+                    selected={form.team_b_slug}
+                    onChange={(slug) => setForm({ ...form, team_b_slug: slug })}
+                    disabledSlugs={form.team_a_slug ? [form.team_a_slug] : []}
+                    maxHeight="220px"
+                    compact
+                    showRegionFilter={false}
+                  />
+                </StudioField>
+              </div>
+
+              <div className="bf-studio-form-visual">
 
                 <StudioField label="Torneo">
                   <StudioSelect

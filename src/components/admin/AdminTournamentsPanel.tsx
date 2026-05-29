@@ -9,6 +9,7 @@ import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import type { AdminTournamentRow } from "@/lib/data/admin-tournaments";
 import { mergeAdminTournamentRows } from "@/lib/data/admin-tournaments";
 import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
+import { AdminTeamLogoPicker } from "@/components/admin/AdminTeamLogoPicker";
 
 const REGIONS = ["GLOBAL", "EMEA", "EA", "NA", "SA", "CN"] as const;
 const STATUSES = [
@@ -18,7 +19,7 @@ const STATUSES = [
 ] as const;
 
 type Props = {
-  teams: { slug: string; name: string; tag: string }[];
+  teams: { slug: string; name: string; tag: string; region?: string }[];
   embedded?: boolean;
 };
 
@@ -58,7 +59,14 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
       .then((r) => r.json())
       .then((data) => {
         const merged = mergeAdminTeamRows(data.teams ?? null);
-        setTeamList(merged.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag })));
+        setTeamList(
+          merged.map((t) => ({
+            slug: t.slug,
+            name: t.name,
+            tag: t.tag,
+            region: t.region,
+          })),
+        );
       })
       .catch(() => {});
   }, [teamsProp]);
@@ -110,7 +118,6 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
       t.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const participantSet = new Set(selected?.participant_slugs ?? []);
 
   return (
     <div className={embedded ? "" : "bf-admin-page"}>
@@ -308,37 +315,32 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
               />
             </AdminField>
 
-            <AdminField label="Participantes (equipos)" hint="Marca los clubes inscritos">
-              <div className="bf-admin-roster-picker bf-admin-tournament-teams">
-                {teamList
-                  .slice()
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((t) => (
-                    <label key={t.slug}>
-                      <input
-                        type="checkbox"
-                        checked={participantSet.has(t.slug)}
-                        onChange={(e) => {
-                          const next = new Set(selected.participant_slugs);
-                          if (e.target.checked) next.add(t.slug);
-                          else next.delete(t.slug);
-                          setSelected({
-                            ...selected,
-                            participant_slugs: [...next],
-                            teams_count: next.size,
-                          });
-                        }}
-                      />
-                      <span>
-                        {t.tag} · {t.name}
-                      </span>
-                    </label>
-                  ))}
-              </div>
+            <AdminField label="Participantes (equipos)" hint="Misma vista que Logos: clic en el escudo para inscribir o quitar">
+              <AdminTeamLogoPicker
+                teams={teamList.map((t) => ({
+                  slug: t.slug,
+                  name: t.name,
+                  tag: t.tag,
+                  region: t.region,
+                }))}
+                multiple
+                selected={selected.participant_slugs}
+                onChange={(slugs) =>
+                  setSelected({
+                    ...selected,
+                    participant_slugs: slugs,
+                    teams_count: slugs.length,
+                  })
+                }
+                maxHeight="360px"
+              />
             </AdminField>
 
             <AdminMeta>
-              Página: /tournaments/{selected.slug} · {selected.participant_slugs.length} participantes
+              Página: /tournaments/{selected.slug} · {selected.participant_slugs.length} participantes ·{" "}
+              <Link href="/admin?module=cards" className="bf-home-link">
+                Colores de tarjetas
+              </Link>
             </AdminMeta>
 
             <div className="bf-admin-editor-actions">

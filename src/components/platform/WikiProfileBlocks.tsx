@@ -2,16 +2,6 @@
 
 import type { CareerHighlight, WikiSection } from "@/lib/data/profile-wiki";
 
-const SOCIAL_LABELS: Record<string, string> = {
-  twitter: "Twitter / X",
-  youtube: "YouTube",
-  discord: "Discord",
-  twitch: "Twitch",
-  instagram: "Instagram",
-  tiktok: "TikTok",
-  website: "Web oficial",
-};
-
 export function WikiDetailBanner({ url }: { url?: string }) {
   if (!url?.trim()) return null;
   return (
@@ -78,38 +68,18 @@ export function WikiGalleryBlock({ urls }: { urls: string[] }) {
       <h2 className="bf-home-block-title">Galería</h2>
       <div className="bf-wiki-gallery">
         {list.map((url, i) => (
-          <a
-            key={i}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bf-wiki-gallery-item bf-hover-lift"
-          >
+          <div key={i} className="bf-wiki-gallery-item bf-hover-lift">
             <img src={url} alt="" loading="lazy" />
-          </a>
+          </div>
         ))}
       </div>
     </section>
   );
 }
 
-export function WikiSocialBlock({ social }: { social: Record<string, string> }) {
-  const entries = Object.entries(social).filter(([, v]) => v?.trim());
-  if (!entries.length) return null;
-  return (
-    <div className="bf-info-block-premium">
-      <h3>Redes y comunidad</h3>
-      <ul className="bf-detail-links">
-        {entries.map(([key, href]) => (
-          <li key={key}>
-            <a href={href} target="_blank" rel="noopener noreferrer">
-              {SOCIAL_LABELS[key] ?? key}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+/** Enlaces externos desactivados en la web pública. */
+export function WikiSocialBlock(_props: { social: Record<string, string> }) {
+  return null;
 }
 
 export function WikiCareerTimeline({ items }: { items: CareerHighlight[] }) {

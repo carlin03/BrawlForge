@@ -2,6 +2,7 @@
 
 import { Plus, Trash2, ChevronUp, ChevronDown, GripVertical } from "lucide-react";
 import { AdminField, AdminFieldRow } from "@/components/admin/AdminField";
+import { AdminPlayerLogoPicker } from "@/components/admin/AdminPlayerLogoPicker";
 import {
   emptyAchievement,
   emptySection,
@@ -311,32 +312,18 @@ export function AdminRosterPicker({
   selected: string[];
   onChange: (slugs: string[]) => void;
 }) {
-  const pool = allPlayers
-    .filter((p) => !p.team_slug || p.team_slug === teamSlug)
-    .sort((a, b) => a.ign.localeCompare(b.ign));
-
-  function toggle(slug: string) {
-    if (selected.includes(slug)) onChange(selected.filter((s) => s !== slug));
-    else onChange([...selected, slug]);
-  }
-
   return (
     <div className="bf-admin-roster-picker">
       <p className="bf-admin-field-hint">
-        Marca los jugadores de la plantilla. También puedes asignarles el club en la ficha de cada jugador.
+        Clic en la foto para añadir o quitar de la plantilla. También puedes asignar el club en la ficha de cada jugador.
       </p>
-      <div className="bf-admin-roster-grid">
-        {pool.map((p) => (
-          <label key={p.slug} className={`bf-admin-roster-chip ${selected.includes(p.slug) ? "is-on" : ""}`}>
-            <input type="checkbox" checked={selected.includes(p.slug)} onChange={() => toggle(p.slug)} />
-            <span>{p.ign}</span>
-            {p.team_slug && p.team_slug !== teamSlug && (
-              <span className="bf-admin-roster-other">({p.team_slug})</span>
-            )}
-          </label>
-        ))}
-      </div>
-      <p className="bf-admin-field-hint">{selected.length} jugadores seleccionados</p>
+      <AdminPlayerLogoPicker
+        players={allPlayers}
+        selected={selected}
+        onChange={onChange}
+        teamSlug={teamSlug}
+        maxHeight="360px"
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { Region } from "../types";
+import { parseCardWatermark, type CardWatermarkConfig } from "./card-theme-meta";
 
 export interface TeamCardTheme {
   primary: string;
@@ -128,11 +129,28 @@ const WATERMARK_OPACITY: Record<string, string> = {
   mini: "0.4",
 };
 
-export function teamCardThemeVars(theme: TeamCardTheme, size?: "hero" | "xl" | "lg" | "md" | "sm" | "mini"): Record<string, string> {
+export function getCardWatermarkFromMeta(
+  catalogMeta?: Record<string, unknown> | null,
+): CardWatermarkConfig {
+  const t = catalogMeta?.card_theme;
+  if (t && typeof t === "object" && (t as Record<string, unknown>).watermark) {
+    return parseCardWatermark((t as Record<string, unknown>).watermark);
+  }
+  return parseCardWatermark(null);
+}
+
+export function teamCardThemeVars(
+  theme: TeamCardTheme,
+  size?: "hero" | "xl" | "lg" | "md" | "sm" | "mini",
+  watermark?: CardWatermarkConfig,
+): Record<string, string> {
+  const wm = watermark ?? parseCardWatermark(null);
+  const opacity =
+    wm.opacity != null ? String(Math.min(1, Math.max(0, wm.opacity / 100))) : WATERMARK_OPACITY[size ?? "md"] ?? "0.48";
   return {
     "--bf-team-primary": theme.primary,
     "--bf-team-secondary": theme.secondary,
     "--bf-team-glow": theme.glow,
-    "--bf-card-watermark-opacity": WATERMARK_OPACITY[size ?? "md"] ?? "0.48",
+    "--bf-card-watermark-opacity": opacity,
   };
 }

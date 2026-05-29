@@ -1194,3 +1194,97 @@
 .bf-admin-tournament-teams {
   max-height: 280px;
 }
+
+.bf-admin-team-logo-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bf-admin-team-picker-grid {
+  max-height: 320px;
+}
+.bf-admin-logo-tile {
+  position: relative;
+}
+.bf-admin-logo-tile.is-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.bf-admin-logo-tile-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bp-gold);
+  color: #0a0c12;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.bf-admin-logo-tile-sub {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--bp-dim);
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bf-admin-team-logo-picker.is-compact .bf-admin-logos-grid {
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+.bf-admin-team-logo-picker.is-compact .bf-admin-logo-tile {
+  padding: 12px 8px;
+}
+
+.bf-studio-match-pick-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--bp-line);
+}
+.bf-studio-match-picked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bp-muted);
+  text-align: center;
+}
+.bf-studio-match-picked.has-team {
+  color: var(--bp-text);
+}
+.bf-studio-match-picked-empty {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px dashed var(--bp-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--bp-dim);
+}
+.bf-studio-match-teams-pick {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .bf-studio-match-teams-pick {
+    grid-template-columns: 1fr 1fr;
+  }
+}

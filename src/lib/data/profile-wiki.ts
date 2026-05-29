@@ -37,6 +37,10 @@ export type TeamProfileMeta = {
   wiki_sections?: WikiSection[];
   fun_facts?: string[];
   rivals?: string[];
+  sponsors?: string[] | { name: string; category?: string; logo_url?: string }[];
+  manager?: string;
+  ceo?: string;
+  peak_rank?: number;
 };
 
 export type PlayerProfileMeta = {
@@ -121,6 +125,10 @@ export function parseTeamMeta(raw: unknown): TeamProfileMeta {
     wiki_sections: parseWikiSections(o.wiki_sections),
     fun_facts: Array.isArray(o.fun_facts) ? (o.fun_facts as string[]).map(String).filter(Boolean) : [],
     rivals: Array.isArray(o.rivals) ? (o.rivals as string[]).map(String) : [],
+    sponsors: Array.isArray(o.sponsors) ? (o.sponsors as TeamProfileMeta["sponsors"]) : [],
+    manager: o.manager ? String(o.manager) : undefined,
+    ceo: o.ceo ? String(o.ceo) : undefined,
+    peak_rank: typeof o.peak_rank === "number" ? o.peak_rank : typeof o.best_rank === "number" ? o.best_rank : undefined,
   };
 }
 

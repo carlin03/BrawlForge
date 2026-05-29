@@ -334,7 +334,12 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       {tab === "tournaments" && (
         <AdminTournamentsPanel
           embedded
-          teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag }))}
+          teams={teams.map((t) => ({
+            slug: t.slug,
+            name: t.name,
+            tag: t.tag,
+            region: t.region,
+          }))}
         />
       )}
 

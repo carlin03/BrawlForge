@@ -2,11 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Save } from "lucide-react";
+import { AdminCardFUTPreview } from "./AdminCardFUTPreview";
 import { StudioColorPicker, StudioPanel, StudioToast } from "./studio-ui";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
-import { parseCardThemeMeta, type CardThemeMeta } from "@/lib/data/card-theme-meta";
-import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
+import {
+  parseCardThemeMeta,
+  parseCardWatermark,
+  type CardThemeMeta,
+  type CardWatermarkConfig,
+  type CardWatermarkSize,
+} from "@/lib/data/card-theme-meta";
+import { getTeamCardTheme } from "@/lib/data/team-card-theme";
 import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 import type { AdminTeamCatalogRow } from "@/lib/data/admin-catalog-fields";
@@ -14,30 +21,79 @@ import type { AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
 
 function themeFromTeam(slug: string, meta: Record<string, unknown>): CardThemeMeta {
   const parsed = parseCardThemeMeta(meta);
-  if (parsed) return parsed;
   const t = getTeamCardTheme(slug);
-  return { primary: t.primary, secondary: t.secondary, glow: t.glow };
+  const base: CardThemeMeta = {
+    primary: parsed?.primary ?? t.primary,
+    secondary: parsed?.secondary ?? t.secondary,
+    glow: parsed?.glow ?? t.glow,
+    watermark: parsed?.watermark ?? parseCardWatermark(null),
+  };
+  return base;
 }
 
-function MiniCardPreview({
-  label,
-  theme,
-  logo,
+function WatermarkFields({
+  watermark,
+  onChange,
 }: {
-  label: string;
-  theme: CardThemeMeta;
-  logo: React.ReactNode;
+  watermark: CardWatermarkConfig;
+  onChange: (wm: CardWatermarkConfig) => void;
 }) {
+  const patch = (partial: Partial<CardWatermarkConfig>) =>
+    onChange({ ...parseCardWatermark(watermark), ...partial });
+
   return (
-    <div
-      className="bf-admin-card-preview"
-      style={teamCardThemeVars(theme, "md") as React.CSSProperties}
-    >
-      <div className="bf-admin-card-preview-bg" aria-hidden />
-      <div className="bf-admin-card-preview-body">
-        {logo}
-        <span>{label}</span>
+    <div className="bf-studio-watermark-block">
+      <h4 className="bf-studio-watermark-title">Marca de fondo (entre fondo y foto)</h4>
+      <p className="bf-studio-hint">
+        PNG o escudo del club. Se ve detrás de la foto del jugador para identificar el equipo.
+      </p>
+      <label className="bf-studio-field">
+        <span className="bf-studio-field-label">Imagen PNG / URL</span>
+        <input
+          className="bf-studio-input"
+          value={watermark.image_url ?? ""}
+          onChange={(e) => patch({ image_url: e.target.value || undefined })}
+          placeholder="https://… (vacío = logo del club)"
+        />
+      </label>
+      <label className="bf-studio-field">
+        <span className="bf-studio-field-label">
+          Opacidad: <strong>{watermark.opacity ?? 48}%</strong>
+        </span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={watermark.opacity ?? 48}
+          onChange={(e) => patch({ opacity: Number(e.target.value) })}
+          className="bf-studio-range"
+        />
+      </label>
+      <div className="bf-studio-field">
+        <span className="bf-studio-field-label">Tamaño de la marca</span>
+        <div className="bf-studio-watermark-sizes">
+          {(["sm", "md", "lg"] as CardWatermarkSize[]).map((s) => (
+            <button
+              key={s}
+              type="button"
+              className={(watermark.size ?? "md") === s ? "is-on" : ""}
+              onClick={() => patch({ size: s })}
+            >
+              {s === "sm" ? "Pequeño" : s === "lg" ? "Grande" : "Mediano"}
+            </button>
+          ))}
+        </div>
       </div>
+      {watermark.image_url?.trim() && (
+        <label className="bf-studio-check">
+          <input
+            type="checkbox"
+            checked={watermark.show_team_logo_behind !== false}
+            onChange={(e) => patch({ show_team_logo_behind: e.target.checked })}
+          />
+          <span>Mostrar logo del club muy suave detrás del PNG</span>
+        </label>
+      )}
     </div>
   );
 }
@@ -51,6 +107,7 @@ export function StudioCardsVisualPanel() {
     primary: "#ffc82e",
     secondary: "#1a1608",
     glow: "#ffd54f",
+    watermark: parseCardWatermark(null),
   });
   const [photoUrl, setPhotoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
@@ -77,7 +134,7 @@ export function StudioCardsVisualPanel() {
       setMsgError(true);
     }
     setLoading(false);
-  }, []);
+  }, [selectedSlug]);
 
   useEffect(() => {
     load();
@@ -127,7 +184,7 @@ export function StudioCardsVisualPanel() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Error");
-        setMsg(data.message || "Colores del club guardados");
+        setMsg(data.message || "Colores y marca del club guardados");
       } else {
         const row = players.find((p) => p.slug === selectedSlug);
         if (!row) return;
@@ -163,11 +220,17 @@ export function StudioCardsVisualPanel() {
   const teamRow = teams.find((t) => t.slug === selectedSlug);
   const playerRow = players.find((p) => p.slug === selectedSlug);
   const list = mode === "teams" ? teams : players;
+  const previewClub =
+    mode === "teams"
+      ? teamRow
+      : playerRow?.team_slug
+        ? teams.find((t) => t.slug === playerRow.team_slug)
+        : undefined;
 
   return (
     <StudioPanel
       title="Fondos de tarjetas y fotos"
-      lead="Colores del watermark de cada club y fotos/banners de jugadores. Se ven en las cartas FUT y fichas."
+      lead="Colores y marca de fondo de cada club; fotos de jugadores con vista previa en vertical."
       actions={
         <button type="button" className="bp-btn bp-btn-gold" onClick={save} disabled={loading || !selectedSlug}>
           <Save size={16} /> Guardar
@@ -247,16 +310,22 @@ export function StudioCardsVisualPanel() {
         <div className="bf-studio-cards-editor">
           {mode === "teams" && teamRow && (
             <>
-              <MiniCardPreview
-                label={teamRow.tag}
+              <AdminCardFUTPreview
                 theme={theme}
-                logo={<TeamLogo slug={teamRow.slug} name={teamRow.name} size={56} />}
+                teamSlug={teamRow.slug}
+                teamName={teamRow.name}
+                teamTag={teamRow.tag}
+                mode="team"
               />
               <div className="bf-studio-color-grid">
                 <StudioColorPicker label="Color principal" value={theme.primary} onChange={(v) => setTheme({ ...theme, primary: v })} />
                 <StudioColorPicker label="Fondo oscuro" value={theme.secondary} onChange={(v) => setTheme({ ...theme, secondary: v })} />
                 <StudioColorPicker label="Brillo / glow" value={theme.glow} onChange={(v) => setTheme({ ...theme, glow: v })} />
               </div>
+              <WatermarkFields
+                watermark={theme.watermark ?? parseCardWatermark(null)}
+                onChange={(watermark) => setTheme({ ...theme, watermark })}
+              />
               <label className="bf-studio-field">
                 <span className="bf-studio-field-label">Banner de ficha (URL)</span>
                 <input
@@ -268,21 +337,20 @@ export function StudioCardsVisualPanel() {
               </label>
             </>
           )}
-          {mode === "players" && playerRow && (
+          {mode === "players" && playerRow && previewClub && (
             <>
-              <MiniCardPreview
-                label={playerRow.ign}
+              <AdminCardFUTPreview
                 theme={theme}
-                logo={
-                  <PlayerPhoto
-                    playerSlug={playerRow.slug}
-                    teamSlug={playerRow.team_slug ?? undefined}
-                    size={56}
-                  />
-                }
+                teamSlug={previewClub.slug}
+                teamName={previewClub.name}
+                teamTag={previewClub.tag}
+                playerIgn={playerRow.ign}
+                playerSlug={playerRow.slug}
+                photoUrl={photoUrl}
+                mode="player"
               />
               <p className="bf-studio-hint">
-                El fondo de la carta usa los colores del club ({playerRow.team_slug || "sin equipo"}). Edítalos en la pestaña Equipos.
+                Fondo y marca del club ({previewClub.slug}). Colores y PNG en la pestaña Equipos.
               </p>
               <label className="bf-studio-field">
                 <span className="bf-studio-field-label">Foto del jugador (URL)</span>
@@ -302,6 +370,9 @@ export function StudioCardsVisualPanel() {
                 />
               </label>
             </>
+          )}
+          {mode === "players" && playerRow && !previewClub && (
+            <p className="bf-studio-hint">Este jugador no tiene equipo asignado; no hay vista previa de carta.</p>
           )}
         </div>
       </div>

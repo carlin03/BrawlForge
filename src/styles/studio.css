@@ -838,35 +838,87 @@
   gap: 12px;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 }
-.bf-admin-card-preview {
-  position: relative;
-  border-radius: 14px;
-  overflow: hidden;
-  min-height: 140px;
-  border: 1px solid var(--bp-line);
-}
-.bf-admin-card-preview-bg {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(145deg, var(--bf-team-primary), var(--bf-team-secondary));
-  opacity: 0.95;
-}
-.bf-admin-card-preview-body {
-  position: relative;
-  z-index: 1;
+.bf-admin-fut-preview-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 24px;
-  min-height: 140px;
+  gap: 8px;
+  padding: 12px 0 4px;
 }
-.bf-admin-card-preview-body span {
+.bf-admin-fut-preview-label {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+.bf-admin-fut-preview.bf-card-fut {
+  max-width: 200px;
+  min-height: 300px;
+  width: 200px;
+  margin: 0 auto;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.bf-admin-fut-preview-photo {
+  width: 100%;
+  max-width: 88px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+}
+.bf-studio-watermark-block {
+  padding: 14px 16px;
+  border-radius: var(--bp-r);
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bf-studio-watermark-title {
+  margin: 0;
+  font-size: 13px;
   font-weight: 800;
-  font-size: 14px;
-  color: #fff;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  color: var(--bp-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.bf-studio-watermark-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bf-studio-watermark-sizes button {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--bp-line);
+  background: transparent;
+  color: var(--bp-muted);
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+.bf-studio-watermark-sizes button.is-on {
+  border-color: rgba(255, 200, 46, 0.45);
+  color: var(--bp-gold);
+  background: rgba(255, 200, 46, 0.1);
+}
+.bf-studio-range {
+  width: 100%;
+  accent-color: var(--bp-gold);
+}
+.bf-studio-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--bp-muted);
+  cursor: pointer;
+}
+.bf-studio-check input {
+  margin-top: 3px;
+  accent-color: var(--bp-gold);
 }
 
 @media (max-width: 900px) {

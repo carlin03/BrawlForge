@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { TeamLogo } from "@/components/ui/TeamLogo";
-import { TeamCardWatermark } from "@/components/ui/TeamCardWatermark";
+import { CardWatermarkLayer } from "@/components/ui/CardWatermarkLayer";
+import { parseCardThemeMeta } from "@/lib/data/card-theme-meta";
 import { CountryFlag } from "@/components/ui/CountryFlag";
 import { getTeam, teamName, getFantasyRole } from "@/lib/data";
 import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
@@ -20,8 +21,6 @@ export function getCardTier(rating: number, fantasyPoints: number): CardTier {
 }
 
 const PHOTO_BY_SIZE = { hero: 96, xl: 80, lg: 64, md: 56, sm: 44 } as const;
-/** Logo del club de fondo (watermark) — mucho más grande que la foto del jugador */
-const WATERMARK_BY_SIZE = { hero: 340, xl: 300, lg: 260, md: 240, sm: 200 } as const;
 
 export function PlayerCard({
   playerSlug,
@@ -61,11 +60,9 @@ export function PlayerCard({
   if (!p || !displayClub) return null;
 
   const club = getTeam(displayClub);
-  const theme = getTeamCardTheme(
-    displayClub,
-    club?.region ?? p.region,
-    resolvedClub?.meta as Record<string, unknown> | undefined,
-  );
+  const catalogMeta = resolvedClub?.meta as Record<string, unknown> | undefined;
+  const theme = getTeamCardTheme(displayClub, club?.region ?? p.region, catalogMeta);
+  const watermark = parseCardThemeMeta(catalogMeta)?.watermark;
   const tier = getCardTier(p.rating, p.fantasyPoints);
   const role = getFantasyRole(playerSlug).toUpperCase();
   const ovr = p.fantasyPoints;
@@ -79,9 +76,12 @@ export function PlayerCard({
     <>
       <div className="bf-card-team-bg" aria-hidden>
         <div className="bf-card-team-glow" />
-        <div className={`bf-card-team-watermark bf-card-team-watermark--${size}`}>
-          <TeamCardWatermark slug={displayClub} name={club?.name ?? teamName(displayClub)} />
-        </div>
+        <CardWatermarkLayer
+          teamSlug={displayClub}
+          teamName={club?.name ?? teamName(displayClub)}
+          cardSize={size}
+          config={watermark}
+        />
       </div>
       <div className="bf-card-shine" aria-hidden />
       <div className="bf-card-fut-head">
@@ -197,7 +197,7 @@ export function PlayerCard({
     .filter(Boolean)
     .join(" ");
 
-  const themeStyle = teamCardThemeVars(theme, size);
+  const themeStyle = teamCardThemeVars(theme, size, watermark);
 
   if (onAction) {
     return (
@@ -231,22 +231,28 @@ export function PlayerCardMini({
 }) {
   const p = useResolvedPlayer(playerSlug);
   const displayClub = clubSlug ?? p?.teamSlug;
+  const resolvedClub = useResolvedTeam(displayClub ?? "");
   if (!p || !displayClub) return null;
   const tier = getCardTier(p.rating, p.fantasyPoints);
   const club = getTeam(displayClub);
-  const theme = getTeamCardTheme(displayClub, club?.region ?? p.region);
+  const catalogMeta = resolvedClub?.meta as Record<string, unknown> | undefined;
+  const theme = getTeamCardTheme(displayClub, club?.region ?? p.region, catalogMeta);
+  const watermark = parseCardThemeMeta(catalogMeta)?.watermark;
   return (
     <Link
       href={`/players/${playerSlug}`}
       className={`bf-card-mini bf-card-premium-mini has-team-theme bf-card-${tier}${isCaptain ? " is-captain" : ""}`}
-      style={teamCardThemeVars(theme, "mini")}
+      style={teamCardThemeVars(theme, "mini", watermark)}
       data-team={displayClub}
     >
       <div className="bf-card-team-bg" aria-hidden>
         <div className="bf-card-team-glow" />
-        <div className="bf-card-team-watermark is-mini">
-          <TeamCardWatermark slug={displayClub} name={club?.name ?? teamName(displayClub)} />
-        </div>
+        <CardWatermarkLayer
+          teamSlug={displayClub}
+          teamName={club?.name ?? teamName(displayClub)}
+          cardSize="mini"
+          config={watermark}
+        />
       </div>
       <span className="bf-card-mini-ovr">{p.fantasyPoints}</span>
       <TeamLogo slug={displayClub} name={club?.name ?? teamName(displayClub)} size={40} />

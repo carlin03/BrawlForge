@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ExternalLink, Radio, Trophy } from "lucide-react";
+import { Radio, Trophy } from "lucide-react";
 import { MatchLine } from "@/components/platform/ui";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltraHero";
@@ -109,16 +109,6 @@ export function TournamentDetailView({ slug }: { slug: string }) {
             <Link href="/matches" className="fu-btn fu-btn-ghost">
               Calendario
             </Link>
-            {tournament.liquipediaUrl && (
-              <a
-                href={tournament.liquipediaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fu-btn fu-btn-ghost"
-              >
-                <ExternalLink size={16} /> Liquipedia
-              </a>
-            )}
           </>
         }
         showcase={
@@ -148,7 +138,7 @@ export function TournamentDetailView({ slug }: { slug: string }) {
             <h2>Info del evento</h2>
             {wikiSynced && (
               <span className="bf-admin-field-hint" style={{ margin: 0 }}>
-                Liquipedia · {new Date(wikiSynced).toLocaleDateString("es-ES")}
+                Actualizado · {new Date(wikiSynced).toLocaleDateString("es-ES")}
               </span>
             )}
           </div>
@@ -192,11 +182,7 @@ export function TournamentDetailView({ slug }: { slug: string }) {
             {tournament.website && (
               <>
                 <dt>Web oficial</dt>
-                <dd>
-                  <a href={tournament.website} target="_blank" rel="noopener noreferrer">
-                    {tournament.website.replace(/^https?:\/\//, "")}
-                  </a>
-                </dd>
+                <dd>{tournament.website.replace(/^https?:\/\//, "")}</dd>
               </>
             )}
           </dl>
