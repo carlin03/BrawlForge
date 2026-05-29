@@ -65,11 +65,7 @@ export async function GET() {
       const url = String(row.public_url).split("?")[0];
       const prev = overrides.teams[row.slug]?.url;
       if (shouldApplyDbLogoUrl(prev, url)) {
-        overrides.teams[row.slug] = {
-          url,
-          customOnly: true,
-          treatment: row.treatment ?? "raw",
-        };
+        overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
       }
     }
 

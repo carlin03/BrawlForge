@@ -1,5 +1,4 @@
 import type { LogoOverridesFile } from "@/lib/data/logo-overrides";
-import { logoOverrides as bundledOverrides } from "@/lib/data/logo-overrides";
 import { isPublicImageFetchUrl } from "@/lib/image-fetch-url";
 
 /** Admin / Supabase: cualquier URL pública https válida sustituye la anterior. */
@@ -8,11 +7,9 @@ export function shouldApplyDbLogoUrl(_existingUrl: string | undefined, dbUrl: st
   return !!next && isPublicImageFetchUrl(next);
 }
 
+/** En producción los logos vienen de Supabase; no empaquetar overrides antiguos con filtros. */
 export function bundledLogoOverrides(): LogoOverridesFile {
-  return {
-    teams: { ...bundledOverrides.teams },
-    tournaments: { ...bundledOverrides.tournaments },
-  };
+  return { teams: {}, tournaments: {} };
 }
 
 export function mergeLogoOverridesFile(base: LogoOverridesFile, extra: LogoOverridesFile): LogoOverridesFile {
@@ -25,11 +22,7 @@ export function mergeLogoOverridesFile(base: LogoOverridesFile, extra: LogoOverr
     if (!url) continue;
     const prev = out.teams[slug]?.url;
     if (shouldApplyDbLogoUrl(prev, url)) {
-      out.teams[slug] = {
-        url,
-        customOnly: entry.customOnly ?? true,
-        treatment: entry.treatment ?? "raw",
-      };
+      out.teams[slug] = { url, customOnly: true, treatment: "raw" };
     }
   }
   for (const [slug, entry] of Object.entries(extra.tournaments ?? {})) {

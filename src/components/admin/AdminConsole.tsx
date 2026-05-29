@@ -24,11 +24,7 @@ import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminFi
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { getLatestNews } from "@/lib/data";
-import {
-  BSC_2026_ADMIN_TEAM_COUNT,
-  isBsc2026NewTeam,
-  mergeAdminTeamRows,
-} from "@/lib/data/admin-bsc-teams";
+import { BSC_2026_ADMIN_TEAM_COUNT, mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 
 type Tab = "teams" | "players" | "logos" | "news" | "import" | "users";
@@ -170,7 +166,6 @@ export function AdminConsole() {
 
   const filteredTeams = teams
     .filter((t) => {
-      if (teamRegionFilter === "new") return isBsc2026NewTeam(t.slug);
       if (teamRegionFilter !== "all") return t.region === teamRegionFilter;
       return true;
     })
@@ -287,14 +282,14 @@ export function AdminConsole() {
         <div className="bf-admin-split">
           <aside className="bf-admin-sidebar">
             <div className="bf-admin-region-filters" role="group" aria-label="Filtrar equipos">
-              {(["all", "new", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
+              {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
                 <button
                   key={id}
                   type="button"
                   className={`bf-admin-region-chip ${teamRegionFilter === id ? "is-on" : ""}`}
                   onClick={() => setTeamRegionFilter(id)}
                 >
-                  {id === "all" ? "Todos" : id === "new" ? "Nuevos" : id}
+                  {id === "all" ? "Todos" : id}
                 </button>
               ))}
             </div>
@@ -316,13 +311,11 @@ export function AdminConsole() {
                   </p>
                 </li>
               )}
-              {filteredTeams.map((t) => {
-                const isNew = isBsc2026NewTeam(t.slug);
-                return (
+              {filteredTeams.map((t) => (
                   <li key={t.slug} className="bf-admin-list-item">
                     <button
                       type="button"
-                      className={`bf-admin-list-card ${selectedTeam?.slug === t.slug ? "is-on" : ""} ${isNew ? "is-new-team" : ""}`}
+                      className={`bf-admin-list-card ${selectedTeam?.slug === t.slug ? "is-on" : ""}`}
                       onClick={() =>
                         setSelectedTeam({
                           ...t,
@@ -332,10 +325,7 @@ export function AdminConsole() {
                     >
                       <TeamLogo slug={t.slug} name={t.name} size={44} />
                       <span className="bf-admin-list-card-body">
-                        <span className="bf-admin-list-card-title">
-                          {isNew && <span className="bf-admin-new-badge">Nuevo</span>}
-                          {t.tag || t.name}
-                        </span>
+                        <span className="bf-admin-list-card-title">{t.tag || t.name}</span>
                         <span className="bf-admin-list-card-sub">{t.name}</span>
                         <span className="bf-admin-list-card-meta">
                           #{t.rank ?? "—"} · {t.region}
@@ -343,8 +333,7 @@ export function AdminConsole() {
                       </span>
                     </button>
                   </li>
-                );
-              })}
+              ))}
             </ul>
           </aside>
 

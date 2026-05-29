@@ -51,17 +51,12 @@ export function getLogoTreatment(slug: string): LogoTreatment {
   return TEAM_LOGO_TREATMENT[slug] ?? "border-only";
 }
 
-/** Tratamiento efectivo: override admin (raw) > mapa por equipo. */
+/** Sin filtros CSS: la imagen se muestra tal como está en la URL. */
 export function resolveLogoTreatment(
-  slug: string,
-  override?: { treatment?: string; customOnly?: boolean },
+  _slug: string,
+  _override?: { treatment?: string; customOnly?: boolean; url?: string },
 ): LogoTreatment {
-  if (override?.customOnly) return "raw";
-  const t = override?.treatment?.trim();
-  if (t === "border-only" || t === "strip-white" || t === "mono-white" || t === "raw") {
-    return t;
-  }
-  return getLogoTreatment(slug);
+  return "raw";
 }
 
 export function shouldInvertLogo(_slug: string): boolean {

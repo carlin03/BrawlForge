@@ -16,6 +16,7 @@ import { getTeam } from "@/lib/data/teams";
 import { LogoFrame } from "@/components/ui/LogoFrame";
 import { useLogoImage } from "@/components/ui/useLogoImage";
 import { usesRemoteLogoPipeline } from "@/lib/data/local-logos";
+import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 import { teamLogoProxyUrl } from "@/lib/team-logo-server";
 
 export const LOGO_SIZES = {
@@ -100,11 +101,13 @@ function TeamLogoRemote({
         decoding="async"
         className="logo-img"
         onError={() => {
-          if (overrideUrl && src !== overrideUrl) {
-            const proxied = overrideUrl.startsWith("http")
-              ? `/api/image?url=${encodeURIComponent(overrideUrl)}`
-              : overrideUrl;
-            setSrc(proxied);
+          if (!overrideUrl) {
+            setFailed(true);
+            return;
+          }
+          const fallback = teamLogoProxyUrl(resolvedSlug, cacheVersion);
+          if (src !== fallback) {
+            setSrc(fallback);
             return;
           }
           setFailed(true);

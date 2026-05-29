@@ -31,11 +31,7 @@ async function loadRuntimeOverrides(): Promise<LogoOverridesFile> {
     if (!row.slug || !row.public_url) continue;
     const url = String(row.public_url).split("?")[0];
     if (shouldApplyDbLogoUrl(overrides.teams[row.slug]?.url, url)) {
-      overrides.teams[row.slug] = {
-        url,
-        customOnly: true,
-        treatment: row.treatment ?? "raw",
-      };
+      overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
     }
   }
   return overrides;

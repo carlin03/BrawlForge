@@ -10,7 +10,6 @@ export type AdminBscTeamItem = {
   name: string;
   tag: string;
   region: Region;
-  isNew: boolean;
 };
 
 export type AdminTeamCatalogRow = {
@@ -66,7 +65,7 @@ export function adminBscTeamToCatalogRow(slug: string): AdminTeamCatalogRow {
   };
 }
 
-/** Los 50 clubes del circuito — orden: nuevos, luego lista oficial BSC */
+/** Los 50 clubes del circuito — orden oficial BSC */
 export function getAdminBscTeamsList(): AdminBscTeamItem[] {
   const order = new Map(BSC_2026_ACTIVE_TEAM_SLUGS.map((s, i) => [s, i]));
 
@@ -77,12 +76,8 @@ export function getAdminBscTeamsList(): AdminBscTeamItem[] {
       name: row.name,
       tag: row.tag,
       region: row.region as Region,
-      isNew: isBsc2026NewTeam(slug),
     };
-  }).sort((a, b) => {
-    if (a.isNew !== b.isNew) return a.isNew ? -1 : 1;
-    return (order.get(a.slug) ?? 999) - (order.get(b.slug) ?? 999);
-  });
+  }).sort((a, b) => (order.get(a.slug) ?? 999) - (order.get(b.slug) ?? 999));
 }
 
 /** Catálogo completo equipos BSC para API admin */
