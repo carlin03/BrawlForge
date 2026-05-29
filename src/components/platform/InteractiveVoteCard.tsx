@@ -22,9 +22,16 @@ interface InteractiveVoteCardProps {
   event: PredictionEvent | EnrichedPrediction;
   featured?: boolean;
   initialPick?: "A" | "B" | null;
+  /** Voto custom (p. ej. final dinámica del bracket) */
+  voteOverride?: (side: "A" | "B") => Promise<{ error?: string } | void>;
 }
 
-export function InteractiveVoteCard({ event, featured, initialPick = null }: InteractiveVoteCardProps) {
+export function InteractiveVoteCard({
+  event,
+  featured,
+  initialPick = null,
+  voteOverride,
+}: InteractiveVoteCardProps) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
   const { castVote } = useGame();
@@ -76,6 +83,15 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
     setPick(side);
     setErr("");
     setSaving(true);
+    if (voteOverride) {
+      const res = await voteOverride(side);
+      setSaving(false);
+      if (res && "error" in res && res.error) {
+        setErr(res.error);
+        setPick(event.userPick ?? null);
+      }
+      return;
+    }
     const res = await castVote(event.matchId, side, event.rewardPoints);
     setSaving(false);
     if (res.error) {

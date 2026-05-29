@@ -18,6 +18,7 @@ import {
   categorizePopularPicks,
   enrichPrediction,
   getClosingSoonMatches,
+  getPlayoffBracketMatchIds,
   pickFeaturedEvent,
   pickPlayoffTournamentSlug,
 } from "@/lib/data/predictions-ui";
@@ -68,12 +69,25 @@ export function PredictionsView({
 
   const featuredId = featuredEvent?.matchId;
 
+  const playoffBracket = useMemo(() => {
+    const slug =
+      featuredEvent?.tournamentSlug ??
+      pickPlayoffTournamentSlug(openEnriched.concat(closedEnriched));
+    if (!slug) return null;
+    return buildPlayoffBracket(slug, openEnriched.concat(closedEnriched));
+  }, [featuredEvent, openEnriched, closedEnriched]);
+
+  const bracketMatchIds = useMemo(
+    () => getPlayoffBracketMatchIds(playoffBracket),
+    [playoffBracket],
+  );
+
   const activeList = useMemo(
     () =>
       openEnriched
-        .filter((e) => e.matchId !== featuredId)
+        .filter((e) => e.matchId !== featuredId && !bracketMatchIds.has(e.matchId))
         .sort(stageImportanceSort),
-    [openEnriched, featuredId],
+    [openEnriched, featuredId, bracketMatchIds],
   );
 
   const keyMatches = useMemo(
@@ -100,14 +114,6 @@ export function PredictionsView({
   );
 
   const popularBuckets = useMemo(() => categorizePopularPicks(openEnriched), [openEnriched]);
-
-  const playoffBracket = useMemo(() => {
-    const slug =
-      featuredEvent?.tournamentSlug ??
-      pickPlayoffTournamentSlug(openEnriched.concat(closedEnriched));
-    if (!slug) return null;
-    return buildPlayoffBracket(slug, openEnriched.concat(closedEnriched));
-  }, [featuredEvent, openEnriched, closedEnriched]);
 
   return (
     <div className="bf-page-ultra bf-motion-page bf-predict-page bf-predict-bsc bf-predict-pickem">

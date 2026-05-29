@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getBscCircuitTournaments } from "@/lib/data/matches";
 import { teamName } from "@/lib/data";
+import { PICKEM_STAGE_OPTIONS } from "@/lib/data/pickem-reward-points";
 import {
   StudioCard,
   StudioField,
@@ -25,6 +26,8 @@ type MatchRow = {
   tournament_slug: string;
   scheduled_at: string;
   status: string;
+  stage?: string | null;
+  format?: string | null;
   score_a: number;
   score_b: number;
 };
@@ -39,6 +42,8 @@ export function StudioMatchesPanel() {
     tournament_slug: "bsc-2026-challengers-spain",
     scheduled_at: new Date().toISOString().slice(0, 16),
     status: "upcoming" as (typeof MATCH_STATUS_OPTIONS)[number]["id"],
+    stage: "Quarterfinal",
+    format: "Bo5",
     score_a: 0,
     score_b: 0,
   });
@@ -191,6 +196,32 @@ export function StudioMatchesPanel() {
                   />
                 </StudioField>
 
+                <StudioField
+                  label="Fase (bracket / puntos)"
+                  hint="Cuartos → 4 duelos arriba · Semifinal → 2 · Gran final → 1 grande abajo"
+                >
+                  <StudioSelect
+                    value={form.stage}
+                    onChange={(e) => setForm({ ...form, stage: e.target.value })}
+                  >
+                    {PICKEM_STAGE_OPTIONS.map((o) => (
+                      <option key={o.id} value={o.id}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </StudioSelect>
+                </StudioField>
+
+                <StudioField label="Formato">
+                  <StudioSelect
+                    value={form.format}
+                    onChange={(e) => setForm({ ...form, format: e.target.value })}
+                  >
+                    <option value="Bo3">Bo3</option>
+                    <option value="Bo5">Bo5</option>
+                  </StudioSelect>
+                </StudioField>
+
                 {(form.status === "live" || form.status === "finished") && (
                   <div className="bf-studio-score-row">
                     <StudioField label="Marcador local">
@@ -231,7 +262,8 @@ export function StudioMatchesPanel() {
                         {teamName(m.team_a_slug)} vs {teamName(m.team_b_slug)}
                       </strong>
                       <span className="bf-studio-match-meta">
-                        {new Date(m.scheduled_at).toLocaleString("es-ES")} ·{" "}
+                        {m.stage ? `${m.stage} · ` : ""}
+                        {m.format ?? "Bo3"} · {new Date(m.scheduled_at).toLocaleString("es-ES")} ·{" "}
                         {MATCH_STATUS_OPTIONS.find((s) => s.id === m.status)?.label ?? m.status}
                         {(m.status === "live" || m.status === "finished") &&
                           ` · ${m.score_a}-${m.score_b}`}

@@ -635,6 +635,18 @@
   gap: 12px;
 }
 
+.bf-studio-stage-points-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+@media (min-width: 720px) {
+  .bf-studio-stage-points-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .bf-studio-match-list {
   list-style: none;
   margin: 0;

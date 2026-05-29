@@ -32,11 +32,17 @@ export async function PATCH(request: Request) {
   const body = await request.json();
   if (body.scoring) {
     const s = body.scoring;
+    const { data: existing } = await supabase!
+      .from("prediction_scoring")
+      .select("rules, streak_bonus")
+      .eq("id", "default")
+      .maybeSingle();
+
     await supabase!.from("prediction_scoring").upsert({
       id: "default",
       base_points: s.base_points ?? 10,
-      streak_bonus: s.streak_bonus ?? {},
-      rules: s.rules ?? {},
+      streak_bonus: s.streak_bonus ?? existing?.streak_bonus ?? {},
+      rules: { ...(existing?.rules as object), ...(s.rules ?? {}) },
       is_active: true,
     });
     await auditWrite("predictions.scoring", "prediction_scoring", "default");

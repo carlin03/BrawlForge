@@ -39,27 +39,24 @@ export type PlayoffBracketRound = {
   slots: PlayoffBracketSlot[];
 };
 
-export type PlayoffBracketSemiSlot = PlayoffBracketSlot & {
-  rewardPoints: number;
-};
-
-export type PlayoffBracketTree = {
-  semis: [PlayoffBracketSemiSlot, PlayoffBracketSemiSlot];
-  /** Partido oficial de final (si existe en calendario) */
-  officialFinal?: PlayoffBracketSlot & { rewardPoints: number };
-};
-
 export type PlayoffBracketView = {
   tournamentSlug: string;
   tournamentName: string;
   region?: string;
-  layout: "flow" | "tree";
-  /** 2 semis + final dinámica centrada abajo */
-  tree?: PlayoffBracketTree;
-  /** Cuartos u otras fases en fila (opcional sobre el árbol) */
-  quarters?: PlayoffBracketSlot[];
-  rounds?: PlayoffBracketRound[];
+  layout: "tree";
+  /** Hasta 4 cuartos */
+  quarters: EnrichedPrediction[];
+  /** 1–2 semifinales */
+  semis: EnrichedPrediction[];
+  /** Gran final del calendario (si existe) */
+  final?: EnrichedPrediction;
 };
+
+export function getPlayoffBracketMatchIds(bracket: PlayoffBracketView | null): Set<string> {
+  if (!bracket) return new Set();
+  const list = [...bracket.quarters, ...bracket.semis, ...(bracket.final ? [bracket.final] : [])];
+  return new Set(list.map((e) => e.matchId));
+}
 
 export function getBracketPickWinner(
   slot: PlayoffBracketSlot,
@@ -259,15 +256,8 @@ export function pickPlayoffTournamentSlug(events: EnrichedPrediction[]): string 
       best = slug;
     }
   }
-  return max >= 2 ? best : null;
+  return max >= 1 ? best : null;
 }
-
-const ROUND_SHORT: Record<PlayoffBracketRound["key"], string> = {
-  quarter: "Cuartos",
-  semi: "Semis",
-  final: "Final",
-  grand_final: "Final",
-};
 
 export function buildPlayoffBracket(
   tournamentSlug: string,
@@ -282,65 +272,23 @@ export function buildPlayoffBracket(
       .filter((e) => e.stageMeta?.roundKey === key || (key === "final" && e.stageMeta?.roundKey === "grand_final"))
       .sort((a, b) => (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline));
 
-  const roundDefs: { key: PlayoffBracketRound["key"]; title: string }[] = [
-    { key: "quarter", title: "Cuartos de final" },
-    { key: "semi", title: "Semifinales" },
-    { key: "grand_final", title: "Gran final" },
-  ];
-
-  const toSlot = (e: EnrichedPrediction): PlayoffBracketSlot => ({
-    matchId: e.matchId,
-    teamASlug: e.teamASlug,
-    teamBSlug: e.teamBSlug,
-    status: "set",
-  });
-
   const semis = byRound("semi");
   const quarters = byRound("quarter");
   const gfEvents = [...byRound("grand_final"), ...byRound("final")];
+  const final = gfEvents[0];
 
-  if (semis.length >= 2) {
-    const semiSlots: [PlayoffBracketSemiSlot, PlayoffBracketSemiSlot] = [
-      { ...toSlot(semis[0]), rewardPoints: semis[0].rewardPoints },
-      { ...toSlot(semis[1]), rewardPoints: semis[1].rewardPoints },
-    ];
-    const officialFinal = gfEvents[0]
-      ? { ...toSlot(gfEvents[0]), rewardPoints: gfEvents[0].rewardPoints }
-      : undefined;
-
-    return {
-      layout: "tree",
-      tournamentSlug,
-      tournamentName: tour?.shortName ?? tour?.name ?? tournamentSlug,
-      region: tour?.region,
-      tree: { semis: semiSlots, officialFinal },
-      quarters: quarters.length ? quarters.map(toSlot) : undefined,
-    };
-  }
-
-  const rounds: PlayoffBracketRound[] = [];
-  for (const def of roundDefs) {
-    const matches =
-      def.key === "grand_final"
-        ? gfEvents
-        : byRound(def.key);
-    if (!matches.length) continue;
-    rounds.push({
-      key: def.key,
-      title: def.title,
-      shortTitle: ROUND_SHORT[def.key],
-      slots: matches.map(toSlot),
-    });
-  }
-
-  if (rounds.length < 2) return null;
+  const hasBracket =
+    quarters.length > 0 || semis.length > 0 || Boolean(final);
+  if (!hasBracket) return null;
 
   return {
-    layout: "flow",
+    layout: "tree",
     tournamentSlug,
     tournamentName: tour?.shortName ?? tour?.name ?? tournamentSlug,
     region: tour?.region,
-    rounds,
+    quarters,
+    semis,
+    final,
   };
 }
 

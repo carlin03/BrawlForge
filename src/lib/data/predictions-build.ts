@@ -1,10 +1,11 @@
 import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { mergePickemAggregates } from "./pickem-demo-aggregates";
 import { getRecentMatches, getUpcomingMatches } from "./matches";
-
-const PICKEM_OPEN_IDS = new Set(BSC_UPCOMING_PREDICTION_MATCHES.map((m) => m.id));
+import { DEFAULT_PICKEM_STAGE_POINTS, getPickemRewardPoints } from "./pickem-reward-points";
 import type { PredictionEvent } from "./predictions";
 import type { VoteAggregate } from "@/lib/supabase/game-types";
+
+const PICKEM_OPEN_IDS = new Set(BSC_UPCOMING_PREDICTION_MATCHES.map((m) => m.id));
 
 function pct(votes: number, total: number): number {
   if (total <= 0) return 0;
@@ -21,6 +22,7 @@ export function buildPredictionEvents(
     const agg = merged[m.id];
     const total = agg?.total_votes ?? 0;
     const pickA = pct(agg?.votes_a ?? 0, total);
+    const rewardPoints = getPickemRewardPoints(m.stage, m.format);
     return {
       id: `vota-${m.id}`,
       matchId: m.id,
@@ -29,7 +31,7 @@ export function buildPredictionEvents(
       pickAPct: pickA,
       pickBPct: 100 - pickA,
       totalVotes: total,
-      rewardPoints: m.format.includes("5") ? 75 : m.format.includes("3") ? 50 : 35,
+      rewardPoints,
       featured:
         m.stage === "Grand Final" ||
         m.stage === "Semifinal" ||
@@ -44,7 +46,7 @@ export function buildPredictionEvents(
   });
 
   const recent = getRecentMatches(24);
-  const closed: PredictionEvent[] = recent.map((m, i) => {
+  const closed: PredictionEvent[] = recent.map((m) => {
     const correct: "A" | "B" = m.scoreA > m.scoreB ? "A" : "B";
     const agg = merged[m.id];
     const total = agg?.total_votes ?? 0;
@@ -57,7 +59,7 @@ export function buildPredictionEvents(
       pickAPct: pickA,
       pickBPct: 100 - pickA,
       totalVotes: total,
-      rewardPoints: 50,
+      rewardPoints: getPickemRewardPoints(m.stage, m.format),
       deadline: m.date,
       stage: m.stage,
       tournamentSlug: m.tournamentSlug,
@@ -73,3 +75,5 @@ export function buildPredictionEvents(
 export function hasRealVotes(event: PredictionEvent): boolean {
   return event.totalVotes > 0;
 }
+
+export { DEFAULT_PICKEM_STAGE_POINTS };
