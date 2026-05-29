@@ -1,32 +1,11 @@
-/** URLs seguras para <img> en el cliente (Liquipedia bloquea hotlinking directo). */
+import { isPublicImageFetchUrl } from "@/lib/image-fetch-url";
 
-const DIRECT_HOSTS = [
-  "taiyoro-prod-media.s3.amazonaws.com",
-  "cdn.royaleapi.com",
-  "upload.wikimedia.org",
-  "supabase.co",
-  "supabase.in",
-  "mitiendanube.com",
-  "eternalesports.org",
-];
-
-function needsImageProxy(url: string): boolean {
-  if (url.startsWith("/")) return false;
-  try {
-    const host = new URL(url).hostname;
-    if (host === "liquipedia.net" || host.endsWith(".liquipedia.net")) return true;
-    if (DIRECT_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))) return false;
-    return false;
-  } catch {
-    return false;
-  }
-}
-
+/** Todas las URLs http(s) externas pasan por el proxy del sitio (CORS / hotlink). */
 export function toClientLogoUrl(url: string): string {
   const trimmed = url.trim();
   if (!trimmed) return trimmed;
-  if (trimmed.startsWith("/api/image") || trimmed.startsWith("/api/logos/team/")) return trimmed;
-  if (needsImageProxy(trimmed)) {
+  if (trimmed.startsWith("/api/") || trimmed.startsWith("/logos/")) return trimmed;
+  if (isPublicImageFetchUrl(trimmed)) {
     return `/api/image?url=${encodeURIComponent(trimmed)}`;
   }
   return trimmed;

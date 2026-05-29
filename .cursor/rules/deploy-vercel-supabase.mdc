@@ -1,16 +1,23 @@
 ---
-description: Tras cambios en BrawlForge, sincronizar Git, Vercel y Supabase
+description: Tras cualquier cambio en BrawlForge, subir a GitHub/Vercel sin esperar que lo pidan
 alwaysApply: true
 ---
 
-# Deploy y backend
+# Deploy automático a la web
 
-Al terminar cambios de código o datos que afecten producción:
+Cuando termines **cualquier** cambio de código o datos en este proyecto (aunque el usuario no diga "sube" o "deploy"):
 
-1. `npm run build` (o `npm run deploy:check` si hay `.env.local` con Supabase).
-2. `git push origin main` para que Vercel despliegue (no hace falta pedir permiso si el usuario pide "actualizar para Vercel").
-3. Si tocaste SQL: recordar `supabase/ALL_IN_ONE_SETUP.sql` en el proyecto `bkxxykztewquhnimpjgc`.
-4. Si tocaste `NEXT_PUBLIC_*`: el usuario debe **Redeploy** en Vercel.
-5. Producción: https://brawl-forge-delta.vercel.app — detalle en `DEPLOY.md`.
+1. `npm run build` en `brawlforge/`.
+2. `git add` de los archivos relevantes, `git commit` con mensaje claro, `git push origin main`.
+3. Vercel despliega solo al recibir el push (1–3 min). Producción: https://brawl-forge-delta.vercel.app
+
+Excepciones (no push sin que lo pidan):
+
+- Solo preguntas o revisión sin editar archivos.
+- El usuario dice explícitamente que **no** subas.
 
 No commitear `.env.local`, `sb_secret_`, ni `public/logos/`.
+
+Si tocaste SQL: recordar `supabase/ALL_IN_ONE_SETUP.sql` o migraciones en el proyecto Supabase.
+
+Si tocaste solo `NEXT_PUBLIC_*` en Vercel dashboard: avisar que hace falta **Redeploy** manual en Vercel.

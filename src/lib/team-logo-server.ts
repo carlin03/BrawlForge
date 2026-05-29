@@ -2,6 +2,7 @@ import { buildTeamLogoSources } from "@/lib/data/png-logo-urls";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 import { bundledLogoOverrides } from "@/lib/logo-config-merge";
 import type { LogoRuntimeConfig } from "@/lib/data/png-logo-urls";
+import { isPublicImageFetchUrl } from "@/lib/image-fetch-url";
 const UA = {
   "User-Agent": "BrawlForge/1.0 (team logo CDN)",
   Accept: "image/png,image/webp,image/jpeg,image/*,*/*",
@@ -42,6 +43,7 @@ export async function fetchFirstTeamLogo(
 ): Promise<{ body: ArrayBuffer; contentType: string } | null> {
   const sources = teamLogoUpstreamSources(slug, cfg);
   for (const url of sources) {
+    if (!isPublicImageFetchUrl(url)) continue;
     try {
       const res = await fetch(url, { headers: UA, next: { revalidate: 86400 } });
       if (!res.ok) continue;

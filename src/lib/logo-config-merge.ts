@@ -1,30 +1,11 @@
 import type { LogoOverridesFile } from "@/lib/data/logo-overrides";
 import { logoOverrides as bundledOverrides } from "@/lib/data/logo-overrides";
-import { isLiquipediaImageUrl } from "@/lib/data/team-logo-urls";
+import { isPublicImageFetchUrl } from "@/lib/image-fetch-url";
 
-function hostOf(url: string): string | null {
-  try {
-    return new URL(url).hostname;
-  } catch {
-    return null;
-  }
-}
-
-function isSupabaseStorageUrl(url: string): boolean {
-  const host = hostOf(url);
-  return !!host && (host.endsWith(".supabase.co") || host.endsWith(".supabase.in"));
-}
-
-/** No sustituir CDN empaquetado por Liquipedia roto en producción. */
-export function shouldApplyDbLogoUrl(existingUrl: string | undefined, dbUrl: string): boolean {
+/** Admin / Supabase: cualquier URL pública https válida sustituye la anterior. */
+export function shouldApplyDbLogoUrl(_existingUrl: string | undefined, dbUrl: string): boolean {
   const next = dbUrl.trim();
-  if (!next) return false;
-  const prev = existingUrl?.trim();
-  if (!prev) return true;
-  if (isSupabaseStorageUrl(next)) return true;
-  if (isLiquipediaImageUrl(next) && !isLiquipediaImageUrl(prev)) return false;
-  if (isLiquipediaImageUrl(prev) && !isLiquipediaImageUrl(next)) return true;
-  return false;
+  return !!next && isPublicImageFetchUrl(next);
 }
 
 export function bundledLogoOverrides(): LogoOverridesFile {

@@ -94,7 +94,10 @@ function TeamLogoRemote({
         className="logo-img"
         onError={() => {
           if (overrideUrl && src !== overrideUrl) {
-            setSrc(overrideUrl);
+            const proxied = overrideUrl.startsWith("http")
+              ? `/api/image?url=${encodeURIComponent(overrideUrl)}`
+              : overrideUrl;
+            setSrc(proxied);
             return;
           }
           setFailed(true);
