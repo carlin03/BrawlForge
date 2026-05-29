@@ -407,6 +407,54 @@
   background: rgba(255, 200, 46, 0.08);
   box-shadow: 0 8px 28px rgba(255, 200, 46, 0.15);
 }
+.bf-admin-logo-tile.is-new-team {
+  border-color: rgba(100, 200, 255, 0.35);
+}
+.bf-admin-logo-tile.is-new-team.is-on {
+  border-color: var(--bp-gold);
+}
+.bf-admin-region-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.bf-admin-region-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--bp-line);
+  background: var(--bp-panel);
+  color: var(--bp-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.bf-admin-region-chip:hover {
+  border-color: var(--bp-line-strong);
+  color: var(--bp-text);
+}
+.bf-admin-region-chip.is-on {
+  border-color: var(--bp-gold);
+  color: var(--bp-text);
+  background: rgba(255, 200, 46, 0.1);
+}
+.bf-admin-new-badge {
+  display: inline-block;
+  margin-right: 4px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0a1628;
+  background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+  vertical-align: middle;
+}
+.bf-admin-list-card.is-new-team {
+  border-color: rgba(100, 200, 255, 0.25);
+}
 .bf-admin-logo-tile-name {
   font-size: 12px;
   font-weight: 700;

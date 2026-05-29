@@ -1,5 +1,6 @@
 import type { Region } from "../types";
 import type { EsportsTournament } from "./matches";
+import { getBsc2026LiquipediaUrl } from "./bsc-2026-liquipedia-pages";
 
 const BSC26 = "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026";
 const BSC_LOGO = "https://taiyoro-prod-media.s3.amazonaws.com/game/mWB0X8mVG2.png";
@@ -32,14 +33,13 @@ function mf(
   };
 }
 
-/** Calendario BSC 2026 — fuente: Liquipedia Brawl Stars Championship/2026 */
-export const bsc2026Tournaments: EsportsTournament[] = (
+/** PSI 2026 — solo para partidos históricos (no listar en admin/home) */
+export const bsc2026LegacyPsiTournaments: EsportsTournament[] = (
   [
-    // Pre-Season Invitational
     {
       slug: "bsc-2026-psi-emea",
       name: "BSC 2026: Pre-Season Invitational EMEA",
-      shortName: "PSI EMEA",
+      shortName: "Pre-Season Invitational EMEA",
       region: "EMEA",
       prizePool: "$5,000",
       teams: 4,
@@ -53,7 +53,7 @@ export const bsc2026Tournaments: EsportsTournament[] = (
     {
       slug: "bsc-2026-psi-ea",
       name: "BSC 2026: Pre-Season Invitational East Asia",
-      shortName: "PSI EA",
+      shortName: "Pre-Season Invitational EA",
       region: "EA",
       prizePool: "$5,000",
       teams: 4,
@@ -67,7 +67,7 @@ export const bsc2026Tournaments: EsportsTournament[] = (
     {
       slug: "bsc-2026-psi-na",
       name: "BSC 2026: Pre-Season Invitational North America",
-      shortName: "PSI NA",
+      shortName: "Pre-Season Invitational NA",
       region: "NA",
       prizePool: "$5,000",
       teams: 4,
@@ -81,7 +81,7 @@ export const bsc2026Tournaments: EsportsTournament[] = (
     {
       slug: "bsc-2026-psi-sa",
       name: "BSC 2026: Pre-Season Invitational South America",
-      shortName: "PSI SA",
+      shortName: "Pre-Season Invitational SA",
       region: "SA",
       prizePool: "$5,000",
       teams: 4,
@@ -92,7 +92,15 @@ export const bsc2026Tournaments: EsportsTournament[] = (
       stage: "Completed",
       winnerSlug: "loud",
     },
+  ] satisfies TDef[]
+).map((t) => ({
+  ...t,
+  liquipediaUrl: ("liquipediaUrl" in t && t.liquipediaUrl) ? t.liquipediaUrl : BSC26,
+})) as EsportsTournament[];
 
+/** Calendario BSC 2026 — fuente: Liquipedia Brawl Stars Championship/2026 */
+export const bsc2026Tournaments: EsportsTournament[] = (
+  [
     // February Monthly Finals
     mf("february", "EMEA", "EMEA", "2026-02-15", "$42,000", "finished", "hmble"),
     mf("february", "EA", "East Asia", "2026-02-14", "$40,000", "finished", "zeta-division"),
@@ -128,8 +136,8 @@ export const bsc2026Tournaments: EsportsTournament[] = (
     },
     {
       slug: "bsc-2026-rtbc-sa-west",
-      name: "Road To Brawl Cup: SA West",
-      shortName: "RTBC SA West",
+      name: "Road to Brawl Cup: SA West",
+      shortName: "Road to Brawl Cup SA West",
       region: "SA",
       prizePool: "$5,000",
       teams: 12,
@@ -141,8 +149,8 @@ export const bsc2026Tournaments: EsportsTournament[] = (
     },
     {
       slug: "bsc-2026-rtbc-sesa",
-      name: "Road To Brawl Cup SESA: Decider Playoffs",
-      shortName: "RTBC SESA",
+      name: "Road to Brawl Cup SESA",
+      shortName: "Road to Brawl Cup SESA",
       region: "EA",
       prizePool: "$5,000",
       teams: 6,
@@ -318,6 +326,20 @@ export const bsc2026Tournaments: EsportsTournament[] = (
       location: "Berlin",
       stage: "Scheduled",
     },
+    {
+      slug: "world-finals-2026",
+      name: "Brawl Stars World Finals 2026",
+      shortName: "World Finals",
+      region: "GLOBAL",
+      prizePool: "TBA",
+      teams: 16,
+      status: "upcoming",
+      startDate: "2026-11-01",
+      endDate: "2026-11-30",
+      location: "Tokyo, Japan",
+      stage: "Qualifiers ongoing",
+      liquipediaUrl: "https://liquipedia.net/brawlstars/Brawl_Stars_World_Finals/2026",
+    },
 
     // Chinese Mainland Monthly Finals
     ...(["february", "march", "april", "may"] as const).map(
@@ -339,7 +361,7 @@ export const bsc2026Tournaments: EsportsTournament[] = (
   ] satisfies TDef[]
 ).map((t) => ({
   ...t,
-  liquipediaUrl: t.liquipediaUrl ?? BSC26,
+  liquipediaUrl: getBsc2026LiquipediaUrl(t.slug) ?? t.liquipediaUrl ?? BSC26,
 }));
 
 /** Alias slugs used elsewhere in the app */
@@ -350,3 +372,12 @@ export const BSC_TOURNAMENT_ALIASES: Record<string, string> = {
 };
 
 export const BSC_DEFAULT_LOGO = BSC_LOGO;
+
+const ADMIN_TOURNAMENT_HIDE = /^(PSI|RTBC)\b/i;
+
+/** Torneos BSC visibles en admin (logos) y listados principales — sin abreviaturas PSI/RTBC */
+export function getAdminBscTournaments(): EsportsTournament[] {
+  return bsc2026Tournaments
+    .filter((t) => !ADMIN_TOURNAMENT_HIDE.test(t.shortName))
+    .sort((a, b) => a.shortName.localeCompare(b.shortName));
+}

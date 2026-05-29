@@ -68,6 +68,7 @@ export async function fetchWikitextBatch(titles) {
     if (page.missing !== undefined) continue;
     const text = page.revisions?.[0]?.slots?.main?.["*"] ?? "";
     out[page.title] = text;
+    if (page.title) out[page.title.replace(/ /g, "_")] = text;
   }
   return out;
 }
@@ -93,6 +94,94 @@ export function parseInfoboxFields(wikitext) {
     fields[m[1].toLowerCase()] = raw.split("\n")[0].trim();
   }
   return fields;
+}
+
+function cleanWikiValue(raw) {
+  return String(raw || "")
+    .replace(/\[\[([^|\]]+)(?:\|[^\]]+)?\]\]/g, "$1")
+    .replace(/\[https?:\/\/[^\s\]]+\s+([^\]]+)\]/gi, "$1")
+    .replace(/\{\{[^}]+\}\}/g, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .split("\n")[0]
+    .trim();
+}
+
+function extractInfoboxBlock(wikitext) {
+  const start = wikitext.search(/\{\{Infobox\s+league/i);
+  if (start < 0) return wikitext.slice(0, 6000);
+  let depth = 0;
+  let i = start;
+  while (i < wikitext.length) {
+    if (wikitext.slice(i, i + 2) === "{{") {
+      depth++;
+      i += 2;
+      continue;
+    }
+    if (wikitext.slice(i, i + 2) === "}}") {
+      depth--;
+      i += 2;
+      if (depth === 0) return wikitext.slice(start, i);
+      continue;
+    }
+    i++;
+  }
+  return wikitext.slice(start, start + 12000);
+}
+
+/** Campos de {{Infobox league}} — torneos BSC en Liquipedia */
+export function parseLeagueInfobox(wikitext) {
+  const box = extractInfoboxBlock(wikitext);
+  const fields = parseInfoboxFields(box);
+  const usd = Number(String(fields.prizepoolusd || fields.usdprize || "0").replace(/[^0-9.]/g, ""));
+  const prizePool =
+    usd > 0
+      ? `$${usd.toLocaleString("en-US")}`
+      : fields.prizepool || fields.prize || fields.localprize || "";
+
+  let location = "Online";
+  if (fields.type?.toLowerCase() === "offline") {
+    const parts = [fields.city, fields.country].filter(Boolean).map(cleanWikiValue);
+    location = parts.length ? parts.join(", ") : cleanWikiValue(fields.venue) || "Offline";
+  } else if (fields.country) {
+    location = cleanWikiValue(fields.country);
+  }
+
+  const prizeBreakdown = [];
+  for (let n = 1; n <= 16; n++) {
+    const place = fields[`place${n}`] || (n === 1 && fields.place ? fields.place : "");
+    const prize = fields[`usdprize${n}`] || fields[`prize${n}`] || (n === 1 && fields.usdprize ? fields.usdprize : "");
+    if (!place && !prize) continue;
+    const usdP = Number(String(prize).replace(/[^0-9.]/g, ""));
+    prizeBreakdown.push({
+      place: cleanWikiValue(place) || `${n}º`,
+      prize: usdP > 0 ? `$${usdP.toLocaleString("en-US")}` : cleanWikiValue(prize),
+    });
+  }
+
+  const winnerRaw = cleanWikiValue(fields.winner || fields.first || "");
+  const winnerPage = winnerRaw.replace(/_/g, " ").trim();
+
+  return {
+    name: cleanWikiValue(fields.name || fields.tickername || ""),
+    shortName: cleanWikiValue(fields.shortname || fields.tickername || ""),
+    prizePool: prizePool || undefined,
+    startDate: cleanWikiValue(fields.sdate || fields.startdate || ""),
+    endDate: cleanWikiValue(fields.edate || fields.enddate || ""),
+    location,
+    city: cleanWikiValue(fields.city || ""),
+    country: cleanWikiValue(fields.country || ""),
+    venue: cleanWikiValue(fields.venue || ""),
+    type: cleanWikiValue(fields.type || ""),
+    format: cleanWikiValue(fields.format || ""),
+    organizer: [fields.organizer, fields.organizer2].filter(Boolean).map(cleanWikiValue).join(" · "),
+    liquipediaTier: Number(fields.liquipediatier || fields.tier || 0) || undefined,
+    teamCount: Number(fields.team_number || fields.teamnumber || 0) || undefined,
+    series: cleanWikiValue(fields.series || ""),
+    website: cleanWikiValue(fields.web || fields.website || ""),
+    winnerPage: winnerPage || undefined,
+    prizeBreakdown,
+  };
 }
 
 export function liquipediaCommonsUrl(filename) {

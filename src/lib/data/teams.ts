@@ -30,20 +30,21 @@ function buildTeamFromSlug(slug: string): EsportsTeam | null {
   const curated = CURATED_TEAMS[slug];
   const roster2026 = BSC_2026_ROSTERS[slug];
 
-  if (!from2026 && !reg) return null;
+  if (!from2026 && !reg && !roster2026?.length) return null;
 
   const bscRegion = getBsc2026TeamRegion(slug);
+  const page = reg?.liquipediaPage ?? from2026?.liquipediaPage ?? slug.replace(/-/g, "_");
   const base: EsportsTeam = {
     slug,
-    name: reg?.name ?? from2026!.name,
-    tag: reg?.tag ?? from2026!.tag,
-    region: bscRegion ?? reg?.region ?? from2026!.region,
-    country: reg?.country ?? from2026!.country,
+    name: reg?.name ?? from2026?.name ?? slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+    tag: reg?.tag ?? from2026?.tag ?? slug.slice(0, 3).toUpperCase(),
+    region: bscRegion ?? reg?.region ?? from2026?.region ?? "GLOBAL",
+    country: reg?.country ?? from2026?.country ?? "",
     earnings: from2026?.earnings ?? 0,
     rank: from2026?.rank ?? 99,
     rankChange: from2026?.rankChange ?? 0,
     form: (from2026?.form?.length ? from2026.form : ["W", "L", "W"]) as ("W" | "L")[],
-    liquipediaUrl: toLiquipediaUrl(reg?.liquipediaPage ?? from2026!.liquipediaPage),
+    liquipediaUrl: toLiquipediaUrl(page),
     roster: roster2026?.length ? roster2026 : (from2026?.roster ?? reg?.roster ?? []),
     achievements: from2026?.achievements ?? [],
   };

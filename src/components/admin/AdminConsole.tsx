@@ -20,6 +20,12 @@ import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminFi
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { getLatestNews } from "@/lib/data";
+import {
+  BSC_2026_ADMIN_TEAM_COUNT,
+  isBsc2026NewTeam,
+  mergeAdminTeamRows,
+} from "@/lib/data/admin-bsc-teams";
+import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 
 type Tab = "teams" | "players" | "logos" | "news";
 
@@ -108,6 +114,7 @@ export function AdminConsole() {
   const [news, setNews] = useState<NewsRow[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsRow | null>(null);
   const [teamSearch, setTeamSearch] = useState("");
+  const [teamRegionFilter, setTeamRegionFilter] = useState<"all" | "new" | string>("all");
   const [playerSearch, setPlayerSearch] = useState("");
   const [newsSearch, setNewsSearch] = useState("");
 
@@ -119,8 +126,8 @@ export function AdminConsole() {
       const res = await fetch("/api/admin/catalog?type=all");
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cargar");
-      setTeams(data.teams ?? []);
-      setPlayers(data.players ?? []);
+      setTeams(mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null) as TeamRow[]);
+      setPlayers(mergeAdminPlayerRows(Array.isArray(data.players) ? data.players : null) as PlayerRow[]);
       setNews(data.news ?? []);
       setMsg("Datos actualizados");
     } catch (e) {
@@ -155,13 +162,19 @@ export function AdminConsole() {
     setLoading(false);
   }
 
-  const filteredTeams = teams.filter(
-    (t) =>
-      !teamSearch ||
-      t.slug.includes(teamSearch.toLowerCase()) ||
-      t.name.toLowerCase().includes(teamSearch.toLowerCase()) ||
-      t.tag.toLowerCase().includes(teamSearch.toLowerCase()),
-  );
+  const filteredTeams = teams
+    .filter((t) => {
+      if (teamRegionFilter === "new") return isBsc2026NewTeam(t.slug);
+      if (teamRegionFilter !== "all") return t.region === teamRegionFilter;
+      return true;
+    })
+    .filter(
+      (t) =>
+        !teamSearch ||
+        t.slug.includes(teamSearch.toLowerCase()) ||
+        t.name.toLowerCase().includes(teamSearch.toLowerCase()) ||
+        t.tag.toLowerCase().includes(teamSearch.toLowerCase()),
+    );
 
   const filteredPlayers = players.filter(
     (p) =>
@@ -216,7 +229,7 @@ export function AdminConsole() {
             </p>
             <div className="bf-admin-hero-stats">
               <span className="bf-admin-stat-pill">
-                <strong>{teams.length}</strong> equipos
+                <strong>{teams.length}</strong> / {BSC_2026_ADMIN_TEAM_COUNT} equipos BSC
               </span>
               <span className="bf-admin-stat-pill">
                 <strong>{players.length}</strong> jugadores
@@ -263,36 +276,65 @@ export function AdminConsole() {
       {tab === "teams" && (
         <div className="bf-admin-split">
           <aside className="bf-admin-sidebar">
+            <div className="bf-admin-region-filters" role="group" aria-label="Filtrar equipos">
+              {(["all", "new", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`bf-admin-region-chip ${teamRegionFilter === id ? "is-on" : ""}`}
+                  onClick={() => setTeamRegionFilter(id)}
+                >
+                  {id === "all" ? "Todos" : id === "new" ? "Nuevos" : id}
+                </button>
+              ))}
+            </div>
             <input
               className="bf-admin-search"
               placeholder="Buscar por nombre o tag…"
               value={teamSearch}
               onChange={(e) => setTeamSearch(e.target.value)}
             />
+            <p className="bf-admin-field-hint" style={{ margin: "0 0 8px" }}>
+              {filteredTeams.length} de {teams.length} clubes
+              {teamRegionFilter !== "all" ? ` · filtro ${teamRegionFilter}` : ""}
+            </p>
             <ul className="bf-admin-list-scroll">
-              {filteredTeams.map((t) => (
-                <li key={t.slug} className="bf-admin-list-item">
-                  <button
-                    type="button"
-                    className={`bf-admin-list-card ${selectedTeam?.slug === t.slug ? "is-on" : ""}`}
-                    onClick={() =>
-                      setSelectedTeam({
-                        ...t,
-                        roster_slugs: rosterStr(t),
-                      } as TeamRow & { roster_slugs: string })
-                    }
-                  >
-                    <TeamLogo slug={t.slug} name={t.name} size={44} />
-                    <span className="bf-admin-list-card-body">
-                      <span className="bf-admin-list-card-title">{t.tag || t.name}</span>
-                      <span className="bf-admin-list-card-sub">{t.name}</span>
-                      <span className="bf-admin-list-card-meta">
-                        #{t.rank ?? "—"} · {t.region}
-                      </span>
-                    </span>
-                  </button>
+              {filteredTeams.length === 0 && (
+                <li className="bf-admin-list-item">
+                  <p className="bf-admin-field-hint" style={{ padding: 12 }}>
+                    Ningún club con este filtro. Prueba &quot;Todos&quot; o borra la búsqueda.
+                  </p>
                 </li>
-              ))}
+              )}
+              {filteredTeams.map((t) => {
+                const isNew = isBsc2026NewTeam(t.slug);
+                return (
+                  <li key={t.slug} className="bf-admin-list-item">
+                    <button
+                      type="button"
+                      className={`bf-admin-list-card ${selectedTeam?.slug === t.slug ? "is-on" : ""} ${isNew ? "is-new-team" : ""}`}
+                      onClick={() =>
+                        setSelectedTeam({
+                          ...t,
+                          roster_slugs: rosterStr(t),
+                        } as TeamRow & { roster_slugs: string })
+                      }
+                    >
+                      <TeamLogo slug={t.slug} name={t.name} size={44} />
+                      <span className="bf-admin-list-card-body">
+                        <span className="bf-admin-list-card-title">
+                          {isNew && <span className="bf-admin-new-badge">Nuevo</span>}
+                          {t.tag || t.name}
+                        </span>
+                        <span className="bf-admin-list-card-sub">{t.name}</span>
+                        <span className="bf-admin-list-card-meta">
+                          #{t.rank ?? "—"} · {t.region}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </aside>
 
@@ -413,6 +455,21 @@ export function AdminConsole() {
                 <button type="submit" className="bp-btn bp-btn-gold" disabled={loading}>
                   <Save size={16} /> Guardar equipo
                 </button>
+                <button
+                  type="button"
+                  className="bp-btn bp-btn-ghost"
+                  onClick={() => {
+                    setTab("logos");
+                    if (typeof window !== "undefined") {
+                      const url = new URL(window.location.href);
+                      url.searchParams.set("tab", "logos");
+                      url.searchParams.set("team", selectedTeam.slug);
+                      window.history.replaceState(null, "", url.pathname + url.search);
+                    }
+                  }}
+                >
+                  <Image size={16} /> Cambiar logo
+                </button>
                 <Link href={`/teams/${selectedTeam.slug}`} className="bp-btn bp-btn-ghost" target="_blank">
                   Ver en la web
                 </Link>
@@ -434,7 +491,10 @@ export function AdminConsole() {
               onChange={(e) => setPlayerSearch(e.target.value)}
             />
             <ul className="bf-admin-list-scroll">
-              {filteredPlayers.slice(0, 150).map((p) => {
+              <p className="bf-admin-field-hint" style={{ margin: "0 0 8px" }}>
+                {filteredPlayers.length} jugadores del circuito BSC
+              </p>
+              {filteredPlayers.map((p) => {
                 const club = p.team_slug ? teamBySlug(p.team_slug) : null;
                 return (
                   <li key={p.slug} className="bf-admin-list-item">

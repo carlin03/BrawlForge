@@ -1,5 +1,7 @@
 import type { Region } from "../types";
-import { bsc2026Tournaments, BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
+import { bsc2026Tournaments, bsc2026LegacyPsiTournaments, BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
+import { getBsc2026LiquipediaUrl } from "./bsc-2026-liquipedia-pages";
+import { getBscTournamentEnrichment, getBscEnrichedMatches } from "./bsc-tournaments-enriched";
 import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
 import { bscMatches } from "./bsc-matches";
 import { getTeam } from "./teams";
@@ -47,6 +49,13 @@ export interface EsportsTournament {
   featured?: boolean;
   participantSlugs?: string[];
   logoFile?: string | null;
+  /** Metadatos Liquipedia (sync bsc-tournaments-enriched.json) */
+  organizer?: string;
+  venue?: string;
+  eventType?: string;
+  series?: string;
+  website?: string;
+  liquipediaPage?: string;
 }
 
 const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
@@ -158,18 +167,39 @@ function buildTournaments(): EsportsTournament[] {
     map.set(t.slug, t);
   }
 
-  for (const t of bsc2026Tournaments) {
+  for (const t of [...bsc2026Tournaments, ...bsc2026LegacyPsiTournaments]) {
     const existing = map.get(t.slug);
-    const participants = getBscTournamentParticipantSlugs(t.slug);
+    const wiki = getBscTournamentEnrichment(t.slug);
+    const wikiParticipants = (wiki?.participantSlugs ?? []).filter((s) => Boolean(getTeam(s)));
+    const participants =
+      wikiParticipants.length >= 2 ? wikiParticipants : getBscTournamentParticipantSlugs(t.slug);
+    const featured = !t.slug.includes("psi-");
+    const liquipediaUrl =
+      wiki?.liquipediaUrl ?? getBsc2026LiquipediaUrl(t.slug) ?? t.liquipediaUrl ?? toLiquipediaUrl("Brawl_Stars_Championship/2026");
+    const status = wiki?.status ?? t.status;
     map.set(t.slug, {
       ...existing,
       ...t,
-      liquipediaUrl: t.liquipediaUrl ?? toLiquipediaUrl("Brawl_Stars_Championship/2026"),
-      featured: true,
-      tier: existing?.tier ?? 1,
+      name: wiki?.name ? wiki.name : t.name,
+      shortName: wiki?.shortName ? wiki.shortName : t.shortName,
+      prizePool: wiki?.prizePool ?? t.prizePool,
+      startDate: wiki?.startDate || t.startDate,
+      endDate: wiki?.endDate || t.endDate,
+      location: wiki?.location ?? t.location,
+      status,
+      teams: wiki?.teamCount ?? (participants.length || t.teams),
+      winnerSlug: wiki?.winnerSlug ?? t.winnerSlug,
+      liquipediaUrl,
+      liquipediaPage: wiki?.liquipediaPage,
+      organizer: wiki?.organizer,
+      venue: wiki?.venue,
+      eventType: wiki?.type,
+      series: wiki?.series,
+      website: wiki?.website,
+      tier: wiki?.liquipediaTier ?? existing?.tier ?? 1,
+      featured: featured ? true : (existing?.featured ?? false),
       logoFile: existing?.logoFile ?? t.logoFile,
       participantSlugs: participants.length ? participants : existing?.participantSlugs,
-      teams: participants.length || t.teams,
     });
   }
 
@@ -225,7 +255,9 @@ function buildMatches(): EsportsMatch[] {
       format: "Bo3",
     },
   ];
-  const extra = [...bscMatches, ...manual2026].filter((m) => !genIds.has(m.id));
+  const bscIds = new Set(bscMatches.map((m) => m.id));
+  const wikiMatches = getBscEnrichedMatches().filter((m) => !genIds.has(m.id) && !bscIds.has(m.id));
+  const extra = [...bscMatches, ...wikiMatches, ...manual2026].filter((m) => !genIds.has(m.id));
   return [...generated, ...extra].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );

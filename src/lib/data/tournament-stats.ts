@@ -4,6 +4,7 @@ import {
   getTournamentParticipantSlugs,
   type EsportsMatch,
 } from "./matches";
+import { getBscTournamentEnrichment } from "./bsc-tournaments-enriched";
 
 export interface TournamentStandingRow {
   rank: number;
@@ -92,6 +93,13 @@ export function getTournamentStats(slug: string): TournamentStats {
   const participantSlugs = resolveTournamentParticipants(slug);
   const formats = [...new Set(matches.map((m) => m.format).filter(Boolean))];
   const finished = matches.filter((m) => m.status === "finished");
+  const wiki = getBscTournamentEnrichment(slug);
+  const prizeBreakdown =
+    wiki?.prizeBreakdown?.length
+      ? wiki.prizeBreakdown
+      : t?.prizePool
+        ? parsePrizeBreakdown(t.prizePool)
+        : [{ place: "1º", prize: "TBD" }];
 
   return {
     slug,
@@ -103,7 +111,7 @@ export function getTournamentStats(slug: string): TournamentStats {
     finishedMatches: finished.length,
     formats,
     standings: computeStandings(matches),
-    prizeBreakdown: t?.prizePool ? parsePrizeBreakdown(t.prizePool) : [{ place: "1º", prize: "TBD" }],
+    prizeBreakdown,
   };
 }
 

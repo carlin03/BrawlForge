@@ -3,6 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/admin-auth";
 import { teams, getTeam } from "@/lib/data/teams";
 import { players, getPlayer } from "@/lib/data/players";
+import {
+  BSC_2026_ADMIN_TEAM_COUNT,
+  mergeAdminTeamRows,
+} from "@/lib/data/admin-bsc-teams";
+import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 
 export const dynamic = "force-dynamic";
 
@@ -17,31 +22,9 @@ export async function GET(request: Request) {
     return NextResponse.json({
       ok: true,
       source: "local",
-      teams: teams.map((t) => ({
-        slug: t.slug,
-        name: t.name,
-        tag: t.tag,
-        region: t.region,
-        country: t.country,
-        earnings: t.earnings,
-        rank: t.rank,
-        rank_change: t.rankChange,
-        form: t.form,
-        roster_slugs: t.roster,
-      })),
-      players: players.map((p) => ({
-        slug: p.slug,
-        ign: p.ign,
-        real_name: p.realName ?? null,
-        team_slug: p.teamSlug,
-        region: p.region,
-        role: p.role,
-        status: p.status,
-      fantasy_points: p.fantasyPoints,
-      fantasy_ownership: p.fantasyOwnership,
-      rating: p.rating,
-      photo_url: null,
-    })),
+      teams: mergeAdminTeamRows(null),
+      teamCount: BSC_2026_ADMIN_TEAM_COUNT,
+      players: mergeAdminPlayerRows(null),
       news: [],
     });
   }
@@ -51,35 +34,14 @@ export async function GET(request: Request) {
   if (type === "all" || type === "teams") {
     const { data, error } = await supabase.from("teams_catalog").select("*").order("rank", { ascending: true });
     if (error && error.code !== "42P01") return NextResponse.json({ error: error.message }, { status: 500 });
-    out.teams = data?.length ? data : teams.map((t) => ({
-      slug: t.slug,
-      name: t.name,
-      tag: t.tag,
-      region: t.region,
-      country: t.country,
-      earnings: t.earnings,
-      rank: t.rank,
-      rank_change: t.rankChange,
-      form: t.form,
-      roster_slugs: t.roster,
-    }));
+    out.teams = mergeAdminTeamRows(data?.length ? data : null);
+    out.teamCount = BSC_2026_ADMIN_TEAM_COUNT;
   }
 
   if (type === "all" || type === "players") {
     const { data, error } = await supabase.from("players_catalog").select("*").order("fantasy_points", { ascending: false });
     if (error && error.code !== "42P01") return NextResponse.json({ error: error.message }, { status: 500 });
-    out.players = data?.length ? data : players.slice(0, 500).map((p) => ({
-      slug: p.slug,
-      ign: p.ign,
-      real_name: p.realName ?? null,
-      team_slug: p.teamSlug,
-      region: p.region,
-      role: p.role,
-      status: p.status,
-      fantasy_points: p.fantasyPoints,
-      fantasy_ownership: p.fantasyOwnership,
-      rating: p.rating,
-    }));
+    out.players = mergeAdminPlayerRows(data?.length ? data : null);
   }
 
   if (type === "all" || type === "news") {

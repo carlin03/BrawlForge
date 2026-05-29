@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Radio, Trophy } from "lucide-react";
+import { ExternalLink, Radio, Trophy } from "lucide-react";
 import { MatchLine } from "@/components/platform/ui";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltraHero";
@@ -19,6 +19,7 @@ import {
 import { formatTournamentDates, getTournamentStats } from "@/lib/data/tournament-stats";
 import { getFantasyPlayersForTournament, getFantasyTeamsForTournament } from "@/lib/data/fantasy-rosters";
 import { getPlayer, getPlayerPrice } from "@/lib/data";
+import { getBscTournamentEnrichment, getBscEnrichmentSyncedAt } from "@/lib/data/bsc-tournaments-enriched";
 import { PlayerCard } from "@/components/platform/PlayerCard";
 
 function clean(s: string) {
@@ -47,6 +48,8 @@ export function TournamentDetailView({ slug }: { slug: string }) {
   const fantasyTeams = getFantasyTeamsForTournament(slug);
   const fantasyPool = getFantasyPlayersForTournament(slug).slice(0, 8);
   const dateLabel = formatTournamentDates(tournament.startDate, tournament.endDate);
+  const wiki = getBscTournamentEnrichment(slug);
+  const wikiSynced = getBscEnrichmentSyncedAt();
 
   const liveMatches = matches.filter((m) => m.status === "live");
   const upcoming = matches.filter((m) => m.status === "upcoming");
@@ -106,6 +109,16 @@ export function TournamentDetailView({ slug }: { slug: string }) {
             <Link href="/matches" className="fu-btn fu-btn-ghost">
               Calendario
             </Link>
+            {tournament.liquipediaUrl && (
+              <a
+                href={tournament.liquipediaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fu-btn fu-btn-ghost"
+              >
+                <ExternalLink size={16} /> Liquipedia
+              </a>
+            )}
           </>
         }
         showcase={
@@ -128,6 +141,67 @@ export function TournamentDetailView({ slug }: { slug: string }) {
           )
         }
       />
+
+      {(tournament.organizer || tournament.venue || tournament.eventType || tournament.series || wiki?.matchCount) && (
+        <section className="fu-panel fu-panel-glow bf-tour-wiki-meta">
+          <div className="fu-panel-head">
+            <h2>Info del evento</h2>
+            {wikiSynced && (
+              <span className="bf-admin-field-hint" style={{ margin: 0 }}>
+                Liquipedia · {new Date(wikiSynced).toLocaleDateString("es-ES")}
+              </span>
+            )}
+          </div>
+          <dl className="bf-tour-wiki-grid">
+            {tournament.organizer && (
+              <>
+                <dt>Organiza</dt>
+                <dd>{tournament.organizer}</dd>
+              </>
+            )}
+            {tournament.series && (
+              <>
+                <dt>Circuito</dt>
+                <dd>{tournament.series}</dd>
+              </>
+            )}
+            {tournament.eventType && (
+              <>
+                <dt>Formato presencial</dt>
+                <dd>{tournament.eventType}</dd>
+              </>
+            )}
+            {tournament.venue && (
+              <>
+                <dt>Sede</dt>
+                <dd>{tournament.venue}</dd>
+              </>
+            )}
+            {wiki?.format && (
+              <>
+                <dt>Bracket</dt>
+                <dd>{wiki.format}</dd>
+              </>
+            )}
+            {wiki?.matchCount != null && wiki.matchCount > 0 && (
+              <>
+                <dt>Partidos en wiki</dt>
+                <dd>{wiki.matchCount}</dd>
+              </>
+            )}
+            {tournament.website && (
+              <>
+                <dt>Web oficial</dt>
+                <dd>
+                  <a href={tournament.website} target="_blank" rel="noopener noreferrer">
+                    {tournament.website.replace(/^https?:\/\//, "")}
+                  </a>
+                </dd>
+              </>
+            )}
+          </dl>
+        </section>
+      )}
 
       {tournament.winnerSlug && (
         <div className="bf-tour-champion fu-panel-glow">

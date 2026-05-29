@@ -1635,6 +1635,18 @@
 .bf-team-tour-info strong { display: block; font-size: 13px; font-weight: 800; }
 .bf-team-tour-info span { font-size: 11px; color: var(--bp-muted); }
 
+.bf-tour-wiki-meta { margin-bottom: var(--bp-gap-lg); }
+.bf-tour-wiki-grid {
+  display: grid;
+  grid-template-columns: minmax(100px, auto) 1fr;
+  gap: 8px 20px;
+  margin: 0;
+  font-size: 14px;
+}
+.bf-tour-wiki-grid dt { color: var(--bp-dim); font-weight: 700; margin: 0; }
+.bf-tour-wiki-grid dd { margin: 0; color: var(--bp-text); }
+.bf-tour-wiki-grid a { color: var(--bp-blue); }
+
 .bf-tour-champion {
   display: flex; align-items: center; gap: 14px; padding: 16px 20px; margin-bottom: var(--bp-gap-lg);
   border-radius: var(--bp-r); background: linear-gradient(90deg, rgba(255,200,46,0.1), transparent);
