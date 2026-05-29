@@ -8,6 +8,7 @@ import { getBsc2026LiquipediaUrl } from "./bsc-2026-liquipedia-pages";
 import { getBscTournamentEnrichment, getBscEnrichedMatches } from "./bsc-tournaments-enriched";
 import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
 import { bscMatches } from "./bsc-matches";
+import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
 import { toLiquipediaUrl, normalizeParticipantList } from "./catalog";
@@ -201,39 +202,11 @@ function matchDedupeKey(m: EsportsMatch): string {
 }
 
 function buildMatches(): EsportsMatch[] {
-  const manual2026 = [
-    {
-      id: "chal-es-sk-1",
-      teamASlug: "sk-gaming",
-      teamBSlug: "team-heretics",
-      scoreA: 0,
-      scoreB: 0,
-      tournamentSlug: "bsc-2026-challengers-spain",
-      stage: "Group Stage",
-      date: "2026-05-26T17:00:00Z",
-      status: "upcoming" as const,
-      region: "EMEA" as const,
-      format: "Bo3",
-    },
-    {
-      id: "chal-es-sk-2",
-      teamASlug: "sk-gaming",
-      teamBSlug: "novo-esports",
-      scoreA: 0,
-      scoreB: 0,
-      tournamentSlug: "bsc-2026-challengers-spain",
-      stage: "Group Stage",
-      date: "2026-05-27T16:00:00Z",
-      status: "upcoming" as const,
-      region: "EMEA" as const,
-      format: "Bo3",
-    },
-  ];
   const wikiMatches = getBscEnrichedMatches().filter(
     (m) => isBscCircuitSlug(m.tournamentSlug) && isDisplayableMatch(m),
   );
   const keys = new Set(wikiMatches.map(matchDedupeKey));
-  const manualFallback = [...bscMatches, ...manual2026].filter(
+  const manualFallback = [...bscMatches, ...BSC_UPCOMING_PREDICTION_MATCHES].filter(
     (m) => isBscCircuitSlug(m.tournamentSlug) && isDisplayableMatch(m) && !keys.has(matchDedupeKey(m)),
   );
   const extra = [...wikiMatches, ...manualFallback];

@@ -1,27 +1,30 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { PredictionsView } from "@/components/platform/PredictionsView";
 import { useGame } from "@/contexts/GameContext";
-import { useAuth } from "@/contexts/AuthContext";
 import { buildPredictionEvents } from "@/lib/data/predictions-build";
 
 export function PredictionsPageClient() {
   const { ready, aggregates, game } = useGame();
-  const { refreshProfile } = useAuth();
+
+  const votesKey = useMemo(() => JSON.stringify(game?.votes ?? {}), [game?.votes]);
 
   const { open, closed } = useMemo(
     () => buildPredictionEvents(aggregates, game?.votes ?? {}),
-    [aggregates, game?.votes],
+    [aggregates, votesKey],
   );
 
-  useEffect(() => {
-    if (ready && game) void refreshProfile();
-  }, [ready, game?.predictPoints, game?.predictStreak, refreshProfile]);
+  const hasData = open.length > 0 || closed.length > 0 || Object.keys(aggregates).length > 0;
 
-  if (!ready) {
-    return <div className="bf-auth-page">Cargando predicciones…</div>;
-  }
-
-  return <PredictionsView open={open} closed={closed} game={game} />;
+  return (
+    <>
+      {!ready && !hasData && (
+        <div className="bf-auth-page">Cargando predicciones…</div>
+      )}
+      {(ready || hasData) && (
+        <PredictionsView open={open} closed={closed} game={game} syncing={!ready} />
+      )}
+    </>
+  );
 }

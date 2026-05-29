@@ -242,6 +242,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile((prev) => (prev ? { ...prev, ...patch } : prev));
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    if (user) await loadProfile(user);
+  }, [user, loadProfile]);
+
   const isAdmin = resolveIsAdmin(user?.email ?? null, Boolean(profile?.isAdmin));
 
   const value = useMemo(
@@ -257,12 +261,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       requestPasswordReset,
       updatePassword,
       signOut,
-      refreshProfile: async () => {
-        if (user) await loadProfile(user);
-      },
+      refreshProfile,
       patchProfile,
     }),
-    [user, profile, isAdmin, loading, supabaseReady, signIn, signUp, requestPasswordReset, updatePassword, signOut, loadProfile, patchProfile],
+    [user, profile, isAdmin, loading, supabaseReady, signIn, signUp, requestPasswordReset, updatePassword, signOut, refreshProfile, patchProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

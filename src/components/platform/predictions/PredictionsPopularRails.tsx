@@ -1,13 +1,13 @@
 "use client";
 
-import { Scale, Users } from "lucide-react";
+import { Scale, Users, Zap } from "lucide-react";
 import type { EnrichedPrediction, PopularPickCategory } from "@/lib/data/predictions-ui";
-import { PredictCompactPickCard } from "@/components/platform/predictions/PredictCompactPickCard";
+import { PredictMatchRow } from "@/components/platform/predictions/PredictMatchRow";
 
-const RAILS: { id: PopularPickCategory; title: string; icon: typeof Users }[] = [
+const RAILS: { id: PopularPickCategory; title: string; icon: typeof Users; accent?: "upset" }[] = [
   { id: "most_voted", title: "Más votados", icon: Users },
   { id: "even", title: "Más igualados", icon: Scale },
-  { id: "controversial", title: "Más polémicos", icon: Scale },
+  { id: "upset", title: "Upsets potenciales", icon: Zap, accent: "upset" },
 ];
 
 export function PredictionsPopularRails({
@@ -21,23 +21,25 @@ export function PredictionsPopularRails({
   if (!hasAny) return null;
 
   return (
-    <section className="bf-predict-popular-compact" aria-labelledby="predict-popular-title">
+    <section className="bf-predict-quick-block is-popular" aria-labelledby="predict-popular-title">
       <h2 id="predict-popular-title" className="bf-predict-pickem-section-title">
-        Partidos populares
+        Destacados de la comunidad
       </h2>
-      <div className="bf-predict-popular-compact-grid">
+      <p className="bf-predict-quick-hint">Atajos rápidos — el voto completo está en Todos los partidos.</p>
+
+      <div className="bf-predict-popular-cols">
         {RAILS.map((rail) => {
-          const list = buckets[rail.id].filter((e) => e.matchId !== excludeId).slice(0, 3);
+          const list = buckets[rail.id].filter((e) => e.matchId !== excludeId).slice(0, 2);
           if (!list.length) return null;
           const Icon = rail.icon;
           return (
             <div key={rail.id} className="bf-predict-popular-col">
-              <h3>
-                <Icon size={12} aria-hidden /> {rail.title}
+              <h3 className="bf-predict-popular-col-title">
+                <Icon size={13} aria-hidden /> {rail.title}
               </h3>
-              <div className="bf-predict-popular-col-list">
+              <div className="bf-predict-quick-list">
                 {list.map((e) => (
-                  <PredictCompactPickCard key={e.id} event={e} />
+                  <PredictMatchRow key={e.id} event={e} accent={rail.accent} />
                 ))}
               </div>
             </div>

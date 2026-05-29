@@ -1,7 +1,14 @@
 import type { PredictionEvent } from "@/lib/data/predictions";
-import { getMatch } from "@/lib/data/matches";
-import { getPredictionTournament } from "@/lib/data";
+import { getMatch, getTournament } from "@/lib/data/matches";
+import { getPredictionLabel, getPredictionTournament } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
+import {
+  getMatchStageMeta,
+  getPredictDisplayStatus,
+  stageImportanceSort,
+  type MatchStageMeta,
+  type PredictDisplayStatus,
+} from "@/lib/data/match-stage-meta";
 
 export type PredictListFilter = "active" | "finished" | "hit" | "miss" | "all";
 
@@ -10,6 +17,23 @@ export type EnrichedPrediction = PredictionEvent & {
   pointsEarned: number;
   matchDate?: string;
   matchStatus?: string;
+  region?: string;
+  tournamentShortName?: string;
+  stageMeta?: MatchStageMeta;
+  displayStatus?: PredictDisplayStatus;
+};
+
+export type PlayoffBracketRound = {
+  key: "quarter" | "semi" | "final" | "grand_final";
+  title: string;
+  slots: { label: string; matchId?: string; status: "set" | "tbd" }[];
+};
+
+export type PlayoffBracketView = {
+  tournamentSlug: string;
+  tournamentName: string;
+  region?: string;
+  rounds: PlayoffBracketRound[];
 };
 
 export function predictAccuracy(correct: number, attempts: number): number {
@@ -151,9 +175,94 @@ export function pointsToNextRank(
 
 export function pickFeaturedEvent(open: PredictionEvent[]): PredictionEvent | null {
   if (!open.length) return null;
-  const featured = open.find((e) => e.featured);
-  if (featured) return featured;
-  return [...open].sort((a, b) => b.rewardPoints - a.rewardPoints)[0] ?? null;
+  const ranked = [...open].sort(stageImportanceSort);
+  return ranked[0] ?? null;
+}
+
+/** Partidos que cierran antes (fecha más cercana). */
+export function getClosingSoonMatches(open: EnrichedPrediction[], limit = 4): EnrichedPrediction[] {
+  const now = Date.now();
+  return [...open]
+    .filter((e) => e.status === "open")
+    .sort((a, b) => {
+      const ta = new Date(a.matchDate ?? a.deadline).getTime();
+      const tb = new Date(b.matchDate ?? b.deadline).getTime();
+      const da = Number.isNaN(ta) ? Infinity : ta - now;
+      const db = Number.isNaN(tb) ? Infinity : tb - now;
+      return da - db;
+    })
+    .slice(0, limit);
+}
+
+export function pickPlayoffTournamentSlug(events: EnrichedPrediction[]): string | null {
+  const counts = new Map<string, number>();
+  for (const e of events) {
+    if (e.stageMeta?.isPlayoff) {
+      counts.set(e.tournamentSlug, (counts.get(e.tournamentSlug) ?? 0) + 1);
+    }
+  }
+  let best: string | null = null;
+  let max = 0;
+  for (const [slug, n] of counts) {
+    if (n > max) {
+      max = n;
+      best = slug;
+    }
+  }
+  return max >= 2 ? best : null;
+}
+
+function slotLabel(event: EnrichedPrediction): string {
+  return `${getPredictionLabel(event, "A")} vs ${getPredictionLabel(event, "B")}`;
+}
+
+export function buildPlayoffBracket(
+  tournamentSlug: string,
+  events: EnrichedPrediction[],
+): PlayoffBracketView | null {
+  const tour = getTournament(tournamentSlug);
+  const tourEvents = events.filter((e) => e.tournamentSlug === tournamentSlug && e.stageMeta?.isPlayoff);
+  if (tourEvents.length < 2) return null;
+
+  const byRound = (key: PlayoffBracketRound["key"]) =>
+    tourEvents
+      .filter((e) => e.stageMeta?.roundKey === key || (key === "final" && e.stageMeta?.roundKey === "grand_final"))
+      .sort((a, b) => (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline));
+
+  const roundDefs: { key: PlayoffBracketRound["key"]; title: string }[] = [
+    { key: "quarter", title: "Cuartos de final" },
+    { key: "semi", title: "Semifinales" },
+    { key: "grand_final", title: "Final" },
+  ];
+
+  const rounds: PlayoffBracketRound[] = [];
+  for (const def of roundDefs) {
+    const matches =
+      def.key === "grand_final"
+        ? [...byRound("grand_final"), ...byRound("final")]
+        : byRound(def.key);
+    if (!matches.length && def.key !== "grand_final") continue;
+    rounds.push({
+      key: def.key,
+      title: def.title,
+      slots: matches.length
+        ? matches.map((e) => ({
+            label: slotLabel(e),
+            matchId: e.matchId,
+            status: e.status === "open" ? "set" : "set",
+          }))
+        : [{ label: "Por decidir", status: "tbd" }],
+    });
+  }
+
+  if (!rounds.length) return null;
+
+  return {
+    tournamentSlug,
+    tournamentName: tour?.shortName ?? tour?.name ?? tournamentSlug,
+    region: tour?.region,
+    rounds,
+  };
 }
 
 export function enrichPrediction(
@@ -172,6 +281,13 @@ export function enrichPrediction(
   const pointsEarned =
     event.status === "closed" && outcome === "hit" ? (pointsByMatch?.[event.matchId] ?? event.rewardPoints) : 0;
 
+  const stageMeta = getMatchStageMeta(event.stage);
+  const displayStatus = getPredictDisplayStatus({
+    eventStatus: event.status,
+    matchStatus: match?.status,
+  });
+  const tour = getTournament(event.tournamentSlug);
+
   return {
     ...event,
     userPick,
@@ -179,6 +295,11 @@ export function enrichPrediction(
     pointsEarned,
     matchDate: match?.date ?? event.deadline,
     matchStatus: match?.status,
+    region: match?.region ?? tour?.region,
+    tournamentShortName: tour?.shortName ?? getPredictionTournament(event),
+    stageMeta,
+    displayStatus:
+      displayStatus === "open" && match?.status === "upcoming" ? "upcoming" : displayStatus,
   };
 }
 

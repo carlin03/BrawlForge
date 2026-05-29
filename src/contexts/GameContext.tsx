@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -28,46 +29,96 @@ type GameContextValue = {
 
 const GameContext = createContext<GameContextValue | null>(null);
 
+function aggregatesEqual(
+  a: Record<string, VoteAggregate>,
+  b: Record<string, VoteAggregate>,
+): boolean {
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const k of keysA) {
+    const x = a[k];
+    const y = b[k];
+    if (!y) return false;
+    if (x.votes_a !== y.votes_a || x.votes_b !== y.votes_b || x.total_votes !== y.total_votes) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function gameStateEqual(a: UserGameState | null, b: UserGameState | null): boolean {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  return (
+    a.predictPoints === b.predictPoints &&
+    a.predictStreak === b.predictStreak &&
+    a.predictCorrect === b.predictCorrect &&
+    a.predictAttempts === b.predictAttempts &&
+    a.fantasyPoints === b.fantasyPoints &&
+    a.fantasyRank === b.fantasyRank &&
+    JSON.stringify(a.votes) === JSON.stringify(b.votes)
+  );
+}
+
 export function GameProvider({ children }: { children: ReactNode }) {
   const { user, isLoggedIn } = useAuth();
   const [ready, setReady] = useState(false);
   const [aggregates, setAggregates] = useState<Record<string, VoteAggregate>>({});
   const [game, setGame] = useState<UserGameState | null>(null);
+  const isLoggedInRef = useRef(isLoggedIn);
+  isLoggedInRef.current = isLoggedIn;
 
   const loadAggregates = useCallback(async () => {
     try {
       const res = await fetch("/api/predictions/aggregates");
       const json = await res.json();
-      setAggregates(json.aggregates ?? {});
+      const next = json.aggregates ?? {};
+      setAggregates((prev) => (aggregatesEqual(prev, next) ? prev : next));
     } catch {
-      setAggregates({});
+      setAggregates((prev) => (Object.keys(prev).length === 0 ? prev : {}));
     }
   }, []);
 
   const refresh = useCallback(async () => {
     await loadAggregates();
-    if (!isLoggedIn) {
-      setGame(null);
+    if (!isLoggedInRef.current) {
+      setGame((prev) => (prev === null ? prev : null));
       setReady(true);
       return;
     }
     try {
       const res = await fetch("/api/me/game");
       if (res.ok) {
-        setGame(await res.json());
+        const next = (await res.json()) as UserGameState;
+        setGame((prev) => (gameStateEqual(prev, next) ? prev : next));
       } else {
-        setGame(null);
+        setGame((prev) => (prev === null ? prev : null));
       }
     } catch {
-      setGame(null);
+      setGame((prev) => (prev === null ? prev : null));
     }
     setReady(true);
-  }, [isLoggedIn, loadAggregates]);
+  }, [loadAggregates]);
+
+  const refreshRef = useRef(refresh);
+  refreshRef.current = refresh;
+  const lastUserIdRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
-    setReady(false);
-    void refresh();
-  }, [user?.id, refresh]);
+    const uid = user?.id;
+    const userChanged = lastUserIdRef.current !== uid;
+    lastUserIdRef.current = uid;
+    if (userChanged) setReady(false);
+
+    let active = true;
+    void refreshRef.current().finally(() => {
+      if (active) setReady(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
 
   const saveFantasy = useCallback(
     async (tournamentSlug: string, teamName: string, squad: FantasySquadSlot[]) => {

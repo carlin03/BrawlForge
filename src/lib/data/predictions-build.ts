@@ -1,4 +1,8 @@
+import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
+import { mergePickemAggregates } from "./pickem-demo-aggregates";
 import { getRecentMatches, getUpcomingMatches } from "./matches";
+
+const PICKEM_OPEN_IDS = new Set(BSC_UPCOMING_PREDICTION_MATCHES.map((m) => m.id));
 import type { PredictionEvent } from "./predictions";
 import type { VoteAggregate } from "@/lib/supabase/game-types";
 
@@ -11,13 +15,14 @@ export function buildPredictionEvents(
   aggregates: Record<string, VoteAggregate>,
   userVotes: Record<string, "A" | "B"> = {},
 ): { open: PredictionEvent[]; closed: PredictionEvent[] } {
-  const upcoming = getUpcomingMatches();
+  const merged = mergePickemAggregates(aggregates);
+  const upcoming = getUpcomingMatches().filter((m) => PICKEM_OPEN_IDS.has(m.id));
   const open: PredictionEvent[] = upcoming.map((m, i) => {
-    const agg = aggregates[m.id];
+    const agg = merged[m.id];
     const total = agg?.total_votes ?? 0;
     const pickA = pct(agg?.votes_a ?? 0, total);
     return {
-      id: `vota-${m.id}-${i}`,
+      id: `vota-${m.id}`,
       matchId: m.id,
       teamASlug: m.teamASlug,
       teamBSlug: m.teamBSlug,
@@ -25,7 +30,11 @@ export function buildPredictionEvents(
       pickBPct: 100 - pickA,
       totalVotes: total,
       rewardPoints: m.format.includes("5") ? 75 : m.format.includes("3") ? 50 : 35,
-      featured: i < 3,
+      featured:
+        m.stage === "Grand Final" ||
+        m.stage === "Semifinal" ||
+        (m.stage === "Quarterfinal" && i < 2) ||
+        i < 1,
       userPick: userVotes[m.id] ?? null,
       status: "open" as const,
       stage: m.stage,
@@ -37,7 +46,7 @@ export function buildPredictionEvents(
   const recent = getRecentMatches(24);
   const closed: PredictionEvent[] = recent.map((m, i) => {
     const correct: "A" | "B" = m.scoreA > m.scoreB ? "A" : "B";
-    const agg = aggregates[m.id];
+    const agg = merged[m.id];
     const total = agg?.total_votes ?? 0;
     const pickA = pct(agg?.votes_a ?? 0, total);
     return {

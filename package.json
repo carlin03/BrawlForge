@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev:mobile": "next dev -H 0.0.0.0 -p 3000",
+    "dev": "next dev --webpack",
+    "dev:turbo": "next dev",
+    "dev:mobile": "next dev --webpack -H 0.0.0.0 -p 3000",
     "mobile:link": "node scripts/mobile-link.mjs",
     "mobile:tunnel": "node scripts/mobile-link.mjs --tunnel",
     "supabase:check": "node scripts/check-supabase.mjs",
