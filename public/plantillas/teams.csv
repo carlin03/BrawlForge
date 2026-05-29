@@ -5,53 +5,53 @@
 slug,name,tag,region,country,earnings,rank,rank_change,description,logo_url,roster_slugs
 _ayuda,Nombre en ficha,Abreviatura,EMEA|EA|NA|SA|GLOBAL,País,USD,Nº ranking,+/-,Texto largo en página del equipo,URL opcional,slug1|slug2|slug3
 _ejemplo,SK Gaming,SK,EMEA,Germany,842000,1,2,SK Gaming es uno de los clubes históricos del BSC 2026. Esta descripción aparece en la ficha pública del equipo.,,yoshi|nowy297|ope
-hmble,HMBLE,HMB,EMEA,Italy,0,13,0,HMBLE — circuito BSC 2026,,boss|lukii|symantec
-fut-esports,FUT Esports,FE,EMEA,Turkey,0,12,0,FUT Esports — circuito BSC 2026,,angelboy|guesti|nob
-sk-gaming,SK Gaming,SG,EMEA,Germany,0,37,0,SK Gaming — circuito BSC 2026,,nowy297|ope|yoshi
-team-heretics,Team Heretics,TH,EMEA,Spain,0,2,0,Team Heretics — circuito BSC 2026,,ikaoss|marco|subeme
-natus-vincere,Natus Vincere,NV,EMEA,Ukraine,0,16,0,Natus Vincere — circuito BSC 2026,,drage|gero|lenain
-totem-esports,Totem Esports,TE,EMEA,Italy,0,28,0,Totem Esports — circuito BSC 2026,,joker|maru|maury
-novo-esports,NOVO Esports,NE,EMEA,italy,0,18,0,NOVO Esports — circuito BSC 2026,,filippo|meow|terry
-big,BIG,BIG,EMEA,Germany,0,34,0,BIG — circuito BSC 2026,,amos|arthur|salty
-big-talents,Big Talents,BT,EMEA,United States,0,6,0,Big Talents — circuito BSC 2026,,dompe|mine|nes
-cmm,CMM,CMM,EMEA,Serbia,0,68,0,CMM — circuito BSC 2026,,kellow|mine|dompe
-fut-esports-academy,FUT Esports Academy,FEA,EMEA,Turkey,0,103,0,FUT Esports Academy — circuito BSC 2026,,ferissa|master|zeyrox
-kebap,Kebap,KEB,EMEA,tr,0,38,0,Kebap — circuito BSC 2026,,dede|yuffy|ray092
-metizport,Metizport,MET,EMEA,Norway,0,36,0,Metizport — circuito BSC 2026,,decaii|ciro|kellow
-madridmira,madridmira,,GLOBAL,,0,,0,madridmira — circuito BSC 2026,,
-crazy-raccoon,Crazy Raccoon,CR,EA,Japan,0,8,0,Crazy Raccoon — circuito BSC 2026,,milkreo|moya|tensai
-zeta-division,ZETA DIVISION,ZD,EA,Japan,0,31,0,ZETA DIVISION — circuito BSC 2026,,battoman|sitetampo|sizuku
-reject,REJECT,REJ,EMEA,Japan,0,22,0,REJECT — circuito BSC 2026,,levi|melty|shu
-skcalalas-ea,SKCalalas EA,SE,EA,es,0,25,0,SKCalalas EA — circuito BSC 2026,,ghost-t|kuru|naipishu
-rival-esports,Rival Esports,RE,EA,Singapore,0,23,0,Rival Esports — circuito BSC 2026,,ryohei|totoron|yutapin
-wwl-esports,WWL Esports,WE,EA,us,0,192,0,WWL Esports — circuito BSC 2026,,cookie|minzzun|nenne
-feasible-gaming,Feasible Gaming,FG,EA,jp,0,98,0,Feasible Gaming — circuito BSC 2026,,nyades|sigemyon|drake
-frenzy-esports,Frenzy Esports,FE,EA,Japan,0,11,0,Frenzy Esports — circuito BSC 2026,,danshari|mira|toridesu
-fennel,fennel,,GLOBAL,,0,,0,fennel — circuito BSC 2026,,
-insomnia,insomnia,,GLOBAL,,0,,0,insomnia — circuito BSC 2026,,
-ace-xero,Ace Xero,AX,EA,China,0,4,0,Ace Xero — circuito BSC 2026,,david|galaxy|coldrink
-toxic-lotus,Toxic Lotus,TL,EA,China,0,29,0,Toxic Lotus — circuito BSC 2026,,engine|toc|ou
-tribe-gaming,Tribe Gaming,TG,NA,United States,0,30,0,Tribe Gaming — circuito BSC 2026,,diegogamer|lxffy|rbm
-only-realm,Only Realm,OR,NA,Uk,0,20,0,Only Realm — circuito BSC 2026,,bobby|patchy|sans
-stmn-esports,STMN Esports,SE,NA,Mexico,0,167,0,STMN Esports — circuito BSC 2026,,juan-carlos|pain|tacos
-team-elektros,Team Elektros,TE,NA,United Kingdom,0,26,0,Team Elektros — circuito BSC 2026,,doin|memen|snoiy
-vatic-esports,Vatic Esports,VE,NA,Canada,0,3,0,Vatic Esports — circuito BSC 2026,,belal|ezlivi|duckie
-elevate,Elevate,ELE,SA,United States,0,86,0,Elevate — circuito BSC 2026,,duckie|vegeta|og
-f-a-homeless,f-a-homeless,,NA,,0,,0,f-a-homeless — circuito BSC 2026,,ducky|tyrant|xemp
-vic-day,vic-day,,NA,,0,,0,vic-day — circuito BSC 2026,,belal|ezlivi|kapi
-legacy-esports,legacy-esports,,NA,,0,,0,legacy-esports — circuito BSC 2026,,rafiki|zoulan|zeus
-loud,LOUD,LOU,SA,Brazil,0,15,0,LOUD — circuito BSC 2026,,edinho|firecrow|kaiodog
-skcalalas,SKCalalas,SKC,SA,es,0,24,0,SKCalalas — circuito BSC 2026,,kristian|pekka|rhz
-new-heights-gaming,New Heights Gaming,NHG,SA,US,0,128,0,New Heights Gaming — circuito BSC 2026,,portox|wesley|prozy
-kaioperro,KaioPerro,KAI,SA,South America,0,111,0,KaioPerro — circuito BSC 2026,,derrp|doritos|loko
-eternal-esports,Eternal Esports,EE,SA,United States,0,9,0,Eternal Esports — circuito BSC 2026,,cauebr|jubileu|mohtep
-alguem-segura,Alguem Segura,AS,SA,South America,0,43,0,Alguem Segura — circuito BSC 2026,,nubis|tufa|satisfyer
-olimpo-squad,Olimpo Squad,OS,SA,pe,0,19,0,Olimpo Squad — circuito BSC 2026,,brabao|golden|icecrow
-bounty-hunters-esports,Bounty Hunters Esports,BHE,SA,Brazil,0,7,0,Bounty Hunters Esports — circuito BSC 2026,,redzin|bicho|rei-do-fut
-enosis-esports,Enosis eSports,EE,SA,Hungary,0,88,0,Enosis eSports — circuito BSC 2026,,b4st|deykon|gun
-bc-gaming-sa,BC* Gaming SA,BGS,SA,germany,0,54,0,BC* Gaming SA — circuito BSC 2026,,leo|mica|tomz
-level-esports,Level Esports,LE,SA,ar,0,117,0,Level Esports — circuito BSC 2026,,nouthz|darke-san|satisfyer
-oddyssey,oddyssey,,GLOBAL,,0,,0,oddyssey — circuito BSC 2026,,
-acre-lovers,acre-lovers,,SA,,0,,0,acre-lovers — circuito BSC 2026,,fire-murilo|satisfyer|sennin
-f-a-zurita-gaming,f-a-zurita-gaming,,SA,,0,,0,f-a-zurita-gaming — circuito BSC 2026,,bryan|exic|jxcr
-revenant-xspark,Revenant XSpark,RX,EMEA,India,0,1,0,Revenant XSpark — circuito BSC 2026,,sergeant-clash|hiroshii|walkthrough
+hmble,HMBLE,HMB,EMEA,Italy,0,13,0,HMBLE compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,boss|lukii|symantec
+fut-esports,FUT Esports,FE,EMEA,Turkey,0,12,0,FUT Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,angelboy|guesti|nob
+sk-gaming,SK Gaming,SG,EMEA,Germany,0,37,0,SK Gaming compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,nowy297|ope|yoshi
+team-heretics,Team Heretics,TH,EMEA,Spain,0,2,0,Team Heretics compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,ikaoss|marco|subeme
+natus-vincere,Natus Vincere,NV,EMEA,Ukraine,0,16,0,Natus Vincere compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,drage|gero|lenain
+totem-esports,Totem Esports,TE,EMEA,Italy,0,28,0,Totem Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,joker|maru|maury
+novo-esports,NOVO Esports,NE,EMEA,italy,0,18,0,NOVO Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,filippo|meow|terry
+big,BIG,BIG,EMEA,Germany,0,34,0,BIG compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,amos|arthur|salty
+big-talents,Big Talents,BT,EMEA,United States,0,6,0,Big Talents compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,dompe|mine|nes
+cmm,CMM,CMM,EMEA,Serbia,0,68,0,CMM compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,kellow|mine|dompe
+fut-esports-academy,FUT Esports Academy,FEA,EMEA,Turkey,0,103,0,FUT Esports Academy compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,ferissa|master|zeyrox
+kebap,Kebap,KEB,EMEA,tr,0,38,0,Kebap compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,dede|yuffy|ray092
+metizport,Metizport,MET,EMEA,Norway,0,36,0,Metizport compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,decaii|ciro|kellow
+madridmira,madridmira,,GLOBAL,,0,,0,madridmira compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,
+crazy-raccoon,Crazy Raccoon,CR,EA,Japan,0,8,0,Crazy Raccoon compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,milkreo|moya|tensai
+zeta-division,ZETA DIVISION,ZD,EA,Japan,0,31,0,ZETA DIVISION compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,battoman|sitetampo|sizuku
+reject,REJECT,REJ,EMEA,Japan,0,22,0,REJECT compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,levi|melty|shu
+skcalalas-ea,SKCalalas EA,SE,EA,es,0,25,0,SKCalalas EA compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,ghost-t|kuru|naipishu
+rival-esports,Rival Esports,RE,EA,Singapore,0,23,0,Rival Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,ryohei|totoron|yutapin
+wwl-esports,WWL Esports,WE,EA,us,0,192,0,WWL Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,cookie|minzzun|nenne
+feasible-gaming,Feasible Gaming,FG,EA,jp,0,98,0,Feasible Gaming compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,nyades|sigemyon|drake
+frenzy-esports,Frenzy Esports,FE,EA,Japan,0,11,0,Frenzy Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,danshari|mira|toridesu
+fennel,fennel,,GLOBAL,,0,,0,fennel compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,
+insomnia,insomnia,,GLOBAL,,0,,0,insomnia compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,
+ace-xero,Ace Xero,AX,EA,China,0,4,0,Ace Xero compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,david|galaxy|coldrink
+toxic-lotus,Toxic Lotus,TL,EA,China,0,29,0,Toxic Lotus compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,engine|toc|ou
+tribe-gaming,Tribe Gaming,TG,NA,United States,0,30,0,Tribe Gaming compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,diegogamer|lxffy|rbm
+only-realm,Only Realm,OR,NA,Uk,0,20,0,Only Realm compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,bobby|patchy|sans
+stmn-esports,STMN Esports,SE,NA,Mexico,0,167,0,STMN Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,juan-carlos|pain|tacos
+team-elektros,Team Elektros,TE,NA,United Kingdom,0,26,0,Team Elektros compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,doin|memen|snoiy
+vatic-esports,Vatic Esports,VE,NA,Canada,0,3,0,Vatic Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,belal|ezlivi|duckie
+elevate,Elevate,ELE,SA,United States,0,86,0,Elevate compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,duckie|vegeta|og
+f-a-homeless,f-a-homeless,,NA,,0,,0,f-a-homeless compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,ducky|tyrant|xemp
+vic-day,vic-day,,NA,,0,,0,vic-day compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,belal|ezlivi|kapi
+legacy-esports,legacy-esports,,NA,,0,,0,legacy-esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,rafiki|zoulan|zeus
+loud,LOUD,LOU,SA,Brazil,0,15,0,LOUD compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,edinho|firecrow|kaiodog
+skcalalas,SKCalalas,SKC,SA,es,0,24,0,SKCalalas compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,kristian|pekka|rhz
+new-heights-gaming,New Heights Gaming,NHG,SA,US,0,128,0,New Heights Gaming compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,portox|wesley|prozy
+kaioperro,KaioPerro,KAI,SA,South America,0,111,0,KaioPerro compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,derrp|doritos|loko
+eternal-esports,Eternal Esports,EE,SA,United States,0,9,0,Eternal Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,cauebr|jubileu|mohtep
+alguem-segura,Alguem Segura,AS,SA,South America,0,43,0,Alguem Segura compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,nubis|tufa|satisfyer
+olimpo-squad,Olimpo Squad,OS,SA,pe,0,19,0,Olimpo Squad compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,brabao|golden|icecrow
+bounty-hunters-esports,Bounty Hunters Esports,BHE,SA,Brazil,0,7,0,Bounty Hunters Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,redzin|bicho|rei-do-fut
+enosis-esports,Enosis eSports,EE,SA,Hungary,0,88,0,Enosis eSports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,b4st|deykon|gun
+bc-gaming-sa,BC* Gaming SA,BGS,SA,germany,0,54,0,BC* Gaming SA compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,leo|mica|tomz
+level-esports,Level Esports,LE,SA,ar,0,117,0,Level Esports compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,nouthz|darke-san|satisfyer
+oddyssey,oddyssey,,GLOBAL,,0,,0,oddyssey compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,
+acre-lovers,acre-lovers,,SA,,0,,0,acre-lovers compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,fire-murilo|satisfyer|sennin
+f-a-zurita-gaming,f-a-zurita-gaming,,SA,,0,,0,f-a-zurita-gaming compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,bryan|exic|jxcr
+revenant-xspark,Revenant XSpark,RX,EMEA,India,0,1,0,Revenant XSpark compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.,,sergeant-clash|hiroshii|walkthrough

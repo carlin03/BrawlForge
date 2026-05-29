@@ -131,7 +131,7 @@ const teamObjects = activeSlugs.map((slug) => {
     earnings: t?.earnings ?? 0,
     rank: t?.rank ?? "",
     rank_change: t?.rankChange ?? 0,
-    description: `${reg?.name ?? t?.name ?? slug} — circuito BSC 2026`,
+    description: `${reg?.name ?? t?.name ?? slug} compite en el Brawl Stars Championship 2026. Edita este párrafo: se muestra en la ficha pública del equipo.`,
     logo_url: "",
     roster_slugs: roster.join("|"),
   };
