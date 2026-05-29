@@ -13,6 +13,7 @@
     "supabase:seed:catalog": "node scripts/seed-supabase-catalog.mjs",
     "supabase:export:csv": "node scripts/export-catalog-csv.mjs",
     "supabase:import:csv": "node scripts/import-supabase-csv.mjs",
+    "favicon:gen": "node scripts/generate-favicon.mjs",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
@@ -61,6 +62,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
+    "to-ico": "^1.1.5",
     "typescript": "^5"
   }
 }

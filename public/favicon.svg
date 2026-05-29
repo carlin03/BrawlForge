@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <rect width="40" height="40" rx="10" fill="#151C2C"/>
+  <path d="M20 5L24.5 15.5H36L27 21.5L30 33L20 27L10 33L13 21.5L4 15.5H15.5L20 5Z" fill="url(#bf-favicon-grad)"/>
+  <defs>
+    <linearGradient id="bf-favicon-grad" x1="4" y1="5" x2="36" y2="33" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF4D5A"/>
+      <stop offset="0.5" stop-color="#FDCB2D"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+</svg>
