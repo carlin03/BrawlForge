@@ -185,7 +185,9 @@ export function RankingsView({ teams }: { teams: EsportsTeam[] }) {
             ))}
           </div>
           {fantasyBoard.length === 0 && (
-            <p className="bf-home-empty">Aún no hay managers. Entra en /fantasy y crea tu plantilla.</p>
+            <p className="bf-home-empty">
+              Aún no hay managers en el ranking. Regístrate o ejecuta la migración fantasy en Supabase.
+            </p>
           )}
           <Link href="/fantasy" className="fu-btn fu-btn-gold bf-rankings-fantasy-cta">
             Ir a Fantasy

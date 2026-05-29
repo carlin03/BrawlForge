@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { DEFAULT_FANTASY_TOURNAMENT } from "@/lib/data/fantasy";
-import { fetchUserGameState, syncPredictorScores } from "@/lib/supabase/game-server";
+import { ensureFantasyEntry, fetchUserGameState, syncPredictorScores } from "@/lib/supabase/game-server";
 
 export async function GET() {
   const supabase = await createClient();
@@ -18,6 +18,7 @@ export async function GET() {
 
   try {
     await syncPredictorScores(supabase, user.id);
+    await ensureFantasyEntry(supabase, user.id, DEFAULT_FANTASY_TOURNAMENT);
     const state = await fetchUserGameState(supabase, user.id, DEFAULT_FANTASY_TOURNAMENT);
     return NextResponse.json(state);
   } catch {

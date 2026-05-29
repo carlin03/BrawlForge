@@ -23,6 +23,34 @@ export async function fetchVoteAggregates(supabase: SupabaseClient): Promise<Rec
   return out;
 }
 
+/** Crea entrada fantasy del torneo por defecto si el usuario aún no tiene (p. ej. cuenta anterior a la migración). */
+export async function ensureFantasyEntry(
+  supabase: SupabaseClient,
+  userId: string,
+  tournamentSlug: string,
+): Promise<void> {
+  const { data: existing } = await supabase
+    .from("fantasy_entries")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("tournament_slug", tournamentSlug)
+    .maybeSingle();
+  if (existing) return;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("display_name")
+    .eq("id", userId)
+    .maybeSingle();
+
+  await supabase.from("fantasy_entries").insert({
+    user_id: userId,
+    tournament_slug: tournamentSlug,
+    team_name: profile?.display_name ?? "Mi Equipo",
+    total_points: 0,
+  });
+}
+
 export async function fetchFantasyLeaderboard(
   supabase: SupabaseClient,
   tournamentSlug: string,

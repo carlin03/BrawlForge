@@ -13,16 +13,19 @@ import {
   getActivePlayers,
   getPlayerPrice,
   getPlayersWithTeam,
-  getTeamsWithPlayers,
+  getPlayersByTeam,
   players,
+  resolvePlayerRegion,
   searchPlayers,
   teamName,
 } from "@/lib/data";
+import { BSC_2026_ACTIVE_TEAM_SLUGS, isBsc2026ActiveTeam } from "@/lib/data/bsc-2026-active-teams";
+import { getBsc2026TeamRegion } from "@/lib/data/bsc-2026-team-regions";
 import { getFantasyRole } from "@/lib/data/fantasy-meta";
 import type { Region } from "@/lib/types";
 import type { EsportsPlayer, PlayerStatus } from "@/lib/data/players";
 
-type SortKey = "rating" | "fantasy" | "price" | "name";
+type SortKey = "index" | "fantasy" | "price" | "name";
 type StatusFilter = "all" | PlayerStatus;
 
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
@@ -38,14 +41,27 @@ export function PlayersView() {
   const [region, setRegion] = useState<Region | "all">("all");
   const [status, setStatus] = useState<StatusFilter>("active");
   const [teamFilter, setTeamFilter] = useState("all");
-  const [sortBy, setSortBy] = useState<SortKey>("rating");
+  const [sortBy, setSortBy] = useState<SortKey>("fantasy");
 
-  const teamsWithRoster = useMemo(() => getTeamsWithPlayers().slice(0, 40), []);
+  const teamsForFilter = useMemo(() => {
+    const slugs =
+      region === "all"
+        ? [...BSC_2026_ACTIVE_TEAM_SLUGS]
+        : BSC_2026_ACTIVE_TEAM_SLUGS.filter((s) => getBsc2026TeamRegion(s) === region);
+    return slugs
+      .map((slug) => ({
+        slug,
+        name: teamName(slug),
+        count: getPlayersByTeam(slug).length,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [region]);
 
   const list = useMemo(() => {
     let base = query.trim() ? searchPlayers(query, 200) : getPlayersWithTeam();
+    base = base.filter((p) => isBsc2026ActiveTeam(p.teamSlug));
     if (status !== "all") base = base.filter((p) => p.status === status);
-    if (region !== "all") base = base.filter((p) => p.region === region);
+    if (region !== "all") base = base.filter((p) => resolvePlayerRegion(p.teamSlug, p.region) === region);
     if (teamFilter !== "all") base = base.filter((p) => p.teamSlug === teamFilter);
 
     return [...base].sort((a, b) => {
@@ -138,9 +154,10 @@ export function PlayersView() {
           aria-label="Filtrar por equipo"
         >
           <option value="all">Todos los equipos</option>
-          {teamsWithRoster.map(({ slug }) => (
+          {teamsForFilter.map(({ slug, name, count }) => (
             <option key={slug} value={slug}>
-              {teamName(slug)}
+              {name}
+              {count > 0 ? ` (${count})` : ""}
             </option>
           ))}
         </select>
@@ -179,7 +196,7 @@ export function PlayersView() {
         <span className="bf-players-sort-label">Ordenar:</span>
         {(
           [
-            ["rating", "Rating"],
+            ["index", "Índice"],
             ["fantasy", "Fantasy"],
             ["price", "Precio"],
             ["name", "Nombre"],
@@ -206,12 +223,12 @@ export function PlayersView() {
         <table className="bf-players-table">
           <thead>
             <tr>
-              <th>#</th>
+              <th>Ranking</th>
               <th>Jugador</th>
               <th>Equipo</th>
               <th>Rol</th>
               <th>Región</th>
-              <th>Rating</th>
+              <th>Índice</th>
               <th>Fantasy</th>
               <th>Precio</th>
               <th>Estado</th>
@@ -257,7 +274,7 @@ function PlayerRow({ player: p, index }: { player: EsportsPlayer; index: number 
       </td>
       <td>{role}</td>
       <td>
-        <RegionBadge region={p.region} />
+        <RegionBadge region={resolvePlayerRegion(p.teamSlug, p.region)} />
       </td>
       <td className="bf-players-stat">{p.rating.toFixed(1)}</td>
       <td className="bf-players-stat">{p.fantasyPoints}</td>

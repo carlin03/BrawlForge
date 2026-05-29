@@ -1,6 +1,18 @@
 export { teams, getTeam, getTeamByTag } from "./teams";
 export type { EsportsTeam } from "./teams";
-export { players, getPlayer, getPlayersByTeam, getPlayerTeam, getTopFantasyPlayers, getTopActivePlayers, getActivePlayers, getPlayersWithTeam, getTeamsWithPlayers, searchPlayers } from "./players";
+export {
+  players,
+  getPlayer,
+  getPlayersByTeam,
+  getPlayerTeam,
+  getTopFantasyPlayers,
+  getTopActivePlayers,
+  getActivePlayers,
+  getPlayersWithTeam,
+  getTeamsWithPlayers,
+  searchPlayers,
+  resolvePlayerRegion,
+} from "./players";
 export type { EsportsPlayer, PlayerStatus } from "./players";
 export { CATALOG_STATS, catalogSyncedAt, isTierBPlus, tierLabel, tierBadgeClass } from "./catalog";
 export { hasPlayedBsc2026, getBsc2026PlayedTeamSlugs, getCompetitiveTeamSlugs } from "./bsc-teams-played-2026";

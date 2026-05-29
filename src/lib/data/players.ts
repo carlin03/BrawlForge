@@ -6,7 +6,12 @@ import { teams, getTeam } from "./teams";
 import { getBsc2026PlayedTeamSlugs } from "./bsc-teams-played-2026";
 import { isBsc2026ExcludedTeam } from "./bsc-2026-active-teams";
 import { BSC_2026_ROSTERS, BSC_2026_EXCLUDED_PLAYERS, BSC_2026_PLAYER_SLUGS } from "./bsc-2026-rosters";
+import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import type { GeneratedPlayer } from "./catalog-types";
+
+export function resolvePlayerRegion(teamSlug: string, fallback?: Region): Region {
+  return getBsc2026TeamRegion(teamSlug) ?? getTeam(teamSlug)?.region ?? fallback ?? "GLOBAL";
+}
 
 export type PlayerStatus = "active" | "inactive" | "retired";
 
@@ -102,13 +107,13 @@ function pushPlayer(
   const status = normalizeStatus(raw.status);
   if (status === "retired" && !rosterTeamForPlayer(slug)) return;
   seen.add(slug);
-  const teamRegion = getTeam(teamSlug)?.region;
+  const region = resolvePlayerRegion(teamSlug, raw.region);
   const base: EsportsPlayer = {
     slug,
     ign: raw.ign.replace(/<!--[\s\S]*?-->/g, "").split("\n")[0].trim(),
     realName: raw.realName,
     teamSlug,
-    region: teamRegion ?? raw.region,
+    region,
     role: raw.role || "Player",
     status,
     liquipediaUrl: toLiquipediaUrl(raw.liquipediaPage),
@@ -116,7 +121,19 @@ function pushPlayer(
     fantasyOwnership: raw.fantasyOwnership ?? 20,
     rating: raw.rating ?? 1.08,
   };
-  list.push(curated ? { ...base, ...curated, liquipediaUrl: base.liquipediaUrl, status: base.status } : base);
+  const merged = curated
+    ? {
+        ...base,
+        ...curated,
+        teamSlug: curated.teamSlug && KNOWN_TEAMS.has(curated.teamSlug) ? curated.teamSlug : base.teamSlug,
+        liquipediaUrl: base.liquipediaUrl,
+        status: base.status,
+      }
+    : base;
+  list.push({
+    ...merged,
+    region: resolvePlayerRegion(merged.teamSlug, merged.region),
+  });
 }
 
 function buildPlayers(): EsportsPlayer[] {
@@ -125,6 +142,7 @@ function buildPlayers(): EsportsPlayer[] {
   const pool = [...PLAYERS_2026];
 
   for (const p of pool) {
+    if (!BSC_2026_PLAYER_SLUGS.has(p.slug) && !PLAYER_BSC_TEAM.has(p.slug)) continue;
     pushPlayer(list, seen, p);
   }
 
@@ -224,7 +242,9 @@ export function getActivePlayers(): EsportsPlayer[] {
 }
 
 export function getPlayersWithTeam(): EsportsPlayer[] {
-  return players.filter((p) => p.teamSlug && KNOWN_TEAMS.has(p.teamSlug));
+  return players.filter(
+    (p) => p.teamSlug && KNOWN_TEAMS.has(p.teamSlug) && BSC_2026_PLAYER_SLUGS.has(p.slug),
+  );
 }
 
 export function getTopFantasyPlayers(limit = 5): EsportsPlayer[] {
