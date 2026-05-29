@@ -22,6 +22,8 @@ import {
   getUserSquadDisplay,
   getUpcomingMatches,
   getTournamentFantasyProfile,
+  getTournamentPlayerPool,
+  getPlayer,
   getTopActivePlayers,
   isKnownTeamSlug,
   teamName,
@@ -68,7 +70,12 @@ export function HomeView() {
   const squad = getUserSquadDisplay(DEFAULT_FANTASY_TOURNAMENT);
   const budgetLeft = FANTASY_BUDGET - getSquadValue(squad, DEFAULT_FANTASY_TOURNAMENT);
   const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
-  const topPros = useMemo(() => getTopActivePlayers(3), []);
+  const topPros = useMemo(() => {
+    const pool = new Set(getTournamentPlayerPool(DEFAULT_FANTASY_TOURNAMENT));
+    return getTopActivePlayers(48)
+      .filter((p) => p.teamSlug && pool.has(p.slug))
+      .slice(0, 3);
+  }, []);
 
   const homeClubs = useMemo(() => {
     const bySlug = new Map(teams.map((t) => [t.slug, t]));
@@ -160,10 +167,16 @@ export function HomeView() {
             </div>
           </div>
 
-          <div className="fu-cards-showcase" aria-hidden={false}>
+          <div className="fu-cards-showcase bf-home-cards-showcase" aria-hidden={false}>
             {topPros.map((p, i) => (
-              <div key={p.slug} className={`fu-card-float fu-card-float-${i + 1} bf-shine-hover`}>
-                <PlayerCard playerSlug={p.slug} size="md" />
+              <div key={p.slug} className={`fu-card-float fu-card-float-${i + 1} bf-home-hero-card`}>
+                <PlayerCard
+                  playerSlug={p.slug}
+                  clubSlug={p.teamSlug}
+                  size="lg"
+                  animate={false}
+                  href={`/players/${p.slug}`}
+                />
               </div>
             ))}
           </div>
@@ -285,7 +298,12 @@ export function HomeView() {
           <p className="fu-panel-sub">{cleanName(tournamentName(DEFAULT_FANTASY_TOURNAMENT))}</p>
           <div className="fu-squad-strip">
             {squad.map((s) => (
-              <PlayerCardMini key={s.playerSlug} playerSlug={s.playerSlug} isCaptain={s.isCaptain} />
+              <PlayerCardMini
+                key={s.playerSlug}
+                playerSlug={s.playerSlug}
+                clubSlug={getPlayer(s.playerSlug)?.teamSlug}
+                isCaptain={s.isCaptain}
+              />
             ))}
             {Array.from({ length: Math.max(0, 3 - squad.length) }).map((_, i) => (
               <Link

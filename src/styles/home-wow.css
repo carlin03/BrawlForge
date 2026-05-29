@@ -127,12 +127,27 @@
 .bf-motion-app .fu-tour-marquee-track {
   animation-duration: 90s !important;
 }
-.fu-cards-showcase .fu-card-float:not(:hover) {
-  filter: brightness(0.92);
+.bf-home-cards-showcase .fu-card-float:not(:hover) {
+  filter: none;
 }
-.fu-cards-showcase .fu-card-float:hover {
+.bf-home-cards-showcase .fu-card-float:hover {
   z-index: 10;
-  filter: brightness(1.08);
+  filter: none;
+}
+.bf-home-hero-card {
+  pointer-events: auto;
+}
+.bf-home-hero-card .bf-card {
+  max-width: 200px;
+  width: 100%;
+  min-height: 300px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+.bf-home-hero-card .bf-card.has-motion:hover {
+  transform: translateY(-8px) scale(1.04);
+}
+.bf-home-cards-showcase .bf-card-ovr {
+  font-size: 2.5rem;
 }
 
 .bf-home-ultra .fu-hero.bf-home-hero {

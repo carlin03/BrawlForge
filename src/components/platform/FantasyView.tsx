@@ -33,6 +33,7 @@ import { getPlayer, getTeam, tournamentName, teamName, getFantasyRole, getPickRa
 import { PlayerCardMini } from "@/components/platform/PlayerCard";
 import { getTournament } from "@/lib/data/matches";
 import type { Region } from "@/lib/types";
+import { CountryFlag } from "@/components/ui/CountryFlag";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 
 type SortKey = "price" | "rating" | "change" | "pick";
@@ -523,7 +524,9 @@ export function FantasyView() {
                         {team.country && (
                           <div className="bf-fantasy-stat-chip">
                             <span className="bf-fantasy-stat-label">País</span>
-                            <strong>{team.country}</strong>
+                            <strong className="bf-fantasy-stat-flag">
+                              <CountryFlag country={team.country} size={20} />
+                            </strong>
                           </div>
                         )}
                         {team.form?.length > 0 && (

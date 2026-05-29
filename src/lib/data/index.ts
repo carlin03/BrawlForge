@@ -53,6 +53,7 @@ export {
   isPlayerInTournament,
   isPlayerInSquad,
   getTrendingClass,
+  getTournamentPlayerPool,
 } from "./fantasy";
 export type { FantasySquadSlot, FantasyLeague, TournamentFantasyProfile, FantasyLeaderboardEntry, MarketPlayer } from "./fantasy";
 export { openPredictions, closedPredictions, userPredictorProfile, getPredictionLabel, getPredictionTournament, hasCommunityVotes } from "./predictions";

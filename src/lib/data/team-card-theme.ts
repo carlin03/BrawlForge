@@ -11,7 +11,7 @@ const TEAM_COLORS: Record<string, TeamCardTheme> = {
   "crazy-raccoon": { primary: "#e85d04", secondary: "#1a1a2e", glow: "#ff6b35" },
   "sk-gaming": { primary: "#ff1744", secondary: "#1a0a12", glow: "#ff5252" },
   hmble: { primary: "#ffc82e", secondary: "#2a2200", glow: "#ffd54f" },
-  "tribe-gaming": { primary: "#00c853", secondary: "#0a1a10", glow: "#69f0ae" },
+  "tribe-gaming": { primary: "#e53935", secondary: "#1a0808", glow: "#ff5252" },
   "fut-esports": { primary: "#00bcd4", secondary: "#0a1820", glow: "#4dd0e1" },
   "fut-esports-academy": { primary: "#00acc1", secondary: "#0a1820", glow: "#26c6da" },
   "totem-esports": { primary: "#7c4dff", secondary: "#150a28", glow: "#b388ff" },
@@ -54,6 +54,18 @@ const TEAM_COLORS: Record<string, TeamCardTheme> = {
   "ace-xero": { primary: "#e53935", secondary: "#1a0808", glow: "#ef5350" },
   "toxic-lotus": { primary: "#8e24aa", secondary: "#140a1a", glow: "#ab47bc" },
   "revenant-xspark": { primary: "#5e35b1", secondary: "#120a20", glow: "#7e57c2" },
+  "papara-supermassive": { primary: "#ffc82e", secondary: "#1a1600", glow: "#ffd54f" },
+  "spacestation-gaming": { primary: "#1e88e5", secondary: "#0a1420", glow: "#42a5f5" },
+  "alpha7-esports": { primary: "#7b1fa2", secondary: "#140a1a", glow: "#ab47bc" },
+  "cream-esports": { primary: "#ff7043", secondary: "#1a1008", glow: "#ff8a65" },
+  "enterprise-esports": { primary: "#78909c", secondary: "#101418", glow: "#b0bec5" },
+  "geng-esports": { primary: "#ff9800", secondary: "#1a1008", glow: "#ffb74d" },
+  "nova-esports": { primary: "#29b6f6", secondary: "#0a1420", glow: "#4fc3f7" },
+  "qlash": { primary: "#7c4dff", secondary: "#150a28", glow: "#b388ff" },
+  "acre-lovers": { primary: "#66bb6a", secondary: "#0a1810", glow: "#81c784" },
+  intz: { primary: "#ff1744", secondary: "#1a0808", glow: "#ff5252" },
+  oddyssey: { primary: "#00acc1", secondary: "#0a1820", glow: "#26c6da" },
+  "chasmac-gaming-br": { primary: "#8bc34a", secondary: "#101808", glow: "#aed581" },
 };
 
 const REGION_FALLBACK: Record<Region, TeamCardTheme> = {
@@ -80,9 +92,9 @@ function themeFromHue(slug: string): TeamCardTheme {
   };
 }
 
-export function getTeamCardTheme(teamSlug: string, region?: Region): TeamCardTheme {
+/** Colores del club; no usa región (evita EA=rojo en logos azules, etc.). */
+export function getTeamCardTheme(teamSlug: string, _region?: Region): TeamCardTheme {
   if (TEAM_COLORS[teamSlug]) return TEAM_COLORS[teamSlug];
-  if (region && REGION_FALLBACK[region]) return REGION_FALLBACK[region];
   return themeFromHue(teamSlug);
 }
 

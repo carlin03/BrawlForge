@@ -4,7 +4,7 @@ import Link from "next/link";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TeamCardWatermark } from "@/components/ui/TeamCardWatermark";
-import { RegionBadge } from "@/components/ui/RegionBadge";
+import { CountryFlag } from "@/components/ui/CountryFlag";
 import { getTeam, teamName, getFantasyRole } from "@/lib/data";
 import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
 import { useResolvedPlayer } from "@/hooks/useResolvedEntity";
@@ -101,13 +101,21 @@ export function PlayerCard({
       <div className="bf-card-identity">
         <div className="bf-card-name">{p.ign}</div>
         <div className="bf-card-team">{club?.name ?? teamName(displayClub)}</div>
-        <RegionBadge region={p.region} />
+        {club?.country && (
+          <div className="bf-card-country-row">
+            <CountryFlag country={club.country} size={18} className="bf-card-country-flag" />
+          </div>
+        )}
         <div className={`bf-card-extra-slot ${showExtended ? "" : "is-empty"}`}>
           {showExtended && (
             <div className="bf-card-extra">
               <span className="bf-card-extra-pill">{role}</span>
               <span className="bf-card-extra-pill">{statusLabel}</span>
-              {club?.country && <span className="bf-card-extra-meta">{club.country}</span>}
+              {club?.country && (
+                <span className="bf-card-extra-meta bf-card-extra-flag">
+                  <CountryFlag country={club.country} size={14} />
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -207,26 +215,36 @@ export function PlayerCard({
   );
 }
 
-export function PlayerCardMini({ playerSlug, isCaptain }: { playerSlug: string; isCaptain?: boolean }) {
+export function PlayerCardMini({
+  playerSlug,
+  isCaptain,
+  clubSlug,
+}: {
+  playerSlug: string;
+  isCaptain?: boolean;
+  clubSlug?: string;
+}) {
   const p = useResolvedPlayer(playerSlug);
-  if (!p?.teamSlug) return null;
+  const displayClub = clubSlug ?? p?.teamSlug;
+  if (!p || !displayClub) return null;
   const tier = getCardTier(p.rating, p.fantasyPoints);
-  const theme = getTeamCardTheme(p.teamSlug, p.region);
+  const club = getTeam(displayClub);
+  const theme = getTeamCardTheme(displayClub, club?.region ?? p.region);
   return (
     <Link
       href={`/players/${playerSlug}`}
       className={`bf-card-mini bf-card-premium-mini has-team-theme bf-card-${tier}${isCaptain ? " is-captain" : ""}`}
       style={teamCardThemeVars(theme, "mini")}
-      data-team={p.teamSlug}
+      data-team={displayClub}
     >
       <div className="bf-card-team-bg" aria-hidden>
         <div className="bf-card-team-glow" />
         <div className="bf-card-team-watermark is-mini">
-          <TeamCardWatermark slug={p.teamSlug} name={teamName(p.teamSlug)} />
+          <TeamCardWatermark slug={displayClub} name={club?.name ?? teamName(displayClub)} />
         </div>
       </div>
       <span className="bf-card-mini-ovr">{p.fantasyPoints}</span>
-      <TeamLogo slug={p.teamSlug} name={teamName(p.teamSlug)} size={40} />
+      <TeamLogo slug={displayClub} name={club?.name ?? teamName(displayClub)} size={40} />
       <span className="bf-card-mini-name">{p.ign}</span>
       {isCaptain && <span className="bf-card-captain sm">C</span>}
     </Link>

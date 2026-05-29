@@ -920,6 +920,13 @@
   font-weight: 800;
   font-size: 12px;
 }
+.bf-fantasy-stat-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  min-height: auto;
+}
 .bf-fantasy-team-head-stats strong {
   color: var(--bp-text);
   font-weight: 800;
@@ -1013,14 +1020,51 @@
 .bf-card:not(.bf-shine-hover):hover .bf-card-shine { transform: translateX(120%); }
 
 .bf-card-fut-head {
-  display: flex; justify-content: space-between; align-items: flex-start; z-index: 1; margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 8px;
+  min-height: 52px;
+  padding-top: 2px;
 }
 .bf-card-ovr {
-  font-family: var(--bp-head); font-size: 2.5rem; font-weight: 900; line-height: 1;
-  letter-spacing: -0.04em; color: var(--bp-gold); text-shadow: 0 2px 12px rgba(255,200,46,0.4);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--bp-head);
+  font-size: 2.35rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--bp-gold);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55), 0 0 20px rgba(255, 200, 46, 0.35);
+  padding: 2px 6px 4px 0;
 }
+.bf-card-lg .bf-card-ovr { font-size: 2.65rem; }
 .bf-card-hero .bf-card-ovr { font-size: 3.2rem; }
-.bf-card-fut-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.bf-card-sm .bf-card-ovr { font-size: 2rem; }
+.bf-card-fut-badges {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  max-width: 58%;
+}
+.bf-card-country-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+.bf-card-country-flag {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.bf-card-extra-flag {
+  display: inline-flex;
+  align-items: center;
+}
 .bf-card-role-pill {
   font-size: 9px; font-weight: 900; letter-spacing: 0.1em; padding: 4px 8px; border-radius: 6px;
   background: rgba(0,153,255,0.2); color: var(--bp-blue-bright); border: 1px solid rgba(0,153,255,0.35);
