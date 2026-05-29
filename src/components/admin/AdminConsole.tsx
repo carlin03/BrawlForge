@@ -126,15 +126,20 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       const res = await fetch("/api/admin/catalog?type=all");
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cargar");
-      setTeams(mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null));
-      setPlayers(mergeAdminPlayerRows(Array.isArray(data.players) ? data.players : null));
+      const mergedTeams = mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null);
+      const mergedPlayers = mergeAdminPlayerRows(Array.isArray(data.players) ? data.players : null);
+      setTeams(mergedTeams);
+      setPlayers(mergedPlayers);
       setNews(data.news ?? []);
       setMsg("Datos actualizados");
+      return { teams: mergedTeams, players: mergedPlayers };
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Error");
       setMsgError(true);
+      return null;
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -157,7 +162,23 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
       setMsg(data.message || "Cambios guardados");
-      await load();
+      const fresh = await load();
+      if (fresh) {
+        if (entity === "player") {
+          const slug = (row as PlayerWikiState).slug;
+          const p = fresh.players.find((x) => x.slug === slug);
+          if (p)
+            setSelectedPlayer(
+              playerRowToWikiState(p as AdminPlayerCatalogRow & Record<string, unknown>),
+            );
+        }
+        if (entity === "team") {
+          const slug = (row as TeamWikiState).slug;
+          const t = fresh.teams.find((x) => x.slug === slug);
+          if (t)
+            setSelectedTeam(teamRowToWikiState(t as AdminTeamCatalogRow & Record<string, unknown>));
+        }
+      }
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Error");
       setMsgError(true);
@@ -513,7 +534,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
           {selectedPlayer ? (
             <AdminPlayerWikiForm
               player={selectedPlayer}
-              teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag }))}
+              teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag, region: t.region }))}
               loading={loading}
               onChange={setSelectedPlayer}
               onSave={() => savePlayerWiki(selectedPlayer)}

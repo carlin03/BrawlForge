@@ -5,6 +5,7 @@ import { Save, Users } from "lucide-react";
 import { AdminCardFUTPreview } from "./AdminCardFUTPreview";
 import { CardWatermarkImage } from "@/components/ui/CardWatermarkImage";
 import { StudioColorPicker, StudioPanel, StudioToast } from "./studio-ui";
+import { AdminPlayerTeamPicker } from "@/components/admin/AdminPlayerTeamPicker";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import {
@@ -83,12 +84,12 @@ function WatermarkFields({
       </label>
       <label className="bf-studio-field">
         <span className="bf-studio-field-label">
-          Tamaño: <strong>{getWatermarkScale(watermark)}%</strong>
+          Tamaño: <strong>{getWatermarkScale(watermark)}%</strong> (0 = oculto)
         </span>
         <input
           type="range"
-          min={50}
-          max={200}
+          min={0}
+          max={300}
           value={getWatermarkScale(watermark)}
           onChange={(e) => patch({ scale: Number(e.target.value) })}
           className="bf-studio-range"
@@ -117,7 +118,10 @@ function WatermarkFields({
   );
 }
 
-async function upsertPlayerRow(row: AdminPlayerCatalogRow, patch: { photo_url?: string; meta: Record<string, unknown> }) {
+async function upsertPlayerRow(
+  row: AdminPlayerCatalogRow,
+  patch: { photo_url?: string; meta: Record<string, unknown>; team_slug?: string | null },
+) {
   const res = await fetch("/api/admin/catalog", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -126,6 +130,7 @@ async function upsertPlayerRow(row: AdminPlayerCatalogRow, patch: { photo_url?: 
       row: {
         ...row,
         photo_url: patch.photo_url ?? row.photo_url,
+        team_slug: patch.team_slug !== undefined ? patch.team_slug : row.team_slug,
         meta: patch.meta,
         profile: patch.meta,
       },
@@ -149,6 +154,7 @@ export function StudioCardsVisualPanel() {
   const [photoUrl, setPhotoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
   const [playerWatermark, setPlayerWatermark] = useState<CardWatermarkConfig>(parseCardWatermark(null));
+  const [playerTeamSlug, setPlayerTeamSlug] = useState<string | null>(null);
   const [applyToRoster, setApplyToRoster] = useState(true);
   const [syncRosterImage, setSyncRosterImage] = useState(true);
   const [syncRosterStyle, setSyncRosterStyle] = useState(true);
@@ -168,16 +174,18 @@ export function StudioCardsVisualPanel() {
       const p = mergeAdminPlayerRows(data.players ?? null);
       setTeams(t);
       setPlayers(p);
-      if (!selectedSlug && t.length) {
-        setSelectedSlug(t[0].slug);
-        setTheme(themeFromTeam(t[0].slug, t[0].meta));
-      }
+      setSelectedSlug((cur) => {
+        if (cur && (t.some((x) => x.slug === cur) || p.some((x) => x.slug === cur))) return cur;
+        if (mode === "players" && p[0]?.slug) return p[0].slug;
+        if (t[0]?.slug) return t[0].slug;
+        return "";
+      });
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Error");
       setMsgError(true);
     }
     setLoading(false);
-  }, [selectedSlug]);
+  }, [mode]);
 
   useEffect(() => {
     load();
@@ -190,18 +198,16 @@ export function StudioCardsVisualPanel() {
         setTheme(themeFromTeam(row.slug, row.meta));
         setBannerUrl(String(row.meta?.banner_url ?? ""));
       }
-    } else {
-      const row = players.find((p) => p.slug === selectedSlug);
-      if (row) {
-        setPhotoUrl(row.photo_url ?? "");
-        setBannerUrl(String(row.meta?.banner_url ?? ""));
-        setPlayerWatermark(watermarkFromPlayerMeta(row.meta));
-        if (row.team_slug) {
-          const club = teams.find((t) => t.slug === row.team_slug);
-          if (club) setTheme(themeFromTeam(club.slug, club.meta));
-        }
-      }
+      return;
     }
+    const row = players.find((p) => p.slug === selectedSlug);
+    if (!row) return;
+    setPhotoUrl(row.photo_url ?? "");
+    setBannerUrl(String(row.meta?.banner_url ?? ""));
+    setPlayerWatermark(watermarkFromPlayerMeta(row.meta));
+    setPlayerTeamSlug(row.team_slug ?? null);
+    const club = row.team_slug ? teams.find((t) => t.slug === row.team_slug) : null;
+    if (club) setTheme(themeFromTeam(club.slug, club.meta));
   }, [selectedSlug, mode, teams, players]);
 
   async function save() {
@@ -249,22 +255,19 @@ export function StudioCardsVisualPanel() {
           banner_url: bannerUrl || undefined,
         };
         meta = mergeCardWatermarkIntoMeta(meta, playerWatermark);
-        const res = await fetch("/api/admin/catalog", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            entity: "player",
-            row: {
-              ...row,
-              photo_url: photoUrl,
-              meta,
-              profile: meta,
-            },
-          }),
+        await upsertPlayerRow(row, {
+          photo_url: photoUrl,
+          meta,
+          team_slug: playerTeamSlug,
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Error");
-        setMsg(data.message || "Foto, marca y banner del jugador guardados");
+        setPlayers((prev) =>
+          prev.map((p) =>
+            p.slug === selectedSlug
+              ? { ...p, photo_url: photoUrl, team_slug: playerTeamSlug, meta }
+              : p,
+          ),
+        );
+        setMsg("Foto, club, marca y banner del jugador guardados");
       }
       await load();
     } catch (e) {
@@ -280,8 +283,8 @@ export function StudioCardsVisualPanel() {
   const previewClub =
     mode === "teams"
       ? teamRow
-      : playerRow?.team_slug
-        ? teams.find((t) => t.slug === playerRow.team_slug)
+      : playerTeamSlug
+        ? teams.find((t) => t.slug === playerTeamSlug)
         : undefined;
 
   const rosterCount =
@@ -382,7 +385,7 @@ export function StudioCardsVisualPanel() {
           </ul>
         </aside>
 
-        <div className="bf-studio-cards-editor">
+        <div className="bf-studio-cards-editor" key={`${mode}-${selectedSlug}`}>
           {mode === "teams" && teamRow && (
             <>
               <AdminCardFUTPreview
@@ -444,6 +447,24 @@ export function StudioCardsVisualPanel() {
                   placeholder="https://…"
                 />
               </label>
+            </>
+          )}
+          {mode === "players" && playerRow && (
+            <>
+              <div className="bf-studio-field">
+                <span className="bf-studio-field-label">Club del jugador</span>
+                <AdminPlayerTeamPicker
+                  key={selectedSlug}
+                  teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag, region: t.region }))}
+                  value={playerTeamSlug}
+                  onChange={(slug) => {
+                    setPlayerTeamSlug(slug);
+                    const club = slug ? teams.find((t) => t.slug === slug) : null;
+                    if (club) setTheme(themeFromTeam(club.slug, club.meta));
+                  }}
+                  compact
+                />
+              </div>
             </>
           )}
           {mode === "players" && playerRow && previewClub && previewTheme && (
@@ -525,7 +546,9 @@ export function StudioCardsVisualPanel() {
             </>
           )}
           {mode === "players" && playerRow && !previewClub && (
-            <p className="bf-studio-hint">Este jugador no tiene equipo asignado; no hay vista previa de carta.</p>
+            <p className="bf-studio-hint">
+              Asigna un club arriba para ver la vista previa de carta con sus colores y marca.
+            </p>
           )}
         </div>
       </div>

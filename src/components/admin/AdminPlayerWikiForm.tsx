@@ -12,6 +12,8 @@ import {
   type PlayerProfileMeta,
   type SocialLinks,
 } from "@/lib/data/profile-wiki";
+import { AdminPlayerTeamPicker } from "@/components/admin/AdminPlayerTeamPicker";
+import type { AdminTeamPickerOption } from "@/components/admin/AdminTeamLogoPicker";
 import {
   AdminTabBar,
   AdminSocialEditor,
@@ -112,21 +114,13 @@ export function AdminPlayerWikiForm({
               onChange={(e) => onChange({ ...player, profile: { ...p, nickname: e.target.value } })}
             />
           </AdminField>
-          <AdminField label="Club actual">
-            <select
-              value={player.team_slug ?? ""}
-              onChange={(e) => onChange({ ...player, team_slug: e.target.value || null })}
-            >
-              <option value="">— Sin equipo —</option>
-              {teams
-                .slice()
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((t) => (
-                  <option key={t.slug} value={t.slug}>
-                    {t.tag} · {t.name}
-                  </option>
-                ))}
-            </select>
+          <AdminField label="Club actual" hint="Elige un club; se actualiza la plantilla del equipo al guardar.">
+            <AdminPlayerTeamPicker
+              key={player.slug}
+              teams={teams}
+              value={player.team_slug}
+              onChange={(team_slug) => onChange({ ...player, team_slug })}
+            />
           </AdminField>
           <AdminFieldRow>
             <AdminField label="Región">

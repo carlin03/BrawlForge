@@ -18,6 +18,7 @@ export function CardWatermarkLayer({
   const wm = config ?? { opacity: 48, scale: 100 };
   const scalePct = getWatermarkScale(wm);
   const opacityPct = wm.opacity ?? 48;
+  if (scalePct <= 0 || opacityPct <= 0) return null;
   const opacity = Math.min(1, Math.max(0, opacityPct / 100));
   const customUrl = wm.image_url?.trim();
   const showBehind = wm.show_team_logo_behind !== false && customUrl;

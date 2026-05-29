@@ -9,7 +9,7 @@ export type CardWatermarkConfig = {
   opacity?: number;
   /** @deprecated Usar scale. Se mantiene por datos antiguos. */
   size?: CardWatermarkSize;
-  /** 50–200 (%). Tamaño de la marca en la carta. */
+  /** 0–300 (%). 0 = oculto; 100 = normal; >100 = más grande. */
   scale?: number;
   /** Si hay image_url, mantener logo del club muy suave detrás */
   show_team_logo_behind?: boolean;
@@ -23,10 +23,14 @@ export function watermarkScaleFromLegacy(size?: CardWatermarkSize): number {
   return DEFAULT_WATERMARK_SCALE;
 }
 
+export function clampWatermarkScale(scale: number): number {
+  return Math.min(300, Math.max(0, Math.round(scale)));
+}
+
 export function getWatermarkScale(wm?: CardWatermarkConfig | null): number {
   if (!wm) return DEFAULT_WATERMARK_SCALE;
   if (typeof wm.scale === "number") {
-    return Math.min(200, Math.max(50, Math.round(wm.scale)));
+    return clampWatermarkScale(wm.scale);
   }
   return watermarkScaleFromLegacy(wm.size);
 }
@@ -54,7 +58,7 @@ export function parseCardWatermark(raw: unknown): CardWatermarkConfig {
       : DEFAULT_WATERMARK.opacity!;
   const scale =
     typeof o.scale === "number"
-      ? Math.min(200, Math.max(50, Math.round(o.scale)))
+      ? clampWatermarkScale(o.scale)
       : watermarkScaleFromLegacy(size);
   return {
     image_url: o.image_url ? String(o.image_url).trim() : undefined,

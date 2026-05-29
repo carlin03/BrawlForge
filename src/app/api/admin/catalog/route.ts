@@ -28,6 +28,33 @@ import {
 
 export const dynamic = "force-dynamic";
 
+async function syncPlayerRosterOnTeamChange(
+  supabase: NonNullable<Awaited<ReturnType<typeof createClient>>>,
+  playerSlug: string,
+  newTeamSlug: string | null,
+  oldTeamSlug: string | null,
+) {
+  if (!oldTeamSlug && !newTeamSlug) return;
+  if (oldTeamSlug === newTeamSlug) return;
+
+  const pullRoster = async (teamSlug: string) => {
+    const { data } = await supabase.from("teams_catalog").select("roster_slugs").eq("slug", teamSlug).maybeSingle();
+    return Array.isArray(data?.roster_slugs) ? [...data.roster_slugs] : [];
+  };
+
+  if (oldTeamSlug) {
+    const roster = (await pullRoster(oldTeamSlug)).filter((s) => s !== playerSlug);
+    await supabase.from("teams_catalog").update({ roster_slugs: roster }).eq("slug", oldTeamSlug);
+  }
+  if (newTeamSlug) {
+    const roster = await pullRoster(newTeamSlug);
+    if (!roster.includes(playerSlug)) {
+      roster.push(playerSlug);
+      await supabase.from("teams_catalog").update({ roster_slugs: roster }).eq("slug", newTeamSlug);
+    }
+  }
+}
+
 export async function GET(request: Request) {
   const auth = await requireAdmin();
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
@@ -198,6 +225,16 @@ export async function POST(request: Request) {
 
   if (entity === "player") {
     const p = getPlayer(String(row.slug));
+    const playerSlug = String(row.slug);
+    let previousTeamSlug: string | null = null;
+    if (supabase) {
+      const { data: prev } = await supabase
+        .from("players_catalog")
+        .select("team_slug")
+        .eq("slug", playerSlug)
+        .maybeSingle();
+      previousTeamSlug = prev?.team_slug ? String(prev.team_slug) : null;
+    }
     const rawMeta =
       row.meta && typeof row.meta === "object" && !Array.isArray(row.meta)
         ? (row.meta as Record<string, unknown>)
@@ -261,13 +298,17 @@ export async function POST(request: Request) {
       }));
     }
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (supabase) {
+      await syncPlayerRosterOnTeamChange(supabase, playerSlug, payload.team_slug, previousTeamSlug);
+    }
     await logCmsAudit({
       action: "catalog.upsert",
       entityType: "player",
       entityId: payload.slug,
-      diff: { ign: payload.ign },
+      diff: { ign: payload.ign, team_slug: payload.team_slug },
     });
-    return NextResponse.json({ ok: true, message: `Jugador ${payload.ign} guardado` });
+    const teamNote = payload.team_slug ? ` · Club: ${payload.team_slug}` : " · Sin club";
+    return NextResponse.json({ ok: true, message: `Jugador ${payload.ign} guardado${teamNote}` });
   }
 
   if (entity === "tournament") {

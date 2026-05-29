@@ -21,8 +21,8 @@ export function BrandMark({ size = 36, className = "" }: BrandMarkProps) {
       <defs>
         <linearGradient id="bf-mark" x1="4" y1="5" x2="36" y2="33">
           <stop stopColor="#FF4D5A" />
-          <stop offset="0.5" stopColor="#FDCB2D" />
-          <stop offset="1" stopColor="#3B82F6" />
+          <stop offset="0.55" stopColor="#ff4569" />
+          <stop offset="1" stopColor="#e0354a" />
         </linearGradient>
       </defs>
     </svg>
