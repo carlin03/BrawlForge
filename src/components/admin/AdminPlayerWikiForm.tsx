@@ -168,6 +168,9 @@ export function AdminPlayerWikiForm({
 
       {tab === "bio" && (
         <div className="bf-admin-tab-panel">
+          <AdminMeta>
+            Biografía larga y secciones → pestaña <strong>Historia</strong> en la ficha del jugador.
+          </AdminMeta>
           <AdminField label="Biografía corta" hint="Resumen en la pestaña Perfil">
             <textarea
               rows={4}

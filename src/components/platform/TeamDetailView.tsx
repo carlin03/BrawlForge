@@ -24,19 +24,24 @@ import { getTeamComputedStats } from "@/lib/data/entity-stats";
 import { useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { parseTeamMeta } from "@/lib/data/profile-wiki";
 import {
-  WikiDetailBanner,
-  WikiFunFactsBlock,
-  WikiGalleryBlock,
-  WikiRivalsBlock,
-  WikiSectionsBlock,
-  WikiSocialBlock,
-} from "@/components/platform/WikiProfileBlocks";
+  ProfileAchievementsShowcase,
+  ProfileArticleShell,
+  ProfileCinematicBanner,
+  ProfileFactsGrid,
+  ProfileHistoryTab,
+  ProfileInfobox,
+  ProfileLead,
+  ProfileSectionHeader,
+  ProfileSocialHub,
+  ProfileWikiArticle,
+  type InfoboxRow,
+} from "@/components/platform/EntityProfileLayout";
 
 function clean(s: string) {
   return s.replace(/<!--[\s\S]*?-->/g, "").trim();
 }
 
-type TabId = "overview" | "roster" | "matches" | "tournaments" | "trophies";
+type TabId = "overview" | "history" | "roster" | "matches" | "tournaments" | "trophies";
 
 export function TeamDetailView({ slug }: { slug: string }) {
   const team = useResolvedTeam(slug);
@@ -72,35 +77,49 @@ export function TeamDetailView({ slug }: { slug: string }) {
   const tourHistory = getTeamTournamentHistory(slug, 12);
   const registered = getTeamRegisteredTournaments(slug, 10);
 
-  const computed = getTeamComputedStats(
-    slug,
-    rosterPlayers.map((p) => p.slug),
-  );
+  const computed = getTeamComputedStats(slug, rosterPlayers.map((p) => p.slug));
   const avgRating = computed.avgRating.toFixed(2);
   const avgPts = computed.avgFantasyPts;
   const winRate = computed.winRate;
   const social = team.social as Record<string, string>;
-  const meta = team.meta as Record<string, unknown>;
-  const profile = parseTeamMeta(meta);
+  const profile = parseTeamMeta(team.meta);
   const founded =
     team.foundedYear != null
       ? String(team.foundedYear)
-      : typeof meta.founded === "string"
-        ? meta.founded
+      : typeof team.meta?.founded === "string"
+        ? team.meta.founded
         : null;
-  const coach = team.coach ?? (typeof meta.coach === "string" ? meta.coach : null);
-  const tagline =
-    profile.tagline ||
-    team.circuitSummary ||
-    `${team.tag} · ${team.country}`;
-  const hasWikiExtra =
-    Boolean(profile.wiki_sections?.length) ||
-    Boolean(profile.fun_facts?.length) ||
-    Boolean(profile.gallery_urls?.length) ||
-    Boolean(profile.rivals?.length);
+  const coach = team.coach ?? (typeof team.meta?.coach === "string" ? team.meta.coach : null);
+  const tagline = profile.tagline || team.circuitSummary || `${team.tag} · ${team.country}`;
+  const liquipedia = team.liquipediaUrl || null;
+  const intro =
+    team.description ||
+    `${team.name} compite en el circuito Brawl Stars Championship (${team.region}). Plantilla de ${rosterPlayers.length} jugadores con rating medio ${avgRating} y ${winRate}% de victorias en partidos registrados.`;
+
+  const infoboxRows: InfoboxRow[] = [
+    { label: "Región", value: <RegionBadge region={team.region} />, highlight: true },
+    { label: "País", value: team.country || "—" },
+    { label: "Ranking", value: team.rank ? `#${team.rank} global` : "—", highlight: true },
+    { label: "Premios", value: `$${(team.earnings / 1000).toFixed(0)}K` },
+    { label: "Plantilla", value: `${rosterPlayers.length} jugadores` },
+    { label: "Win rate", value: `${winRate}%` },
+    { label: "Rating medio", value: avgRating },
+    { label: "OVR fantasy", value: String(avgPts) },
+    founded ? { label: "Fundación", value: founded } : { label: "Fundación", value: "—" },
+    coach ? { label: "Entrenador", value: coach } : { label: "Entrenador", value: "—" },
+    { label: "Torneos", value: String(computed.tournamentsPlayed) },
+  ];
 
   const tabs = [
     { id: "overview" as const, label: "Resumen" },
+    {
+      id: "history" as const,
+      label: "Historia",
+      count:
+        (profile.wiki_sections?.length ?? 0) +
+        (profile.fun_facts?.length ?? 0) +
+        (profile.gallery_urls?.length ?? 0),
+    },
     { id: "roster" as const, label: "Plantilla", count: rosterPlayers.length },
     { id: "matches" as const, label: "Partidos", count: upcoming.length + liveNow.length },
     { id: "tournaments" as const, label: "Torneos", count: tourHistory.length },
@@ -110,32 +129,33 @@ export function TeamDetailView({ slug }: { slug: string }) {
   const showcasePlayers = rosterPlayers.slice(0, 3);
 
   return (
-    <div className="bf-team-page bf-detail-page bf-page-ultra">
-      <WikiDetailBanner url={profile.banner_url} />
-      <section className="bf-detail-hero-premium">
+    <div className="bf-team-page bf-detail-page bf-page-ultra bf-entity-page">
+      <ProfileCinematicBanner url={profile.banner_url} accent="var(--bp-gold)" />
+
+      <section className="bf-detail-hero-premium bf-ep-hero">
         <div className="bf-detail-hero-premium-bg" aria-hidden />
         <div className="bf-detail-hero-premium-grid">
-          <div className="bf-detail-logo-ring">
-            <TeamLogo slug={team.slug} name={team.name} size={112} />
+          <div className="bf-detail-logo-ring bf-ep-logo-ring">
+            <TeamLogo slug={team.slug} name={team.name} size={120} />
           </div>
-          <div>
+          <div className="bf-ep-hero-copy">
             <div className="bf-team-hero-badges">
               <span className="bp-chip bp-chip-gold">#{team.rank || "—"} global</span>
               <RegionBadge region={team.region} />
               <CountryFlag country={team.country} size={20} />
               <FormDots form={computed.recentForm.length ? computed.recentForm : team.form} />
             </div>
+            <p className="bf-ep-hero-kicker">{team.tag}</p>
             <h1 className="bf-detail-hero-name">{team.name}</h1>
             <p className="bf-detail-hero-tagline">{tagline}</p>
-            {profile.motto && (
-              <p className="bf-detail-hero-motto">&ldquo;{profile.motto}&rdquo;</p>
-            )}
-            <p className="bf-detail-hero-tagline" style={{ marginTop: 6 }}>
-              ${(team.earnings / 1000).toFixed(0)}K premios · {computed.tournamentsPlayed} torneos disputados
-            </p>
+            {profile.motto && <p className="bf-detail-hero-motto">&ldquo;{profile.motto}&rdquo;</p>}
             {computed.topPlayer && (
-              <p className="bf-detail-hero-tagline" style={{ marginTop: 8 }}>
-                Estrella: <strong>{computed.topPlayer.ign}</strong> · OVR {computed.topPlayer.fantasyPoints}
+              <p className="bf-ep-hero-star">
+                Estrella del roster:{" "}
+                <Link href={`/players/${computed.topPlayer.slug}`}>
+                  <strong>{computed.topPlayer.ign}</strong>
+                </Link>{" "}
+                · OVR {computed.topPlayer.fantasyPoints}
               </p>
             )}
             <div className="bf-team-hero-actions">
@@ -147,10 +167,15 @@ export function TeamDetailView({ slug }: { slug: string }) {
               <Link href="/predictions" className="bp-btn bp-btn-red">
                 Predicciones
               </Link>
+              {liquipedia && (
+                <a href={liquipedia} target="_blank" rel="noopener noreferrer" className="bp-btn bp-btn-ghost">
+                  Liquipedia
+                </a>
+              )}
             </div>
           </div>
           {showcasePlayers.length > 0 && (
-            <div className="bf-detail-roster-float" aria-hidden={showcasePlayers.length === 0}>
+            <div className="bf-detail-roster-float">
               {showcasePlayers.map((p) => (
                 <PlayerCard
                   key={p.slug}
@@ -166,15 +191,15 @@ export function TeamDetailView({ slug }: { slug: string }) {
         </div>
       </section>
 
-      <div className="bf-stat-grid-premium">
+      <div className="bf-stat-grid-premium bf-ep-stat-ribbon">
         <div className="bf-stat-card-premium"><b>{rosterPlayers.length}</b><span>Plantilla</span></div>
         <div className="bf-stat-card-premium"><b>{avgRating}</b><span>Rating medio</span></div>
         <div className="bf-stat-card-premium"><b>{avgPts}</b><span>OVR fantasy</span></div>
         <div className="bf-stat-card-premium"><b>{winRate}%</b><span>Win rate</span></div>
         <div className="bf-stat-card-premium"><b>{computed.wins}W</b><span>Últimos {computed.finishedMatches}</span></div>
-        <div className="bf-stat-card-premium"><b>{computed.totalMatches}</b><span>Partidos totales</span></div>
-        <div className="bf-stat-card-premium"><b>{team.achievements.length}</b><span>Trofeos</span></div>
+        <div className="bf-stat-card-premium"><b>{team.achievements.length}</b><span>Títulos</span></div>
         <div className="bf-stat-card-premium"><b>{computed.tournamentsPlayed}</b><span>Torneos</span></div>
+        <div className="bf-stat-card-premium"><b>${(team.earnings / 1000).toFixed(0)}K</b><span>Premios</span></div>
       </div>
 
       <DetailTabs
@@ -185,57 +210,98 @@ export function TeamDetailView({ slug }: { slug: string }) {
       />
 
       {tab === "overview" && (
-        <div className="bf-detail-panel bf-stagger">
-          <section className="bf-detail-info-grid">
-            <div className="bf-info-block-premium">
-              <h3>Sobre el club</h3>
-              <p className="bf-detail-prose">
-                {team.description ||
-                  `${team.name} compite en el circuito Brawl Stars Championship (${team.region}). Plantilla de ${rosterPlayers.length} jugadores activos con rating medio ${avgRating}.`}
-              </p>
-              <dl className="bf-detail-dl">
-                <div><dt>Región</dt><dd><RegionBadge region={team.region} /></dd></div>
-                <div><dt>País</dt><dd>{team.country || "—"}</dd></div>
-                <div><dt>Premios</dt><dd>${(team.earnings / 1000).toFixed(0)}K</dd></div>
-                {founded && <div><dt>Fundado</dt><dd>{founded}</dd></div>}
-                {coach && <div><dt>Coach</dt><dd>{coach}</dd></div>}
-              </dl>
-            </div>
-            <WikiSocialBlock social={social} />
-          </section>
-          <WikiSectionsBlock sections={profile.wiki_sections ?? []} />
-          <WikiFunFactsBlock facts={profile.fun_facts ?? []} />
-          <WikiRivalsBlock rivals={profile.rivals ?? []} />
-          {hasWikiExtra && <WikiGalleryBlock urls={profile.gallery_urls ?? []} />}
-          <section className="bf-team-section">
-            <div className="bf-home-block-head">
-              <h2 className="bf-home-block-title">Plantilla destacada</h2>
-              <button type="button" className="bf-home-link" onClick={() => setTab("roster")}>
-                Ver todos
-              </button>
-            </div>
-            <div className="bf-team-roster-cards">
-              {rosterPlayers.slice(0, 4).map((p) => (
-                <PlayerCard
-                  key={p.slug}
-                  playerSlug={p.slug}
-                  clubSlug={slug}
-                  size="md"
-                  price={getPlayerPrice(p.slug)}
-                  href={`/players/${p.slug}`}
-                />
-              ))}
-            </div>
-          </section>
+        <div className="bf-detail-panel bf-ep-overview">
+          <ProfileArticleShell
+            main={
+              <>
+                <ProfileLead>{intro}</ProfileLead>
+                {team.circuitSummary && (
+                  <section className="bf-ep-circuit-card">
+                    <h3>Circuito BSC 2026</h3>
+                    <p>{team.circuitSummary}</p>
+                  </section>
+                )}
+                {profile.wiki_sections && profile.wiki_sections.length > 0 && (
+                  <section className="bf-ep-preview-block">
+                    <ProfileSectionHeader
+                      title="Extracto"
+                      action={
+                        <button type="button" className="bf-home-link" onClick={() => setTab("history")}>
+                          Leer ficha completa
+                        </button>
+                      }
+                    />
+                    <ProfileWikiArticle sections={profile.wiki_sections.slice(0, 1)} />
+                  </section>
+                )}
+                <ProfileFactsGrid facts={profile.fun_facts ?? []} title="En cifras" />
+                {team.achievements.length > 0 && (
+                  <section className="bf-ep-preview-block">
+                    <ProfileSectionHeader
+                      title="Últimos logros"
+                      action={
+                        <button type="button" className="bf-home-link" onClick={() => setTab("trophies")}>
+                          Ver palmarés
+                        </button>
+                      }
+                    />
+                    <ProfileAchievementsShowcase achievements={team.achievements.slice(0, 3)} compact />
+                  </section>
+                )}
+                <section className="bf-team-section">
+                  <ProfileSectionHeader
+                    title="Plantilla destacada"
+                    action={
+                      <button type="button" className="bf-home-link" onClick={() => setTab("roster")}>
+                        Ver todos
+                      </button>
+                    }
+                  />
+                  <div className="bf-team-roster-cards">
+                    {rosterPlayers.slice(0, 4).map((p) => (
+                      <PlayerCard
+                        key={p.slug}
+                        playerSlug={p.slug}
+                        clubSlug={slug}
+                        size="md"
+                        showExtended
+                        price={getPlayerPrice(p.slug)}
+                        href={`/players/${p.slug}`}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </>
+            }
+            aside={
+              <>
+                <ProfileInfobox title={team.name} subtitle={team.tag} rows={infoboxRows} />
+                <ProfileSocialHub social={social} liquipediaUrl={liquipedia} />
+              </>
+            }
+          />
+        </div>
+      )}
+
+      {tab === "history" && (
+        <div className="bf-detail-panel">
+          <ProfileHistoryTab
+            sections={profile.wiki_sections ?? []}
+            facts={profile.fun_facts ?? []}
+            rivals={profile.rivals}
+            galleryUrls={profile.gallery_urls ?? []}
+            achievements={team.achievements}
+            social={social}
+            liquipediaUrl={liquipedia}
+            emptyHint="Aún no hay artículo largo para este club. El contenido se edita desde el panel de administración → Equipos → Historia."
+          />
         </div>
       )}
 
       {tab === "roster" && (
         <section className="bf-team-section bf-detail-panel">
-          <div className="bf-home-block-head">
-            <h2 className="bf-home-block-title">Plantilla completa</h2>
-            <span className="bf-team-section-hint">{rosterPlayers.length} jugadores</span>
-          </div>
+          <ProfileSectionHeader title="Plantilla completa" />
+          <p className="bf-team-section-hint">{rosterPlayers.length} jugadores activos en el roster</p>
           <div className="bf-team-roster-cards">
             {rosterPlayers.map((p) => (
               <PlayerCard
@@ -282,10 +348,10 @@ export function TeamDetailView({ slug }: { slug: string }) {
 
       {tab === "tournaments" && (
         <section className="bf-team-section bf-detail-panel">
-          <div className="bf-home-block-head">
-            <h2 className="bf-home-block-title">Historial competitivo</h2>
-            <Link href="/tournaments" className="bf-home-link">Ver torneos</Link>
-          </div>
+          <ProfileSectionHeader
+            title="Historial competitivo"
+            action={<Link href="/tournaments" className="bf-home-link">Ver torneos</Link>}
+          />
           <div className="bf-team-tour-list">
             {tourHistory.map((t) => (
               <Link key={t.slug} href={`/tournaments/${t.slug}`} className="bf-team-tour-row bf-hover-lift">
@@ -318,22 +384,12 @@ export function TeamDetailView({ slug }: { slug: string }) {
       )}
 
       {tab === "trophies" && (
-        <section className="bf-team-section bf-detail-panel">
-          <h2 className="bf-home-block-title">Palmarés</h2>
+        <section className="bf-team-section bf-detail-panel bf-ep-trophies">
+          <ProfileSectionHeader title="Palmarés y trofeos" />
           {team.achievements.length === 0 ? (
-            <p className="bf-home-empty">Sin títulos registrados aún.</p>
+            <p className="bf-home-empty">Sin títulos registrados. Añádelos desde el admin en la pestaña Palmarés.</p>
           ) : (
-            <div className="bf-team-achievements">
-              {team.achievements.map((a, i) => (
-                <div key={i} className="bf-team-achievement bf-hover-lift">
-                  <span className="bf-team-ach-place">{a.place}</span>
-                  <div>
-                    <strong>{a.tournament}</strong>
-                    <span>{a.prize} · {a.date}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ProfileAchievementsShowcase achievements={team.achievements} />
           )}
         </section>
       )}

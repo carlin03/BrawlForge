@@ -10,6 +10,11 @@ export type PlayerExtras = {
   bio: string | null;
   country: string | null;
   photoUrl: string | null;
+  joinDate?: string;
+  liquipediaUrl?: string;
+  isCaptain: boolean;
+  previousTeams: string[];
+  primaryBrawler: string | null;
   social: Record<string, unknown>;
   meta: Record<string, unknown>;
 };
@@ -42,8 +47,26 @@ export function mergeCatalogPlayer(
     rating: Number(row!.rating),
   };
   if (!row) {
-    return { ...base, bio: null, country: null, photoUrl: null, social: {}, meta: {} };
+    return {
+      ...base,
+      bio: null,
+      country: null,
+      photoUrl: null,
+      joinDate: base.joinDate,
+      liquipediaUrl: base.liquipediaUrl,
+      isCaptain: false,
+      previousTeams: [],
+      primaryBrawler: null,
+      social: {},
+      meta: {},
+    };
   }
+  const rowExtra = row as CatalogPlayerRow & {
+    liquipedia_url?: string | null;
+    is_captain?: boolean;
+    previous_teams?: string[];
+    primary_brawler?: string | null;
+  };
   const photoFromMeta =
     typeof row.meta?.photo_url === "string" && row.meta.photo_url.trim()
       ? row.meta.photo_url.trim()
@@ -63,6 +86,16 @@ export function mergeCatalogPlayer(
     bio: row.bio,
     country: row.country,
     photoUrl,
+    joinDate: row.join_date ?? base.joinDate,
+    liquipediaUrl:
+      rowExtra.liquipedia_url ??
+      (row.liquipedia_page
+        ? `https://liquipedia.net/brawlstars/${row.liquipedia_page.replace(/ /g, "_")}`
+        : undefined) ??
+      base.liquipediaUrl,
+    isCaptain: Boolean(rowExtra.is_captain),
+    previousTeams: Array.isArray(rowExtra.previous_teams) ? rowExtra.previous_teams : [],
+    primaryBrawler: rowExtra.primary_brawler ?? null,
     social: row.social ?? {},
     meta: row.meta ?? {},
   };

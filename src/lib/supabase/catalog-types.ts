@@ -30,6 +30,11 @@ export interface CatalogPlayerRow {
   role: string;
   status: string;
   liquipedia_page: string | null;
+  liquipedia_url?: string | null;
+  is_captain?: boolean;
+  previous_teams?: string[];
+  primary_brawler?: string | null;
+  secondary_brawler?: string | null;
   fantasy_points: number;
   fantasy_ownership: number;
   rating: number;

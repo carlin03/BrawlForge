@@ -185,6 +185,10 @@ export function AdminTeamWikiForm({
 
       {tab === "historia" && (
         <div className="bf-admin-tab-panel">
+          <AdminMeta>
+            En la web pública esto aparece en la pestaña <strong>Historia</strong> con índice, galería y datos
+            clave. La descripción corta va en Resumen.
+          </AdminMeta>
           <AdminField label="Descripción principal" hint="Texto introductorio de la ficha">
             <textarea
               rows={5}

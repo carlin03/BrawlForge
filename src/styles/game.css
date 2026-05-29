@@ -3603,6 +3603,527 @@
   margin-top: 0;
 }
 
+/* ── Entity profiles (equipos / jugadores) ── */
+.bf-entity-page { --ep-accent: var(--bp-gold); }
+
+.bf-ep-banner {
+  position: relative;
+  margin: 0 0 24px;
+  height: clamp(140px, 22vw, 240px);
+  border-radius: var(--bp-r-lg);
+  overflow: hidden;
+  border: 1px solid var(--bp-line);
+}
+.bf-ep-banner--fallback {
+  background:
+    linear-gradient(135deg, rgba(255, 200, 46, 0.12), transparent 55%),
+    linear-gradient(225deg, rgba(0, 153, 255, 0.1), transparent 50%),
+    var(--bp-panel);
+}
+.bf-ep-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.bf-ep-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--bp-bg) 0%, transparent 35%, transparent 65%, var(--bp-bg) 100%),
+    linear-gradient(0deg, var(--bp-bg) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.bf-ep-hero { margin-top: -48px; position: relative; z-index: 2; }
+.bf-ep-logo-ring { box-shadow: 0 0 48px rgba(255, 200, 46, 0.25); }
+.bf-ep-hero-kicker {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-gold);
+  margin: 0 0 4px;
+}
+.bf-ep-hero-star {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--bp-muted);
+}
+.bf-ep-hero-star a { color: var(--bp-gold); text-decoration: none; font-weight: 700; }
+.bf-ep-hero-star a:hover { text-decoration: underline; }
+.bf-ep-player-hero-grid {
+  grid-template-columns: auto 1fr !important;
+  align-items: start;
+  gap: 28px !important;
+}
+.bf-ep-player-card-wrap { flex-shrink: 0; }
+
+.bf-ep-stat-ribbon .bf-stat-card-premium b {
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+}
+
+.bf-ep-article-grid {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .bf-ep-article-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  }
+}
+.bf-ep-article-main { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+.bf-ep-article-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 88px;
+}
+
+.bf-ep-lead {
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.7;
+  color: var(--bp-text);
+  margin: 0;
+  padding: 20px 22px;
+  border-radius: var(--bp-r);
+  border-left: 3px solid var(--bp-gold);
+  background: linear-gradient(90deg, rgba(255, 200, 46, 0.08), transparent);
+}
+
+.bf-ep-infobox {
+  border-radius: var(--bp-r);
+  border: 1px solid rgba(255, 200, 46, 0.25);
+  background: linear-gradient(160deg, rgba(255, 200, 46, 0.06), rgba(0, 0, 0, 0.35));
+  overflow: hidden;
+}
+.bf-ep-infobox-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.25);
+}
+.bf-ep-infobox-kicker {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bp-gold);
+  margin-bottom: 4px;
+}
+.bf-ep-infobox-head h3 {
+  margin: 0;
+  font-family: var(--bp-head);
+  font-size: 1.15rem;
+}
+.bf-ep-infobox-head p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--bp-muted);
+}
+.bf-ep-infobox-rows {
+  margin: 0;
+  padding: 8px 0;
+}
+.bf-ep-infobox-rows > div {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 10px;
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+}
+.bf-ep-infobox-rows > div.is-highlight dd {
+  color: var(--bp-gold);
+  font-weight: 800;
+}
+.bf-ep-infobox-rows dt {
+  margin: 0;
+  color: var(--bp-dim);
+  font-weight: 600;
+}
+.bf-ep-infobox-rows dd { margin: 0; text-align: right; font-weight: 700; }
+.bf-ep-infobox-link {
+  color: var(--bp-blue-bright);
+  text-decoration: none;
+  font-weight: 700;
+}
+.bf-ep-infobox-link:hover { text-decoration: underline; }
+.bf-ep-infobox-foot { padding: 12px 18px; border-top: 1px solid var(--bp-line); }
+
+.bf-ep-toc {
+  padding: 14px 18px;
+  border-radius: var(--bp-r);
+  border: 1px solid var(--bp-line);
+  background: var(--bp-panel);
+  margin-bottom: 8px;
+}
+.bf-ep-toc-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-gold);
+  margin-bottom: 10px;
+}
+.bf-ep-toc ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.bf-ep-toc a {
+  color: var(--bp-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.bf-ep-toc a:hover { color: var(--bp-gold); }
+
+.bf-ep-wiki-article { display: flex; flex-direction: column; gap: 32px; }
+.bf-ep-wiki-section h2 {
+  margin: 0 0 14px;
+  font-family: var(--bp-head);
+  font-size: 1.35rem;
+  color: var(--bp-text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--bp-line);
+}
+.bf-ep-wiki-section p {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--bp-muted);
+}
+.bf-ep-wiki-section p:last-child { margin-bottom: 0; }
+
+.bf-ep-facts h3,
+.bf-ep-rivals h3,
+.bf-ep-social-hub h3,
+.bf-ep-brawlers h3,
+.bf-ep-playstyle h3,
+.bf-ep-career h3,
+.bf-ep-gallery h3,
+.bf-ep-side-block h3 {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-gold);
+}
+.bf-ep-facts-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.bf-ep-fact-card {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.25);
+}
+.bf-ep-fact-num {
+  display: block;
+  font-family: var(--bp-head);
+  font-size: 1.5rem;
+  color: var(--bp-gold);
+  opacity: 0.5;
+  margin-bottom: 8px;
+}
+.bf-ep-fact-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--bp-text);
+}
+
+.bf-ep-rivals-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.bf-ep-rival-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255, 23, 68, 0.12);
+  border: 1px solid rgba(255, 23, 68, 0.35);
+  color: var(--bp-red-bright);
+}
+
+.bf-ep-achievements {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .bf-ep-achievements:not(.is-compact) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.bf-ep-ach-card {
+  display: flex;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bf-ep-ach-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+.bf-ep-ach-card.tier-gold {
+  border-color: rgba(255, 200, 46, 0.45);
+  background: linear-gradient(135deg, rgba(255, 200, 46, 0.1), rgba(0, 0, 0, 0.35));
+}
+.bf-ep-ach-card.tier-silver { border-color: rgba(180, 190, 210, 0.4); }
+.bf-ep-ach-card.tier-bronze { border-color: rgba(180, 120, 80, 0.4); }
+.bf-ep-ach-medal {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 200, 46, 0.15);
+  color: var(--bp-gold);
+  flex-shrink: 0;
+}
+.bf-ep-ach-place {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-gold);
+  margin-bottom: 4px;
+}
+.bf-ep-ach-body strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.bf-ep-ach-body span { font-size: 12px; color: var(--bp-muted); }
+
+.bf-ep-social-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.bf-ep-social-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--bp-text);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.bf-ep-social-btn:hover {
+  border-color: rgba(255, 200, 46, 0.4);
+  background: rgba(255, 200, 46, 0.08);
+  color: var(--bp-gold);
+}
+.bf-ep-social-btn.is-liquipedia {
+  grid-column: 1 / -1;
+  border-color: rgba(0, 153, 255, 0.35);
+}
+
+.bf-ep-brawler-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bf-ep-brawler-pills span {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.3);
+}
+.bf-ep-brawler-pills span.is-main {
+  border-color: rgba(255, 200, 46, 0.5);
+  background: rgba(255, 200, 46, 0.12);
+  color: var(--bp-gold);
+}
+
+.bf-ep-playstyle {
+  padding: 18px 20px;
+  border-radius: var(--bp-r);
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 153, 255, 0.06);
+}
+.bf-ep-playstyle p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--bp-muted);
+}
+
+.bf-ep-career-track {
+  position: relative;
+  padding-left: 8px;
+  border-left: 2px solid rgba(255, 200, 46, 0.25);
+}
+.bf-ep-career-node {
+  display: grid;
+  grid-template-columns: 64px 12px 1fr;
+  gap: 12px;
+  padding-bottom: 22px;
+  align-items: start;
+}
+.bf-ep-career-year {
+  font-family: var(--bp-head);
+  font-weight: 800;
+  color: var(--bp-gold);
+  font-size: 1rem;
+}
+.bf-ep-career-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bp-gold);
+  margin-top: 6px;
+  box-shadow: 0 0 12px rgba(255, 200, 46, 0.5);
+}
+.bf-ep-career-content strong { display: block; margin-bottom: 6px; }
+.bf-ep-career-content p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--bp-muted);
+}
+
+.bf-ep-gallery-hero {
+  border-radius: var(--bp-r);
+  overflow: hidden;
+  border: 1px solid var(--bp-line);
+  aspect-ratio: 16 / 7;
+  margin-bottom: 10px;
+}
+.bf-ep-gallery-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bf-ep-gallery-thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.bf-ep-gallery-thumbs button {
+  flex: 0 0 72px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.bf-ep-gallery-thumbs button.is-on {
+  border-color: var(--bp-gold);
+  opacity: 1;
+}
+.bf-ep-gallery-thumbs img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.bf-ep-circuit-card {
+  padding: 18px 20px;
+  border-radius: var(--bp-r);
+  border: 1px solid rgba(0, 153, 255, 0.25);
+  background: linear-gradient(135deg, rgba(0, 153, 255, 0.08), transparent);
+}
+.bf-ep-circuit-card h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-blue-bright);
+}
+.bf-ep-circuit-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--bp-muted);
+}
+
+.bf-ep-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.bf-ep-section-head h2 {
+  margin: 0;
+  font-family: var(--bp-head);
+  font-size: 1.25rem;
+}
+
+.bf-ep-preview-block {
+  padding: 20px;
+  border-radius: var(--bp-r);
+  border: 1px solid var(--bp-line);
+  background: var(--bp-panel);
+}
+
+.bf-ep-empty-history {
+  text-align: center;
+  padding: 48px 24px;
+  border-radius: var(--bp-r);
+  border: 1px dashed var(--bp-line);
+  color: var(--bp-muted);
+}
+.bf-ep-empty-history svg {
+  opacity: 0.4;
+  margin-bottom: 12px;
+}
+.bf-ep-empty-history p {
+  margin: 0;
+  max-width: 420px;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+.bf-ep-side-block {
+  padding: 16px;
+  border-radius: var(--bp-r);
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.bf-ep-trophies .bf-ep-achievements {
+  margin-top: 8px;
+}
+
+.bf-ep-fantasy-card {
+  max-width: 480px;
+}
+
+.bf-ep-hero .bf-ep-brawlers {
+  margin-top: 12px;
+}
+.bf-ep-hero .bf-ep-brawlers h3 {
+  display: none;
+}
+
 /* ── Predictions premium ── */
 .bf-predict-premium { padding-bottom: 40px; }
 .bf-predict-hero {
