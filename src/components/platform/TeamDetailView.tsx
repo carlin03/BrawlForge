@@ -149,7 +149,12 @@ export function TeamDetailView({ slug }: { slug: string }) {
         <div className="bf-stat-card-premium"><b>{computed.tournamentsPlayed}</b><span>Torneos</span></div>
       </div>
 
-      <DetailTabs tabs={tabs} active={tab} onChange={(id) => setTab(id as TabId)} />
+      <DetailTabs
+        tabs={tabs}
+        active={tab}
+        onChange={(id) => setTab(id as TabId)}
+        logo={<TeamLogo slug={slug} name={team.name} size={64} glow />}
+      />
 
       {tab === "overview" && (
         <div className="bf-detail-panel bf-stagger">

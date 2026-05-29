@@ -41,7 +41,8 @@ type AuthContextValue = {
     password: string,
     displayName: string,
   ) => Promise<{ error?: string; needsEmailConfirmation?: boolean }>;
-  signInWithGoogle: () => Promise<{ error?: string }>;
+  requestPasswordReset: (email: string) => Promise<{ error?: string }>;
+  updatePassword: (password: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   /** Actualiza perfil en memoria al instante (p. ej. club favorito en nav). */
@@ -205,15 +206,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [supabase, loadProfile],
   );
 
-  const signInWithGoogle = useCallback(async () => {
-    if (!supabase) return { error: "Supabase no configurado" };
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: origin ? `${origin}/auth/callback` : undefined },
-    });
-    return error ? { error: error.message } : {};
-  }, [supabase]);
+  const requestPasswordReset = useCallback(
+    async (email: string) => {
+      if (!supabase) return { error: "Supabase no configurado" };
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: origin ? `${origin}/auth/callback?next=/login/nueva-contrasena` : undefined,
+      });
+      return error ? { error: error.message } : {};
+    },
+    [supabase],
+  );
+
+  const updatePassword = useCallback(
+    async (password: string) => {
+      if (!supabase) return { error: "Supabase no configurado" };
+      if (password.length < 6) return { error: "La contraseña debe tener al menos 6 caracteres." };
+      const { error } = await supabase.auth.updateUser({ password });
+      return error ? { error: error.message } : {};
+    },
+    [supabase],
+  );
 
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut();
@@ -239,14 +252,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabaseReady,
       signIn,
       signUp,
-      signInWithGoogle,
+      requestPasswordReset,
+      updatePassword,
       signOut,
       refreshProfile: async () => {
         if (user) await loadProfile(user);
       },
       patchProfile,
     }),
-    [user, profile, isAdmin, loading, supabaseReady, signIn, signUp, signInWithGoogle, signOut, loadProfile, patchProfile],
+    [user, profile, isAdmin, loading, supabaseReady, signIn, signUp, requestPasswordReset, updatePassword, signOut, loadProfile, patchProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

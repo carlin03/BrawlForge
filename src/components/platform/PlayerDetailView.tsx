@@ -121,7 +121,18 @@ export function PlayerDetailView({ slug }: { slug: string }) {
         )}
       </div>
 
-      <DetailTabs tabs={tabs} active={tab} onChange={(id) => setTab(id as TabId)} />
+      <DetailTabs
+        tabs={tabs}
+        active={tab}
+        onChange={(id) => setTab(id as TabId)}
+        logo={
+          team ? (
+            <TeamLogo slug={team.slug} name={team.name} size={56} glow />
+          ) : (
+            <RegionBadge region={player.region} />
+          )
+        }
+      />
 
       {tab === "profile" && (
         <div className="bf-detail-panel bf-stagger">

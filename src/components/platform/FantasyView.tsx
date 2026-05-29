@@ -7,6 +7,7 @@ import { Crown, Users, Wallet, ArrowLeftRight } from "lucide-react";
 import { FantasyMarketControls, type FantasySortKey } from "@/components/platform/FantasyMarketControls";
 import { FormDots } from "@/components/platform/ui";
 import { PageUltraHero } from "@/components/platform/PageUltraHero";
+import { SectionTabsBar } from "@/components/platform/SectionTabsBar";
 import { PlayerCard } from "@/components/platform/PlayerCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
@@ -312,18 +313,23 @@ export function FantasyView() {
         }
       />
 
-      <div className="bf-home-tabs" style={{ marginBottom: 12 }}>
-        {(["all", "GLOBAL", "EMEA", "EA", "NA", "SA"] as const).map((r) => (
-          <button
-            key={r}
-            type="button"
-            className={`bf-home-tab ${regionFilter === r ? "is-on" : ""}`}
-            onClick={() => setRegionFilter(r)}
-          >
-            {r === "all" ? "Todos" : r}
-          </button>
-        ))}
-      </div>
+      <SectionTabsBar
+        entityLogo={<TournamentLogo slug={activeTournament} name={tourMeta?.shortName ?? "BSC"} size={44} glow />}
+        className="bf-fantasy-tabs-bar"
+      >
+        <div className="bf-home-tabs" style={{ marginBottom: 0 }}>
+          {(["all", "GLOBAL", "EMEA", "EA", "NA", "SA"] as const).map((r) => (
+            <button
+              key={r}
+              type="button"
+              className={`bf-home-tab ${regionFilter === r ? "is-on" : ""}`}
+              onClick={() => setRegionFilter(r)}
+            >
+              {r === "all" ? "Todos" : r}
+            </button>
+          ))}
+        </div>
+      </SectionTabsBar>
 
       <p className="bf-fantasy-pool-banner">
         Pool del torneo: <strong>{tournamentStats.playerCount} jugadores</strong> de{" "}

@@ -205,7 +205,7 @@ export function TournamentDetailView({ slug }: { slug: string }) {
           <Link href="/teams">Todos los clubes</Link>
         </div>
         <div className="bf-tour-participants">
-          {participants.slice(0, 32).map((ts) => (
+          {participants.map((ts) => (
             <Link key={ts} href={`/teams/${ts}`} className="bf-tour-part-chip">
               <TeamLogo slug={ts} name={teamName(ts)} size={40} />
               <span>{teamName(ts)}</span>

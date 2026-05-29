@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Shield } from "lucide-react";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
+import { SectionTabsBar } from "@/components/platform/SectionTabsBar";
+import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { PageUltraHero } from "@/components/platform/PageUltraHero";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
@@ -133,18 +135,20 @@ export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
         </div>
       )}
 
-      <div className="bf-home-tabs">
-        {REGIONS.map((r) => (
-          <button
-            key={r}
-            type="button"
-            className={`bf-home-tab ${region === r ? "is-on" : ""}`}
-            onClick={() => setRegion(r)}
-          >
-            {r === "all" ? "Global" : r}
-          </button>
-        ))}
-      </div>
+      <SectionTabsBar entityLogo={<TournamentLogo slug="bsc-2026-brawl-cup" name="BSC 2026" size={44} glow />}>
+        <div className="bf-home-tabs">
+          {REGIONS.map((r) => (
+            <button
+              key={r}
+              type="button"
+              className={`bf-home-tab ${region === r ? "is-on" : ""}`}
+              onClick={() => setRegion(r)}
+            >
+              {r === "all" ? "Global" : r}
+            </button>
+          ))}
+        </div>
+      </SectionTabsBar>
 
       <div className="bf-teams-grid bf-stagger">
         {rest.map((t) => {

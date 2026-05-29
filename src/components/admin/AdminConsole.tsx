@@ -14,6 +14,7 @@ import {
   Save,
   Home,
 } from "lucide-react";
+import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminLogoPanel } from "@/components/admin/AdminLogoPanel";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
 import { TeamLogo } from "@/components/ui/TeamLogo";
@@ -236,6 +237,12 @@ export function AdminConsole() {
         </div>
       </header>
 
+      <div className="bf-admin-tabs-brand">
+        <BrandMark size={40} />
+        <span>
+          Brawl<em>Forge</em> Admin
+        </span>
+      </div>
       <nav className="bf-admin-tabs" aria-label="Secciones admin">
         {TAB_CONFIG.map(({ id, label, icon: Icon }) => (
           <button

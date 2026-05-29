@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Calendar, MapPin, Trophy, Users, Zap } from "lucide-react";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
+import { SectionTabsBar } from "@/components/platform/SectionTabsBar";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
@@ -91,25 +92,35 @@ export function TournamentsView() {
         )}
       </header>
 
-      <div className="bf-tours-hub-tabs">
-        {(["all", "live", "upcoming", "finished"] as const).map((s) => (
-          <button
-            key={s}
-            type="button"
-            className={`bf-tours-hub-tab ${status === s ? "is-on" : ""} ${s === "live" && liveCount ? "has-live" : ""}`}
-            onClick={() => setStatus(s)}
-          >
-            {s === "all" ? "Todos" : s === "live" ? `Directo (${liveCount})` : s === "upcoming" ? "Próximos" : "Finalizados"}
-          </button>
-        ))}
-      </div>
+      <SectionTabsBar
+        entityLogo={
+          heroShowcase ? (
+            <TournamentLogo slug={heroShowcase.slug} name={cleanName(heroShowcase.shortName)} size={48} glow />
+          ) : (
+            <TournamentLogo slug="bsc-2026-brawl-cup" name="BSC 2026" size={48} glow />
+          )
+        }
+      >
+        <div className="bf-tours-hub-tabs">
+          {(["all", "live", "upcoming", "finished"] as const).map((s) => (
+            <button
+              key={s}
+              type="button"
+              className={`bf-tours-hub-tab ${status === s ? "is-on" : ""} ${s === "live" && liveCount ? "has-live" : ""}`}
+              onClick={() => setStatus(s)}
+            >
+              {s === "all" ? "Todos" : s === "live" ? `Directo (${liveCount})` : s === "upcoming" ? "Próximos" : "Finalizados"}
+            </button>
+          ))}
+        </div>
+      </SectionTabsBar>
 
       <div className="bf-tours-hub-grid">
         {filtered.map((t) => {
           const participants = getTournamentParticipantSlugs(t.slug).filter(isKnownTeamSlug);
           const matchCount = getMatchesByTournament(t.slug).length;
           const name = cleanName(t.shortName);
-          const showTeams = participants.slice(0, 10);
+          const showTeams = participants.slice(0, 12);
           const moreTeams = participants.length - showTeams.length;
 
           return (
@@ -188,10 +199,12 @@ export function TournamentsView() {
                       ))}
                     </div>
                     <ul className="bf-tour-hub-teams-names">
-                      {showTeams.map((slug) => (
+                      {(participants.length <= 16 ? participants : showTeams).map((slug) => (
                         <li key={slug}>{teamName(slug)}</li>
                       ))}
-                      {moreTeams > 0 && <li className="is-more">+{moreTeams} más</li>}
+                      {participants.length > 16 && moreTeams > 0 && (
+                        <li className="is-more">+{moreTeams} más</li>
+                      )}
                     </ul>
                   </div>
                 )}

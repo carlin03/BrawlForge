@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { BarChart3, Crown, Medal, Trophy } from "lucide-react";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
+import { SectionTabsBar } from "@/components/platform/SectionTabsBar";
+import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 import { FormDots } from "@/components/platform/ui";
@@ -84,14 +86,16 @@ export function RankingsView({ teams }: { teams: EsportsTeam[] }) {
         </div>
       </header>
 
-      <div className="bf-rankings-hub-tabs">
-        <button type="button" className={`bf-rankings-hub-tab ${tab === "teams" ? "is-on" : ""}`} onClick={() => setTab("teams")}>
-          Equipos <span>{ranked.length}</span>
-        </button>
-        <button type="button" className={`bf-rankings-hub-tab ${tab === "fantasy" ? "is-on" : ""}`} onClick={() => setTab("fantasy")}>
-          Fantasy <span>{fantasyBoard.length}</span>
-        </button>
-      </div>
+      <SectionTabsBar entityLogo={<TournamentLogo slug="bsc-2026-brawl-cup" name="BSC 2026" size={44} glow />}>
+        <div className="bf-rankings-hub-tabs">
+          <button type="button" className={`bf-rankings-hub-tab ${tab === "teams" ? "is-on" : ""}`} onClick={() => setTab("teams")}>
+            Equipos <span>{ranked.length}</span>
+          </button>
+          <button type="button" className={`bf-rankings-hub-tab ${tab === "fantasy" ? "is-on" : ""}`} onClick={() => setTab("fantasy")}>
+            Fantasy <span>{fantasyBoard.length}</span>
+          </button>
+        </div>
+      </SectionTabsBar>
 
       {tab === "teams" && (
         <>

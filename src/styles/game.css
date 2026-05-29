@@ -2415,6 +2415,31 @@
 .bf-rank-points { font-weight: 800; color: var(--bp-gold); }
 
 .bf-auth-page { display: flex; justify-content: center; padding: 40px 16px; min-height: 60vh; align-items: flex-start; }
+.bf-auth-brand {
+  display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.bf-auth-brand h1 { margin: 0; font-size: 1.35rem; letter-spacing: 0.04em; }
+.bf-auth-forgot {
+  display: block; margin: -6px 0 10px; padding: 0; background: none; border: none;
+  color: var(--bp-blue-bright); font-size: 12px; cursor: pointer; text-align: left;
+}
+.bf-auth-forgot:hover { text-decoration: underline; }
+.bf-section-tabs-bar { margin-bottom: 16px; }
+.bf-section-tabs-brand { display: flex; justify-content: center; margin-bottom: 12px; }
+.bf-section-tabs-brand-link {
+  display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;
+}
+.bf-section-tabs-brand-text { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.06em; }
+.bf-section-tabs-brand-text em { color: var(--bp-gold); font-style: normal; }
+.bf-section-tabs-row { display: flex; flex-wrap: wrap; justify-content: center; }
+.bf-detail-tabs-wrap { margin-bottom: 18px; }
+.bf-detail-tabs-logo {
+  display: flex; justify-content: center; margin-bottom: 12px;
+}
+.bf-admin-tabs-brand {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: 800;
+}
+.bf-admin-tabs-brand em { color: var(--bp-gold); font-style: normal; }
 .bf-auth-lead { margin: 0 0 16px; font-size: 14px; color: var(--bp-muted); }
 .bf-auth-tabs {
   display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 18px;
