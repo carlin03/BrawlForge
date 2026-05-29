@@ -4,6 +4,7 @@ import { getGeneratedPlayers, toLiquipediaUrl, TEAM_ROSTER_ALIASES, isPlayerActi
 import { CURATED_PLAYERS } from "./teams-curated";
 import { teams, getTeam } from "./teams";
 import { getBsc2026PlayedTeamSlugs } from "./bsc-teams-played-2026";
+import { isBsc2026ExcludedTeam } from "./bsc-2026-active-teams";
 import { BSC_2026_ROSTERS, BSC_2026_EXCLUDED_PLAYERS, BSC_2026_PLAYER_SLUGS } from "./bsc-2026-rosters";
 import type { GeneratedPlayer } from "./catalog-types";
 
@@ -72,12 +73,15 @@ function normalizeSlug(slug: string, liquipediaPage: string, ign: string): strin
 
 export function resolvePlayerTeamSlug(playerSlug: string, rawTeamSlug?: string): string {
   const raw = (rawTeamSlug ?? "").trim();
-  if (raw && KNOWN_TEAMS.has(raw)) return raw;
-  if (raw && TEAM_ROSTER_ALIASES[raw] && KNOWN_TEAMS.has(TEAM_ROSTER_ALIASES[raw])) {
-    return TEAM_ROSTER_ALIASES[raw];
+  const fromBsc = rosterTeamForPlayer(playerSlug);
+  if (fromBsc && KNOWN_TEAMS.has(fromBsc) && !isBsc2026ExcludedTeam(fromBsc)) return fromBsc;
+  if (raw && !isBsc2026ExcludedTeam(raw) && KNOWN_TEAMS.has(raw)) return raw;
+  if (raw && TEAM_ROSTER_ALIASES[raw]) {
+    const canon = TEAM_ROSTER_ALIASES[raw];
+    if (!isBsc2026ExcludedTeam(canon) && KNOWN_TEAMS.has(canon)) return canon;
   }
   const fromRoster = ROSTER_TEAM_INDEX.get(playerSlug);
-  if (fromRoster && KNOWN_TEAMS.has(fromRoster)) return fromRoster;
+  if (fromRoster && !isBsc2026ExcludedTeam(fromRoster) && KNOWN_TEAMS.has(fromRoster)) return fromRoster;
   return raw;
 }
 
@@ -94,7 +98,7 @@ function pushPlayer(
     slug,
     rosterTeamForPlayer(slug) ?? curated?.teamSlug ?? raw.teamSlug ?? fallbackTeam,
   );
-  if (!teamSlug || !KNOWN_TEAMS.has(teamSlug)) return;
+  if (!teamSlug || !KNOWN_TEAMS.has(teamSlug) || isBsc2026ExcludedTeam(teamSlug)) return;
   const status = normalizeStatus(raw.status);
   if (status === "retired" && !rosterTeamForPlayer(slug)) return;
   seen.add(slug);
@@ -120,8 +124,15 @@ function buildPlayers(): EsportsPlayer[] {
   const pool = [...PLAYERS_2026];
 
   for (const p of pool) {
-    if (!BSC_2026_PLAYER_SLUGS.has(p.slug) && !rosterTeamForPlayer(p.slug)) continue;
     pushPlayer(list, seen, p);
+  }
+
+  for (const p of getGeneratedPlayers()) {
+    if (seen.has(p.slug)) continue;
+    const team = rosterTeamForPlayer(p.slug) ?? p.teamSlug;
+    if (!team || !KNOWN_TEAMS.has(team)) continue;
+    if (BSC_2026_EXCLUDED_PLAYERS.has(p.slug)) continue;
+    pushPlayer(list, seen, p, team);
   }
 
   for (const [teamSlug, roster] of Object.entries(BSC_2026_ROSTERS)) {

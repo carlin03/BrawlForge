@@ -1,19 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getServerAdminEmails } from "@/lib/admin-access";
+import { getServerAdminEmails, isBuiltinOwnerEmail } from "@/lib/admin-access";
 
-/** Activa is_admin para el email configurado en ADMIN_EMAILS (Vercel). */
+/** Guarda is_admin=true en Supabase para emails dueño (builtin + ADMIN_EMAILS). */
 export async function POST() {
   const allowed = getServerAdminEmails();
-  if (allowed.length === 0) {
-    return NextResponse.json(
-      {
-        error: "ADMIN_EMAILS no configurado en Vercel",
-        hint: "Añade ADMIN_EMAILS=tu@email.com en Environment Variables y Redeploy",
-      },
-      { status: 503 },
-    );
-  }
 
   const supabase = await createClient();
   if (!supabase) {
@@ -31,9 +22,11 @@ export async function POST() {
   if (!allowed.includes(email)) {
     return NextResponse.json(
       {
-        error: "Este email no está en ADMIN_EMAILS",
+        error: "Este email no tiene permiso de dueño",
         email,
-        hint: "Pon tu email exacto en Vercel → ADMIN_EMAILS y NEXT_PUBLIC_ADMIN_EMAILS",
+        hint: isBuiltinOwnerEmail(email)
+          ? "Contacta soporte del proyecto"
+          : "Añade tu email en Vercel → ADMIN_EMAILS y NEXT_PUBLIC_ADMIN_EMAILS, luego Redeploy",
       },
       { status: 403 },
     );

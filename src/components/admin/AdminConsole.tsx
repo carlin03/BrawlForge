@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Shield,
   RefreshCw,
@@ -81,8 +82,21 @@ const TAB_CONFIG: { id: Tab; label: string; icon: typeof Users }[] = [
   { id: "news", label: "Noticias", icon: Newspaper },
 ];
 
+const TAB_IDS: Tab[] = ["teams", "players", "logos", "news"];
+
+function tabFromQuery(raw: string | null): Tab | null {
+  if (raw && TAB_IDS.includes(raw as Tab)) return raw as Tab;
+  return null;
+}
+
 export function AdminConsole() {
-  const [tab, setTab] = useState<Tab>("teams");
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<Tab>(() => tabFromQuery(searchParams.get("tab")) ?? "teams");
+
+  useEffect(() => {
+    const next = tabFromQuery(searchParams.get("tab"));
+    if (next) setTab(next);
+  }, [searchParams]);
   const [msg, setMsg] = useState("");
   const [msgError, setMsgError] = useState(false);
   const [loading, setLoading] = useState(false);

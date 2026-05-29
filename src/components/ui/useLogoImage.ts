@@ -72,7 +72,10 @@ export function useLogoImage(sources: string[]) {
       const currentSrc = sources[index];
       const trusted =
         currentSrc?.startsWith("/logos/") ||
+        currentSrc?.startsWith("/api/image") ||
         currentSrc?.includes("taiyoro-prod-media.s3.amazonaws.com") ||
+        currentSrc?.includes("cdn.royaleapi.com") ||
+        currentSrc?.includes("upload.wikimedia.org") ||
         currentSrc?.includes("mWB0X8mVG2.png");
       if (!trusted && hasWhiteBackground(img)) {
         advanceOrFail();

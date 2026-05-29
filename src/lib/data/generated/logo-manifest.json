@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-28T05:57:03.088Z",
+  "generatedAt": "2026-05-28T23:27:37.037Z",
   "blockedHashes": [
     "8977f2ef3db99f1b86ed1b8fb5b3f230",
     "8cad94e7c73cc3a04762e20136ff2681"
@@ -207,6 +207,15 @@
     "zurita-gang"
   ],
   "tournamentLocal": [
+    "brawl-stars-championship-2026-brawl-cup",
+    "bsc-2026-april-ea-mf",
+    "bsc-2026-april-emea-mf",
+    "bsc-2026-april-na-mf",
+    "bsc-2026-april-sa-mf",
+    "bsc-2026-august-ea-mf",
+    "bsc-2026-august-emea-mf",
+    "bsc-2026-august-na-mf",
+    "bsc-2026-august-sa-mf",
     "bsc-2026-brawl-cup",
     "bsc-2026-challengers-brasil",
     "bsc-2026-challengers-dach",
@@ -217,14 +226,39 @@
     "bsc-2026-challengers-sa-west",
     "bsc-2026-challengers-spain",
     "bsc-2026-challengers-turkey",
+    "bsc-2026-cn-april-mf",
+    "bsc-2026-cn-february-mf",
     "bsc-2026-cn-finals",
+    "bsc-2026-cn-march-mf",
+    "bsc-2026-cn-may-mf",
+    "bsc-2026-february-ea-mf",
+    "bsc-2026-february-emea-mf",
+    "bsc-2026-february-na-mf",
+    "bsc-2026-february-sa-mf",
+    "bsc-2026-july-ea-mf",
+    "bsc-2026-july-emea-mf",
+    "bsc-2026-july-na-mf",
+    "bsc-2026-july-sa-mf",
+    "bsc-2026-june-ea-mf",
+    "bsc-2026-june-emea-mf",
+    "bsc-2026-june-na-mf",
+    "bsc-2026-june-sa-mf",
     "bsc-2026-lcq",
+    "bsc-2026-march-ea-mf",
+    "bsc-2026-march-emea-mf",
+    "bsc-2026-march-na-mf",
+    "bsc-2026-march-sa-mf",
     "bsc-2026-psi-ea",
     "bsc-2026-psi-emea",
     "bsc-2026-psi-na",
     "bsc-2026-psi-sa",
     "bsc-2026-rtbc-sa-west",
-    "bsc-2026-rtbc-sesa"
+    "bsc-2026-rtbc-sesa",
+    "bsc-2026-s3-ea-mf",
+    "bsc-2026-s3-emea-mf",
+    "bsc-2026-s3-na-mf",
+    "world-finals-2025",
+    "world-finals-2026"
   ],
   "taiyoroLocal": [
     "3r-gaming",
@@ -562,5 +596,5 @@
     "zeta-division-zero",
     "zurita-gang"
   ],
-  "logoCacheVersion": 1779957730283
+  "logoCacheVersion": 1780010857037
 }

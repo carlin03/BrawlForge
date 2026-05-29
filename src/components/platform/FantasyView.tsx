@@ -3,7 +3,8 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, X, Crown, Users, Wallet, ArrowLeftRight } from "lucide-react";
+import { Crown, Users, Wallet, ArrowLeftRight } from "lucide-react";
+import { FantasyMarketControls, type FantasySortKey } from "@/components/platform/FantasyMarketControls";
 import { FormDots } from "@/components/platform/ui";
 import { PageUltraHero } from "@/components/platform/PageUltraHero";
 import { PlayerCard } from "@/components/platform/PlayerCard";
@@ -247,7 +248,6 @@ export function FantasyView() {
   }
 
   const slots = Array.from({ length: FANTASY_SQUAD_SIZE }, (_, i) => squad[i] ?? null);
-  const sortOptions: SortKey[] = ["price", "rating", "change", "pick"];
 
   if (!gameReady) {
     return <div className="bf-auth-page">Cargando fantasy…</div>;
@@ -478,65 +478,19 @@ export function FantasyView() {
         </aside>
 
         <div className="bf-fantasy-market">
-          <div className="bf-fantasy-market-toolbar">
-            <div className="bf-fantasy-search">
-              <Search size={15} />
-              <input
-                className="bp-input"
-                placeholder="Buscar pro o club..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-              {query && (
-                <button type="button" className="bf-fantasy-search-clear" onClick={() => setQuery("")} aria-label="Limpiar">
-                  <X size={15} />
-                </button>
-              )}
-            </div>
-            <div className="bf-home-tabs">
-              {sortOptions.map((k) => (
-                <button
-                  key={k}
-                  type="button"
-                  className={`bf-home-tab ${sortBy === k ? "is-on" : ""}`}
-                  onClick={() => setSortBy(k)}
-                >
-                  {k === "pick" ? "Propiedad" : k === "price" ? "Precio" : k === "rating" ? "Rating" : "Δ precio"}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="bf-fantasy-filters">
-            <button type="button" className={`bp-filter ${teamFilter === "all" ? "is-on" : ""}`} onClick={() => setTeamFilter("all")}>
-              Todos
-            </button>
-            {teamGroups.map((g) => {
-              const team = getTeam(g.teamSlug);
-              if (!team) return null;
-              return (
-                <button
-                  key={g.teamSlug}
-                  type="button"
-                  className={`bp-filter ${teamFilter === g.teamSlug ? "is-on" : ""}`}
-                  onClick={() => setTeamFilter(g.teamSlug)}
-                >
-                  <TeamLogo slug={g.teamSlug} name={team.name} size={18} />
-                  {team.tag}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="bf-fantasy-pool-meta">
-            {catalogFromDb && <span className="bp-chip bp-chip-gold">Catálogo en vivo</span>}
-            <span>
-              {tournamentStats.teamCount} equipos · {tournamentStats.playerCount} jugadores
-              {catalogFromDb && catalogSyncedAt
-                ? ` · sync ${new Date(catalogSyncedAt).toLocaleDateString("es")}`
-                : ""}
-            </span>
-          </div>
+          <FantasyMarketControls
+            query={query}
+            onQueryChange={setQuery}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            teamFilter={teamFilter}
+            onTeamFilterChange={setTeamFilter}
+            teamGroups={teamGroups}
+            teamCount={tournamentStats.teamCount}
+            playerCount={tournamentStats.playerCount}
+            catalogFromDb={catalogFromDb}
+            catalogSyncedAt={catalogSyncedAt}
+          />
 
           {filteredGroups.length === 0 ? (
             <p className="bf-home-empty">No hay jugadores con ese filtro.</p>

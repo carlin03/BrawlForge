@@ -49,13 +49,24 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
 
   return (
     <article
-      className={`bf-vote-card bf-hover-lift bf-shine-hover ${featured ? "is-featured" : ""} ${pick ? "has-pick" : ""} ${closed ? "is-closed" : ""}`}
+      className={[
+        "bf-vote-card",
+        "bf-bsc-vote-card",
+        featured ? "is-featured" : "",
+        pick ? "has-pick" : "",
+        closed ? "is-closed" : "",
+        pick === "A" ? "picked-a" : pick === "B" ? "picked-b" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
+      <div className="bf-bsc-vote-stripe" aria-hidden />
       <div className="bf-vote-card-glow" aria-hidden />
+
       <header className="bf-vote-card-head">
         <TournamentLogo slug={event.tournamentSlug} name={getPredictionTournament(event)} size={featured ? 36 : 28} />
-        <div>
-          <span className="bf-home-eyebrow">{getPredictionTournament(event)}</span>
+        <div className="bf-vote-card-meta">
+          <span className="bf-bsc-vote-tourney">{getPredictionTournament(event)}</span>
           <strong>{event.stage}</strong>
         </div>
         <span className="bf-vote-reward">+{event.rewardPoints}</span>
@@ -64,66 +75,74 @@ export function InteractiveVoteCard({ event, featured, initialPick = null }: Int
       <div className="bf-vote-arena">
         <button
           type="button"
-          className={`bf-vote-side ${pick === "A" ? "is-picked" : ""} ${closed && event.correctPick === "A" ? "is-winner" : ""}`}
+          className={`bf-vote-side bf-vote-side-a ${pick === "A" ? "is-picked" : ""} ${closed && event.correctPick === "A" ? "is-winner" : ""}`}
           onClick={() => void vote("A")}
           disabled={closed || saving}
+          aria-label={`Votar AZUL — ${labelA}`}
         >
-          <TeamLogo slug={event.teamASlug} name={labelA} size={featured ? 64 : 48} />
+          <span className="bf-vote-side-tag bf-vote-side-tag-a">AZUL</span>
+          <TeamLogo slug={event.teamASlug} name={labelA} size={featured ? 72 : 56} />
           <span className="bf-vote-name">{labelA}</span>
           {hasVotes ? (
             <span className="bf-vote-pct">{event.pickAPct}%</span>
           ) : (
-            <span className="bf-vote-no-pct">Comunidad</span>
+            <span className="bf-vote-no-pct">Sin votos</span>
           )}
-          {pick === "A" && !closed && <span className="bf-vote-pick-badge">Tu pick</span>}
+          {pick === "A" && !closed && <span className="bf-vote-pick-badge">Tu voto</span>}
         </button>
 
-        <div className="bf-vote-vs">
-          <span>VS</span>
+        <div className="bf-vote-vs" aria-hidden>
+          <span className="bf-vote-vs-label">VS</span>
           {hasVotes ? (
             <span className="bf-vote-votes">{event.totalVotes} votos</span>
           ) : (
-            <span className="bf-vote-votes">Sin votos aún</span>
+            <span className="bf-vote-votes">Sé el primero</span>
           )}
         </div>
 
         <button
           type="button"
-          className={`bf-vote-side ${pick === "B" ? "is-picked" : ""} ${closed && event.correctPick === "B" ? "is-winner" : ""}`}
+          className={`bf-vote-side bf-vote-side-b ${pick === "B" ? "is-picked" : ""} ${closed && event.correctPick === "B" ? "is-winner" : ""}`}
           onClick={() => void vote("B")}
           disabled={closed || saving}
+          aria-label={`Votar ROJO — ${labelB}`}
         >
-          <TeamLogo slug={event.teamBSlug} name={labelB} size={featured ? 64 : 48} />
+          <span className="bf-vote-side-tag bf-vote-side-tag-b">ROJO</span>
+          <TeamLogo slug={event.teamBSlug} name={labelB} size={featured ? 72 : 56} />
           <span className="bf-vote-name">{labelB}</span>
           {hasVotes ? (
             <span className="bf-vote-pct">{event.pickBPct}%</span>
           ) : (
-            <span className="bf-vote-no-pct">Comunidad</span>
+            <span className="bf-vote-no-pct">Sin votos</span>
           )}
-          {pick === "B" && !closed && <span className="bf-vote-pick-badge">Tu pick</span>}
+          {pick === "B" && !closed && <span className="bf-vote-pick-badge">Tu voto</span>}
         </button>
       </div>
 
       {hasVotes && (
-        <div className="bp-poll-bar">
-          <div className="bp-poll-bar-a" style={{ width: `${event.pickAPct}%` }} />
-          <div className="bp-poll-bar-b" style={{ width: `${event.pickBPct}%` }} />
+        <div className="bf-bsc-poll" role="presentation" aria-label={`Comunidad: ${labelA} ${event.pickAPct}% · ${labelB} ${event.pickBPct}%`}>
+          <div className="bf-bsc-poll-a" style={{ flex: `${event.pickAPct} 1 0` }} title={`AZUL ${event.pickAPct}%`} />
+          <div className="bf-bsc-poll-b" style={{ flex: `${event.pickBPct} 1 0` }} title={`ROJO ${event.pickBPct}%`} />
         </div>
       )}
 
       <footer className="bf-vote-foot">
         {!closed && !pick && !isLoggedIn && (
-          <Link href="/login?next=/predictions" className="bf-home-link">
+          <Link href="/login?next=/predictions" className="bf-bsc-vote-login">
             Inicia sesión para predecir
           </Link>
         )}
         {!closed && saving && <span className="bf-vote-hint">Guardando voto…</span>}
         {!closed && pick && !saving && (
-          <span className="bf-vote-confirmed">Voto guardado · {getPredictionLabel(event, pick)}</span>
+          <span className={`bf-vote-confirmed ${pick === "A" ? "is-blue" : "is-red"}`}>
+            Voto guardado · {pick === "A" ? labelA : labelB}
+          </span>
         )}
         {err && <span className="bf-auth-error">{err}</span>}
         {closed && event.correctPick && (
-          <span>Ganador: {getPredictionLabel(event, event.correctPick)}</span>
+          <span className={`bf-vote-closed-winner ${event.correctPick === "A" ? "is-blue" : "is-red"}`}>
+            Ganador: {getPredictionLabel(event, event.correctPick)}
+          </span>
         )}
       </footer>
     </article>

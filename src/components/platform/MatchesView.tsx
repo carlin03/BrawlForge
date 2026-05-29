@@ -146,11 +146,11 @@ export function MatchesView() {
           )}
 
           {hotVote && tab !== "results" && (
-            <section className="bf-matches-vote-block">
+            <section className="bf-matches-vote-block bf-predict-bsc">
               <div className="fu-panel-head" style={{ marginBottom: 12 }}>
                 <h2>
                   <Radio size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
-                  Predicción rápida
+                  Predicción · azul vs rojo
                 </h2>
                 <Link href="/predictions">Todas</Link>
               </div>

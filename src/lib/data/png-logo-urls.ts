@@ -25,7 +25,8 @@ import {
 
 import { isTeam2026 } from "./teams-2026";
 
-import { buildRemoteLogoChain } from "./team-logo-urls";
+import { buildUiRemoteLogoChain, isLiquipediaImageUrl, wikimediaFromLogoFile } from "./team-logo-urls";
+import { toClientLogoSources } from "./logo-client-url";
 
 
 
@@ -115,41 +116,36 @@ export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): str
 
 
 
+  const liquipediaOverrides: string[] = [];
+
   for (const s of candidates) {
+    if (hasProcessedTeamLogo(s)) {
+      const local = localTeamUrl(s, cacheVersion);
+      if (!sources.includes(local)) sources.unshift(local);
+    }
 
     const overrideUrl = getTeamOverride(s, cfg);
-
     if (overrideUrl) {
-
       const busted = bust(overrideUrl, cacheVersion);
-
-      if (!sources.includes(busted)) sources.push(busted);
-
+      if (isLiquipediaImageUrl(overrideUrl)) {
+        if (!liquipediaOverrides.includes(busted)) liquipediaOverrides.push(busted);
+      } else if (!sources.includes(busted)) {
+        sources.unshift(busted);
+      }
     }
-
-    if (hasProcessedTeamLogo(s)) {
-
-      const local = localTeamUrl(s, cacheVersion);
-
-      if (!sources.includes(local)) sources.unshift(local);
-
-    }
-
   }
-
-
 
   for (const s of candidates) {
-
-    for (const url of buildRemoteLogoChain(s)) {
-
+    for (const url of buildUiRemoteLogoChain(s)) {
       if (!sources.includes(url)) sources.push(url);
-
     }
-
   }
 
-  return sources;
+  for (const u of liquipediaOverrides) {
+    if (!sources.includes(u)) sources.push(u);
+  }
+
+  return toClientLogoSources(sources);
 
 }
 
@@ -180,24 +176,22 @@ export function buildTournamentLogoSources(slug: string, cfg?: LogoRuntimeConfig
     const sources = [bust(BSC_LOCAL_LOGO, cacheVersion), BSC_DEFAULT_LOGO];
 
     for (const s of [resolved, slug]) {
-
-      const overrideUrl = getTournamentOverride(s, cfg);
-
-      if (overrideUrl && !sources.includes(bust(overrideUrl, cacheVersion))) {
-
-        sources.unshift(bust(overrideUrl, cacheVersion));
-
+      if (hasVerifiedLocalTournamentLogo(s)) {
+        const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
+        if (!sources.includes(local)) sources.unshift(local);
       }
 
-      if (!hasVerifiedLocalTournamentLogo(s)) continue;
-
-      const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
-
-      if (!sources.includes(local)) sources.unshift(local);
-
+      const overrideUrl = getTournamentOverride(s, cfg);
+      if (!overrideUrl) continue;
+      const busted = bust(overrideUrl, cacheVersion);
+      if (isLiquipediaImageUrl(overrideUrl)) {
+        if (!sources.includes(busted)) sources.push(busted);
+      } else if (!sources.includes(busted)) {
+        sources.unshift(busted);
+      }
     }
 
-    return sources;
+    return toClientLogoSources(sources);
 
   }
 
@@ -207,45 +201,40 @@ export function buildTournamentLogoSources(slug: string, cfg?: LogoRuntimeConfig
 
   const sources: string[] = [];
 
-
+  const liquipediaOverrides: string[] = [];
 
   for (const s of slugs) {
-
     const overrideUrl = getTournamentOverride(s, cfg);
-
     if (overrideUrl) {
-
       const busted = bust(overrideUrl, cacheVersion);
-
-      if (!sources.includes(busted)) sources.unshift(busted);
-
+      if (isLiquipediaImageUrl(overrideUrl)) {
+        if (!liquipediaOverrides.includes(busted)) liquipediaOverrides.push(busted);
+      } else if (!sources.includes(busted)) {
+        sources.unshift(busted);
+      }
     }
 
     if (hasVerifiedLocalTournamentLogo(s)) {
-
       const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
-
       if (!sources.includes(local)) sources.push(local);
-
     }
 
     const file = getTournamentLogoFile(s);
-
     if (file) {
-
+      const wiki = wikimediaFromLogoFile(file);
+      if (wiki && !sources.includes(wiki)) sources.push(wiki);
       const commons = liquipediaCommonsUrl(file);
-
-      if (commons && !sources.includes(commons)) sources.push(commons);
-
+      if (commons && !sources.includes(commons)) liquipediaOverrides.push(commons);
     }
-
   }
 
-
+  for (const u of liquipediaOverrides) {
+    if (!sources.includes(u)) sources.push(u);
+  }
 
   if (sources.length === 0) sources.push(BSC_DEFAULT_LOGO);
 
-  return sources;
+  return toClientLogoSources(sources);
 
 }
 

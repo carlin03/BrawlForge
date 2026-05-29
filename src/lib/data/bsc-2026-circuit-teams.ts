@@ -1,94 +1,19 @@
 /**
- * Equipos con actividad en el circuito BSC 2026 oficial (ene–ago 2026).
- * Fuentes: PSI, Monthly Finals/Qualifiers, Brawl Cup, Challengers, leaderboards Liquipedia,
- * partidos curados (bsc-matches), fantasy participants, Escharts/Supercell cross-check.
- *
- * No incluye torneos amateur de Liquipedia fuera del circuito Blast/Supercell.
+ * Circuito BSC 2026 — equipos Tier B+ activos.
  */
-import circuitJson from "./generated/bsc-2026-circuit-teams.json";
-import { BSC_FANTASY_PARTICIPANTS } from "./bsc-fantasy-participants";
-import { BSC_2026_MQ_PARTICIPANT_SLUGS } from "./bsc-2026-mq-participants";
+import {
+  BSC_2026_ACTIVE_SLUG_SET,
+  BSC_2026_ACTIVE_TEAM_SLUGS,
+  BSC_2026_EXCLUDED_SLUG_SET,
+  isBsc2026ActiveTeam,
+} from "./bsc-2026-active-teams";
 
-/** Plantilla curada — orgs con partidos en MF/MQ/PSI/Brawl Cup/Challengers 2026 */
-export const BSC_2026_CIRCUIT_CURATED: string[] = [
-  // ── Global / multi-región (Brawl Cup, WF, LCQ path) ──
-  "hmble",
-  "fut-esports",
-  "tribe-gaming",
-  "zeta-division",
-  "crazy-raccoon",
-  "only-realm",
-  "bounty-hunters-esports",
-  "ace-xero",
-  "bc-gaming-sa",
-  "eternal-esports",
-  "revenant-xspark",
-  "toxic-lotus",
+export { BSC_2026_ACTIVE_TEAM_SLUGS as BSC_2026_CIRCUIT_CURATED };
 
-  // ── EMEA ──
-  "sk-gaming",
-  "team-heretics",
-  "natus-vincere",
-  "totem-esports",
-  "novo-esports",
-  "metizport",
-  "big",
-  "big-talents",
-  "kebap",
-  "papara-supermassive",
-  "qlash",
-  "oddyssey",
-  "reject",
-  "fut-esports-academy",
-
-  // ── East Asia / CN ──
-  "stmn-esports",
-  "nova-esports",
-
-  // ── North America ──
-  "spacestation-gaming",
-  "vatic-esports",
-  "zoos-esports",
-  "team-elektros",
-  "skcalalas",
-  "skcalalas-na",
-
-  // ── South America ──
-  "loud",
-  "skcalalas",
-  "elevate",
-  "oddyssey",
-  "zurita-gang",
-  "olimpo-squad",
-  "acre-lovers",
-
-  // ── India / cross-region ──
-  "revenant-xspark",
-];
-
-function slugsFromFantasy(): string[] {
-  const out = new Set<string>();
-  for (const list of Object.values(BSC_FANTASY_PARTICIPANTS)) {
-    for (const s of list) out.add(s);
-  }
-  return [...out];
-}
-
-function slugsFromDiscoveryJson(): string[] {
-  const raw = circuitJson as { teamSlugs?: string[] };
-  return Array.isArray(raw.teamSlugs) ? raw.teamSlugs : [];
-}
-
-/** Slugs únicos del circuito BSC 2026 (curado + discovery Liquipedia + fantasy) */
 export function getBsc2026CircuitTeamSlugs(): string[] {
-  const out = new Set<string>();
-  for (const s of BSC_2026_CIRCUIT_CURATED) out.add(s);
-  for (const s of slugsFromFantasy()) out.add(s);
-  for (const s of slugsFromDiscoveryJson()) {
-    if (s !== "toc-team") out.add(s);
-  }
-  for (const s of BSC_2026_MQ_PARTICIPANT_SLUGS) out.add(s);
-  return [...out].sort((a, b) => a.localeCompare(b));
+  return [...BSC_2026_ACTIVE_TEAM_SLUGS].sort((a, b) => a.localeCompare(b));
 }
 
-export const BSC_2026_CIRCUIT_SLUGS = new Set(getBsc2026CircuitTeamSlugs());
+export const BSC_2026_CIRCUIT_SLUGS = BSC_2026_ACTIVE_SLUG_SET;
+
+export { isBsc2026ActiveTeam, BSC_2026_EXCLUDED_SLUG_SET };

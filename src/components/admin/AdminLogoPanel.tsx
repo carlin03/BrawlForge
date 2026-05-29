@@ -105,6 +105,14 @@ export function AdminLogoPanel() {
 
   return (
     <div className="bf-admin-logos">
+      <div className="bf-admin-logo-help" role="note">
+        <strong>Logos en Vercel</strong>
+        <p>
+          No hay carpeta <code>public/logos/</code> en producción. Pega aquí la URL directa de cada PNG/JPG
+          (Imgur, CDN, tu hosting) o usa los logos automáticos del circuito. En tu PC puedes generar PNG locales con{" "}
+          <code>npm run logos:fetch</code>.
+        </p>
+      </div>
       <div className="bf-admin-logos-tabs">
         <button
           type="button"

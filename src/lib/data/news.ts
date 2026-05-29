@@ -1,4 +1,5 @@
 import { extraNewsArticles } from "./news-articles-extra";
+import { isBsc2026ExcludedTeam } from "./bsc-2026-active-teams";
 
 export interface NewsArticle {
   slug: string;
@@ -172,7 +173,13 @@ const baseNews: NewsArticle[] = [
   },
 ];
 
-export const news: NewsArticle[] = [...baseNews, ...extraNewsArticles];
+function newsUsesExcludedTeam(article: NewsArticle): boolean {
+  return (article.relatedTeams ?? []).some((t) => isBsc2026ExcludedTeam(t));
+}
+
+const filteredExtraNews = extraNewsArticles.filter((a) => !newsUsesExcludedTeam(a));
+
+export const news: NewsArticle[] = [...baseNews, ...filteredExtraNews];
 
 const allNews = news;
 

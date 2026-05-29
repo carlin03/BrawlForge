@@ -333,7 +333,7 @@ export const bsc2026Tournaments: EsportsTournament[] = (
         endDate: month === "february" ? "2026-03-07" : month === "march" ? "2026-03-22" : month === "april" ? "2026-04-18" : "2026-05-23",
         location: "Online",
         stage: "Completed",
-        winnerSlug: month === "may" ? "toxic-lotus" : month === "april" ? "ace-xero" : undefined,
+        winnerSlug: month === "may" ? "crazy-raccoon" : month === "april" ? "zeta-division" : undefined,
       }),
     ),
   ] satisfies TDef[]

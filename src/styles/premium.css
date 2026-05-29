@@ -335,7 +335,7 @@
     transparent 65%
   );
 }
-.bf-card-fut.bf-card-premium .bf-card-logo-stage {
+.bf-card-fut.bf-card-premium:not(.has-team-theme) .bf-card-logo-stage {
   background: radial-gradient(circle at 50% 30%, rgba(255, 200, 46, 0.12), rgba(0, 0, 0, 0.35));
   box-shadow: 0 0 32px rgba(255, 200, 46, 0.15), inset 0 0 24px rgba(255, 200, 46, 0.08);
 }
@@ -487,15 +487,47 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
   min-width: 0;
 }
+.bf-fantasy-premium .bf-fantasy-market-controls {
+  border-color: rgba(255, 200, 46, 0.22);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 32px rgba(255, 200, 46, 0.04);
+}
 .bf-fantasy-premium .bf-fantasy-layout {
   gap: 20px;
 }
 .bf-fantasy-premium .bf-fantasy-market .bf-card.has-team-theme .bf-card-logo-stage {
   border: 1px solid color-mix(in srgb, var(--bf-team-primary) 30%, transparent);
 }
+.bf-fantasy-premium .bf-fantasy-market .bf-card.has-team-theme {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--bf-team-primary) 94%, #05080c) 0%,
+    color-mix(in srgb, var(--bf-team-primary) 76%, var(--bf-team-secondary)) 30%,
+    color-mix(in srgb, var(--bf-team-secondary) 90%, #020304) 58%,
+    color-mix(in srgb, var(--bf-team-secondary) 58%, #010203) 100%
+  ) !important;
+}
 .bf-fantasy-premium .bf-fantasy-market .bf-card-team-watermark {
-  opacity: 0.26;
-  max-width: 260px;
+  width: 220%;
+  min-width: 260px;
+}
+.bf-fantasy-premium .bf-fantasy-market .bf-card-watermark-img {
+  opacity: var(--bf-card-watermark-opacity, 0.5);
+  mix-blend-mode: screen;
+}
+.bf-fantasy-premium .bf-fantasy-roster .bf-card-mini.has-team-theme {
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--bf-team-primary) 75%, #0a0e14) 0%,
+    color-mix(in srgb, var(--bf-team-secondary) 80%, #050608) 100%
+  ) !important;
+}
+.bf-fantasy-premium .bf-fantasy-roster .bf-card-team-watermark.is-mini {
+  width: 210%;
+}
+.bf-fantasy-premium .bf-fantasy-roster .bf-card-watermark-img,
+.bf-fantasy-premium .bf-fantasy-roster .bf-card-watermark-fallback {
+  opacity: var(--bf-card-watermark-opacity, 0.42);
+  mix-blend-mode: screen;
 }
 .bf-fantasy-premium .bf-fantasy-market .bf-card-fut-foot {
   border-top-color: rgba(255, 255, 255, 0.05);

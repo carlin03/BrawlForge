@@ -8,6 +8,7 @@ import { MAIN_NAV } from "@/lib/nav-config";
 import { PlayerProfileMenu } from "@/components/platform/PlayerProfileMenu";
 import { AdminFab } from "@/components/admin/AdminFab";
 import { MotionAmbience } from "@/components/platform/MotionAmbience";
+import { useAuth } from "@/contexts/AuthContext";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -17,6 +18,7 @@ function isActive(pathname: string, href: string) {
 export function PlatformShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { isAdmin, loading: authLoading, isLoggedIn } = useAuth();
 
   return (
     <div className="bp-app bf-game-app bf-ultra-app bf-premium-app bf-motion-app">
@@ -64,6 +66,20 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
               {item.label}
             </Link>
           ))}
+          {!authLoading && isLoggedIn && (
+            <Link
+              href="/profile"
+              className={`bp-nav-link ${pathname === "/profile" ? "is-on" : ""}`}
+              onClick={() => setOpen(false)}
+            >
+              Mi perfil
+            </Link>
+          )}
+          {!authLoading && isAdmin && (
+            <Link href="/admin?tab=logos" className="bp-nav-link is-admin-nav" onClick={() => setOpen(false)}>
+              Logos (admin)
+            </Link>
+          )}
         </nav>
       </header>
 

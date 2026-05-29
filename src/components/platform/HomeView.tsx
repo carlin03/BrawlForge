@@ -37,25 +37,23 @@ type MatchTab = "live" | "upcoming" | "results";
 const BSC_CLUBS = [
   "sk-gaming",
   "team-heretics",
-  "crazy-raccoon",
-  "loud",
-  "tribe-gaming",
-  "zeta-division",
+  "hmble",
   "fut-esports",
   "natus-vincere",
   "totem-esports",
-  "spacestation-gaming",
-  "novo-esports",
-  "hmble",
+  "big",
+  "crazy-raccoon",
+  "zeta-division",
   "reject",
-  "stmn-esports",
-  "papara-supermassive",
-  "toxic-lotus",
-  "revenant-xspark",
-  "qlash",
+  "skcalalas-ea",
+  "tribe-gaming",
+  "kds-esports",
+  "loud",
   "skcalalas",
-  "bc-gaming",
+  "new-heights-gaming",
+  "kaioperro",
   "only-realm",
+  "bounty-hunters-esports",
 ];
 
 function cleanName(raw: string): string {
@@ -314,10 +312,12 @@ export function HomeView() {
               <h2>Predicciones · comunidad</h2>
               <Link href="/predictions">Todas las predicciones</Link>
             </div>
-            <div className="bf-predict-grid bf-predict-grid-home">
-              {voteEvents.map((e, i) => (
-                <InteractiveVoteCard key={e.id} event={e} featured={i === 0} />
-              ))}
+            <div className="bf-predict-bsc bf-predict-bsc-home">
+              <div className="bf-predict-grid bf-predict-grid-home bf-bsc-predict-grid">
+                {voteEvents.map((e, i) => (
+                  <InteractiveVoteCard key={e.id} event={e} featured={i === 0} />
+                ))}
+              </div>
             </div>
           </section>
         )}

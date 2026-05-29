@@ -1,24 +1,24 @@
 /**
- * Participantes BSC 2026 para fantasy — equipos por torneo (MF, PSI, Brawl Cup, WF).
+ * Participantes BSC 2026 para fantasy — equipos por torneo (MF, PSI, Brawl Cup).
  */
 export const BSC_FANTASY_PARTICIPANTS: Record<string, string[]> = {
   "bsc-2026-brawl-cup": [
-    "bounty-hunters-esports",
     "hmble",
-    "ace-xero",
-    "only-realm",
-    "zeta-division",
-    "bc-gaming-sa",
-    "crazy-raccoon",
-    "eternal-esports",
-    "revenant-xspark",
     "fut-esports",
     "tribe-gaming",
+    "zeta-division",
+    "crazy-raccoon",
+    "only-realm",
+    "bounty-hunters-esports",
+    "bc-gaming-sa",
+    "eternal-esports",
+    "revenant-xspark",
+    "ace-xero",
     "toxic-lotus",
   ],
   "bsc-2026-psi-emea": ["sk-gaming", "team-heretics", "hmble", "fut-esports"],
-  "bsc-2026-psi-ea": ["crazy-raccoon", "zeta-division", "stmn-esports", "toxic-lotus"],
-  "bsc-2026-psi-na": ["tribe-gaming", "spacestation-gaming", "loud", "skcalalas"],
+  "bsc-2026-psi-ea": ["crazy-raccoon", "zeta-division", "reject", "skcalalas-ea"],
+  "bsc-2026-psi-na": ["tribe-gaming", "kds-esports", "loud", "skcalalas"],
   "bsc-2026-psi-sa": ["loud", "skcalalas", "bc-gaming-sa", "bounty-hunters-esports"],
   "world-finals-2026": [
     "crazy-raccoon",
@@ -29,14 +29,10 @@ export const BSC_FANTASY_PARTICIPANTS: Record<string, string[]> = {
     "hmble",
     "fut-esports",
     "team-heretics",
-    "spacestation-gaming",
     "natus-vincere",
-    "revenant-xspark",
-    "stmn-esports",
-    "papara-supermassive",
-    "toxic-lotus",
+    "reject",
+    "kds-esports",
     "skcalalas",
-    "bc-gaming-sa",
   ],
 };
 
@@ -47,43 +43,43 @@ const MF_EMEA = [
   "hmble",
   "natus-vincere",
   "totem-esports",
-  "qlash",
-  "oddyssey",
-  "papara-supermassive",
-  "revenant-xspark",
+  "big",
+  "novo-esports",
+  "kebap",
+  "metizport",
 ];
 
 const MF_EA = [
   "crazy-raccoon",
   "zeta-division",
-  "stmn-esports",
-  "toxic-lotus",
-  "ace-xero",
-  "revenant-xspark",
   "reject",
-  "nova-esports",
+  "skcalalas-ea",
+  "rival-esports",
+  "effort-result",
+  "abc-ea-team",
+  "wwl-esports",
 ];
 
 const MF_NA = [
   "tribe-gaming",
+  "kds-esports",
   "stmn-esports",
-  "spacestation-gaming",
-  "loud",
-  "skcalalas",
+  "team-elektros",
   "vatic-esports",
   "only-realm",
-  "bc-gaming-sa",
+  "elevate",
+  "zoos-esports",
 ];
 
 const MF_SA = [
   "loud",
   "skcalalas",
-  "bc-gaming-sa",
-  "bounty-hunters-esports",
+  "new-heights-gaming",
+  "kaioperro",
   "eternal-esports",
-  "hmble",
-  "fut-esports",
-  "tribe-gaming",
+  "alguem-segura",
+  "olimpo-squad",
+  "bounty-hunters-esports",
 ];
 
 const MF_MONTHS = [
@@ -99,7 +95,7 @@ const MF_MONTHS = [
 for (const month of MF_MONTHS) {
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-emea-mf`] = [...MF_EMEA];
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-ea-mf`] = [...MF_EA];
-  BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-na-mf`] = [...MF_SA];
+  BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-na-mf`] = [...MF_NA];
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-${month}-sa-mf`] = [...MF_SA];
 }
 
@@ -109,13 +105,11 @@ BSC_FANTASY_PARTICIPANTS["bsc-2026-s3-na-mf"] = [...MF_NA];
 
 for (const month of ["february", "march", "april", "may"] as const) {
   BSC_FANTASY_PARTICIPANTS[`bsc-2026-cn-${month}-mf`] = [
+    "ace-xero",
+    "toxic-lotus",
     "crazy-raccoon",
     "zeta-division",
-    "toxic-lotus",
-    "ace-xero",
-    "stmn-esports",
-    "revenant-xspark",
     "reject",
-    "nova-esports",
+    "skcalalas-ea",
   ];
 }

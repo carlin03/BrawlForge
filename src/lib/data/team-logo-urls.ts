@@ -1,6 +1,7 @@
-/** Remote logo CDN fallbacks — NO liquipedia.net wiki pages in UI */
+/** Remote logo CDN fallbacks — Liquipedia solo vía proxy en UI */
 import teamSlugs from "./generated/team-slugs-all.json";
 import allTeams from "./generated/teams.json";
+import teams2026 from "./generated/teams-2026.json";
 import type { GeneratedTeam } from "./catalog-types";
 
 export const TAIYORO_LOGOS: Record<string, string> = {
@@ -78,7 +79,28 @@ const LIQUIPEDIA_FILES: Record<string, string> = {
 };
 
 function liquipediaCommonsUrl(filename: string): string {
-  return `https://liquipedia.net/commons/images/${filename[0]}/${filename.slice(0, 2)}/${filename}`;
+  const f = filename.trim().replace(/ /g, "_");
+  return `https://liquipedia.net/commons/images/${f[0]}/${f.slice(0, 2)}/${f}`;
+}
+
+/** Mismo nombre de archivo que Liquipedia; Wikimedia permite hotlinking. */
+export function wikimediaFromLogoFile(filename: string): string {
+  const f = filename.trim().replace(/ /g, "_");
+  if (!f) return "";
+  return `https://upload.wikimedia.org/wikipedia/commons/${f[0].toLowerCase()}/${f.slice(0, 2).toLowerCase()}/${f}`;
+}
+
+export function royaleApiLogoUrl(slug: string): string {
+  return `https://cdn.royaleapi.com/static/img/team/logo/${slug}.png`;
+}
+
+export function isLiquipediaImageUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname;
+    return host === "liquipedia.net" || host.endsWith(".liquipedia.net");
+  } catch {
+    return false;
+  }
 }
 
 export const LIQUIPEDIA_COMMONS_LOGOS: Record<string, string> = Object.fromEntries(
@@ -92,36 +114,56 @@ export const CATALOG_TEAM_LOGO_URLS: Record<string, string> = Object.fromEntries
     .map((t) => [t.slug, liquipediaCommonsUrl(t.logoFile!)]),
 );
 
+/** Wikimedia a partir de logoFile — prioridad en UI */
+export const CATALOG_WIKIMEDIA_LOGOS: Record<string, string> = Object.fromEntries(
+  [...(allTeams as GeneratedTeam[]), ...(teams2026 as GeneratedTeam[])]
+    .filter((t) => t.logoFile)
+    .map((t) => [t.slug, wikimediaFromLogoFile(t.logoFile!)] as const)
+    .filter(([, url]) => url),
+);
+
 export const FAVICON_LOGOS: Record<string, string> = {
   "bc-gaming-sa": "https://icons.duckduckgo.com/ip3/berlincityclub.com.ico",
 };
 
 export const ALL_TEAM_SLUGS: readonly string[] = teamSlugs as string[];
 
-/** Cadena para scripts de descarga (incluye Liquipedia). No usar en <img> del cliente. */
+/** Cadena para scripts de descarga (incluye Liquipedia directo). */
 export function buildRemoteLogoChain(slug: string): string[] {
   const chain: string[] = [];
   if (TAIYORO_LOGOS[slug]) chain.push(TAIYORO_LOGOS[slug]);
   if (ORG_OFFICIAL_LOGOS[slug]) chain.push(ORG_OFFICIAL_LOGOS[slug]);
   if (ROYALEAPI_LOGOS[slug]) chain.push(ROYALEAPI_LOGOS[slug]);
   if (WIKIMEDIA_LOGOS[slug]) chain.push(WIKIMEDIA_LOGOS[slug]);
+  if (CATALOG_WIKIMEDIA_LOGOS[slug]) chain.push(CATALOG_WIKIMEDIA_LOGOS[slug]);
   if (CATALOG_TEAM_LOGO_URLS[slug]) chain.push(CATALOG_TEAM_LOGO_URLS[slug]);
   if (LIQUIPEDIA_COMMONS_LOGOS[slug]) chain.push(LIQUIPEDIA_COMMONS_LOGOS[slug]);
   if (FAVICON_LOGOS[slug]) chain.push(FAVICON_LOGOS[slug]);
   return [...new Set(chain)];
 }
 
-/** Solo PNG transparentes — para UI (TeamLogo, TournamentLogo). */
-export function buildTransparentLogoChain(slug: string): string[] {
+/** Fuentes para <img>: sin hotlinking de Liquipedia; alternativas primero. */
+export function buildUiRemoteLogoChain(slug: string): string[] {
   const chain: string[] = [];
   if (TAIYORO_LOGOS[slug]) chain.push(TAIYORO_LOGOS[slug]);
   if (ORG_OFFICIAL_LOGOS[slug]) chain.push(ORG_OFFICIAL_LOGOS[slug]);
   if (ROYALEAPI_LOGOS[slug]) chain.push(ROYALEAPI_LOGOS[slug]);
+  chain.push(royaleApiLogoUrl(slug));
+  if (WIKIMEDIA_LOGOS[slug]) chain.push(WIKIMEDIA_LOGOS[slug]);
+  if (CATALOG_WIKIMEDIA_LOGOS[slug]) chain.push(CATALOG_WIKIMEDIA_LOGOS[slug]);
+  if (CATALOG_TEAM_LOGO_URLS[slug]) chain.push(CATALOG_TEAM_LOGO_URLS[slug]);
+  if (LIQUIPEDIA_COMMONS_LOGOS[slug]) chain.push(LIQUIPEDIA_COMMONS_LOGOS[slug]);
+  if (FAVICON_LOGOS[slug]) chain.push(FAVICON_LOGOS[slug]);
   return [...new Set(chain)];
 }
 
+/** @deprecated Usar buildUiRemoteLogoChain */
+export function buildTransparentLogoChain(slug: string): string[] {
+  return buildUiRemoteLogoChain(slug);
+}
+
 export function getBestRemoteLogo(slug: string): string | undefined {
-  return buildRemoteLogoChain(slug)[0];
+  return buildUiRemoteLogoChain(slug)[0];
 }
 
 export const TEAM_LOGOS: Record<string, string> = Object.fromEntries(

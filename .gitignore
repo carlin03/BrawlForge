@@ -24,8 +24,13 @@
 .DS_Store
 *.pem
 
-# Logos locales (miles de PNG) — no subir a Git/Vercel; npm run logos:download en local
-/public/logos/
+# Logos de equipos (miles de PNG) — npm run logos:repair en local
+/public/logos/teams/
+/public/logos/taiyoro/
+# Logos de torneos BSC sí van al repo (pocos PNG, ~50 slugs)
+!/public/logos/
+!/public/logos/tournaments/
+!/public/logos/tournaments/**
 
 # debug
 npm-debug.log*

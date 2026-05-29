@@ -42,7 +42,7 @@ export const pickemEvents: PickemEvent[] = [
         matches: [
           { id: "qf1", teamASlug: "crazy-raccoon", teamBSlug: "sk-gaming", scoreA: 3, scoreB: 1, stage: "QF" },
           { id: "qf2", teamASlug: "hmble", teamBSlug: "tribe-gaming", scoreA: 3, scoreB: 2, stage: "QF" },
-          { id: "qf3", teamASlug: "fut-esports", teamBSlug: "revenant-xspark", scoreA: 2, scoreB: 3, stage: "QF" },
+          { id: "qf3", teamASlug: "fut-esports", teamBSlug: "team-heretics", scoreA: 2, scoreB: 3, stage: "QF" },
           { id: "qf4", teamASlug: "totem-esports", teamBSlug: "loud", scoreA: 3, scoreB: 0, stage: "QF" },
         ],
       },
@@ -51,7 +51,7 @@ export const pickemEvents: PickemEvent[] = [
         label: "Semifinals",
         matches: [
           { id: "sf1", teamASlug: "crazy-raccoon", teamBSlug: "hmble", scoreA: 3, scoreB: 2, stage: "SF" },
-          { id: "sf2", teamASlug: "revenant-xspark", teamBSlug: "totem-esports", scoreA: 1, scoreB: 3, stage: "SF" },
+          { id: "sf2", teamASlug: "team-heretics", teamBSlug: "totem-esports", scoreA: 1, scoreB: 3, stage: "SF" },
         ],
       },
       {

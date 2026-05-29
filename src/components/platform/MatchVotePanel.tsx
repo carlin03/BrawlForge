@@ -30,12 +30,16 @@ export function MatchVotePanel({ matchId }: { matchId: string }) {
   }
 
   if (event.status === "open") {
-    return <InteractiveVoteCard event={event} featured />;
+    return (
+      <div className="bf-predict-bsc">
+        <InteractiveVoteCard event={event} featured />
+      </div>
+    );
   }
 
   const hasVotes = hasRealVotes(event);
   return (
-    <div className="bf-premium-closed-vote">
+    <div className="bf-premium-closed-vote bf-predict-bsc">
       <p className="bf-premium-closed-label">Resultado · votación cerrada</p>
       {hasVotes ? (
         <>

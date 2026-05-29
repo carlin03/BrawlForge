@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const ALLOWED_HOSTS = ["liquipedia.net", "upload.wikimedia.org"];
+const ALLOWED_HOSTS = [
+  "liquipedia.net",
+  "upload.wikimedia.org",
+  "taiyoro-prod-media.s3.amazonaws.com",
+  "cdn.royaleapi.com",
+];
+
+function hostAllowed(hostname: string): boolean {
+  if (ALLOWED_HOSTS.includes(hostname)) return true;
+  if (hostname.endsWith(".supabase.co") || hostname.endsWith(".supabase.in")) return true;
+  return false;
+}
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get("url");
@@ -16,7 +27,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (
-    !ALLOWED_HOSTS.includes(parsed.hostname) ||
+    !hostAllowed(parsed.hostname) ||
     (parsed.hostname === "liquipedia.net" && !parsed.pathname.startsWith("/commons/images/")) ||
     (parsed.hostname === "upload.wikimedia.org" && !parsed.pathname.startsWith("/wikipedia/"))
   ) {

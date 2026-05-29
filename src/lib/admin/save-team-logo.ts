@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { canWriteLocalProjectFiles, tryWriteFile } from "@/lib/admin/project-fs";
 import { TAIYORO_LOGOS } from "@/lib/data/team-logo-urls";
 import type { LogoTreatment } from "@/lib/data/logo-branding";
 
@@ -47,28 +48,37 @@ async function processBuffer(
   }
 }
 
+export async function processTeamLogoPng(
+  root: string,
+  slug: string,
+  treatment: LogoTreatment,
+  imageUrl?: string,
+): Promise<{ png: Buffer; publicPath: string; processed: boolean }> {
+  const raw = await fetchTeamLogoSource(root, slug, imageUrl);
+  const png = await processBuffer(raw, slug, treatment);
+  return {
+    png,
+    publicPath: `/logos/teams/${slug}.png`,
+    processed: png.length !== raw.length,
+  };
+}
+
 export async function writeProcessedTeamLogo(
   root: string,
   slug: string,
   treatment: LogoTreatment,
   imageUrl?: string,
-): Promise<{ bytes: number; publicPath: string; processed: boolean }> {
-  const raw = await fetchTeamLogoSource(root, slug, imageUrl);
-  const png = await processBuffer(raw, slug, treatment);
-
+): Promise<{ bytes: number; publicPath: string; processed: boolean; wroteLocal: boolean }> {
+  const { png, publicPath, processed } = await processTeamLogoPng(root, slug, treatment, imageUrl);
   const dest = path.join(root, "public", "logos", "teams", `${slug}.png`);
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.writeFileSync(dest, png);
-
-  return {
-    bytes: png.length,
-    publicPath: `/logos/teams/${slug}.png`,
-    processed: png.length !== raw.length || png !== raw,
-  };
+  const wroteLocal = tryWriteFile(dest, png);
+  return { bytes: png.length, publicPath, processed, wroteLocal };
 }
 
-export function bumpTeamLogoManifest(root: string, slug: string): string {
+export function bumpTeamLogoManifest(root: string, slug: string): string | null {
+  if (!canWriteLocalProjectFiles()) return null;
   const manifestPath = path.join(root, "src", "lib", "data", "generated", "logo-manifest.json");
+  if (!fs.existsSync(manifestPath)) return null;
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
     processedTeamLogos?: string[];
     taiyoroLocal?: string[];
@@ -79,7 +89,7 @@ export function bumpTeamLogoManifest(root: string, slug: string): string {
   manifest.processedTeamLogos = [...set].sort();
   manifest.taiyoroLocal = manifest.processedTeamLogos;
   manifest.logoCacheVersion = Date.now();
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+  if (!tryWriteFile(manifestPath, JSON.stringify(manifest, null, 2))) return null;
   return String(manifest.logoCacheVersion);
 }
 
@@ -89,8 +99,7 @@ export function writeLogoOverrides(
     teams: Record<string, { url?: string; treatment?: string }>;
     tournaments: Record<string, { url?: string }>;
   },
-): void {
+): boolean {
   const overridesPath = path.join(root, "src", "lib", "data", "generated", "logo-overrides.json");
-  fs.mkdirSync(path.dirname(overridesPath), { recursive: true });
-  fs.writeFileSync(overridesPath, JSON.stringify(overrides, null, 2));
+  return tryWriteFile(overridesPath, JSON.stringify(overrides, null, 2));
 }

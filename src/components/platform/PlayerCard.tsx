@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { TeamLogo } from "@/components/ui/TeamLogo";
+import { TeamCardWatermark } from "@/components/ui/TeamCardWatermark";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 import { getTeam, teamName, getFantasyRole } from "@/lib/data";
 import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
@@ -18,7 +19,9 @@ export function getCardTier(rating: number, fantasyPoints: number): CardTier {
   return "common";
 }
 
-const LOGO_BY_SIZE = { hero: 96, xl: 80, lg: 64, md: 56, sm: 44 } as const;
+const PHOTO_BY_SIZE = { hero: 96, xl: 80, lg: 64, md: 56, sm: 44 } as const;
+/** Logo del club de fondo (watermark) — mucho más grande que la foto del jugador */
+const WATERMARK_BY_SIZE = { hero: 340, xl: 300, lg: 260, md: 240, sm: 200 } as const;
 
 export function PlayerCard({
   playerSlug,
@@ -63,15 +66,16 @@ export function PlayerCard({
   const ovr = p.fantasyPoints;
   const ownership = pickRate ?? p.fantasyOwnership;
   const trend = priceChange ?? 0;
-  const logoSize = LOGO_BY_SIZE[size];
+  const photoSize = PHOTO_BY_SIZE[size];
   const statusLabel =
     p.status === "active" ? "Activo" : p.status === "inactive" ? "Inactivo" : "Retirado";
 
   const inner = (
     <>
       <div className="bf-card-team-bg" aria-hidden>
-        <div className="bf-card-team-watermark">
-          <TeamLogo slug={displayClub} name={club?.name ?? teamName(displayClub)} size={200} glow={false} />
+        <div className="bf-card-team-glow" />
+        <div className={`bf-card-team-watermark bf-card-team-watermark--${size}`}>
+          <TeamCardWatermark slug={displayClub} name={club?.name ?? teamName(displayClub)} />
         </div>
       </div>
       <div className="bf-card-shine" aria-hidden />
@@ -89,7 +93,7 @@ export function PlayerCard({
           playerSlug={playerSlug}
           teamSlug={displayClub}
           name={p.ign}
-          size={logoSize}
+          size={photoSize}
           key={`${playerSlug}-${p.photoUrl ?? ""}`}
         />
       </div>
@@ -180,7 +184,7 @@ export function PlayerCard({
     .filter(Boolean)
     .join(" ");
 
-  const themeStyle = teamCardThemeVars(theme);
+  const themeStyle = teamCardThemeVars(theme, size);
 
   if (onAction) {
     return (
@@ -212,12 +216,13 @@ export function PlayerCardMini({ playerSlug, isCaptain }: { playerSlug: string; 
     <Link
       href={`/players/${playerSlug}`}
       className={`bf-card-mini bf-card-premium-mini has-team-theme bf-card-${tier}${isCaptain ? " is-captain" : ""}`}
-      style={teamCardThemeVars(theme)}
+      style={teamCardThemeVars(theme, "mini")}
       data-team={p.teamSlug}
     >
       <div className="bf-card-team-bg" aria-hidden>
+        <div className="bf-card-team-glow" />
         <div className="bf-card-team-watermark is-mini">
-          <TeamLogo slug={p.teamSlug} name={teamName(p.teamSlug)} size={72} glow={false} />
+          <TeamCardWatermark slug={p.teamSlug} name={teamName(p.teamSlug)} />
         </div>
       </div>
       <span className="bf-card-mini-ovr">{p.fantasyPoints}</span>

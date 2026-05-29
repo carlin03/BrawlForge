@@ -2,11 +2,9 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Target, Trophy, Flame, Clock } from "lucide-react";
+import { Target, Trophy, Flame, Calendar } from "lucide-react";
 import { MatchLine } from "@/components/platform/ui";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
-import { PageUltraShell } from "@/components/platform/PageUltraShell";
-import { PageUltraHero } from "@/components/platform/PageUltraHero";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { isKnownTeamSlug, getRecentMatches, teamName } from "@/lib/data";
@@ -29,112 +27,129 @@ export function PredictionsView({ open, closed }: { open: PredictionEvent[]; clo
   const recent = getRecentMatches().filter((m) => isKnownTeamSlug(m.teamASlug)).slice(0, 4);
 
   return (
-    <PageUltraShell className="bf-predict-page bf-predict-ultra bf-arena-page bf-arena-static">
-      <PageUltraHero
-        kicker={
-          <>
-            <Target size={14} /> Predicciones BSC
-          </>
-        }
-        title={
-          <>
-            Acierta el <em>ganador</em>
-          </>
-        }
-        lead="Elige club en partidos reales del circuito 2026. Los porcentajes son solo votos de la comunidad."
-        stats={
-          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-            <div className="fu-stat">
-              <b>{displayOpen.length}</b>
-              <span>Abiertas</span>
+    <div className="bf-page-ultra bf-motion-page bf-predict-page bf-predict-bsc">
+      <header className="bf-bsc-predict-hero">
+        <div className="bf-bsc-predict-hero-bg" aria-hidden>
+          <div className="bf-bsc-predict-hero-blue" />
+          <div className="bf-bsc-predict-hero-red" />
+          <div className="bf-bsc-predict-hero-line" />
+        </div>
+        <div className="bf-bsc-predict-hero-grid">
+          <div className="bf-bsc-predict-hero-copy">
+            <p className="bf-bsc-predict-kicker">
+              <Target size={14} aria-hidden />
+              Predicciones BSC 2026
+            </p>
+            <h1 className="bf-bsc-predict-title">
+              <span className="bf-bsc-predict-title-blue">Azul</span>
+              <span className="bf-bsc-predict-title-vs">vs</span>
+              <span className="bf-bsc-predict-title-red">Rojo</span>
+            </h1>
+            <p className="bf-bsc-predict-lead">
+              Elige el ganador de cada partido. Lado izquierdo <strong className="is-blue">AZUL</strong>, derecho{" "}
+              <strong className="is-red">ROJO</strong>. Las barras solo muestran votos reales de la comunidad.
+            </p>
+            <div className="bf-bsc-predict-stats">
+              <div className="bf-bsc-predict-stat is-blue">
+                <b>{displayOpen.length}</b>
+                <span>Abiertas</span>
+              </div>
+              <div className="bf-bsc-predict-stat is-red">
+                <b>{displayClosed.length}</b>
+                <span>Cerradas</span>
+              </div>
+              <div className="bf-bsc-predict-stat is-neutral">
+                <b>{isLoggedIn ? profile?.predictPoints ?? 0 : "—"}</b>
+                <span>{isLoggedIn ? "Tus puntos" : "Inicia sesión"}</span>
+              </div>
             </div>
-            <div className="fu-stat">
-              <b>{displayClosed.length}</b>
-              <span>Cerradas</span>
-            </div>
-            <div className="fu-stat">
-              <b>{isLoggedIn ? profile?.predictPoints ?? 0 : "—"}</b>
-              <span>{isLoggedIn ? "Tus puntos" : "Entra y predice"}</span>
+            <div className="bf-bsc-predict-actions">
+              <Link href="/matches" className="bf-bsc-btn bf-bsc-btn-blue">
+                <Calendar size={16} aria-hidden />
+                Calendario
+              </Link>
+              <Link href="/fantasy" className="bf-bsc-btn bf-bsc-btn-red">
+                Fantasy
+              </Link>
+              {!isLoggedIn && (
+                <Link href="/login?next=/predictions" className="bf-bsc-btn bf-bsc-btn-blue">
+                  Entrar y predecir
+                </Link>
+              )}
             </div>
           </div>
-        }
-        actions={
-          <>
-            <Link href="/matches" className="fu-btn fu-btn-ghost">
-              Calendario
-            </Link>
-            <Link href="/fantasy" className="fu-btn fu-btn-gold">
-              Fantasy
-            </Link>
-            {!isLoggedIn && (
-              <Link href="/login?next=/predictions" className="fu-btn fu-btn-red">
-                Entrar y predecir
-              </Link>
-            )}
-          </>
-        }
-        showcase={
-          featured ? (
-            <div className="bf-arena-duel-static" aria-hidden={false}>
-              <div className="bf-arena-duel-side">
-                <TeamLogo slug={featured.teamASlug} name={teamName(featured.teamASlug)} size={88} glow />
+
+          {featured ? (
+            <div className="bf-bsc-predict-duel" aria-hidden={false}>
+              <div className="bf-bsc-predict-duel-side is-blue">
+                <TeamLogo slug={featured.teamASlug} name={teamName(featured.teamASlug)} size={96} glow />
                 <span>{teamName(featured.teamASlug)}</span>
+                <em>AZUL</em>
               </div>
-              <span className="fu-duel-vs">VS</span>
-              <div className="bf-arena-duel-side">
-                <TeamLogo slug={featured.teamBSlug} name={teamName(featured.teamBSlug)} size={88} glow />
+              <span className="bf-bsc-predict-duel-vs">VS</span>
+              <div className="bf-bsc-predict-duel-side is-red">
+                <TeamLogo slug={featured.teamBSlug} name={teamName(featured.teamBSlug)} size={96} glow />
                 <span>{teamName(featured.teamBSlug)}</span>
+                <em>ROJO</em>
               </div>
             </div>
           ) : (
-            <div className="bf-arena-duel-static bf-arena-duel-empty">
-              <Trophy size={48} color="var(--bp-gold)" />
+            <div className="bf-bsc-predict-duel is-empty">
+              <Trophy size={48} className="bf-bsc-predict-duel-icon" aria-hidden />
               <span>Próximas predicciones</span>
             </div>
-          )
-        }
-      />
+          )}
+        </div>
+      </header>
 
       {isLoggedIn && (profile?.predictStreak ?? 0) >= 2 && (
-        <div className="bp-streak-banner bf-predict-streak">
-          <Flame size={18} />
+        <div className="bf-bsc-predict-streak">
+          <Flame size={18} aria-hidden />
           <div>
-            <strong>Racha {profile?.predictStreak} aciertos</strong>
+            <strong>Racha de {profile?.predictStreak} aciertos</strong>
             <span>{profile?.predictPoints ?? 0} puntos acumulados</span>
           </div>
         </div>
       )}
 
-      <div className="fu-tabs bf-arena-tabs" style={{ justifyContent: "center" }}>
+      <div className="bf-bsc-predict-tabs" role="tablist">
         <button
           type="button"
-          className={`fu-tab ${filter === "open" ? "is-on" : ""}`}
+          role="tab"
+          aria-selected={filter === "open"}
+          className={`bf-bsc-predict-tab is-blue ${filter === "open" ? "is-on" : ""}`}
           onClick={() => setFilter("open")}
         >
-          Abiertas ({displayOpen.length})
+          Abiertas <span>{displayOpen.length}</span>
         </button>
         <button
           type="button"
-          className={`fu-tab ${filter === "closed" ? "is-on" : ""}`}
+          role="tab"
+          aria-selected={filter === "closed"}
+          className={`bf-bsc-predict-tab is-red ${filter === "closed" ? "is-on" : ""}`}
           onClick={() => setFilter("closed")}
         >
-          Historial ({displayClosed.length})
+          Historial <span>{displayClosed.length}</span>
         </button>
       </div>
 
-      <div className="bf-predict-layout">
-        <div className="bf-predict-main">
+      <div className="bf-bsc-predict-layout">
+        <main className="bf-bsc-predict-main">
           {featured && (
-            <section className="bf-predict-featured-wrap">
-              <span className="bf-predict-featured-label">Partido destacado</span>
+            <section className="bf-bsc-predict-featured">
+              <h2 className="bf-bsc-predict-section-label">
+                <span className="is-blue">Destacado</span>
+                <span className="bf-bsc-predict-section-dash" aria-hidden />
+                <span className="is-red">Bo5 / finales</span>
+              </h2>
               <InteractiveVoteCard event={featured} featured />
             </section>
           )}
 
           {rest.length > 0 && (
-            <section className="bf-predict-grid-section">
-              <h2 className="bf-arena-section-title">Más predicciones</h2>
-              <div className="bf-predict-grid">
+            <section className="bf-bsc-predict-list">
+              <h2 className="bf-bsc-predict-section-title">Más partidos</h2>
+              <div className="bf-bsc-predict-grid">
                 {rest.map((e) => (
                   <InteractiveVoteCard key={e.id} event={e} />
                 ))}
@@ -143,51 +158,53 @@ export function PredictionsView({ open, closed }: { open: PredictionEvent[]; clo
           )}
 
           {list.length === 0 && (
-            <div className="bf-predict-empty fu-panel">
+            <div className="bf-bsc-predict-empty">
               <p>No hay predicciones en esta pestaña.</p>
-              <Link href="/matches" className="fu-btn fu-btn-ghost">
-                Ver calendario
+              <Link href="/matches" className="bf-bsc-btn bf-bsc-btn-ghost">
+                Ver calendario BSC
               </Link>
             </div>
           )}
 
           {recent.length > 0 && filter === "open" && (
-            <section className="fu-panel bf-arena-context">
-              <div className="fu-panel-head">
-                <h2>Contexto reciente</h2>
-                <Link href="/matches">Calendario</Link>
+            <section className="bf-bsc-predict-context">
+              <div className="bf-bsc-predict-context-head">
+                <h2>Resultados recientes</h2>
+                <Link href="/matches">Calendario completo</Link>
               </div>
-              <div className="bf-predict-matches">
+              <div className="bf-bsc-predict-context-matches">
                 {recent.map((m) => (
                   <MatchLine key={m.id} match={m} compact rich />
                 ))}
               </div>
             </section>
           )}
-        </div>
+        </main>
 
-        <aside className="bf-predict-aside">
-          <div className="fu-panel">
-            <span className="fu-kicker" style={{ marginBottom: 12 }}>
-              Cómo funciona
-            </span>
-            <ul className="bf-predict-rules">
-              <li>Elige el equipo que crees que gana</li>
+        <aside className="bf-bsc-predict-aside">
+          <div className="bf-bsc-predict-aside-card">
+            <h3>Cómo funciona</h3>
+            <ul>
+              <li>
+                <span className="dot is-blue" aria-hidden />
+                Toca el lado <strong>AZUL</strong> (equipo A)
+              </li>
+              <li>
+                <span className="dot is-red" aria-hidden />
+                o el lado <strong>ROJO</strong> (equipo B)
+              </li>
               <li>Más puntos en finales Bo5 que en grupos Bo3</li>
-              <li>Sin votos = sin porcentaje falso</li>
-              <li>Tu predicción se guarda al instante</li>
+              <li>Sin votos = sin porcentajes inventados</li>
             </ul>
           </div>
-          <div className="fu-panel">
-            <span className="fu-kicker" style={{ marginBottom: 12 }}>
-              <Clock size={12} /> Comunidad
-            </span>
-            <p className="bf-predict-aside-text">
-              Cada barra refleja solo predicciones reales de usuarios registrados en BrawlForge.
+          <div className="bf-bsc-predict-aside-card is-split">
+            <p>
+              Cada barra refleja solo predicciones de usuarios registrados en BrawlForge — comunidad real, no datos
+              falsos.
             </p>
           </div>
         </aside>
       </div>
-    </PageUltraShell>
+    </div>
   );
 }

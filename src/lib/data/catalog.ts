@@ -9,20 +9,21 @@ import matches2026 from "./generated/matches-2026.json";
 import type { GeneratedTeam, GeneratedPlayer, GeneratedTournament } from "./catalog-types";
 import { MAX_DISPLAY_TIER } from "../app-config";
 import { isTeam2026, TEAMS_2026_SLUGS } from "./teams-2026";
+import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 
 export type { GeneratedTeam, GeneratedPlayer, GeneratedTournament };
 
 /** Mismo org, slug distinto en Liquipedia vs plantilla */
 export const TEAM_ROSTER_ALIASES: Record<string, string> = {
-  "bc-gaming-sa": "bc-gaming",
   "tribe-gaming-eu": "tribe-gaming",
-  "skcalalas-ea": "skcalalas",
-  "skcalalas-na": "skcalalas",
   "only-realm-na": "only-realm",
   "zeta-division-one": "zeta-division",
   "zeta-division-zero": "zeta-division",
-  "oddyssey-eu": "oddyssey",
-  oddyssey: "oddyssey",
+  "ninguem-segura": "alguem-segura",
+  "bounty-hunters": "bounty-hunters-esports",
+  "f-a-kaioperro": "kaioperro",
+  "reply-totem": "totem-esports",
+  fennel: "abc-ea-team",
 };
 
 const KNOWN_TEAM_SLUGS = new Set((allTeams as GeneratedTeam[]).map((t) => t.slug));
@@ -164,27 +165,7 @@ export function tierBadgeClass(tier?: number): string {
   }
 }
 
-const BSC_CORE_SLUGS = [
-  "crazy-raccoon",
-  "sk-gaming",
-  "team-heretics",
-  "fut-esports",
-  "tribe-gaming",
-  "loud",
-  "zeta-division",
-  "hmble",
-  "spacestation-gaming",
-  "natus-vincere",
-  "revenant-xspark",
-  "totem-esports",
-  "stmn-esports",
-  "novo-esports",
-  "papara-supermassive",
-  "toxic-lotus",
-  "bc-gaming-sa",
-  "qlash",
-  "skcalalas",
-];
+const BSC_CORE_SLUGS = BSC_2026_ACTIVE_TEAM_SLUGS;
 
 export { getCompetitiveTeamSlugs } from "./bsc-teams-played-2026";
 

@@ -1,5 +1,5 @@
 /**
- * Regenera teams-2026.json con todos los equipos del circuito BSC 2026.
+ * Regenera teams-2026.json con equipos BSC 2026 Tier B+ activos.
  *   node scripts/rebuild-teams-2026-circuit.mjs --write
  */
 import fs from "node:fs";
@@ -10,48 +10,26 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = path.join(root, "src", "lib", "data", "generated");
 const WRITE = process.argv.includes("--write");
 
-/** Mantener en sync con bsc-2026-circuit-teams.ts + bsc-2026-mq-participants.ts */
-const CURATED = [
-  "hmble", "fut-esports", "tribe-gaming", "zeta-division", "crazy-raccoon", "only-realm",
-  "bounty-hunters-esports", "ace-xero", "bc-gaming-sa", "eternal-esports", "revenant-xspark", "toxic-lotus",
-  "sk-gaming", "team-heretics", "natus-vincere", "totem-esports", "novo-esports", "metizport", "big",
-  "big-talents", "kebap", "papara-supermassive", "qlash", "qlash-spain", "qlash-latam", "oddyssey", "reject",
-  "fut-esports-academy", "geng-esports", "cmm", "stmn-esports", "nova-esports", "nova-esports-china",
-  "spacestation-gaming", "vatic-esports", "zoos-esports", "team-elektros", "skcalalas", "skcalalas-na",
-  "only-realm-na", "loud", "elevate", "zurita-gang", "olimpo-squad", "acre-lovers", "intz", "eternal-fire",
-  "bc-gaming",
-];
+const activePath = path.join(root, "src/lib/data/bsc-2026-active-teams.ts");
+const activeText = fs.readFileSync(activePath, "utf8");
 
-const SKIP = new Set([
-  "february", "march", "april", "may", "june", "july", "august",
-  "bsc-2026-brawl-cup", "bsc-2026-psi-emea", "bsc-2026-psi-ea", "bsc-2026-psi-na", "bsc-2026-psi-sa",
-  "world-finals-2026", "bsc-2026-s3-emea-mf", "bsc-2026-s3-ea-mf", "bsc-2026-s3-na-mf",
-]);
-
-const slugs = new Set(CURATED);
-const fantasyPath = path.join(root, "src/lib/data/bsc-fantasy-participants.ts");
-const fantasyText = fs.readFileSync(fantasyPath, "utf8");
-for (const m of fantasyText.matchAll(/"([a-z][a-z0-9-]*)"/g)) {
-  const s = m[1];
-  if (SKIP.has(s) || s.startsWith("bsc-2026-")) continue;
-  slugs.add(s);
+function extractArray(name) {
+  const re = new RegExp(`${name}[^[]*\\[([\\s\\S]*?)\\]\\s*as const`);
+  const m = activeText.match(re);
+  if (!m) return [];
+  return [...m[1].matchAll(/"([a-z][a-z0-9-]*)"/g)].map((x) => x[1]);
 }
-slugs.delete("oddyssey-eu");
-slugs.add("oddyssey");
 
-const discPath = path.join(outDir, "bsc-2026-circuit-teams.json");
-if (fs.existsSync(discPath)) {
-  const disc = JSON.parse(fs.readFileSync(discPath, "utf8"));
-  for (const s of disc.teamSlugs || []) {
-    if (s !== "toc-team") slugs.add(s);
-  }
+const slugs = new Set(extractArray("BSC_2026_ACTIVE_TEAM_SLUGS"));
+for (const s of extractArray("BSC_2026_EXCLUDED_TEAM_SLUGS")) {
+  slugs.delete(s);
 }
 
 const allTeams = JSON.parse(fs.readFileSync(path.join(outDir, "teams.json"), "utf8"));
 const picked = allTeams.filter((t) => slugs.has(t.slug)).sort((a, b) => a.name.localeCompare(b.name));
 const missing = [...slugs].filter((s) => !picked.some((t) => t.slug === s));
 
-console.log(`Circuit slugs: ${slugs.size}`);
+console.log(`Active slugs: ${slugs.size}`);
 console.log(`Matched in teams.json: ${picked.length}`);
 if (missing.length) console.log(`Missing catalog entries: ${missing.join(", ")}`);
 

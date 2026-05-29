@@ -1,12 +1,15 @@
 /**
- * Equipos que han participado en BSC / circuito pro 2026 (partidos, fantasy curado o MF).
- * Excluye equipos que solo existen en JSON de torneos amateur de Liquipedia.
+ * Equipos visibles en BSC 2026 — solo Tier B+ activos (lista curada BSEN/Liquipedia).
  */
 import allTeams from "./generated/teams.json";
 import { bscMatches } from "./bsc-matches";
 import { bsc2026Tournaments } from "./bsc-tournaments";
 import { BSC_FANTASY_PARTICIPANTS } from "./bsc-fantasy-participants";
-import { BSC_2026_CIRCUIT_SLUGS } from "./bsc-2026-circuit-teams";
+import {
+  BSC_2026_ACTIVE_SLUG_SET,
+  BSC_2026_EXCLUDED_SLUG_SET,
+  isBsc2026ActiveTeam,
+} from "./bsc-2026-active-teams";
 import {
   getGeneratedMatches,
   normalizeParticipantList,
@@ -21,10 +24,10 @@ const KNOWN_TEAM_SLUGS = new Set((allTeams as GeneratedTeam[]).map((t) => t.slug
 
 function canonicalTeamSlug(raw: string): string | null {
   const n = normalizeParticipantSlug(raw) ?? raw.trim().toLowerCase();
-  if (!n) return null;
+  if (!n || BSC_2026_EXCLUDED_SLUG_SET.has(n)) return null;
   const canon = TEAM_ROSTER_ALIASES[n] ?? n;
   const resolved = KNOWN_TEAM_SLUGS.has(canon) ? canon : KNOWN_TEAM_SLUGS.has(n) ? n : null;
-  if (!resolved || !BSC_2026_CIRCUIT_SLUGS.has(resolved)) return null;
+  if (!resolved || !isBsc2026ActiveTeam(resolved)) return null;
   return resolved;
 }
 
@@ -40,7 +43,7 @@ function isBscCircuitTournament(slug: string): boolean {
 function buildPlayedTeamSlugs(): Set<string> {
   const out = new Set<string>();
 
-  for (const s of BSC_2026_CIRCUIT_SLUGS) addPlayed(out, s);
+  for (const s of BSC_2026_ACTIVE_SLUG_SET) addPlayed(out, s);
 
   for (const m of bscMatches) {
     addPlayed(out, m.teamASlug);
@@ -75,7 +78,6 @@ export function getBsc2026PlayedTeamSlugs(): Set<string> {
   return cache;
 }
 
-/** Equipo con actividad BSC 2026 (para listados, fantasy, partidos). */
 export function hasPlayedBsc2026(slug: string): boolean {
   const n = canonicalTeamSlug(slug);
   return n ? getBsc2026PlayedTeamSlugs().has(n) : false;
@@ -85,8 +87,9 @@ export function filterPlayedBsc2026Slugs(slugs: string[]): string[] {
   return normalizeParticipantList(slugs).filter((s) => hasPlayedBsc2026(s));
 }
 
-/** Listado público de clubes BSC 2026 (catálogo 2026 + circuito) */
 export function getCompetitiveTeamSlugs(): string[] {
   const out = new Set<string>([...getBsc2026PlayedTeamSlugs(), ...TEAMS_2026_SLUGS]);
-  return [...out].sort((a, b) => a.localeCompare(b));
+  return [...out]
+    .filter((s) => isBsc2026ActiveTeam(s))
+    .sort((a, b) => a.localeCompare(b));
 }

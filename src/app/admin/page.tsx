@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { AdminConsole } from "@/components/admin/AdminConsole";
 import { createClient } from "@/lib/supabase/server";
@@ -60,5 +61,9 @@ export default async function AdminPage() {
     );
   }
 
-  return <AdminConsole />;
+  return (
+    <Suspense fallback={<div className="bf-auth-page">Cargando panel…</div>}>
+      <AdminConsole />
+    </Suspense>
+  );
 }
