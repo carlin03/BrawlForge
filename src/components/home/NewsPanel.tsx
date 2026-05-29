@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Panel } from "@/components/ui/Panel";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { tournaments, teamName } from "@/lib/data";
+import { getBscCircuitTournaments, teamName } from "@/lib/data";
 import { loadMergedNews } from "@/lib/news-loader";
 
 export async function NewsPanel() {
@@ -39,8 +39,9 @@ export async function NewsPanel() {
 }
 
 export function TournamentsPanel() {
-  const active = tournaments.filter((t) => t.status !== "finished").slice(0, 3);
-  const recent = tournaments.filter((t) => t.status === "finished").slice(0, 2);
+  const circuit = getBscCircuitTournaments();
+  const active = circuit.filter((t) => t.status !== "finished").slice(0, 3);
+  const recent = circuit.filter((t) => t.status === "finished").slice(0, 2);
 
   return (
     <Panel title="Tournaments" href="/tournaments" className="panel-accent-top">

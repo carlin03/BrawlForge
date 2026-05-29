@@ -4,13 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { PulseCard } from "./PulseUI";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { tournaments } from "@/lib/data";
+import { getBscCircuitTournaments } from "@/lib/data";
 
 export function PulseTournaments() {
   const [tab, setTab] = useState<"all" | "live" | "upcoming" | "finished">("all");
-  const live = tournaments.filter((t) => t.status === "live");
-  const upcoming = tournaments.filter((t) => t.status === "upcoming");
-  const finished = tournaments.filter((t) => t.status === "finished");
+  const circuit = getBscCircuitTournaments();
+  const live = circuit.filter((t) => t.status === "live");
+  const upcoming = circuit.filter((t) => t.status === "upcoming");
+  const finished = circuit.filter((t) => t.status === "finished");
 
   const list =
     tab === "live" ? live.slice(0, 30) :
@@ -22,7 +23,7 @@ export function PulseTournaments() {
     <>
       <header className="pl-hero">
         <h1 className="pl-page-title">Torneos</h1>
-        <p className="pl-page-sub">{tournaments.length.toLocaleString()} competiciones en el calendario</p>
+        <p className="pl-page-sub">{circuit.length.toLocaleString()} competiciones en el calendario BSC</p>
       </header>
 
       <div className="pl-stats">

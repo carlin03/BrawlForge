@@ -642,3 +642,164 @@
   border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
+
+/* Admin — usuarios registrados */
+.bf-admin-users-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.bf-admin-section-title {
+  font-family: var(--bp-head);
+  font-size: 1.35rem;
+  margin: 0 0 6px;
+}
+.bf-admin-users-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.bf-admin-users-stats > div {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.3);
+}
+.bf-admin-users-stats b {
+  display: block;
+  font-family: var(--bp-head);
+  font-size: 1.5rem;
+  color: var(--bp-gold);
+}
+.bf-admin-users-stats span {
+  font-size: 12px;
+  color: var(--bp-muted);
+}
+.bf-admin-users-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .bf-admin-users-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.bf-admin-users-list {
+  border: 1px solid var(--bp-line);
+  border-radius: 14px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.bf-admin-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.35);
+}
+.bf-admin-search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--bp-text);
+  font-size: 14px;
+  outline: none;
+}
+.bf-admin-users-scroll {
+  margin-top: 12px;
+  max-height: 520px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bf-admin-users-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--bp-text);
+  cursor: pointer;
+  text-align: left;
+}
+.bf-admin-users-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.bf-admin-users-row.is-on {
+  border-color: rgba(255, 200, 46, 0.35);
+  background: rgba(255, 200, 46, 0.08);
+}
+.bf-admin-users-row-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+.bf-admin-users-row-sub {
+  font-size: 11px;
+  color: var(--bp-muted);
+}
+.bf-admin-users-detail {
+  border: 1px solid var(--bp-line);
+  border-radius: 14px;
+  padding: 20px 22px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.bf-admin-users-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+.bf-admin-users-detail-grid h4 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bp-gold);
+}
+.bf-admin-dl {
+  margin: 0;
+  font-size: 13px;
+}
+.bf-admin-dl dt {
+  color: var(--bp-muted);
+  font-size: 11px;
+  margin-top: 8px;
+}
+.bf-admin-dl dd {
+  margin: 2px 0 0;
+}
+.bf-admin-mono {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+.bf-admin-users-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bf-admin-users-pages li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--bp-line);
+  font-size: 12px;
+}
+.bf-admin-toast.is-warn {
+  background: rgba(255, 160, 46, 0.12);
+  border: 1px solid rgba(255, 160, 46, 0.25);
+}

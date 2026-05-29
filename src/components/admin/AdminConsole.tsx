@@ -14,7 +14,9 @@ import {
   Save,
   Home,
   FileSpreadsheet,
+  UserCircle,
 } from "lucide-react";
+import { AdminUsersPanel } from "@/components/admin/AdminUsersPanel";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminLogoPanel } from "@/components/admin/AdminLogoPanel";
 import { AdminImportPanel } from "@/components/admin/AdminImportPanel";
@@ -29,7 +31,7 @@ import {
 } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 
-type Tab = "teams" | "players" | "logos" | "news" | "import";
+type Tab = "teams" | "players" | "logos" | "news" | "import" | "users";
 
 type TeamRow = {
   slug: string;
@@ -90,9 +92,10 @@ const TAB_CONFIG: { id: Tab; label: string; icon: typeof Users }[] = [
   { id: "logos", label: "Logos", icon: Image },
   { id: "news", label: "Noticias", icon: Newspaper },
   { id: "import", label: "CSV → Supabase", icon: FileSpreadsheet },
+  { id: "users", label: "Usuarios", icon: UserCircle },
 ];
 
-const TAB_IDS: Tab[] = ["teams", "players", "logos", "news", "import"];
+const TAB_IDS: Tab[] = ["teams", "players", "logos", "news", "import", "users"];
 
 function tabFromQuery(raw: string | null): Tab | null {
   if (raw && TAB_IDS.includes(raw as Tab)) return raw as Tab;
@@ -277,6 +280,8 @@ export function AdminConsole() {
       {tab === "logos" && <AdminLogoPanel />}
 
       {tab === "import" && <AdminImportPanel onDone={load} />}
+
+      {tab === "users" && <AdminUsersPanel />}
 
       {tab === "teams" && (
         <div className="bf-admin-split">

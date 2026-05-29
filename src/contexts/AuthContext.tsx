@@ -125,6 +125,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setProfile(mapped);
 
+      void fetch("/api/me/enroll", { method: "POST", credentials: "include" }).catch(() => {});
+
       if (!mapped.isAdmin && isOwnerEmail(u.email) && !adminClaimAttempted.current) {
         adminClaimAttempted.current = true;
         void fetch("/api/admin/claim", { method: "POST", credentials: "include" })

@@ -375,6 +375,16 @@ export const BSC_DEFAULT_LOGO = BSC_LOGO;
 
 const ADMIN_TOURNAMENT_HIDE = /^(PSI|RTBC)\b/i;
 
+/** Slugs del circuito BSC 2026 (+ alias) — excluye PSI legacy y catálogo Liquipedia genérico */
+export const BSC_CIRCUIT_SLUGS = new Set<string>([
+  ...bsc2026Tournaments.map((t) => t.slug),
+  ...Object.keys(BSC_TOURNAMENT_ALIASES),
+]);
+
+export function isBscCircuitSlug(slug: string): boolean {
+  return BSC_CIRCUIT_SLUGS.has(slug);
+}
+
 /** Torneos BSC visibles en admin (logos) y listados principales — sin abreviaturas PSI/RTBC */
 export function getAdminBscTournaments(): EsportsTournament[] {
   return bsc2026Tournaments

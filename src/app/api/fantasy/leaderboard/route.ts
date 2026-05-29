@@ -12,9 +12,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ leaderboard: [], participants: 0 });
   }
 
-  const leaderboard = await fetchFantasyLeaderboard(supabase, tournament, limit);
+  const [leaderboard, countRes] = await Promise.all([
+    fetchFantasyLeaderboard(supabase, tournament, limit),
+    supabase.rpc("registered_users_count"),
+  ]);
+
+  const total =
+    countRes.data != null ? Number(countRes.data) : leaderboard.length;
+
   return NextResponse.json({
     leaderboard,
-    participants: leaderboard.length,
+    participants: total,
+    registeredUsers: total,
   });
 }

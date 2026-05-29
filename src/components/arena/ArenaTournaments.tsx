@@ -4,13 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArenaPanel } from "./ArenaUI";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { tournaments, hasFantasyForTournament } from "@/lib/data";
+import { getBscCircuitTournaments, hasFantasyForTournament } from "@/lib/data";
 
 export function ArenaTournaments() {
   const [tab, setTab] = useState<"all" | "live" | "upcoming" | "finished">("all");
-  const live = tournaments.filter((t) => t.status === "live");
-  const upcoming = tournaments.filter((t) => t.status === "upcoming");
-  const finished = tournaments.filter((t) => t.status === "finished");
+  const circuit = getBscCircuitTournaments();
+  const live = circuit.filter((t) => t.status === "live");
+  const upcoming = circuit.filter((t) => t.status === "upcoming");
+  const finished = circuit.filter((t) => t.status === "finished");
   const list =
     tab === "live" ? live.slice(0, 24) :
     tab === "upcoming" ? upcoming.slice(0, 24) :
@@ -20,7 +21,7 @@ export function ArenaTournaments() {
   return (
     <>
       <h1 className="ar-h1">Torneos</h1>
-      <p className="ar-lead">{tournaments.length.toLocaleString()} eventos en el calendario BSC.</p>
+      <p className="ar-lead">{circuit.length.toLocaleString()} eventos en el calendario BSC.</p>
 
       <div className="ar-filters">
         <button type="button" className={`ar-filter ${tab === "all" ? "is-on" : ""}`} onClick={() => setTab("all")}>Destacados</button>

@@ -28,6 +28,7 @@ export {
   getUpcomingMatches,
   getRecentMatches,
   getCuratedHomeMatches,
+  getBscCircuitTournaments,
   getFeaturedTournaments,
   getTierBPlusTournaments,
   isKnownTeamSlug,

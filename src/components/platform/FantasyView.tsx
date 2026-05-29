@@ -283,7 +283,11 @@ export function FantasyView() {
         }
         lead={`${FANTASY_SQUAD_SIZE} pros · $${FANTASY_BUDGET}M presupuesto · Capitán ×2 puntos`}
         stats={
-          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+          <div className="fu-stats" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
+            <div className="fu-stat">
+              <b>{participants > 0 ? participants : "—"}</b>
+              <span>Cuentas registradas</span>
+            </div>
             <div className="fu-stat">
               <b>{tournamentStats.playerCount}</b>
               <span>En pool</span>
@@ -596,9 +600,12 @@ export function FantasyView() {
             </div>
           )}
 
-          {leaderboard.length > 0 ? (
+          {participants > 0 || leaderboard.length > 0 ? (
             <div className="bf-fantasy-aside-card">
-              <span className="bf-home-eyebrow">Ranking real · {participants} managers</span>
+              <span className="bf-home-eyebrow">
+                {participants} registrados en BrawlForge
+                {leaderboard.length > 0 ? ` · top ${Math.min(8, leaderboard.length)}` : ""}
+              </span>
               {leaderboard.slice(0, 8).map((e) => (
                 <div key={e.user_id} className="bf-fantasy-rank-row">
                   <span className={e.rank <= 3 ? "gold" : ""}>#{e.rank}</span>
@@ -613,7 +620,10 @@ export function FantasyView() {
           ) : (
             <div className="bf-fantasy-aside-card is-muted">
               <span className="bf-home-eyebrow">Clasificación</span>
-              <p>Sé el primero en guardar plantilla para aparecer en el ranking.</p>
+              <p>
+                Cada cuenta registrada aparece en el ranking. Guarda tu plantilla para sumar puntos cuando haya
+                resultados.
+              </p>
             </div>
           )}
 

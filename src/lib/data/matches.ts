@@ -1,5 +1,10 @@
 import type { Region } from "../types";
-import { bsc2026Tournaments, bsc2026LegacyPsiTournaments, BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
+import {
+  bsc2026Tournaments,
+  bsc2026LegacyPsiTournaments,
+  BSC_TOURNAMENT_ALIASES,
+  isBscCircuitSlug,
+} from "./bsc-tournaments";
 import { getBsc2026LiquipediaUrl } from "./bsc-2026-liquipedia-pages";
 import { getBscTournamentEnrichment, getBscEnrichedMatches } from "./bsc-tournaments-enriched";
 import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
@@ -12,7 +17,6 @@ import {
   getTournamentParticipants,
   toLiquipediaUrl,
   isFeaturedTournament,
-  isTierBPlus,
   normalizeParticipantList,
 } from "./catalog";
 
@@ -269,14 +273,30 @@ export function getTournament(slug: string): EsportsTournament | undefined {
   return tournaments.find((t) => t.slug === slug);
 }
 
+const STATUS_ORDER: Record<EsportsTournament["status"], number> = { live: 0, upcoming: 1, finished: 2 };
+
+function sortCircuitTournaments(list: EsportsTournament[]): EsportsTournament[] {
+  return [...list].sort((a, b) => {
+    const sa = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+    if (sa !== 0) return sa;
+    if (a.status === "finished") return b.endDate.localeCompare(a.endDate);
+    return a.startDate.localeCompare(b.startDate);
+  });
+}
+
+/** Calendario BSC 2026 curado (Monthly Finals, Challengers, RTBC, WF…) — sin torneos genéricos Liquipedia */
+export function getBscCircuitTournaments(limit?: number): EsportsTournament[] {
+  const list = sortCircuitTournaments(tournaments.filter((t) => isBscCircuitSlug(t.slug)));
+  return limit ? list.slice(0, limit) : list;
+}
+
 export function searchTournaments(query: string, limit = 60): EsportsTournament[] {
+  const pool = getBscCircuitTournaments();
   const q = query.trim().toLowerCase();
   if (!q) {
-    return tournaments
-      .filter((t) => t.featured || t.status !== "finished")
-      .slice(0, limit);
+    return pool.filter((t) => t.featured || t.status !== "finished").slice(0, limit);
   }
-  return tournaments
+  return pool
     .filter(
       (t) =>
         t.name.toLowerCase().includes(q) ||
@@ -287,21 +307,14 @@ export function searchTournaments(query: string, limit = 60): EsportsTournament[
 }
 
 export function getFeaturedTournaments(limit = 24): EsportsTournament[] {
-  return tournaments.filter((t) => t.featured).slice(0, limit);
+  return getBscCircuitTournaments()
+    .filter((t) => t.featured !== false)
+    .slice(0, limit);
 }
 
-/** S / A / B tier Liquipedia tournaments */
+/** Listados públicos de torneos (hub / partidos) — circuito BSC 2026 */
 export function getTierBPlusTournaments(limit = 32): EsportsTournament[] {
-  const statusOrder: Record<EsportsTournament["status"], number> = { live: 0, upcoming: 1, finished: 2 };
-  return tournaments
-    .filter((t) => t.tier != null && isTierBPlus(t))
-    .sort((a, b) => {
-      const sa = statusOrder[a.status] - statusOrder[b.status];
-      if (sa !== 0) return sa;
-      if (a.status === "finished") return b.endDate.localeCompare(a.endDate);
-      return a.startDate.localeCompare(b.startDate);
-    })
-    .slice(0, limit);
+  return getBscCircuitTournaments(limit);
 }
 
 export function getMatch(id: string): EsportsMatch | undefined {

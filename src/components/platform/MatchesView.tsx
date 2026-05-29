@@ -61,10 +61,7 @@ export function MatchesView() {
   const listRest = spotlight ? filtered.slice(1) : filtered;
   const groups = useMemo(() => groupMatchesByTournament(listRest), [listRest]);
 
-  const tierTours = useMemo(
-    () => getTierBPlusTournaments(12).filter((t) => t.startDate?.startsWith("2026")),
-    [],
-  );
+  const tierTours = useMemo(() => getTierBPlusTournaments(12), []);
 
   const hotVote = useMemo(() => {
     const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});

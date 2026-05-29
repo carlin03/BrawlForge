@@ -18,7 +18,7 @@ import {
   getPlayer,
   openPredictions,
   teams,
-  tournaments,
+  getBscCircuitTournaments,
   tournamentName,
   userPredictorProfile,
 } from "@/lib/data";
@@ -46,7 +46,7 @@ export function DashboardHome() {
   const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
   const squadValue = getSquadValue(squad);
   const budgetPct = Math.round((squadValue / FANTASY_BUDGET) * 100);
-  const featuredTourney = tournaments.find((t) => t.featured && t.status !== "finished");
+  const featuredTourney = getBscCircuitTournaments().find((t) => t.status !== "finished");
 
   return (
     <>

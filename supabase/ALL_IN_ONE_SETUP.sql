@@ -98,7 +98,10 @@ alter table public.profiles
   add column if not exists predict_points int not null default 0,
   add column if not exists predict_streak int not null default 0,
   add column if not exists predict_correct int not null default 0,
-  add column if not exists predict_attempts int not null default 0;
+  add column if not exists predict_attempts int not null default 0,
+  add column if not exists last_seen_at timestamptz,
+  add column if not exists last_path text,
+  add column if not exists page_views jsonb not null default '{}'::jsonb;
 
 create table if not exists public.fantasy_entries (
   id uuid primary key default gen_random_uuid(),
@@ -213,6 +216,17 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 grant execute on function public.fantasy_leaderboard(text, int) to anon, authenticated;
+
+create or replace function public.registered_users_count()
+returns bigint language sql stable security definer set search_path = public as $$
+  select count(*)::bigint from public.profiles;
+$$;
+grant execute on function public.registered_users_count() to anon, authenticated;
+
+drop policy if exists "profiles admin read all" on public.profiles;
+create policy "profiles admin read all"
+  on public.profiles for select
+  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
 
 -- ─── 3) Catálogo (equipos, jugadores, torneos) ─────────────────────────────
 

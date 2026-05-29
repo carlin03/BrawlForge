@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { enrollUserInDefaultFantasy } from "@/lib/supabase/enroll";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -18,6 +19,17 @@ export async function GET(request: Request) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
     return NextResponse.redirect(`${origin}/login?error=auth`);
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    try {
+      await enrollUserInDefaultFantasy(supabase, user.id);
+    } catch {
+      /* trigger SQL o /api/me/enroll al cargar la app */
+    }
   }
 
   return NextResponse.redirect(`${origin}${next}`);

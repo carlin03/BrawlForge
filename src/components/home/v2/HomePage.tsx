@@ -6,7 +6,7 @@ import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
   getUpcomingMatches,
   getRecentMatches,
-  tournaments,
+  getBscCircuitTournaments,
   teamName,
 } from "@/lib/data";
 import { openPredictions } from "@/lib/data/predictions";
@@ -214,8 +214,9 @@ function UpcomingMatches() {
 }
 
 function PickemsAndTournaments() {
-  const wf2026 = tournaments.find((t) => t.slug === "world-finals-2026");
-  const active = tournaments.filter((t) => t.status !== "finished").slice(0, 2);
+  const circuit = getBscCircuitTournaments();
+  const wf2026 = circuit.find((t) => t.slug === "world-finals-2026");
+  const active = circuit.filter((t) => t.status !== "finished").slice(0, 2);
 
   return (
     <div className="forge-grid-duo">

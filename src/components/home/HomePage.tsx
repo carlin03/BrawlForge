@@ -11,7 +11,7 @@ import {
   getUpcomingMatches,
   getLiveMatches,
   getPlayer,
-  tournaments,
+  getBscCircuitTournaments,
   teams,
   players,
   teamName,
@@ -37,9 +37,8 @@ export function HomePage() {
     squad.length >= 3 ? squad.map((s) => s.playerSlug) : topPros.slice(0, 3).map((p) => p.slug);
   const featuredVotes = openPredictions.filter((p) => p.featured).slice(0, 2);
   const voteCards = featuredVotes.length ? featuredVotes : openPredictions.slice(0, 2);
-  const liveTournaments = tournaments
+  const liveTournaments = getBscCircuitTournaments()
     .filter((t) => t.status === "live" || t.status === "upcoming")
-    .filter((t) => t.featured)
     .slice(0, 4);
   const marqueeTeams = teams.slice(0, 20);
   const matchRail = [...live, ...upcoming].slice(0, 8);
