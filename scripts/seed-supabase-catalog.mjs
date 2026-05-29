@@ -7,7 +7,7 @@
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { TAIYORO_LOGOS } from "./team-logo-urls.mjs";
+import { buildBscCatalogEnriched } from "./build-bsc-catalog-enriched.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const envPath = resolve(root, ".env.local");
@@ -86,70 +86,9 @@ function parseParticipants() {
   return Function(`"use strict"; return (${m[1]})`)();
 }
 
-const teams2026 = JSON.parse(
-  readFileSync(resolve(root, "src/lib/data/generated/teams-2026.json"), "utf8"),
-);
-const players2026 = JSON.parse(
-  readFileSync(resolve(root, "src/lib/data/generated/players-2026.json"), "utf8"),
-);
 const participants = parseParticipants();
-const syncedAt = new Date().toISOString();
-
-const teamBySlug = new Map(teams2026.map((t) => [t.slug, t]));
-
-const teamRows = teams2026.map((t) => ({
-  slug: t.slug,
-  name: t.name,
-  tag: t.tag ?? "",
-  region: t.region,
-  country: t.country ?? "",
-  earnings: t.earnings ?? 0,
-  rank: t.rank ?? null,
-  rank_change: t.rankChange ?? 0,
-  form: t.form ?? [],
-  liquipedia_page: t.liquipediaPage ?? null,
-  logo_file: t.logoFile ?? null,
-  logo_url: TAIYORO_LOGOS[t.slug] ?? null,
-  roster_slugs: t.roster ?? [],
-  achievements: t.achievements ?? [],
-  description: `${t.name} (${t.tag}) — ${t.region}${t.country ? ` · ${t.country}` : ""}. Rank #${t.rank ?? "—"}.`,
-  social: {},
-  meta: {
-    liquipediaUrl: t.liquipediaPage
-      ? `https://liquipedia.net/brawlstars/${encodeURIComponent(t.liquipediaPage)}`
-      : null,
-    rosterCount: (t.roster ?? []).length,
-    achievementsCount: (t.achievements ?? []).length,
-  },
-  synced_at: syncedAt,
-}));
-
-const playerRows = players2026
-  .filter((p) => p.slug && p.ign)
-  .map((p) => ({
-    slug: p.slug,
-    ign: String(p.ign).replace(/<!--[\s\S]*?-->/g, "").trim(),
-    real_name: p.realName ?? null,
-    team_slug: p.teamSlug || null,
-    region: p.region,
-    role: p.role ?? "Player",
-    status: normStatus(p.status),
-    liquipedia_page: p.liquipediaPage ?? null,
-    fantasy_points: p.fantasyPoints ?? 0,
-    fantasy_ownership: p.fantasyOwnership ?? 0,
-    rating: p.rating ?? 1,
-    country: null,
-    bio: null,
-    social: {},
-    meta: {
-      liquipediaUrl: p.liquipediaPage
-        ? `https://liquipedia.net/brawlstars/${encodeURIComponent(p.liquipediaPage)}`
-        : null,
-      teamName: p.teamSlug ? teamBySlug.get(p.teamSlug)?.name : null,
-    },
-    synced_at: syncedAt,
-  }));
-
+const { teamRows, playerRows, syncedAt } = buildBscCatalogEnriched();
+const teamBySlug = new Map(teamRows.map((t) => [t.slug, t]));
 const playerBySlug = new Map(playerRows.map((p) => [p.slug, p]));
 
 const tournamentRows = Object.entries(participants).map(([slug, teamList]) => {
@@ -203,7 +142,7 @@ for (const [tournamentSlug, teamList] of Object.entries(participants)) {
 
     const team = teamBySlug.get(teamSlug);
     const slugs = new Set([
-      ...(team?.roster ?? []),
+      ...(team?.roster_slugs ?? []),
       ...playerRows.filter((p) => p.team_slug === teamSlug).map((p) => p.slug),
     ]);
 

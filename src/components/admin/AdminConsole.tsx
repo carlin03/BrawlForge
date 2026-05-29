@@ -26,37 +26,12 @@ import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { getLatestNews } from "@/lib/data";
 import { BSC_2026_ADMIN_TEAM_COUNT, mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
+import type { AdminTeamCatalogRow, AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
 
 type Tab = "teams" | "players" | "logos" | "news" | "import" | "users";
 
-type TeamRow = {
-  slug: string;
-  name: string;
-  tag: string;
-  region: string;
-  country: string;
-  earnings: number;
-  rank: number | null;
-  rank_change?: number;
-  roster_slugs: string[] | string;
-  logo_url?: string | null;
-  description?: string | null;
-};
-
-type PlayerRow = {
-  slug: string;
-  ign: string;
-  real_name?: string | null;
-  team_slug: string | null;
-  region: string;
-  role: string;
-  status: string;
-  fantasy_points: number;
-  fantasy_ownership: number;
-  rating: number;
-  bio?: string | null;
-  photo_url?: string | null;
-};
+type TeamRow = AdminTeamCatalogRow;
+type PlayerRow = AdminPlayerCatalogRow;
 
 type NewsRow = {
   slug: string;
@@ -116,8 +91,9 @@ export function AdminConsole() {
   const [news, setNews] = useState<NewsRow[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsRow | null>(null);
   const [teamSearch, setTeamSearch] = useState("");
-  const [teamRegionFilter, setTeamRegionFilter] = useState<"all" | "new" | string>("all");
+  const [teamRegionFilter, setTeamRegionFilter] = useState<"all" | string>("all");
   const [playerSearch, setPlayerSearch] = useState("");
+  const [playerRegionFilter, setPlayerRegionFilter] = useState<"all" | string>("all");
   const [newsSearch, setNewsSearch] = useState("");
 
   const load = useCallback(async () => {
@@ -177,14 +153,16 @@ export function AdminConsole() {
         t.tag.toLowerCase().includes(teamSearch.toLowerCase()),
     );
 
-  const filteredPlayers = players.filter(
-    (p) =>
-      !playerSearch ||
-      p.slug.includes(playerSearch.toLowerCase()) ||
-      p.ign.toLowerCase().includes(playerSearch.toLowerCase()) ||
-      (p.team_slug ?? "").includes(playerSearch.toLowerCase()) ||
-      teams.find((t) => t.slug === p.team_slug)?.name.toLowerCase().includes(playerSearch.toLowerCase()),
-  );
+  const filteredPlayers = players
+    .filter((p) => playerRegionFilter === "all" || p.region === playerRegionFilter)
+    .filter(
+      (p) =>
+        !playerSearch ||
+        p.slug.includes(playerSearch.toLowerCase()) ||
+        p.ign.toLowerCase().includes(playerSearch.toLowerCase()) ||
+        (p.team_slug ?? "").includes(playerSearch.toLowerCase()) ||
+        teams.find((t) => t.slug === p.team_slug)?.name.toLowerCase().includes(playerSearch.toLowerCase()),
+    );
 
   const newsList = news.length
     ? news
@@ -417,11 +395,62 @@ export function AdminConsole() {
                 </AdminField>
               </AdminFieldRow>
 
-              <AdminField label="Descripción del club" hint="Texto que aparece en la ficha del equipo">
+              <AdminField label="Resumen circuito" hint="Una línea sobre la región / BSC 2026">
+                <input
+                  value={selectedTeam.circuit_summary ?? ""}
+                  onChange={(e) => setSelectedTeam({ ...selectedTeam, circuit_summary: e.target.value })}
+                />
+              </AdminField>
+
+              <AdminField label="Descripción del club" hint="Texto largo en la ficha del equipo">
                 <textarea
-                  rows={4}
+                  rows={5}
                   value={selectedTeam.description ?? ""}
                   onChange={(e) => setSelectedTeam({ ...selectedTeam, description: e.target.value })}
+                />
+              </AdminField>
+
+              <AdminFieldRow>
+                <AdminField label="Entrenador">
+                  <input
+                    value={selectedTeam.coach ?? ""}
+                    onChange={(e) => setSelectedTeam({ ...selectedTeam, coach: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Año fundación">
+                  <input
+                    type="number"
+                    value={selectedTeam.founded_year ?? ""}
+                    onChange={(e) =>
+                      setSelectedTeam({
+                        ...selectedTeam,
+                        founded_year: e.target.value ? Number(e.target.value) : null,
+                      })
+                    }
+                  />
+                </AdminField>
+              </AdminFieldRow>
+
+              <AdminFieldRow>
+                <AdminField label="Sede / ciudad">
+                  <input
+                    value={selectedTeam.headquarters ?? ""}
+                    onChange={(e) => setSelectedTeam({ ...selectedTeam, headquarters: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Web">
+                  <input
+                    value={selectedTeam.website ?? ""}
+                    onChange={(e) => setSelectedTeam({ ...selectedTeam, website: e.target.value })}
+                    placeholder="https://…"
+                  />
+                </AdminField>
+              </AdminFieldRow>
+
+              <AdminField label="Liquipedia URL">
+                <input
+                  value={selectedTeam.liquipedia_url ?? ""}
+                  onChange={(e) => setSelectedTeam({ ...selectedTeam, liquipedia_url: e.target.value })}
                 />
               </AdminField>
 
@@ -436,7 +465,12 @@ export function AdminConsole() {
                       ? selectedTeam.roster_slugs.join(", ")
                       : String(selectedTeam.roster_slugs ?? "")
                   }
-                  onChange={(e) => setSelectedTeam({ ...selectedTeam, roster_slugs: e.target.value })}
+                  onChange={(e) =>
+                    setSelectedTeam({
+                      ...selectedTeam,
+                      roster_slugs: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                    })
+                  }
                 />
               </AdminField>
 
@@ -483,6 +517,18 @@ export function AdminConsole() {
       {tab === "players" && (
         <div className="bf-admin-split">
           <aside className="bf-admin-sidebar">
+            <div className="bf-admin-region-filters" role="group" aria-label="Filtrar jugadores">
+              {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`bf-admin-region-chip ${playerRegionFilter === id ? "is-on" : ""}`}
+                  onClick={() => setPlayerRegionFilter(id)}
+                >
+                  {id === "all" ? "Todos" : id}
+                </button>
+              ))}
+            </div>
             <input
               className="bf-admin-search"
               placeholder="Buscar por IGN o club…"
@@ -603,17 +649,78 @@ export function AdminConsole() {
                 </AdminField>
               </AdminFieldRow>
 
-              <AdminField label="Región">
-                <select
-                  value={selectedPlayer.region}
-                  onChange={(e) => setSelectedPlayer({ ...selectedPlayer, region: e.target.value })}
-                >
-                  {REGIONS.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
-                  ))}
-                </select>
+              <AdminFieldRow>
+                <AdminField label="Región">
+                  <select
+                    value={selectedPlayer.region}
+                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, region: e.target.value })}
+                  >
+                    {REGIONS.map((r) => (
+                      <option key={r} value={r}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                </AdminField>
+                <AdminField label="País / nacionalidad">
+                  <input
+                    value={selectedPlayer.nationality ?? selectedPlayer.country ?? ""}
+                    onChange={(e) =>
+                      setSelectedPlayer({
+                        ...selectedPlayer,
+                        nationality: e.target.value,
+                        country: e.target.value,
+                      })
+                    }
+                  />
+                </AdminField>
+              </AdminFieldRow>
+
+              <AdminFieldRow>
+                <AdminField label="Brawler principal">
+                  <input
+                    value={selectedPlayer.primary_brawler ?? ""}
+                    onChange={(e) =>
+                      setSelectedPlayer({ ...selectedPlayer, primary_brawler: e.target.value })
+                    }
+                  />
+                </AdminField>
+                <AdminField label="Brawler secundario">
+                  <input
+                    value={selectedPlayer.secondary_brawler ?? ""}
+                    onChange={(e) =>
+                      setSelectedPlayer({ ...selectedPlayer, secondary_brawler: e.target.value })
+                    }
+                  />
+                </AdminField>
+              </AdminFieldRow>
+
+              <AdminFieldRow>
+                <AdminField label="Fecha ingreso">
+                  <input
+                    value={selectedPlayer.join_date ?? ""}
+                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, join_date: e.target.value })}
+                    placeholder="2026-01"
+                  />
+                </AdminField>
+                <AdminField label="Capitán">
+                  <select
+                    value={selectedPlayer.is_captain ? "yes" : "no"}
+                    onChange={(e) =>
+                      setSelectedPlayer({ ...selectedPlayer, is_captain: e.target.value === "yes" })
+                    }
+                  >
+                    <option value="no">No</option>
+                    <option value="yes">Sí</option>
+                  </select>
+                </AdminField>
+              </AdminFieldRow>
+
+              <AdminField label="Liquipedia URL">
+                <input
+                  value={selectedPlayer.liquipedia_url ?? ""}
+                  onChange={(e) => setSelectedPlayer({ ...selectedPlayer, liquipedia_url: e.target.value })}
+                />
               </AdminField>
 
               <AdminField label="Biografía" hint="Aparece en la ficha del jugador">

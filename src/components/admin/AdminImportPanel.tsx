@@ -53,8 +53,9 @@ export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
           <code>.env.local</code>).
         </p>
         <p style={{ marginTop: 8, fontSize: 12, color: "var(--bp-dim)" }}>
-          Tablas: <code>teams_catalog</code>, <code>players_catalog</code>, <code>news_catalog</code>. Filas{" "}
-          <code>#</code>, <code>_ayuda</code> y <code>_ejemplo</code> se ignoran al importar.
+          Catálogo BSC enriquecido: <code>npm run supabase:seed:catalog</code> (50 equipos, ~142 jugadores por región).
+          Antes ejecuta en SQL Editor: <code>supabase/APPLY_CATALOG_ENRICHED.sql</code>. Tablas:{" "}
+          <code>teams_catalog</code>, <code>players_catalog</code>.
         </p>
       </div>
 

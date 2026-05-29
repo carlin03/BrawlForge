@@ -4,27 +4,17 @@ import { BSC_2026_REGISTRY_SLUGS, getBsc2026TeamEntry } from "./bsc-2026-team-re
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 import { BSC_2026_ROSTERS } from "./bsc-2026-rosters";
 import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
+import {
+  type AdminTeamCatalogRow,
+  pickTeamFromDb,
+} from "./admin-catalog-fields";
 
+export type { AdminTeamCatalogRow };
 export type AdminBscTeamItem = {
   slug: string;
   name: string;
   tag: string;
   region: Region;
-};
-
-export type AdminTeamCatalogRow = {
-  slug: string;
-  name: string;
-  tag: string;
-  region: string;
-  country: string;
-  earnings: number;
-  rank: number | null;
-  rank_change: number;
-  form: string[];
-  roster_slugs: string[];
-  logo_url: string | null;
-  description: string | null;
 };
 
 export const BSC_2026_NEW_TEAM_SLUGS: readonly string[] = [...BSC_2026_REGISTRY_SLUGS].sort();
@@ -62,6 +52,13 @@ export function adminBscTeamToCatalogRow(slug: string): AdminTeamCatalogRow {
     roster_slugs: full?.roster?.length ? full.roster : (BSC_2026_ROSTERS[key] ?? reg?.roster ?? []),
     logo_url: null,
     description: null,
+    liquipedia_url: reg?.liquipediaPage
+      ? `https://liquipedia.net/brawlstars/${encodeURIComponent(reg.liquipediaPage.replace(/ /g, "_"))}`
+      : null,
+    circuit_status: "active",
+    bsc_qualified_2026: true,
+    circuit_summary: null,
+    headquarters: reg?.country ?? full?.country ?? "",
   };
 }
 
@@ -117,6 +114,7 @@ export function mergeAdminTeamRows(
           : base.roster_slugs,
       logo_url: row.logo_url ? String(row.logo_url) : base.logo_url,
       description: row.description ? String(row.description) : base.description,
+      ...pickTeamFromDb(row),
     });
   }
   const orderIdx = new Map(BSC_2026_ACTIVE_TEAM_SLUGS.map((s, i) => [s, i]));

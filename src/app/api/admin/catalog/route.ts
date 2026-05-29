@@ -89,6 +89,14 @@ export async function POST(request: Request) {
       logo_url: row.logo_url ? String(row.logo_url) : null,
       description: row.description ? String(row.description) : null,
       liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
+      liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
+      coach: row.coach ? String(row.coach) : null,
+      founded_year: row.founded_year != null && row.founded_year !== "" ? Number(row.founded_year) : null,
+      headquarters: row.headquarters ? String(row.headquarters) : null,
+      website: row.website ? String(row.website) : null,
+      circuit_status: String(row.circuit_status ?? "active"),
+      bsc_qualified_2026: row.bsc_qualified_2026 !== false,
+      circuit_summary: row.circuit_summary ? String(row.circuit_summary) : null,
       synced_at: syncedAt,
     };
     const { error } = await supabase.from("teams_catalog").upsert(payload);
@@ -112,6 +120,19 @@ export async function POST(request: Request) {
       bio: row.bio ? String(row.bio) : null,
       photo_url: row.photo_url ? String(row.photo_url).trim() : null,
       liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
+      liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
+      country: row.country ? String(row.country) : null,
+      nationality: row.nationality ? String(row.nationality) : null,
+      join_date: row.join_date ? String(row.join_date) : null,
+      primary_brawler: row.primary_brawler ? String(row.primary_brawler) : null,
+      secondary_brawler: row.secondary_brawler ? String(row.secondary_brawler) : null,
+      is_captain: Boolean(row.is_captain),
+      previous_teams: Array.isArray(row.previous_teams)
+        ? row.previous_teams
+        : String(row.previous_teams ?? "")
+            .split(/[|,]/)
+            .map((s) => s.trim())
+            .filter(Boolean),
       meta:
         row.photo_url && String(row.photo_url).trim()
           ? { photo_url: String(row.photo_url).trim() }

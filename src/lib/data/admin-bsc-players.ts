@@ -3,21 +3,9 @@ import { BSC_2026_PLAYER_SLUGS, BSC_2026_ROSTERS } from "./bsc-2026-rosters";
 import { BSC_2026_ACTIVE_TEAM_SLUGS, isBsc2026ActiveTeam } from "./bsc-2026-active-teams";
 import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import { getTeam } from "./teams";
+import { type AdminPlayerCatalogRow, pickPlayerFromDb } from "./admin-catalog-fields";
 
-export type AdminPlayerCatalogRow = {
-  slug: string;
-  ign: string;
-  real_name: string | null;
-  team_slug: string | null;
-  region: string;
-  role: string;
-  status: string;
-  fantasy_points: number;
-  fantasy_ownership: number;
-  rating: number;
-  bio: string | null;
-  photo_url: string | null;
-};
+export type { AdminPlayerCatalogRow };
 
 const BSC_TEAM_SET = new Set<string>(BSC_2026_ACTIVE_TEAM_SLUGS);
 
@@ -129,6 +117,7 @@ export function mergeAdminPlayerRows(
       rating: Number(row.rating ?? base?.rating ?? 1),
       bio: row.bio ? String(row.bio) : base?.bio ?? null,
       photo_url: row.photo_url ? String(row.photo_url) : base?.photo_url ?? null,
+      ...pickPlayerFromDb(row),
     });
   }
   return [...bySlug.values()].sort(
