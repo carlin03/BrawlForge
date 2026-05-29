@@ -4,6 +4,7 @@ import { getPlayer } from "@/lib/data/players";
 import { getTeam } from "@/lib/data/teams";
 import type { CatalogPlayerRow, CatalogTeamRow, CatalogMarketRow } from "@/lib/supabase/catalog-types";
 import type { Region } from "@/lib/types";
+import { parseAchievements } from "@/lib/data/profile-wiki";
 
 export type PlayerExtras = {
   bio: string | null;
@@ -15,6 +16,9 @@ export type PlayerExtras = {
 
 export type TeamExtras = {
   description: string | null;
+  circuitSummary: string | null;
+  coach: string | null;
+  foundedYear: number | null;
   social: Record<string, unknown>;
   meta: Record<string, unknown>;
   logoUrl: string | null;
@@ -84,9 +88,19 @@ export function mergeCatalogTeam(
     achievements: [],
   };
   if (!row) {
-    return { ...base, description: null, social: {}, meta: {}, logoUrl: null };
+    return {
+      ...base,
+      description: null,
+      circuitSummary: null,
+      coach: null,
+      foundedYear: null,
+      social: {},
+      meta: {},
+      logoUrl: null,
+    };
   }
   const form = (row.form ?? []).filter((f): f is "W" | "L" => f === "W" || f === "L");
+  const dbAchievements = parseAchievements(row.achievements);
   return {
     ...base,
     name: row.name || base.name,
@@ -98,7 +112,11 @@ export function mergeCatalogTeam(
     rankChange: row.rank_change ?? base.rankChange,
     form: form.length ? form : base.form,
     roster: row.roster_slugs?.length ? row.roster_slugs : base.roster,
+    achievements: dbAchievements.length ? dbAchievements : base.achievements,
     description: row.description,
+    circuitSummary: row.circuit_summary ?? null,
+    coach: row.coach ?? (typeof row.meta?.coach === "string" ? row.meta.coach : null),
+    foundedYear: row.founded_year ?? null,
     social: row.social ?? {},
     meta: row.meta ?? {},
     logoUrl: row.logo_url,

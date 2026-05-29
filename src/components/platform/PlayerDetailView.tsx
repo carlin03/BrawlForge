@@ -13,6 +13,15 @@ import { getFantasyRole } from "@/lib/data/fantasy-meta";
 import { getPlayerComputedStats } from "@/lib/data/entity-stats";
 import { useResolvedPlayer, useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { useCatalogMarket } from "@/contexts/CatalogContext";
+import { parsePlayerMeta } from "@/lib/data/profile-wiki";
+import {
+  WikiCareerTimeline,
+  WikiDetailBanner,
+  WikiFunFactsBlock,
+  WikiGalleryBlock,
+  WikiSectionsBlock,
+  WikiSocialBlock,
+} from "@/components/platform/WikiProfileBlocks";
 
 type TabId = "profile" | "stats" | "fantasy" | "team";
 
@@ -47,8 +56,11 @@ export function PlayerDetailView({ slug }: { slug: string }) {
   const pStats = getPlayerComputedStats(slug, player.teamSlug);
   const social = player.social as Record<string, string>;
   const meta = player.meta as Record<string, unknown>;
-  const peakRating = typeof meta.peak_rating === "number" ? meta.peak_rating : player.rating;
-  const mains = Array.isArray(meta.main_brawlers) ? (meta.main_brawlers as string[]).join(", ") : null;
+  const profile = parsePlayerMeta(meta);
+  const peakRating = profile.peak_rating ?? player.rating;
+  const mains = profile.main_brawlers?.length ? profile.main_brawlers.join(", ") : null;
+  const playstyle = profile.playstyle;
+  const displayTagline = profile.tagline || (profile.nickname ? `"${profile.nickname}"` : null);
 
   const tabs = [
     { id: "profile" as const, label: "Perfil" },
@@ -59,6 +71,7 @@ export function PlayerDetailView({ slug }: { slug: string }) {
 
   return (
     <div className="bf-player-page bf-team-page bf-detail-page bf-page-ultra">
+      <WikiDetailBanner url={profile.banner_url} />
       <section className="bf-detail-hero-premium">
         <div className="bf-detail-hero-premium-bg" aria-hidden />
         <div className="bf-detail-hero-premium-grid" style={{ gridTemplateColumns: "auto 1fr" }}>
@@ -81,7 +94,12 @@ export function PlayerDetailView({ slug }: { slug: string }) {
               </span>
             </div>
             <h1 className="bf-detail-hero-name">{player.ign}</h1>
-            {player.realName && <p className="bf-detail-hero-tagline">{player.realName}</p>}
+            {displayTagline && <p className="bf-detail-hero-tagline">{displayTagline}</p>}
+            {player.realName && (
+              <p className="bf-detail-hero-tagline" style={{ opacity: 0.85 }}>
+                {player.realName}
+              </p>
+            )}
             {team ? (
               <Link href={`/teams/${team.slug}`} className="bf-player-club-link">
                 <TeamLogo slug={team.slug} name={team.name} size={32} />
@@ -142,6 +160,11 @@ export function PlayerDetailView({ slug }: { slug: string }) {
               {player.bio ||
                 `${player.ign} juega como ${player.role} en ${team?.name ?? "el circuito internacional"}. Rating ${player.rating.toFixed(2)} y ${player.fantasyPoints} puntos OVR en fantasy.`}
             </p>
+            {playstyle && (
+              <p className="bf-detail-prose" style={{ marginTop: 12 }}>
+                <strong>Estilo:</strong> {playstyle}
+              </p>
+            )}
             <dl className="bf-detail-dl">
               <div><dt>Nombre real</dt><dd>{player.realName || "—"}</dd></div>
               <div><dt>Rol</dt><dd>{player.role}</dd></div>
@@ -150,15 +173,13 @@ export function PlayerDetailView({ slug }: { slug: string }) {
               {mains && <div><dt>Brawlers</dt><dd>{mains}</dd></div>}
             </dl>
           </section>
-          {(social.twitter || social.twitch) && (
-            <section className="bf-panel bf-detail-card">
-              <h2 className="bf-home-block-title">Redes</h2>
-              <ul className="bf-detail-links">
-                {social.twitter && <li><a href={social.twitter} target="_blank" rel="noopener noreferrer">Twitter / X</a></li>}
-                {social.twitch && <li><a href={social.twitch} target="_blank" rel="noopener noreferrer">Twitch</a></li>}
-              </ul>
-            </section>
-          )}
+          <WikiCareerTimeline items={profile.career_highlights ?? []} />
+          <div className="bf-detail-info-grid">
+            <WikiSectionsBlock sections={profile.wiki_sections ?? []} />
+            <WikiFunFactsBlock facts={profile.fun_facts ?? []} />
+            <WikiSocialBlock social={social} />
+          </div>
+          <WikiGalleryBlock urls={profile.gallery_urls ?? []} />
         </div>
       )}
 

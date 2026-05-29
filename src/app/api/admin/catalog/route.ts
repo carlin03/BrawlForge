@@ -9,6 +9,15 @@ import {
   mergeAdminTeamRows,
 } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
+import {
+  buildPlayerMeta,
+  buildTeamMeta,
+  parseAchievements,
+  parsePlayerMeta,
+  parseSocial,
+  parseTeamMeta,
+  pruneSocial,
+} from "@/lib/data/profile-wiki";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +83,10 @@ export async function POST(request: Request) {
   const syncedAt = new Date().toISOString();
 
   if (entity === "team") {
+    const profile = parseTeamMeta(row.profile ?? row.meta ?? {});
+    const achievements = parseAchievements(row.achievements ?? []);
+    const social = pruneSocial(parseSocial(row.social ?? {}));
+    const coach = row.coach ? String(row.coach) : null;
     const payload = {
       slug: String(row.slug),
       name: String(row.name ?? getTeam(String(row.slug))?.name ?? row.slug),
@@ -91,13 +104,16 @@ export async function POST(request: Request) {
       description: row.description ? String(row.description) : null,
       liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
       liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
-      coach: row.coach ? String(row.coach) : null,
+      coach,
       founded_year: row.founded_year != null && row.founded_year !== "" ? Number(row.founded_year) : null,
       headquarters: row.headquarters ? String(row.headquarters) : null,
       website: row.website ? String(row.website) : null,
       circuit_status: String(row.circuit_status ?? "active"),
       bsc_qualified_2026: row.bsc_qualified_2026 !== false,
       circuit_summary: row.circuit_summary ? String(row.circuit_summary) : null,
+      achievements,
+      social,
+      meta: buildTeamMeta(profile, { coach }),
       synced_at: syncedAt,
     };
     const { error } = await supabase.from("teams_catalog").upsert(payload);
@@ -113,6 +129,9 @@ export async function POST(request: Request) {
 
   if (entity === "player") {
     const p = getPlayer(String(row.slug));
+    const profile = parsePlayerMeta(row.profile ?? row.meta ?? {});
+    const photoUrl = row.photo_url ? String(row.photo_url).trim() : null;
+    const mains = profile.main_brawlers ?? [];
     const payload = {
       slug: String(row.slug),
       ign: String(row.ign ?? p?.ign ?? row.slug),
@@ -125,14 +144,22 @@ export async function POST(request: Request) {
       fantasy_ownership: Number(row.fantasy_ownership ?? p?.fantasyOwnership ?? 30),
       rating: Number(row.rating ?? p?.rating ?? 1),
       bio: row.bio ? String(row.bio) : null,
-      photo_url: row.photo_url ? String(row.photo_url).trim() : null,
+      photo_url: photoUrl,
       liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
       liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
       country: row.country ? String(row.country) : null,
       nationality: row.nationality ? String(row.nationality) : null,
       join_date: row.join_date ? String(row.join_date) : null,
-      primary_brawler: row.primary_brawler ? String(row.primary_brawler) : null,
-      secondary_brawler: row.secondary_brawler ? String(row.secondary_brawler) : null,
+      primary_brawler: row.primary_brawler
+        ? String(row.primary_brawler)
+        : mains[0]
+          ? String(mains[0])
+          : null,
+      secondary_brawler: row.secondary_brawler
+        ? String(row.secondary_brawler)
+        : mains[1]
+          ? String(mains[1])
+          : null,
       is_captain: Boolean(row.is_captain),
       previous_teams: Array.isArray(row.previous_teams)
         ? row.previous_teams
@@ -140,10 +167,8 @@ export async function POST(request: Request) {
             .split(/[|,]/)
             .map((s) => s.trim())
             .filter(Boolean),
-      meta:
-        row.photo_url && String(row.photo_url).trim()
-          ? { photo_url: String(row.photo_url).trim() }
-          : {},
+      social: pruneSocial(parseSocial(row.social ?? {})),
+      meta: buildPlayerMeta(profile, photoUrl),
       synced_at: syncedAt,
     };
     let { error } = await supabase.from("players_catalog").upsert(payload);

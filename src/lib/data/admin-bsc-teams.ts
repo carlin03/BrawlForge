@@ -8,6 +8,7 @@ import {
   type AdminTeamCatalogRow,
   pickTeamFromDb,
 } from "./admin-catalog-fields";
+import { parseAchievements, parseSocial } from "./profile-wiki";
 
 export type { AdminTeamCatalogRow };
 export type AdminBscTeamItem = {
@@ -59,6 +60,9 @@ export function adminBscTeamToCatalogRow(slug: string): AdminTeamCatalogRow {
     bsc_qualified_2026: true,
     circuit_summary: null,
     headquarters: reg?.country ?? full?.country ?? "",
+    achievements: full?.achievements ?? [],
+    social: {},
+    meta: {},
   };
 }
 
@@ -114,6 +118,12 @@ export function mergeAdminTeamRows(
           : base.roster_slugs,
       logo_url: row.logo_url ? String(row.logo_url) : base.logo_url,
       description: row.description ? String(row.description) : base.description,
+      achievements: parseAchievements(row.achievements ?? base.achievements),
+      social: parseSocial(row.social ?? base.social),
+      meta:
+        row.meta && typeof row.meta === "object" && !Array.isArray(row.meta)
+          ? (row.meta as Record<string, unknown>)
+          : base.meta,
       ...pickTeamFromDb(row),
     });
   }

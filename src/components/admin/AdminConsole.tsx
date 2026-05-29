@@ -22,16 +22,22 @@ import { AdminLogoPanel } from "@/components/admin/AdminLogoPanel";
 import { AdminImportPanel } from "@/components/admin/AdminImportPanel";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
 import { TeamLogo } from "@/components/ui/TeamLogo";
-import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { getLatestNews } from "@/lib/data";
 import { BSC_2026_ADMIN_TEAM_COUNT, mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 import type { AdminTeamCatalogRow, AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
+import {
+  AdminTeamWikiForm,
+  teamRowToWikiState,
+  type TeamWikiState,
+} from "@/components/admin/AdminTeamWikiForm";
+import {
+  AdminPlayerWikiForm,
+  playerRowToWikiState,
+  type PlayerWikiState,
+} from "@/components/admin/AdminPlayerWikiForm";
 
 type Tab = "teams" | "players" | "logos" | "news" | "import" | "users";
-
-type TeamRow = AdminTeamCatalogRow;
-type PlayerRow = AdminPlayerCatalogRow;
 
 type NewsRow = {
   slug: string;
@@ -96,10 +102,10 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
   const [msg, setMsg] = useState("");
   const [msgError, setMsgError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [teams, setTeams] = useState<TeamRow[]>([]);
-  const [players, setPlayers] = useState<PlayerRow[]>([]);
-  const [selectedTeam, setSelectedTeam] = useState<TeamRow | null>(null);
-  const [selectedPlayer, setSelectedPlayer] = useState<PlayerRow | null>(null);
+  const [teams, setTeams] = useState<AdminTeamCatalogRow[]>([]);
+  const [players, setPlayers] = useState<AdminPlayerCatalogRow[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<TeamWikiState | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerWikiState | null>(null);
   const [news, setNews] = useState<NewsRow[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsRow | null>(null);
   const [teamSearch, setTeamSearch] = useState("");
@@ -116,8 +122,8 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       const res = await fetch("/api/admin/catalog?type=all");
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al cargar");
-      setTeams(mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null) as TeamRow[]);
-      setPlayers(mergeAdminPlayerRows(Array.isArray(data.players) ? data.players : null) as PlayerRow[]);
+      setTeams(mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null));
+      setPlayers(mergeAdminPlayerRows(Array.isArray(data.players) ? data.players : null));
       setNews(data.news ?? []);
       setMsg("Datos actualizados");
     } catch (e) {
@@ -131,7 +137,10 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
     load();
   }, [load]);
 
-  async function save(entity: "team" | "player" | "news", row: TeamRow | PlayerRow | NewsRow) {
+  async function save(
+    entity: "team" | "player" | "news",
+    row: TeamWikiState | PlayerWikiState | NewsRow,
+  ) {
     setLoading(true);
     setMsg("");
     setMsgError(false);
@@ -200,10 +209,26 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       n.category.toLowerCase().includes(newsSearch.toLowerCase()),
   );
 
-  const rosterStr = (r: TeamRow) =>
-    Array.isArray(r.roster_slugs) ? r.roster_slugs.join(", ") : String(r.roster_slugs ?? "");
-
   const teamBySlug = (slug: string) => teams.find((t) => t.slug === slug);
+
+  function saveTeamWiki(team: TeamWikiState) {
+    save("team", {
+      ...team,
+      achievements: team.achievements,
+      social: team.social,
+      profile: team.profile,
+      meta: team.profile,
+    });
+  }
+
+  function savePlayerWiki(player: PlayerWikiState) {
+    save("player", {
+      ...player,
+      social: player.social,
+      profile: player.profile,
+      meta: player.profile,
+    });
+  }
 
   return (
     <div className={`bf-admin-page bf-admin-console ${embedded ? "is-embedded" : ""}`}>
@@ -312,12 +337,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                     <button
                       type="button"
                       className={`bf-admin-list-card ${selectedTeam?.slug === t.slug ? "is-on" : ""}`}
-                      onClick={() =>
-                        setSelectedTeam({
-                          ...t,
-                          roster_slugs: rosterStr(t),
-                        } as TeamRow & { roster_slugs: string })
-                      }
+                      onClick={() => setSelectedTeam(teamRowToWikiState(t as AdminTeamCatalogRow & Record<string, unknown>))}
                     >
                       <TeamLogo slug={t.slug} name={t.name} size={44} />
                       <span className="bf-admin-list-card-body">
@@ -334,198 +354,22 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
           </aside>
 
           {selectedTeam ? (
-            <form
-              className="bf-admin-editor"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const roster = String(selectedTeam.roster_slugs)
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean);
-                save("team", { ...selectedTeam, roster_slugs: roster });
+            <AdminTeamWikiForm
+              team={selectedTeam}
+              players={players.map((p) => ({ slug: p.slug, ign: p.ign, team_slug: p.team_slug }))}
+              loading={loading}
+              onChange={setSelectedTeam}
+              onSave={() => saveTeamWiki(selectedTeam)}
+              onOpenLogos={() => {
+                setTab("logos");
+                if (typeof window !== "undefined") {
+                  const url = new URL(window.location.href);
+                  url.searchParams.set("tab", "logos");
+                  url.searchParams.set("team", selectedTeam.slug);
+                  window.history.replaceState(null, "", url.pathname + url.search);
+                }
               }}
-            >
-              <div className="bf-admin-editor-head">
-                <TeamLogo slug={selectedTeam.slug} name={selectedTeam.name} size={72} />
-                <div>
-                  <h2>{selectedTeam.name}</h2>
-                  <p className="bf-admin-field-hint" style={{ margin: 0 }}>
-                    {selectedTeam.tag} · {selectedTeam.country}
-                  </p>
-                </div>
-              </div>
-
-              <AdminFieldRow>
-                <AdminField label="Nombre del club">
-                  <input
-                    value={selectedTeam.name}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, name: e.target.value })}
-                  />
-                </AdminField>
-                <AdminField label="Tag (abreviatura)">
-                  <input
-                    value={selectedTeam.tag}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, tag: e.target.value })}
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminFieldRow>
-                <AdminField label="Región">
-                  <select
-                    value={selectedTeam.region}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, region: e.target.value })}
-                  >
-                    {REGIONS.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
-                </AdminField>
-                <AdminField label="País">
-                  <input
-                    value={selectedTeam.country}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, country: e.target.value })}
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminFieldRow>
-                <AdminField label="Ranking global">
-                  <input
-                    type="number"
-                    value={selectedTeam.rank ?? ""}
-                    onChange={(e) =>
-                      setSelectedTeam({
-                        ...selectedTeam,
-                        rank: e.target.value ? Number(e.target.value) : null,
-                      })
-                    }
-                  />
-                </AdminField>
-                <AdminField label="Premios totales ($)">
-                  <input
-                    type="number"
-                    value={selectedTeam.earnings}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, earnings: Number(e.target.value) })}
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminField label="Resumen circuito" hint="Una línea sobre la región / BSC 2026">
-                <input
-                  value={selectedTeam.circuit_summary ?? ""}
-                  onChange={(e) => setSelectedTeam({ ...selectedTeam, circuit_summary: e.target.value })}
-                />
-              </AdminField>
-
-              <AdminField label="Descripción del club" hint="Texto largo en la ficha del equipo">
-                <textarea
-                  rows={5}
-                  value={selectedTeam.description ?? ""}
-                  onChange={(e) => setSelectedTeam({ ...selectedTeam, description: e.target.value })}
-                />
-              </AdminField>
-
-              <AdminFieldRow>
-                <AdminField label="Entrenador">
-                  <input
-                    value={selectedTeam.coach ?? ""}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, coach: e.target.value })}
-                  />
-                </AdminField>
-                <AdminField label="Año fundación">
-                  <input
-                    type="number"
-                    value={selectedTeam.founded_year ?? ""}
-                    onChange={(e) =>
-                      setSelectedTeam({
-                        ...selectedTeam,
-                        founded_year: e.target.value ? Number(e.target.value) : null,
-                      })
-                    }
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminFieldRow>
-                <AdminField label="Sede / ciudad">
-                  <input
-                    value={selectedTeam.headquarters ?? ""}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, headquarters: e.target.value })}
-                  />
-                </AdminField>
-                <AdminField label="Web">
-                  <input
-                    value={selectedTeam.website ?? ""}
-                    onChange={(e) => setSelectedTeam({ ...selectedTeam, website: e.target.value })}
-                    placeholder="https://…"
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminField label="Liquipedia URL">
-                <input
-                  value={selectedTeam.liquipedia_url ?? ""}
-                  onChange={(e) => setSelectedTeam({ ...selectedTeam, liquipedia_url: e.target.value })}
-                />
-              </AdminField>
-
-              <AdminField
-                label="Plantilla (jugadores)"
-                hint="Nombres internos separados por coma — solo si sabes los IDs del catálogo"
-              >
-                <textarea
-                  rows={4}
-                  value={
-                    Array.isArray(selectedTeam.roster_slugs)
-                      ? selectedTeam.roster_slugs.join(", ")
-                      : String(selectedTeam.roster_slugs ?? "")
-                  }
-                  onChange={(e) =>
-                    setSelectedTeam({
-                      ...selectedTeam,
-                      roster_slugs: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                    })
-                  }
-                />
-              </AdminField>
-
-              <AdminField label="URL del logo" hint="Opcional — también puedes cambiarlo en la pestaña Logos">
-                <input
-                  value={selectedTeam.logo_url ?? ""}
-                  onChange={(e) => setSelectedTeam({ ...selectedTeam, logo_url: e.target.value })}
-                  placeholder="https://…"
-                />
-              </AdminField>
-
-              <AdminMeta>Ref: {selectedTeam.slug}</AdminMeta>
-
-              <div className="bf-admin-editor-actions">
-                <button type="submit" className="bp-btn bp-btn-gold" disabled={loading}>
-                  <Save size={16} /> Guardar equipo
-                </button>
-                <button
-                  type="button"
-                  className="bp-btn bp-btn-ghost"
-                  onClick={() => {
-                    setTab("logos");
-                    if (typeof window !== "undefined") {
-                      const url = new URL(window.location.href);
-                      url.searchParams.set("tab", "logos");
-                      url.searchParams.set("team", selectedTeam.slug);
-                      window.history.replaceState(null, "", url.pathname + url.search);
-                    }
-                  }}
-                >
-                  <Image size={16} /> Cambiar logo
-                </button>
-                <Link href={`/teams/${selectedTeam.slug}`} className="bp-btn bp-btn-ghost" target="_blank">
-                  Ver en la web
-                </Link>
-              </div>
-            </form>
+            />
           ) : (
             <div className="bf-admin-empty-editor">Selecciona un equipo de la lista</div>
           )}
@@ -564,7 +408,9 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                     <button
                       type="button"
                       className={`bf-admin-list-card ${selectedPlayer?.slug === p.slug ? "is-on" : ""}`}
-                      onClick={() => setSelectedPlayer({ ...p })}
+                      onClick={() =>
+                        setSelectedPlayer(playerRowToWikiState(p as AdminPlayerCatalogRow & Record<string, unknown>))
+                      }
                     >
                       {p.team_slug ? (
                         <TeamLogo slug={p.team_slug} name={club?.name} size={44} />
@@ -590,222 +436,13 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
           </aside>
 
           {selectedPlayer ? (
-            <form
-              className="bf-admin-editor"
-              onSubmit={(e) => {
-                e.preventDefault();
-                save("player", selectedPlayer);
-              }}
-            >
-              <div className="bf-admin-editor-head">
-                <PlayerPhoto
-                  playerSlug={selectedPlayer.slug}
-                  teamSlug={selectedPlayer.team_slug ?? undefined}
-                  size={96}
-                  photoUrlOverride={selectedPlayer.photo_url}
-                />
-                <div>
-                  <h2>{selectedPlayer.ign}</h2>
-                  {selectedPlayer.real_name && (
-                    <p className="bf-admin-field-hint" style={{ margin: 0 }}>
-                      {selectedPlayer.real_name}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <AdminFieldRow>
-                <AdminField label="IGN (nombre en juego)">
-                  <input
-                    value={selectedPlayer.ign}
-                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, ign: e.target.value })}
-                  />
-                </AdminField>
-                <AdminField label="Nombre real">
-                  <input
-                    value={selectedPlayer.real_name ?? ""}
-                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, real_name: e.target.value })}
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminField label="Club" hint="Elige el equipo al que pertenece">
-                <select
-                  value={selectedPlayer.team_slug ?? ""}
-                  onChange={(e) =>
-                    setSelectedPlayer({ ...selectedPlayer, team_slug: e.target.value || null })
-                  }
-                >
-                  <option value="">— Sin equipo —</option>
-                  {teams
-                    .slice()
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((t) => (
-                      <option key={t.slug} value={t.slug}>
-                        {t.tag} · {t.name}
-                      </option>
-                    ))}
-                </select>
-              </AdminField>
-
-              <AdminFieldRow>
-                <AdminField label="Rol">
-                  <input
-                    value={selectedPlayer.role}
-                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, role: e.target.value })}
-                  />
-                </AdminField>
-                <AdminField label="Estado">
-                  <select
-                    value={selectedPlayer.status}
-                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, status: e.target.value })}
-                  >
-                    <option value="active">Activo</option>
-                    <option value="inactive">Inactivo</option>
-                    <option value="retired">Retirado</option>
-                  </select>
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminFieldRow>
-                <AdminField label="Región">
-                  <select
-                    value={selectedPlayer.region}
-                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, region: e.target.value })}
-                  >
-                    {REGIONS.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
-                </AdminField>
-                <AdminField label="País / nacionalidad">
-                  <input
-                    value={selectedPlayer.nationality ?? selectedPlayer.country ?? ""}
-                    onChange={(e) =>
-                      setSelectedPlayer({
-                        ...selectedPlayer,
-                        nationality: e.target.value,
-                        country: e.target.value,
-                      })
-                    }
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminFieldRow>
-                <AdminField label="Brawler principal">
-                  <input
-                    value={selectedPlayer.primary_brawler ?? ""}
-                    onChange={(e) =>
-                      setSelectedPlayer({ ...selectedPlayer, primary_brawler: e.target.value })
-                    }
-                  />
-                </AdminField>
-                <AdminField label="Brawler secundario">
-                  <input
-                    value={selectedPlayer.secondary_brawler ?? ""}
-                    onChange={(e) =>
-                      setSelectedPlayer({ ...selectedPlayer, secondary_brawler: e.target.value })
-                    }
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminFieldRow>
-                <AdminField label="Fecha ingreso">
-                  <input
-                    value={selectedPlayer.join_date ?? ""}
-                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, join_date: e.target.value })}
-                    placeholder="2026-01"
-                  />
-                </AdminField>
-                <AdminField label="Capitán">
-                  <select
-                    value={selectedPlayer.is_captain ? "yes" : "no"}
-                    onChange={(e) =>
-                      setSelectedPlayer({ ...selectedPlayer, is_captain: e.target.value === "yes" })
-                    }
-                  >
-                    <option value="no">No</option>
-                    <option value="yes">Sí</option>
-                  </select>
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminField label="Liquipedia URL">
-                <input
-                  value={selectedPlayer.liquipedia_url ?? ""}
-                  onChange={(e) => setSelectedPlayer({ ...selectedPlayer, liquipedia_url: e.target.value })}
-                />
-              </AdminField>
-
-              <AdminField label="Biografía" hint="Aparece en la ficha del jugador">
-                <textarea
-                  rows={4}
-                  value={selectedPlayer.bio ?? ""}
-                  onChange={(e) => setSelectedPlayer({ ...selectedPlayer, bio: e.target.value })}
-                />
-              </AdminField>
-
-              <AdminField
-                label="URL foto del jugador"
-                hint="Pega un enlace directo a la imagen (PNG/JPG). Se verá en cartas FUT, home y ficha."
-              >
-                <input
-                  type="url"
-                  value={selectedPlayer.photo_url ?? ""}
-                  onChange={(e) => setSelectedPlayer({ ...selectedPlayer, photo_url: e.target.value })}
-                  placeholder="https://…"
-                />
-                {selectedPlayer.photo_url?.trim() && (
-                  <div className="bf-admin-photo-preview">
-                    <img src={selectedPlayer.photo_url.trim()} alt="" />
-                  </div>
-                )}
-              </AdminField>
-
-              <AdminFieldRow>
-                <AdminField label="Puntos fantasy (OVR)">
-                  <input
-                    type="number"
-                    value={selectedPlayer.fantasy_points}
-                    onChange={(e) =>
-                      setSelectedPlayer({ ...selectedPlayer, fantasy_points: Number(e.target.value) })
-                    }
-                  />
-                </AdminField>
-                <AdminField label="Propiedad (%)">
-                  <input
-                    type="number"
-                    value={selectedPlayer.fantasy_ownership}
-                    onChange={(e) =>
-                      setSelectedPlayer({ ...selectedPlayer, fantasy_ownership: Number(e.target.value) })
-                    }
-                  />
-                </AdminField>
-                <AdminField label="Rating">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={selectedPlayer.rating}
-                    onChange={(e) => setSelectedPlayer({ ...selectedPlayer, rating: Number(e.target.value) })}
-                  />
-                </AdminField>
-              </AdminFieldRow>
-
-              <AdminMeta>Ref: {selectedPlayer.slug}</AdminMeta>
-
-              <div className="bf-admin-editor-actions">
-                <button type="submit" className="bp-btn bp-btn-gold" disabled={loading}>
-                  <Save size={16} /> Guardar jugador
-                </button>
-                <Link href={`/players/${selectedPlayer.slug}`} className="bp-btn bp-btn-ghost" target="_blank">
-                  Ver en la web
-                </Link>
-              </div>
-            </form>
+            <AdminPlayerWikiForm
+              player={selectedPlayer}
+              teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag }))}
+              loading={loading}
+              onChange={setSelectedPlayer}
+              onSave={() => savePlayerWiki(selectedPlayer)}
+            />
           ) : (
             <div className="bf-admin-empty-editor">Selecciona un jugador de la lista</div>
           )}

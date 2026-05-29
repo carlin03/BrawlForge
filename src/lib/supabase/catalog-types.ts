@@ -14,6 +14,9 @@ export interface CatalogTeamRow {
   roster_slugs: string[];
   achievements: unknown[];
   description: string | null;
+  circuit_summary: string | null;
+  coach: string | null;
+  founded_year: number | null;
   social: Record<string, unknown>;
   meta: Record<string, unknown>;
 }

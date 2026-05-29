@@ -3525,6 +3525,84 @@
 }
 .bf-detail-links a:hover { text-decoration: underline; }
 
+.bf-wiki-banner-wrap {
+  position: relative;
+  margin: -8px -16px 20px;
+  max-height: 200px;
+  overflow: hidden;
+  border-radius: var(--bp-r);
+}
+.bf-wiki-banner-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+.bf-wiki-banner-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, var(--bp-bg) 100%);
+  pointer-events: none;
+}
+.bf-detail-hero-motto {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--bp-gold);
+  margin: 4px 0 0;
+  opacity: 0.9;
+}
+.bf-wiki-facts {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--bp-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.bf-wiki-facts li { margin-bottom: 8px; }
+.bf-wiki-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bf-wiki-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.bf-wiki-gallery-item {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--bp-line);
+  aspect-ratio: 16 / 10;
+}
+.bf-wiki-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bf-wiki-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bf-wiki-timeline-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--bp-line);
+}
+.bf-wiki-timeline-year {
+  font-family: var(--bp-head);
+  font-size: 1.1rem;
+  color: var(--bp-gold);
+  font-weight: 800;
+}
+.bf-wiki-section + .bf-wiki-section {
+  margin-top: 0;
+}
+
 /* ── Predictions premium ── */
 .bf-predict-premium { padding-bottom: 40px; }
 .bf-predict-hero {

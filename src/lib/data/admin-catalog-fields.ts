@@ -1,5 +1,7 @@
 /** Campos extra del catálogo Supabase (admin + CSV). */
 
+import type { SocialLinks, WikiAchievement } from "./profile-wiki";
+
 export type AdminTeamCatalogRow = {
   slug: string;
   name: string;
@@ -22,6 +24,9 @@ export type AdminTeamCatalogRow = {
   circuit_status?: string;
   bsc_qualified_2026?: boolean;
   circuit_summary?: string | null;
+  achievements: WikiAchievement[];
+  social: SocialLinks;
+  meta: Record<string, unknown>;
 };
 
 export type AdminPlayerCatalogRow = {
@@ -46,6 +51,8 @@ export type AdminPlayerCatalogRow = {
   liquipedia_page?: string | null;
   liquipedia_url?: string | null;
   previous_teams?: string[];
+  social: SocialLinks;
+  meta: Record<string, unknown>;
 };
 
 export function pickTeamFromDb(row: Record<string, unknown>): Partial<AdminTeamCatalogRow> {

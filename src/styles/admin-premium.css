@@ -1030,3 +1030,106 @@
   background: rgba(255, 160, 46, 0.12);
   border: 1px solid rgba(255, 160, 46, 0.25);
 }
+
+/* Editor wiki (equipos / jugadores) */
+.bf-admin-editor .bf-admin-tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--bp-line);
+}
+.bf-admin-editor .bf-admin-tab-bar .bf-admin-tab {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 999px;
+  border: 1px solid var(--bp-line);
+  background: transparent;
+}
+.bf-admin-editor .bf-admin-tab-bar .bf-admin-tab.is-on {
+  border-color: rgba(255, 200, 46, 0.5);
+}
+.bf-admin-tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bf-admin-stack-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bf-admin-stack-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.2);
+}
+.bf-admin-stack-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.bf-admin-stack-card-actions {
+  display: flex;
+  gap: 4px;
+}
+.bf-admin-stack-card-actions button {
+  padding: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--bp-muted);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bf-admin-stack-card-actions button:hover {
+  color: var(--bp-gold);
+  background: rgba(255, 200, 46, 0.12);
+}
+.bf-admin-wiki-section textarea {
+  min-height: 72px;
+}
+.bf-admin-social-grid {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 720px) {
+  .bf-admin-social-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.bf-admin-roster-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--bp-line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.bf-admin-roster-picker label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.bf-admin-roster-picker label:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.bf-admin-banner-preview {
+  max-height: 140px;
+  overflow: hidden;
+}
+.bf-admin-banner-preview img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}

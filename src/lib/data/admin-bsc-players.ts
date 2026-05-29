@@ -4,6 +4,7 @@ import { BSC_2026_ACTIVE_TEAM_SLUGS, isBsc2026ActiveTeam } from "./bsc-2026-acti
 import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import { getTeam } from "./teams";
 import { type AdminPlayerCatalogRow, pickPlayerFromDb } from "./admin-catalog-fields";
+import { parseSocial } from "./profile-wiki";
 
 export type { AdminPlayerCatalogRow };
 
@@ -33,6 +34,8 @@ export function adminPlayerToCatalogRow(p: (typeof players)[number]): AdminPlaye
     rating: p.rating,
     bio: null,
     photo_url: null,
+    social: {},
+    meta: {},
   };
 }
 
@@ -71,6 +74,8 @@ export function getAdminCatalogPlayerRows(): AdminPlayerCatalogRow[] {
           rating: 1,
           bio: null,
           photo_url: null,
+          social: {},
+          meta: {},
         });
       }
     }
@@ -105,6 +110,8 @@ export function mergeAdminPlayerRows(
         rating: 1,
         bio: null,
         photo_url: null,
+        social: {},
+        meta: {},
       }),
       ign: String(row.ign ?? base?.ign ?? slug),
       real_name: row.real_name ? String(row.real_name) : base?.real_name ?? null,
@@ -117,6 +124,11 @@ export function mergeAdminPlayerRows(
       rating: Number(row.rating ?? base?.rating ?? 1),
       bio: row.bio ? String(row.bio) : base?.bio ?? null,
       photo_url: row.photo_url ? String(row.photo_url) : base?.photo_url ?? null,
+      social: parseSocial(row.social ?? base?.social),
+      meta:
+        row.meta && typeof row.meta === "object" && !Array.isArray(row.meta)
+          ? (row.meta as Record<string, unknown>)
+          : (base?.meta ?? {}),
       ...pickPlayerFromDb(row),
     });
   }

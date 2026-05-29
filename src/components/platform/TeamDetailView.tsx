@@ -22,6 +22,15 @@ import {
 import { getTeamTournamentHistory, getTeamRegisteredTournaments } from "@/lib/data/team-detail";
 import { getTeamComputedStats } from "@/lib/data/entity-stats";
 import { useResolvedTeam } from "@/hooks/useResolvedEntity";
+import { parseTeamMeta } from "@/lib/data/profile-wiki";
+import {
+  WikiDetailBanner,
+  WikiFunFactsBlock,
+  WikiGalleryBlock,
+  WikiRivalsBlock,
+  WikiSectionsBlock,
+  WikiSocialBlock,
+} from "@/components/platform/WikiProfileBlocks";
 
 function clean(s: string) {
   return s.replace(/<!--[\s\S]*?-->/g, "").trim();
@@ -72,8 +81,23 @@ export function TeamDetailView({ slug }: { slug: string }) {
   const winRate = computed.winRate;
   const social = team.social as Record<string, string>;
   const meta = team.meta as Record<string, unknown>;
-  const founded = typeof meta.founded === "string" ? meta.founded : null;
-  const coach = typeof meta.coach === "string" ? meta.coach : null;
+  const profile = parseTeamMeta(meta);
+  const founded =
+    team.foundedYear != null
+      ? String(team.foundedYear)
+      : typeof meta.founded === "string"
+        ? meta.founded
+        : null;
+  const coach = team.coach ?? (typeof meta.coach === "string" ? meta.coach : null);
+  const tagline =
+    profile.tagline ||
+    team.circuitSummary ||
+    `${team.tag} · ${team.country}`;
+  const hasWikiExtra =
+    Boolean(profile.wiki_sections?.length) ||
+    Boolean(profile.fun_facts?.length) ||
+    Boolean(profile.gallery_urls?.length) ||
+    Boolean(profile.rivals?.length);
 
   const tabs = [
     { id: "overview" as const, label: "Resumen" },
@@ -87,6 +111,7 @@ export function TeamDetailView({ slug }: { slug: string }) {
 
   return (
     <div className="bf-team-page bf-detail-page bf-page-ultra">
+      <WikiDetailBanner url={profile.banner_url} />
       <section className="bf-detail-hero-premium">
         <div className="bf-detail-hero-premium-bg" aria-hidden />
         <div className="bf-detail-hero-premium-grid">
@@ -101,9 +126,12 @@ export function TeamDetailView({ slug }: { slug: string }) {
               <FormDots form={computed.recentForm.length ? computed.recentForm : team.form} />
             </div>
             <h1 className="bf-detail-hero-name">{team.name}</h1>
-            <p className="bf-detail-hero-tagline">
-              {team.tag} · {team.country} · ${(team.earnings / 1000).toFixed(0)}K premios ·{" "}
-              {computed.tournamentsPlayed} torneos disputados
+            <p className="bf-detail-hero-tagline">{tagline}</p>
+            {profile.motto && (
+              <p className="bf-detail-hero-motto">&ldquo;{profile.motto}&rdquo;</p>
+            )}
+            <p className="bf-detail-hero-tagline" style={{ marginTop: 6 }}>
+              ${(team.earnings / 1000).toFixed(0)}K premios · {computed.tournamentsPlayed} torneos disputados
             </p>
             {computed.topPlayer && (
               <p className="bf-detail-hero-tagline" style={{ marginTop: 8 }}>
@@ -173,17 +201,12 @@ export function TeamDetailView({ slug }: { slug: string }) {
                 {coach && <div><dt>Coach</dt><dd>{coach}</dd></div>}
               </dl>
             </div>
-            {(social.twitter || social.discord || social.youtube) && (
-              <div className="bf-info-block-premium">
-                <h3>Redes y comunidad</h3>
-                <ul className="bf-detail-links">
-                  {social.twitter && <li><a href={social.twitter} target="_blank" rel="noopener noreferrer">Twitter / X</a></li>}
-                  {social.discord && <li><a href={social.discord} target="_blank" rel="noopener noreferrer">Discord</a></li>}
-                  {social.youtube && <li><a href={social.youtube} target="_blank" rel="noopener noreferrer">YouTube</a></li>}
-                </ul>
-              </div>
-            )}
+            <WikiSocialBlock social={social} />
           </section>
+          <WikiSectionsBlock sections={profile.wiki_sections ?? []} />
+          <WikiFunFactsBlock facts={profile.fun_facts ?? []} />
+          <WikiRivalsBlock rivals={profile.rivals ?? []} />
+          {hasWikiExtra && <WikiGalleryBlock urls={profile.gallery_urls ?? []} />}
           <section className="bf-team-section">
             <div className="bf-home-block-head">
               <h2 className="bf-home-block-title">Plantilla destacada</h2>
