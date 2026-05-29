@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { CatalogSnapshot } from "@/lib/supabase/catalog-types";
+import { isBscCircuitSlug } from "@/lib/data/bsc-tournaments";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,7 @@ export async function GET(request: Request) {
     ok: true,
     teams: teamsRes.data ?? [],
     players: playersRes.data ?? [],
-    tournaments: toursRes.data ?? [],
+    tournaments: (toursRes.data ?? []).filter((t) => isBscCircuitSlug(t.slug)),
     market: marketRes.data ?? [],
     syncedAt,
   };

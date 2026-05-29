@@ -66,7 +66,7 @@ export function HomePage() {
 
             <p className="bf-home-sub">
               Fantasy con {CATALOG_STATS.players} pros · {CATALOG_STATS.teams} equipos ·{" "}
-              {CATALOG_STATS.tournaments2026.toLocaleString("es-ES")} torneos. Ficha, vota y sigue el circuito.
+              {CATALOG_STATS.tournaments2026} torneos BSC. Ficha, vota y sigue el circuito.
             </p>
 
             <div className="bf-home-stats">

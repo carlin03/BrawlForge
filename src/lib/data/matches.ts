@@ -1,7 +1,6 @@
 import type { Region } from "../types";
 import {
   bsc2026Tournaments,
-  bsc2026LegacyPsiTournaments,
   BSC_TOURNAMENT_ALIASES,
   isBscCircuitSlug,
 } from "./bsc-tournaments";
@@ -11,14 +10,7 @@ import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants"
 import { bscMatches } from "./bsc-matches";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
-import {
-  getGeneratedTournaments,
-  getGeneratedMatches,
-  getTournamentParticipants,
-  toLiquipediaUrl,
-  isFeaturedTournament,
-  normalizeParticipantList,
-} from "./catalog";
+import { toLiquipediaUrl, normalizeParticipantList } from "./catalog";
 
 export interface EsportsMatch {
   id: string;
@@ -125,35 +117,6 @@ const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
   },
 ];
 
-function cleanLabel(s: string): string {
-  return s.replace(/<!--[\s\S]*?-->/g, "").split("\n")[0].trim();
-}
-
-function fromGenerated(): EsportsTournament[] {
-  return getGeneratedTournaments().map((t) => ({
-    slug: t.slug,
-    name: cleanLabel(t.name),
-    shortName: cleanLabel(t.shortName),
-    region: t.region,
-    prizePool: t.prizePool,
-    teams: t.participantSlugs?.length || t.teams,
-    status: t.status,
-    startDate: t.startDate,
-    endDate: t.endDate,
-    location: t.location,
-    stage: t.stage,
-    liquipediaUrl: toLiquipediaUrl(t.liquipediaPage),
-    tier: t.tier,
-    featured: isFeaturedTournament(t),
-    participantSlugs: t.participantSlugs,
-    logoFile: t.logoFile,
-  }));
-}
-
-function fromGeneratedMatches(): EsportsMatch[] {
-  return getGeneratedMatches().map((m) => ({ ...m }));
-}
-
 function sortEsportsTournaments(list: EsportsTournament[]): EsportsTournament[] {
   const statusOrder: Record<EsportsTournament["status"], number> = { live: 0, upcoming: 1, finished: 2 };
   return [...list].sort((a, b) => {
@@ -164,47 +127,48 @@ function sortEsportsTournaments(list: EsportsTournament[]): EsportsTournament[] 
   });
 }
 
+function mergeBscTournamentDef(t: (typeof bsc2026Tournaments)[number]): EsportsTournament {
+  const wiki = getBscTournamentEnrichment(t.slug);
+  const wikiParticipants = (wiki?.participantSlugs ?? []).filter((s) => Boolean(getTeam(s)));
+  const participants =
+    wikiParticipants.length >= 2 ? wikiParticipants : getBscTournamentParticipantSlugs(t.slug);
+  const liquipediaUrl =
+    wiki?.liquipediaUrl ??
+    getBsc2026LiquipediaUrl(t.slug) ??
+    t.liquipediaUrl ??
+    toLiquipediaUrl("Brawl_Stars_Championship/2026");
+
+  return {
+    ...t,
+    name: wiki?.name ?? t.name,
+    shortName: wiki?.shortName ?? t.shortName,
+    prizePool: wiki?.prizePool ?? t.prizePool,
+    startDate: wiki?.startDate || t.startDate,
+    endDate: wiki?.endDate || t.endDate,
+    location: wiki?.location ?? t.location,
+    status: wiki?.status ?? t.status,
+    teams: wiki?.teamCount ?? (participants.length || t.teams),
+    winnerSlug: wiki?.winnerSlug ?? t.winnerSlug,
+    liquipediaUrl,
+    liquipediaPage: wiki?.liquipediaPage,
+    organizer: wiki?.organizer,
+    venue: wiki?.venue,
+    eventType: wiki?.type,
+    series: wiki?.series,
+    website: wiki?.website,
+    tier: wiki?.liquipediaTier ?? 1,
+    featured: true,
+    logoFile: t.logoFile,
+    participantSlugs: participants.length ? participants : undefined,
+  };
+}
+
+/** Solo torneos BSC 2026 curados (admin) — sin AGG League, ADWT, etc. de Liquipedia */
 function buildTournaments(): EsportsTournament[] {
   const map = new Map<string, EsportsTournament>();
 
-  for (const t of fromGenerated()) {
-    map.set(t.slug, t);
-  }
-
-  for (const t of [...bsc2026Tournaments, ...bsc2026LegacyPsiTournaments]) {
-    const existing = map.get(t.slug);
-    const wiki = getBscTournamentEnrichment(t.slug);
-    const wikiParticipants = (wiki?.participantSlugs ?? []).filter((s) => Boolean(getTeam(s)));
-    const participants =
-      wikiParticipants.length >= 2 ? wikiParticipants : getBscTournamentParticipantSlugs(t.slug);
-    const featured = !t.slug.includes("psi-");
-    const liquipediaUrl =
-      wiki?.liquipediaUrl ?? getBsc2026LiquipediaUrl(t.slug) ?? t.liquipediaUrl ?? toLiquipediaUrl("Brawl_Stars_Championship/2026");
-    const status = wiki?.status ?? t.status;
-    map.set(t.slug, {
-      ...existing,
-      ...t,
-      name: wiki?.name ? wiki.name : t.name,
-      shortName: wiki?.shortName ? wiki.shortName : t.shortName,
-      prizePool: wiki?.prizePool ?? t.prizePool,
-      startDate: wiki?.startDate || t.startDate,
-      endDate: wiki?.endDate || t.endDate,
-      location: wiki?.location ?? t.location,
-      status,
-      teams: wiki?.teamCount ?? (participants.length || t.teams),
-      winnerSlug: wiki?.winnerSlug ?? t.winnerSlug,
-      liquipediaUrl,
-      liquipediaPage: wiki?.liquipediaPage,
-      organizer: wiki?.organizer,
-      venue: wiki?.venue,
-      eventType: wiki?.type,
-      series: wiki?.series,
-      website: wiki?.website,
-      tier: wiki?.liquipediaTier ?? existing?.tier ?? 1,
-      featured: featured ? true : (existing?.featured ?? false),
-      logoFile: existing?.logoFile ?? t.logoFile,
-      participantSlugs: participants.length ? participants : existing?.participantSlugs,
-    });
+  for (const t of bsc2026Tournaments) {
+    map.set(t.slug, mergeBscTournamentDef(t));
   }
 
   for (const [alias, canonical] of Object.entries(BSC_TOURNAMENT_ALIASES)) {
@@ -229,8 +193,6 @@ function buildTournaments(): EsportsTournament[] {
 export const tournaments: EsportsTournament[] = buildTournaments();
 
 function buildMatches(): EsportsMatch[] {
-  const generated = fromGeneratedMatches();
-  const genIds = new Set(generated.map((m) => m.id));
   const manual2026 = [
     {
       id: "chal-es-sk-1",
@@ -260,16 +222,17 @@ function buildMatches(): EsportsMatch[] {
     },
   ];
   const bscIds = new Set(bscMatches.map((m) => m.id));
-  const wikiMatches = getBscEnrichedMatches().filter((m) => !genIds.has(m.id) && !bscIds.has(m.id));
-  const extra = [...bscMatches, ...wikiMatches, ...manual2026].filter((m) => !genIds.has(m.id));
-  return [...generated, ...extra].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  const wikiMatches = getBscEnrichedMatches().filter((m) => !bscIds.has(m.id) && isBscCircuitSlug(m.tournamentSlug));
+  const extra = [...bscMatches, ...wikiMatches, ...manual2026].filter((m) =>
+    isBscCircuitSlug(m.tournamentSlug),
   );
+  return extra.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 
 export const matches: EsportsMatch[] = buildMatches();
 
 export function getTournament(slug: string): EsportsTournament | undefined {
+  if (!isBscCircuitSlug(slug)) return undefined;
   return tournaments.find((t) => t.slug === slug);
 }
 
@@ -355,7 +318,7 @@ export function getTournamentParticipantSlugs(slug: string): string[] {
   ];
   if (fromMatches.length >= 2) return normalizeParticipantList(fromMatches);
 
-  return getTournamentParticipants(slug);
+  return [];
 }
 
 export function getRecentMatches(limit = 8): EsportsMatch[] {

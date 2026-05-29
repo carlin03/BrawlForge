@@ -11,6 +11,7 @@ import { MAX_DISPLAY_TIER } from "../app-config";
 import { isTeam2026, TEAMS_2026_SLUGS } from "./teams-2026";
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 import { BSC_2026_CLUB_COUNT } from "./bsc-2026-circuit-teams";
+import { BSC_PUBLIC_TOURNAMENT_COUNT } from "./bsc-tournaments";
 
 export type { GeneratedTeam, GeneratedPlayer, GeneratedTournament };
 
@@ -90,9 +91,8 @@ export const CATALOG_STATS = {
   teams: BSC_2026_CLUB_COUNT,
   players: (players2026 as GeneratedPlayer[]).length,
   playersActive: (players2026 as GeneratedPlayer[]).filter((p) => isActiveStatus(p.status)).length,
-  tournaments2026:
-    (tournaments2026 as GeneratedTournament2026[]).length ||
-    (allTournaments as GeneratedTournament[]).filter((t) => is2026(t.startDate) || is2026(t.endDate)).length,
+  /** Solo circuito BSC curado en la web (no miles de torneos Liquipedia) */
+  tournaments2026: BSC_PUBLIC_TOURNAMENT_COUNT,
 };
 
 /** Todos los equipos Liquipedia (201+) */

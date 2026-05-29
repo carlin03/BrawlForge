@@ -385,6 +385,9 @@ export function isBscCircuitSlug(slug: string): boolean {
   return BSC_CIRCUIT_SLUGS.has(slug);
 }
 
+/** Torneos públicos BSC (mismo conjunto que admin/logos, sin Liquipedia genérico) */
+export const BSC_PUBLIC_TOURNAMENT_COUNT = BSC_CIRCUIT_SLUGS.size;
+
 /** Torneos BSC visibles en admin (logos) y listados principales — sin abreviaturas PSI/RTBC */
 export function getAdminBscTournaments(): EsportsTournament[] {
   return bsc2026Tournaments

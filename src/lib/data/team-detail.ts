@@ -1,5 +1,5 @@
-import { getGeneratedTournaments, isTierBPlus } from "./catalog";
-import { getTournament, matches, type EsportsTournament } from "./matches";
+import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
+import { getBscCircuitTournaments, getTournament, matches, type EsportsTournament } from "./matches";
 import { getTeam } from "./teams";
 
 export interface TeamTournamentRow {
@@ -64,13 +64,12 @@ export function getTeamLiquipediaUrl(slug: string): string | null {
 }
 
 export function getTeamRegisteredTournaments(teamSlug: string, limit = 8): EsportsTournament[] {
-  const out: EsportsTournament[] = [];
-  for (const gt of getGeneratedTournaments()) {
-    const participants = gt.participantSlugs ?? [];
-    if (participants.some((p) => p === teamSlug || p.replace(/^team/, "") === teamSlug)) {
-      const t = getTournament(gt.slug);
-      if (t && (isTierBPlus(t) || t.featured)) out.push(t);
-    }
-  }
-  return out.slice(0, limit);
+  return getBscCircuitTournaments()
+    .filter((t) => {
+      const slugs = t.participantSlugs?.length
+        ? t.participantSlugs
+        : getBscTournamentParticipantSlugs(t.slug);
+      return slugs.includes(teamSlug);
+    })
+    .slice(0, limit);
 }

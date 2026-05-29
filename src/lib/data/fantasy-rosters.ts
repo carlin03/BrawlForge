@@ -1,9 +1,9 @@
 import { bscMatches } from "./bsc-matches";
 import { bsc2026Tournaments, BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
 import { BSC_FANTASY_PARTICIPANTS } from "./bsc-fantasy-participants";
+import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
 import { getMatchesByTournament, getTournament } from "./matches";
 import {
-  getTournamentParticipants,
   resolveTournamentSlug,
   TEAM_ROSTER_ALIASES,
   normalizeParticipantList,
@@ -98,7 +98,9 @@ function teamsFromAllMatches(tournamentSlug: string): string[] {
 function teamsFromParticipants(tournamentSlug: string): string[] {
   const resolved = resolveTournamentSlug(tournamentSlug);
   const t = getTournament(resolved) ?? getTournament(tournamentSlug);
-  const raw = t?.participantSlugs?.length ? t.participantSlugs : getTournamentParticipants(resolved);
+  const raw = t?.participantSlugs?.length
+    ? t.participantSlugs
+    : getBscTournamentParticipantSlugs(resolved);
   return normalizeParticipantList(raw).filter((s) => isFantasyTeamSlug(s));
 }
 
