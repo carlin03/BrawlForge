@@ -31,6 +31,7 @@ export function AdminCardFUTPreview({
   mode?: "team" | "player";
 }) {
   const wm = theme.watermark ?? parseCardWatermark(null);
+  const hasCustomWm = Boolean(wm.image_url?.trim());
   const themeStyle = teamCardThemeVars(cardThemeToTeamTheme(theme), "md", wm) as React.CSSProperties;
   const label = mode === "player" ? (playerIgn ?? "Jugador") : (teamTag ?? teamName);
 
@@ -38,7 +39,7 @@ export function AdminCardFUTPreview({
     <div className="bf-admin-fut-preview-wrap">
       <p className="bf-studio-hint bf-admin-fut-preview-label">Vista previa de la carta</p>
       <div
-        className="bf-card bf-card-fut bf-card-premium has-team-theme bf-card-md bf-admin-fut-preview"
+        className={`bf-card bf-card-fut bf-card-premium has-team-theme bf-card-md bf-admin-fut-preview${hasCustomWm ? " has-custom-watermark" : ""}`}
         style={themeStyle}
         data-team={teamSlug}
       >

@@ -1,17 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Save } from "lucide-react";
+import { Save, Users } from "lucide-react";
 import { AdminCardFUTPreview } from "./AdminCardFUTPreview";
+import { CardWatermarkImage } from "@/components/ui/CardWatermarkImage";
 import { StudioColorPicker, StudioPanel, StudioToast } from "./studio-ui";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import {
+  getCardWatermarkFromMeta,
+  mergeCardWatermarks,
+  mergeCardWatermarkIntoMeta,
   parseCardThemeMeta,
   parseCardWatermark,
   type CardThemeMeta,
+  getWatermarkScale,
   type CardWatermarkConfig,
-  type CardWatermarkSize,
+  watermarkForPlayerSync,
 } from "@/lib/data/card-theme-meta";
 import { getTeamCardTheme } from "@/lib/data/team-card-theme";
 import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
@@ -31,12 +36,18 @@ function themeFromTeam(slug: string, meta: Record<string, unknown>): CardThemeMe
   return base;
 }
 
+function watermarkFromPlayerMeta(meta: Record<string, unknown>): CardWatermarkConfig {
+  return getCardWatermarkFromMeta(meta) ?? parseCardWatermark(null);
+}
+
 function WatermarkFields({
   watermark,
   onChange,
+  hint,
 }: {
   watermark: CardWatermarkConfig;
   onChange: (wm: CardWatermarkConfig) => void;
+  hint?: string;
 }) {
   const patch = (partial: Partial<CardWatermarkConfig>) =>
     onChange({ ...parseCardWatermark(watermark), ...partial });
@@ -45,7 +56,8 @@ function WatermarkFields({
     <div className="bf-studio-watermark-block">
       <h4 className="bf-studio-watermark-title">Marca de fondo (entre fondo y foto)</h4>
       <p className="bf-studio-hint">
-        PNG o escudo del club. Se ve detrás de la foto del jugador para identificar el equipo.
+        {hint ??
+          "PNG o escudo del club. Se ve detrás de la foto del jugador para identificar el equipo."}
       </p>
       <label className="bf-studio-field">
         <span className="bf-studio-field-label">Imagen PNG / URL</span>
@@ -69,33 +81,58 @@ function WatermarkFields({
           className="bf-studio-range"
         />
       </label>
-      <div className="bf-studio-field">
-        <span className="bf-studio-field-label">Tamaño de la marca</span>
-        <div className="bf-studio-watermark-sizes">
-          {(["sm", "md", "lg"] as CardWatermarkSize[]).map((s) => (
-            <button
-              key={s}
-              type="button"
-              className={(watermark.size ?? "md") === s ? "is-on" : ""}
-              onClick={() => patch({ size: s })}
-            >
-              {s === "sm" ? "Pequeño" : s === "lg" ? "Grande" : "Mediano"}
-            </button>
-          ))}
-        </div>
-      </div>
+      <label className="bf-studio-field">
+        <span className="bf-studio-field-label">
+          Tamaño: <strong>{getWatermarkScale(watermark)}%</strong>
+        </span>
+        <input
+          type="range"
+          min={50}
+          max={200}
+          value={getWatermarkScale(watermark)}
+          onChange={(e) => patch({ scale: Number(e.target.value) })}
+          className="bf-studio-range"
+        />
+      </label>
       {watermark.image_url?.trim() && (
-        <label className="bf-studio-check">
-          <input
-            type="checkbox"
-            checked={watermark.show_team_logo_behind !== false}
-            onChange={(e) => patch({ show_team_logo_behind: e.target.checked })}
-          />
-          <span>Mostrar logo del club muy suave detrás del PNG</span>
-        </label>
+        <>
+          <div className="bf-studio-wm-url-preview">
+            <span className="bf-studio-field-label">Carga de imagen</span>
+            <CardWatermarkImage
+              url={watermark.image_url}
+              className="bf-studio-wm-url-preview-img"
+            />
+          </div>
+          <label className="bf-studio-check">
+            <input
+              type="checkbox"
+              checked={watermark.show_team_logo_behind !== false}
+              onChange={(e) => patch({ show_team_logo_behind: e.target.checked })}
+            />
+            <span>Mostrar logo del club muy suave detrás del PNG</span>
+          </label>
+        </>
       )}
     </div>
   );
+}
+
+async function upsertPlayerRow(row: AdminPlayerCatalogRow, patch: { photo_url?: string; meta: Record<string, unknown> }) {
+  const res = await fetch("/api/admin/catalog", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      entity: "player",
+      row: {
+        ...row,
+        photo_url: patch.photo_url ?? row.photo_url,
+        meta: patch.meta,
+        profile: patch.meta,
+      },
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Error al guardar jugador");
 }
 
 export function StudioCardsVisualPanel() {
@@ -111,6 +148,12 @@ export function StudioCardsVisualPanel() {
   });
   const [photoUrl, setPhotoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
+  const [playerWatermark, setPlayerWatermark] = useState<CardWatermarkConfig>(parseCardWatermark(null));
+  const [applyToRoster, setApplyToRoster] = useState(true);
+  const [syncRosterImage, setSyncRosterImage] = useState(true);
+  const [syncRosterStyle, setSyncRosterStyle] = useState(true);
+  const [copyClubImage, setCopyClubImage] = useState(true);
+  const [copyClubStyle, setCopyClubStyle] = useState(true);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
   const [msgError, setMsgError] = useState(false);
@@ -152,6 +195,7 @@ export function StudioCardsVisualPanel() {
       if (row) {
         setPhotoUrl(row.photo_url ?? "");
         setBannerUrl(String(row.meta?.banner_url ?? ""));
+        setPlayerWatermark(watermarkFromPlayerMeta(row.meta));
         if (row.team_slug) {
           const club = teams.find((t) => t.slug === row.team_slug);
           if (club) setTheme(themeFromTeam(club.slug, club.meta));
@@ -184,14 +228,27 @@ export function StudioCardsVisualPanel() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Error");
-        setMsg(data.message || "Colores y marca del club guardados");
+
+        let rosterMsg = "";
+        if (applyToRoster && theme.watermark) {
+          const roster = players.filter((p) => p.team_slug === selectedSlug);
+          let synced = 0;
+          for (const p of roster) {
+            const pMeta = mergeCardWatermarkIntoMeta({ ...p.meta }, theme.watermark);
+            await upsertPlayerRow(p, { meta: pMeta });
+            synced += 1;
+          }
+          rosterMsg = synced > 0 ? ` · ${synced} jugadores con la misma marca` : "";
+        }
+        setMsg((data.message || "Colores y marca del club guardados") + rosterMsg);
       } else {
         const row = players.find((p) => p.slug === selectedSlug);
         if (!row) return;
-        const meta = {
+        let meta: Record<string, unknown> = {
           ...row.meta,
           banner_url: bannerUrl || undefined,
         };
+        meta = mergeCardWatermarkIntoMeta(meta, playerWatermark);
         const res = await fetch("/api/admin/catalog", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -207,7 +264,7 @@ export function StudioCardsVisualPanel() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Error");
-        setMsg(data.message || "Foto y banner del jugador guardados");
+        setMsg(data.message || "Foto, marca y banner del jugador guardados");
       }
       await load();
     } catch (e) {
@@ -226,6 +283,24 @@ export function StudioCardsVisualPanel() {
       : playerRow?.team_slug
         ? teams.find((t) => t.slug === playerRow.team_slug)
         : undefined;
+
+  const rosterCount =
+    mode === "teams" && teamRow
+      ? players.filter((p) => p.team_slug === teamRow.slug).length
+      : 0;
+
+  const previewTheme: CardThemeMeta | null =
+    mode === "teams" && teamRow
+      ? theme
+      : previewClub
+        ? {
+            ...themeFromTeam(previewClub.slug, previewClub.meta),
+            watermark: mergeCardWatermarks(
+              themeFromTeam(previewClub.slug, previewClub.meta).watermark,
+              playerWatermark,
+            ),
+          }
+        : null;
 
   return (
     <StudioPanel
@@ -326,6 +401,40 @@ export function StudioCardsVisualPanel() {
                 watermark={theme.watermark ?? parseCardWatermark(null)}
                 onChange={(watermark) => setTheme({ ...theme, watermark })}
               />
+              <div className="bf-studio-sync-roster-block">
+                <label className="bf-studio-check bf-studio-sync-roster">
+                  <input
+                    type="checkbox"
+                    checked={applyToRoster}
+                    onChange={(e) => setApplyToRoster(e.target.checked)}
+                  />
+                  <span>
+                    <Users size={14} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
+                    Al guardar, aplicar a toda la plantilla
+                    {rosterCount > 0 ? ` (${rosterCount} jugadores)` : ""}
+                  </span>
+                </label>
+                {applyToRoster && (
+                  <div className="bf-studio-sync-roster-sub">
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={syncRosterStyle}
+                        onChange={(e) => setSyncRosterStyle(e.target.checked)}
+                      />
+                      <span>Copiar opacidad y tamaño (los colores ya son del club)</span>
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={syncRosterImage}
+                        onChange={(e) => setSyncRosterImage(e.target.checked)}
+                      />
+                      <span>Copiar URL de la imagen PNG a cada jugador</span>
+                    </label>
+                  </div>
+                )}
+              </div>
               <label className="bf-studio-field">
                 <span className="bf-studio-field-label">Banner de ficha (URL)</span>
                 <input
@@ -337,10 +446,10 @@ export function StudioCardsVisualPanel() {
               </label>
             </>
           )}
-          {mode === "players" && playerRow && previewClub && (
+          {mode === "players" && playerRow && previewClub && previewTheme && (
             <>
               <AdminCardFUTPreview
-                theme={theme}
+                theme={previewTheme}
                 teamSlug={previewClub.slug}
                 teamName={previewClub.name}
                 teamTag={previewClub.tag}
@@ -350,8 +459,52 @@ export function StudioCardsVisualPanel() {
                 mode="player"
               />
               <p className="bf-studio-hint">
-                Fondo y marca del club ({previewClub.slug}). Colores y PNG en la pestaña Equipos.
+                Fondo y colores del club ({previewClub.slug}). Edítalos en la pestaña Equipos.
               </p>
+              <WatermarkFields
+                watermark={playerWatermark}
+                onChange={setPlayerWatermark}
+                hint="Marca solo para este jugador. Si dejas la URL vacía, usa la del club. La opacidad y el tamaño sí se pueden ajustar aquí."
+              />
+              {previewClub && (
+                <div className="bf-studio-copy-club-block">
+                  <p className="bf-studio-field-label">Copiar desde el club</p>
+                  <label className="bf-studio-check">
+                    <input
+                      type="checkbox"
+                      checked={copyClubStyle}
+                      onChange={(e) => setCopyClubStyle(e.target.checked)}
+                    />
+                    <span>Opacidad y tamaño del club</span>
+                  </label>
+                  <label className="bf-studio-check">
+                    <input
+                      type="checkbox"
+                      checked={copyClubImage}
+                      onChange={(e) => setCopyClubImage(e.target.checked)}
+                    />
+                    <span>Imagen PNG del club</span>
+                  </label>
+                  <button
+                    type="button"
+                    className="bp-btn bp-btn-ghost"
+                    disabled={!copyClubImage && !copyClubStyle}
+                    onClick={() => {
+                      const clubWm = themeFromTeam(previewClub.slug, previewClub.meta).watermark;
+                      const fromClub = watermarkForPlayerSync(clubWm, {
+                        includeImage: copyClubImage,
+                        includeStyle: copyClubStyle,
+                      });
+                      const base = parseCardWatermark(playerWatermark);
+                      const merged = { ...base, ...fromClub };
+                      if (!copyClubImage) merged.image_url = undefined;
+                      setPlayerWatermark(parseCardWatermark(merged));
+                    }}
+                  >
+                    Aplicar selección del club
+                  </button>
+                </div>
+              )}
               <label className="bf-studio-field">
                 <span className="bf-studio-field-label">Foto del jugador (URL)</span>
                 <input

@@ -316,6 +316,7 @@ export function RosterDataTable({
             <th>OVR</th>
             <th>WR</th>
             <th>Partidos</th>
+            <th>MVPs</th>
             <th>Forma</th>
             {showPrice && <th>Valor</th>}
           </tr>

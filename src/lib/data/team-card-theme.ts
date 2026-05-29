@@ -1,5 +1,9 @@
 import type { Region } from "../types";
-import { parseCardWatermark, type CardWatermarkConfig } from "./card-theme-meta";
+import {
+  getCardWatermarkFromMeta as getWatermarkFromMeta,
+  parseCardWatermark,
+  type CardWatermarkConfig,
+} from "./card-theme-meta";
 
 export interface TeamCardTheme {
   primary: string;
@@ -132,11 +136,7 @@ const WATERMARK_OPACITY: Record<string, string> = {
 export function getCardWatermarkFromMeta(
   catalogMeta?: Record<string, unknown> | null,
 ): CardWatermarkConfig {
-  const t = catalogMeta?.card_theme;
-  if (t && typeof t === "object" && (t as Record<string, unknown>).watermark) {
-    return parseCardWatermark((t as Record<string, unknown>).watermark);
-  }
-  return parseCardWatermark(null);
+  return getWatermarkFromMeta(catalogMeta) ?? parseCardWatermark(null);
 }
 
 export function teamCardThemeVars(

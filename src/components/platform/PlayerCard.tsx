@@ -4,7 +4,7 @@ import Link from "next/link";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { CardWatermarkLayer } from "@/components/ui/CardWatermarkLayer";
-import { parseCardThemeMeta } from "@/lib/data/card-theme-meta";
+import { getCardWatermarkFromMeta, mergeCardWatermarks } from "@/lib/data/card-theme-meta";
 import { CountryFlag } from "@/components/ui/CountryFlag";
 import { getTeam, teamName, getFantasyRole } from "@/lib/data";
 import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
@@ -61,8 +61,13 @@ export function PlayerCard({
 
   const club = getTeam(displayClub);
   const catalogMeta = resolvedClub?.meta as Record<string, unknown> | undefined;
+  const playerMeta = p.meta as Record<string, unknown> | undefined;
   const theme = getTeamCardTheme(displayClub, club?.region ?? p.region, catalogMeta);
-  const watermark = parseCardThemeMeta(catalogMeta)?.watermark;
+  const watermark = mergeCardWatermarks(
+    getCardWatermarkFromMeta(catalogMeta),
+    getCardWatermarkFromMeta(playerMeta),
+  );
+  const hasCustomWatermark = Boolean(watermark?.image_url?.trim());
   const tier = getCardTier(p.rating, p.fantasyPoints);
   const role = getFantasyRole(playerSlug).toUpperCase();
   const ovr = p.fantasyPoints;
@@ -188,6 +193,7 @@ export function PlayerCard({
     "bf-card-fut",
     "bf-card-premium",
     "has-team-theme",
+    hasCustomWatermark ? "has-custom-watermark" : "",
     `bf-card-${tier}`,
     `bf-card-${size}`,
     isCaptain ? "is-captain" : "",
@@ -236,8 +242,12 @@ export function PlayerCardMini({
   const tier = getCardTier(p.rating, p.fantasyPoints);
   const club = getTeam(displayClub);
   const catalogMeta = resolvedClub?.meta as Record<string, unknown> | undefined;
+  const playerMeta = p.meta as Record<string, unknown> | undefined;
   const theme = getTeamCardTheme(displayClub, club?.region ?? p.region, catalogMeta);
-  const watermark = parseCardThemeMeta(catalogMeta)?.watermark;
+  const watermark = mergeCardWatermarks(
+    getCardWatermarkFromMeta(catalogMeta),
+    getCardWatermarkFromMeta(playerMeta),
+  );
   return (
     <Link
       href={`/players/${playerSlug}`}

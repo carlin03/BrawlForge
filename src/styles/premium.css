@@ -296,7 +296,10 @@
 }
 
 /* ── FUT cards — glow border (sin máscara que rompe layout) ── */
-.bf-card-fut.bf-card-premium > * {
+.bf-card-fut.bf-card-premium > .bf-card-team-bg {
+  z-index: 0;
+}
+.bf-card-fut.bf-card-premium > *:not(.bf-card-team-bg) {
   position: relative;
   z-index: 1;
 }
@@ -513,6 +516,10 @@
 .bf-fantasy-premium .bf-fantasy-market .bf-card-watermark-img {
   opacity: var(--bf-card-watermark-opacity, 0.5);
   mix-blend-mode: screen;
+}
+.bf-fantasy-premium .bf-fantasy-market .bf-card-watermark-custom {
+  mix-blend-mode: normal !important;
+  opacity: var(--bf-card-watermark-img-opacity, var(--bf-card-watermark-opacity, 0.5)) !important;
 }
 .bf-fantasy-premium .bf-fantasy-roster .bf-card-mini.has-team-theme {
   background: linear-gradient(

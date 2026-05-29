@@ -8,16 +8,13 @@ import {
   Video,
   Globe,
 } from "lucide-react";
-import { PlayerCard } from "@/components/platform/PlayerCard";
 import { RosterDataTable } from "@/components/platform/EntityPremiumUI";
 import { ProfileSectionHeader } from "@/components/platform/EntityProfileLayout";
-import { RegionBadge } from "@/components/ui/RegionBadge";
 import { CountryFlag } from "@/components/ui/CountryFlag";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { tierBadgeClass, tierLabel } from "@/lib/data";
-import { getPlayerPrice, DEFAULT_FANTASY_TOURNAMENT } from "@/lib/data/fantasy";
 import { getFantasyRole } from "@/lib/data/fantasy-meta";
 import type { RosterPlayerStats } from "@/lib/data/entity-stats";
 import type { TeamTournamentRow } from "@/lib/data/team-detail";
@@ -25,8 +22,8 @@ import {
   TOUR_FILTER_OPTIONS,
   filterTournamentHistory,
   estimateMvpCount,
-  type FeaturedPlayerHighlight,
   type TeamAdvancedStats,
+  hasMeaningfulOrgContent,
   type TeamOrgInfo,
   type TeamSponsorEntry,
   type TourFilterId,
@@ -64,41 +61,35 @@ export function RosterViewSwitch({
   );
 }
 
-function RosterStatCard({ row, teamSlug, teamName }: { row: RosterPlayerStats; teamSlug: string; teamName: string }) {
+function RosterStatCard({ row, teamSlug }: { row: RosterPlayerStats; teamSlug: string }) {
   const mvps = estimateMvpCount(row);
   const role = getFantasyRole(row.slug);
-  const price = getPlayerPrice(row.slug, DEFAULT_FANTASY_TOURNAMENT);
 
   return (
     <Link href={`/players/${row.slug}`} className={`bf-roster-stat-card ${row.star ? "is-star" : ""}`}>
       <div className="bf-roster-stat-card-photo">
-        <PlayerPhoto playerSlug={row.slug} teamSlug={teamSlug} size={72} />
+        <PlayerPhoto playerSlug={row.slug} teamSlug={teamSlug} size={48} />
         {row.country && (
           <span className="bf-roster-stat-card-flag">
-            <CountryFlag country={row.country} size={18} />
+            <CountryFlag country={row.country} size={16} />
           </span>
         )}
       </div>
-      <div className="bf-roster-stat-card-body">
-        <div className="bf-roster-stat-card-head">
-          <strong>{row.ign}</strong>
-          <span className="bf-roster-stat-card-ovr">{row.fantasyPoints}</span>
-        </div>
-        <span className="bf-roster-stat-card-team">{teamName}</span>
-        <div className="bf-roster-stat-card-metrics">
-          <span><em>Rating</em>{row.rating.toFixed(2)}</span>
-          <span><em>Rol</em>{role}</span>
-          <span><em>WR</em>{row.winRate}%</span>
-          <span><em>Partidos</em>{row.matchesPlayed}</span>
-          <span><em>MVPs</em>{mvps}</span>
-          <span><em>Valor</em>{price.toFixed(1)}M</span>
-        </div>
+      <div className="bf-roster-stat-card-name">
+        <strong>{row.ign}</strong>
         {(row.isCaptain || row.star) && (
-          <div className="bf-roster-stat-card-badges">
+          <span className="bf-roster-stat-card-badges">
             {row.isCaptain && <span className="bp-chip bp-chip-red">CAP</span>}
-            {row.star && <span className="bp-chip bp-chip-gold">Estrella</span>}
-          </div>
+            {row.star && <span className="bp-chip bp-chip-gold">★</span>}
+          </span>
         )}
+      </div>
+      <div className="bf-roster-stat-card-metrics">
+        <span><em>Rating</em><b>{row.rating.toFixed(2)}</b></span>
+        <span><em>OVR</em><b className="is-gold">{row.fantasyPoints}</b></span>
+        <span><em>Rol</em><b>{role}</b></span>
+        <span><em>WR</em><b>{row.winRate}%</b></span>
+        <span><em>MVPs</em><b>{mvps}</b></span>
       </div>
     </Link>
   );
@@ -107,13 +98,11 @@ function RosterStatCard({ row, teamSlug, teamName }: { row: RosterPlayerStats; t
 export function RosterPanel({
   rows,
   teamSlug,
-  teamName,
-  showPrice,
-  defaultMode = "cards",
+  defaultMode = "table",
 }: {
   rows: RosterPlayerStats[];
   teamSlug: string;
-  teamName: string;
+  teamName?: string;
   showPrice?: boolean;
   defaultMode?: RosterViewMode;
 }) {
@@ -127,66 +116,23 @@ export function RosterPanel({
       {mode === "cards" ? (
         <div className="bf-roster-cards-grid">
           {rows.map((r) => (
-            <RosterStatCard key={r.slug} row={r} teamSlug={teamSlug} teamName={teamName} />
+            <RosterStatCard key={r.slug} row={r} teamSlug={teamSlug} />
           ))}
         </div>
       ) : (
-        <RosterDataTable rows={rows} teamSlug={teamSlug} showPrice={showPrice} />
+        <RosterDataTable rows={rows} teamSlug={teamSlug} showPrice={false} />
       )}
     </>
   );
 }
 
-export function FeaturedPlayersSection({
-  highlights,
-  teamSlug,
-}: {
-  highlights: FeaturedPlayerHighlight[];
-  teamSlug: string;
-}) {
-  if (!highlights.length) return null;
-  return (
-    <section className="bf-dense-block bf-featured-players">
-      <ProfileSectionHeader title="Jugadores destacados" />
-      <div className="bf-featured-players-grid">
-        {highlights.map((h) => (
-          <div key={h.id} className="bf-featured-player-card">
-            <span className="bf-featured-player-badge">{h.badge}</span>
-            <p className="bf-featured-player-title">{h.title}</p>
-            <PlayerCard
-              playerSlug={h.player.slug}
-              clubSlug={teamSlug}
-              size="md"
-              showExtended
-              href={`/players/${h.player.slug}`}
-            />
-            <div className="bf-featured-player-stats">
-              <span>OVR {h.player.fantasyPoints}</span>
-              <span>WR {h.player.winRate}%</span>
-              <span>Rating {h.player.rating.toFixed(2)}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
+/** Bloque lateral de organización; solo si hay datos más allá del infobox */
 export function TeamOrganizationBlock({ org }: { org: TeamOrgInfo }) {
-  const rows: { label: string; value: React.ReactNode }[] = [
-    org.founded ? { label: "Fundación", value: org.founded } : { label: "Fundación", value: "—" },
-    { label: "País", value: org.country ? <CountryFlag country={org.country} size={16} /> : "—" },
-    { label: "Región", value: <RegionBadge region={org.region} /> },
-    org.peakRank
-      ? { label: "Mejor ranking", value: `#${org.peakRank}` }
-      : { label: "Mejor ranking", value: "—" },
-    org.coach ? { label: "Coach", value: org.coach } : { label: "Coach", value: "—" },
-    org.manager ? { label: "Manager", value: org.manager } : { label: "Manager", value: "—" },
-    org.ceo ? { label: "CEO", value: org.ceo } : { label: "CEO", value: "—" },
-    { label: "Premios totales", value: org.totalPrizes },
-    { label: "Torneos ganados", value: org.tournamentsWon },
-    { label: "Títulos", value: org.titles },
-  ];
+  if (!hasMeaningfulOrgContent(org)) return null;
+
+  const rows: { label: string; value: React.ReactNode }[] = [];
+  if (org.manager) rows.push({ label: "Manager", value: org.manager });
+  if (org.ceo) rows.push({ label: "CEO", value: org.ceo });
 
   return (
     <section className="bf-ep-side-block bf-team-org-block">

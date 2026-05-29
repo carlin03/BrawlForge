@@ -47,15 +47,12 @@ import {
   WinRateVisual,
 } from "@/components/platform/EntityPremiumUI";
 import {
-  FeaturedPlayersSection,
   RosterPanel,
   TeamAdvancedStatsSection,
-  TeamOrganizationBlock,
   TeamPartnersSection,
   TournamentHistoryFiltered,
 } from "@/components/platform/TeamPageSections";
 import {
-  getFeaturedPlayers,
   getTeamAdvancedStats,
   getTeamOrgInfo,
   parseTeamSponsors,
@@ -138,7 +135,6 @@ export function TeamDetailView({ slug }: { slug: string }) {
         : null;
   const coach = team.coach ?? (typeof team.meta?.coach === "string" ? team.meta.coach : null);
   const sponsors = parseTeamSponsors(profile.sponsors ?? (team.meta as Record<string, unknown>)?.sponsors);
-  const featuredPlayers = getFeaturedPlayers(rosterStats);
   const orgInfo = getTeamOrgInfo(team, founded, coach, profile);
   const advancedStats = getTeamAdvancedStats(slug, team.region);
   const tagline = profile.tagline || team.circuitSummary || `${team.tag} · ${team.country}`;
@@ -146,27 +142,34 @@ export function TeamDetailView({ slug }: { slug: string }) {
     team.description ||
     `${team.name} compite en el circuito Brawl Stars Championship (${team.region}). Plantilla de ${rosterPlayers.length} jugadores, ${winRate}% win rate y ranking ${team.rank ? `#${team.rank}` : "sin clasificar"} global.`;
 
-  const infoboxRows: InfoboxRow[] = [
-    { label: "Región", value: <RegionBadge region={team.region} />, highlight: true },
-    { label: "País", value: team.country || "—" },
-    { label: "Ranking global", value: team.rank ? `#${team.rank}` : "—", highlight: true },
-    {
-      label: "Ranking regional",
-      value: computed.regionalRank ? `#${computed.regionalRank}` : "—",
-    },
-    { label: "Premios", value: `$${(team.earnings / 1000).toFixed(0)}K` },
-    { label: "Win rate", value: `${winRate}%`, highlight: true },
-    { label: "Victorias", value: String(computed.wins) },
-    { label: "Derrotas", value: String(computed.losses) },
-    { label: "Títulos", value: String(team.achievements.length) },
-    { label: "Plantilla", value: `${rosterPlayers.length} jugadores` },
-    { label: "Rating medio", value: avgRating },
-    { label: "OVR fantasy", value: String(computed.avgFantasyPts) },
-    founded ? { label: "Fundación", value: founded } : { label: "Fundación", value: "—" },
-    coach ? { label: "Entrenador", value: coach } : { label: "Entrenador", value: "—" },
-    { label: "Torneos", value: String(computed.tournamentsPlayed) },
-    { label: "Partidos", value: String(computed.totalMatches) },
-  ];
+  const infoboxRows: InfoboxRow[] = (
+    [
+      { label: "Región", value: <RegionBadge region={team.region} />, highlight: true },
+      { label: "País", value: team.country || "—" },
+      { label: "Ranking global", value: team.rank ? `#${team.rank}` : "—", highlight: true },
+      {
+        label: "Ranking regional",
+        value: computed.regionalRank ? `#${computed.regionalRank}` : "—",
+      },
+      { label: "Premios", value: `$${(team.earnings / 1000).toFixed(0)}K` },
+      { label: "Win rate", value: `${winRate}%`, highlight: true },
+      { label: "Victorias", value: String(computed.wins) },
+      { label: "Derrotas", value: String(computed.losses) },
+      { label: "Títulos", value: String(team.achievements.length) },
+      { label: "Plantilla", value: `${rosterPlayers.length} jugadores` },
+      { label: "Rating medio", value: avgRating },
+      { label: "OVR fantasy", value: String(computed.avgFantasyPts) },
+      founded ? { label: "Fundación", value: founded } : { label: "Fundación", value: "—" },
+      coach ? { label: "Entrenador", value: coach } : { label: "Entrenador", value: "—" },
+      profile.manager ? { label: "Manager", value: profile.manager } : null,
+      profile.ceo ? { label: "CEO", value: profile.ceo } : null,
+      orgInfo.peakRank
+        ? { label: "Mejor ranking", value: `#${orgInfo.peakRank}`, highlight: true }
+        : null,
+      { label: "Torneos", value: String(computed.tournamentsPlayed) },
+      { label: "Partidos", value: String(computed.totalMatches) },
+    ] as (InfoboxRow | null)[]
+  ).filter((r): r is InfoboxRow => r != null);
 
   const tabs = [
     { id: "overview" as const, label: "Resumen" },
@@ -282,12 +285,7 @@ export function TeamDetailView({ slug }: { slug: string }) {
         <div className="bf-stat-card-premium"><b>{computed.avgFantasyPts}</b><span>OVR</span></div>
       </div>
 
-      <DetailTabs
-        tabs={tabs}
-        active={tab}
-        onChange={(id) => setTab(id as TabId)}
-        logo={<TeamLogo slug={slug} name={team.name} size={64} glow />}
-      />
+      <DetailTabs tabs={tabs} active={tab} onChange={(id) => setTab(id as TabId)} />
 
       {tab === "overview" && (
         <div className="bf-detail-panel bf-ep-overview bf-dense-stack">
@@ -306,10 +304,6 @@ export function TeamDetailView({ slug }: { slug: string }) {
             avgOvr={computed.avgFantasyPts}
           />
 
-          <MatchResultsStrip matches={recentMatches} perspectiveTeam={slug} />
-
-          <FeaturedPlayersSection highlights={featuredPlayers} teamSlug={slug} />
-
           <section className="bf-dense-block">
             <ProfileSectionHeader
               title="Plantilla actual"
@@ -319,8 +313,10 @@ export function TeamDetailView({ slug }: { slug: string }) {
                 </button>
               }
             />
-            <RosterPanel rows={rosterStats} teamSlug={slug} teamName={team.name} showPrice defaultMode="cards" />
+            <RosterPanel rows={rosterStats} teamSlug={slug} defaultMode="table" />
           </section>
+
+          <MatchResultsStrip matches={recentMatches} perspectiveTeam={slug} />
 
           <div className="bf-detail-panel bf-ep-overview">
             <ProfileArticleShell
@@ -360,18 +356,12 @@ export function TeamDetailView({ slug }: { slug: string }) {
                       <ProfileAchievementsShowcase achievements={team.achievements.slice(0, 4)} compact />
                     </section>
                   )}
+                  <TeamPartnersSection sponsors={sponsors} social={social} teamName={team.name} />
                 </>
               }
-              aside={
-                <>
-                  <ProfileInfobox title={team.name} subtitle={team.tag} rows={infoboxRows} />
-                  <TeamOrganizationBlock org={orgInfo} />
-                </>
-              }
+              aside={<ProfileInfobox title={team.name} subtitle={team.tag} rows={infoboxRows} />}
             />
           </div>
-
-          <TeamPartnersSection sponsors={sponsors} social={social} teamName={team.name} />
         </div>
       )}
 
@@ -398,7 +388,7 @@ export function TeamDetailView({ slug }: { slug: string }) {
             <MetricCell label="OVR medio" value={computed.avgFantasyPts} />
             <MetricCell label="Win rate club" value={`${winRate}%`} barPct={winRate} />
           </MetricsGrid>
-          <RosterPanel rows={rosterStats} teamSlug={slug} teamName={team.name} showPrice defaultMode="cards" />
+          <RosterPanel rows={rosterStats} teamSlug={slug} defaultMode="table" />
         </section>
       )}
 

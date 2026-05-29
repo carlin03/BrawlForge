@@ -52,6 +52,11 @@ export type TeamOrgInfo = {
   titles: number;
 };
 
+/** Campos de organización que no están ya en el infobox principal */
+export function hasMeaningfulOrgContent(org: TeamOrgInfo): boolean {
+  return Boolean(org.manager?.trim() || org.ceo?.trim());
+}
+
 export function getTeamOrgInfo(
   team: {
     country: string;

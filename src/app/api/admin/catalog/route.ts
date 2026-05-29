@@ -10,7 +10,12 @@ import {
 } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 import { mergeAdminTournamentRows } from "@/lib/data/admin-tournaments";
-import { mergeCardThemeIntoMeta, parseCardThemeMeta } from "@/lib/data/card-theme-meta";
+import {
+  mergeCardThemeIntoMeta,
+  mergeCardWatermarkIntoMeta,
+  parseCardThemeMeta,
+  parseCardWatermark,
+} from "@/lib/data/card-theme-meta";
 import {
   buildPlayerMeta,
   buildTeamMeta,
@@ -201,10 +206,13 @@ export async function POST(request: Request) {
     const photoUrl = row.photo_url ? String(row.photo_url).trim() : null;
     const mains = profile.main_brawlers ?? [];
     const cardTheme = parseCardThemeMeta(rawMeta);
-    const meta = mergeCardThemeIntoMeta(
+    let meta = mergeCardThemeIntoMeta(
       { ...rawMeta, ...buildPlayerMeta(profile, photoUrl) },
       cardTheme,
     );
+    if (rawMeta.card_watermark) {
+      meta = mergeCardWatermarkIntoMeta(meta, parseCardWatermark(rawMeta.card_watermark));
+    }
     const payload = {
       slug: String(row.slug),
       ign: String(row.ign ?? p?.ign ?? row.slug),
