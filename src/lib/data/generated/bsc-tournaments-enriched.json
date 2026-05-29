@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-05-29T09:51:07.409Z",
+  "syncedAt": "2026-05-29T09:56:59.922Z",
   "source": "liquipedia.net/brawlstars",
   "tournaments": {
     "bsc-2026-brawl-cup": {
@@ -38,7 +38,7 @@
       ],
       "matchCount": 19,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:02.844Z"
+      "syncedAt": "2026-05-29T09:56:55.341Z"
     },
     "bsc-2026-rtbc-sa-west": {
       "slug": "bsc-2026-rtbc-sa-west",
@@ -73,7 +73,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:02.845Z"
+      "syncedAt": "2026-05-29T09:56:55.342Z"
     },
     "bsc-2026-challengers-dach": {
       "slug": "bsc-2026-challengers-dach",
@@ -170,7 +170,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:02.845Z"
+      "syncedAt": "2026-05-29T09:56:55.343Z"
     },
     "bsc-2026-psi-ea": {
       "slug": "bsc-2026-psi-ea",
@@ -201,7 +201,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:02.846Z"
+      "syncedAt": "2026-05-29T09:56:55.343Z"
     },
     "bsc-2026-psi-na": {
       "slug": "bsc-2026-psi-na",
@@ -233,7 +233,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:02.846Z"
+      "syncedAt": "2026-05-29T09:56:55.344Z"
     },
     "bsc-2026-psi-sa": {
       "slug": "bsc-2026-psi-sa",
@@ -264,7 +264,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:02.846Z"
+      "syncedAt": "2026-05-29T09:56:55.344Z"
     },
     "bsc-2026-cn-february-mf": {
       "slug": "bsc-2026-cn-february-mf",
@@ -328,7 +328,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.139Z"
+      "syncedAt": "2026-05-29T09:56:57.645Z"
     },
     "bsc-2026-february-ea-mf": {
       "slug": "bsc-2026-february-ea-mf",
@@ -367,7 +367,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.140Z"
+      "syncedAt": "2026-05-29T09:56:57.646Z"
     },
     "bsc-2026-february-na-mf": {
       "slug": "bsc-2026-february-na-mf",
@@ -406,7 +406,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.141Z"
+      "syncedAt": "2026-05-29T09:56:57.646Z"
     },
     "bsc-2026-february-sa-mf": {
       "slug": "bsc-2026-february-sa-mf",
@@ -445,7 +445,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.142Z"
+      "syncedAt": "2026-05-29T09:56:57.647Z"
     },
     "bsc-2026-march-emea-mf": {
       "slug": "bsc-2026-march-emea-mf",
@@ -484,7 +484,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.142Z"
+      "syncedAt": "2026-05-29T09:56:57.647Z"
     },
     "bsc-2026-march-ea-mf": {
       "slug": "bsc-2026-march-ea-mf",
@@ -523,7 +523,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.143Z"
+      "syncedAt": "2026-05-29T09:56:57.648Z"
     },
     "bsc-2026-march-na-mf": {
       "slug": "bsc-2026-march-na-mf",
@@ -563,7 +563,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.143Z"
+      "syncedAt": "2026-05-29T09:56:57.649Z"
     },
     "bsc-2026-march-sa-mf": {
       "slug": "bsc-2026-march-sa-mf",
@@ -602,7 +602,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.144Z"
+      "syncedAt": "2026-05-29T09:56:57.650Z"
     },
     "bsc-2026-april-emea-mf": {
       "slug": "bsc-2026-april-emea-mf",
@@ -633,7 +633,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.145Z"
+      "syncedAt": "2026-05-29T09:56:57.651Z"
     },
     "bsc-2026-april-ea-mf": {
       "slug": "bsc-2026-april-ea-mf",
@@ -664,7 +664,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.145Z"
+      "syncedAt": "2026-05-29T09:56:57.651Z"
     },
     "bsc-2026-april-na-mf": {
       "slug": "bsc-2026-april-na-mf",
@@ -695,7 +695,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.146Z"
+      "syncedAt": "2026-05-29T09:56:57.652Z"
     },
     "bsc-2026-april-sa-mf": {
       "slug": "bsc-2026-april-sa-mf",
@@ -726,7 +726,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.146Z"
+      "syncedAt": "2026-05-29T09:56:57.652Z"
     },
     "bsc-2026-may-emea-mf": {
       "slug": "bsc-2026-may-emea-mf",
@@ -748,7 +748,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.146Z"
+      "syncedAt": "2026-05-29T09:56:57.652Z"
     },
     "bsc-2026-may-ea-mf": {
       "slug": "bsc-2026-may-ea-mf",
@@ -770,7 +770,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.147Z"
+      "syncedAt": "2026-05-29T09:56:57.652Z"
     },
     "bsc-2026-may-na-mf": {
       "slug": "bsc-2026-may-na-mf",
@@ -792,7 +792,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.147Z"
+      "syncedAt": "2026-05-29T09:56:57.653Z"
     },
     "bsc-2026-may-sa-mf": {
       "slug": "bsc-2026-may-sa-mf",
@@ -814,7 +814,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.147Z"
+      "syncedAt": "2026-05-29T09:56:57.653Z"
     },
     "bsc-2026-june-emea-mf": {
       "slug": "bsc-2026-june-emea-mf",
@@ -836,7 +836,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:05.147Z"
+      "syncedAt": "2026-05-29T09:56:57.653Z"
     },
     "bsc-2026-june-ea-mf": {
       "slug": "bsc-2026-june-ea-mf",
@@ -858,7 +858,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:07.407Z"
+      "syncedAt": "2026-05-29T09:56:59.920Z"
     },
     "bsc-2026-june-na-mf": {
       "slug": "bsc-2026-june-na-mf",
@@ -880,7 +880,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:07.407Z"
+      "syncedAt": "2026-05-29T09:56:59.920Z"
     },
     "bsc-2026-june-sa-mf": {
       "slug": "bsc-2026-june-sa-mf",
@@ -902,7 +902,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:07.407Z"
+      "syncedAt": "2026-05-29T09:56:59.921Z"
     },
     "bsc-2026-july-emea-mf": {
       "slug": "bsc-2026-july-emea-mf",
@@ -924,7 +924,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:07.408Z"
+      "syncedAt": "2026-05-29T09:56:59.921Z"
     },
     "bsc-2026-july-ea-mf": {
       "slug": "bsc-2026-july-ea-mf",
@@ -946,7 +946,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:07.408Z"
+      "syncedAt": "2026-05-29T09:56:59.921Z"
     },
     "bsc-2026-july-na-mf": {
       "slug": "bsc-2026-july-na-mf",
@@ -968,7 +968,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:07.408Z"
+      "syncedAt": "2026-05-29T09:56:59.921Z"
     },
     "bsc-2026-july-sa-mf": {
       "slug": "bsc-2026-july-sa-mf",
@@ -990,7 +990,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:51:07.408Z"
+      "syncedAt": "2026-05-29T09:56:59.922Z"
     },
     "bsc-2026-august-emea-mf": {
       "slug": "bsc-2026-august-emea-mf",
