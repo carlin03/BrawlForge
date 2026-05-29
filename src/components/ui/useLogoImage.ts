@@ -75,6 +75,7 @@ export function useLogoImage(sources: string[]) {
         usesRemoteLogoPipeline() ||
         currentSrc?.startsWith("/logos/") ||
         currentSrc?.startsWith("/api/image") ||
+        currentSrc?.startsWith("/api/logos/team/") ||
         currentSrc?.includes("taiyoro-prod-media.s3.amazonaws.com") ||
         currentSrc?.includes("cdn.royaleapi.com") ||
         currentSrc?.includes("upload.wikimedia.org") ||

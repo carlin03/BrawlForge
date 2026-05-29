@@ -239,7 +239,7 @@ export function HomeView() {
         <div className="fu-marquee-track">
           {marqueeClubs.map((t, i) => (
             <Link key={`${t.slug}-${i}`} href={`/teams/${t.slug}`} className="fu-marquee-item" title={t.name}>
-              <TeamLogo slug={t.slug} name={t.name} size={56} glow={false} />
+              <TeamLogo slug={t.slug} name={t.name} tag={t.tag} size={56} glow={false} priority />
               <span className="fu-marquee-tag">{t.tag}</span>
             </Link>
           ))}

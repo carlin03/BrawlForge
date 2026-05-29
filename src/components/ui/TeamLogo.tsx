@@ -16,6 +16,7 @@ import { LogoFrame } from "@/components/ui/LogoFrame";
 import { useLogoImage } from "@/components/ui/useLogoImage";
 import { isRemoteLogoSrc } from "@/lib/data/logo-client-url";
 import { usesRemoteLogoPipeline } from "@/lib/data/local-logos";
+import { teamLogoProxyUrl } from "@/lib/team-logo-server";
 
 export const LOGO_SIZES = {
   xs: 20,
@@ -35,9 +36,19 @@ interface TeamLogoProps {
   size?: number | LogoSize;
   className?: string;
   glow?: boolean;
+  /** Marquee / above-the-fold: carga inmediata */
+  priority?: boolean;
 }
 
-export function TeamLogo({ slug, name, tag, size = "md", className = "", glow = true }: TeamLogoProps) {
+export function TeamLogo({
+  slug,
+  name,
+  tag,
+  size = "md",
+  className = "",
+  glow = true,
+  priority = false,
+}: TeamLogoProps) {
   const pixelSize = typeof size === "number" ? size : LOGO_SIZES[size];
   const valid = isValidLogoSlug(slug);
   const resolvedSlug = valid ? resolveTeamLogoSlug(slug) : slug;
@@ -47,6 +58,10 @@ export function TeamLogo({ slug, name, tag, size = "md", className = "", glow = 
   const cacheVersion = logoConfig.cacheVersion ?? LOGO_CACHE_VERSION;
   const sources = useMemo(() => {
     if (!valid) return [];
+    if (usesRemoteLogoPipeline()) {
+      const canonical = resolveTeamLogoSlug(slug);
+      return [teamLogoProxyUrl(canonical, cacheVersion)];
+    }
     const base = buildTeamLogoSources(slug, logoConfig);
     return prependTeamLogoSources(base, [catalogTeam?.logoUrl], cacheVersion);
   }, [slug, valid, cacheVersion, logoConfig.cacheVersion, logoConfig.overrides, catalogTeam?.logoUrl]);
@@ -79,7 +94,8 @@ export function TeamLogo({ slug, name, tag, size = "md", className = "", glow = 
         alt={displayName}
         width={pixelSize - 6}
         height={pixelSize - 6}
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         onLoad={onLoad}
         onError={onError}

@@ -55,8 +55,8 @@ table { border-spacing: 0; }
   filter: brightness(0) invert(1);
 }
 .logo-remote.logo-treatment-strip-white .logo-img {
-  mix-blend-mode: screen;
-  filter: contrast(1.08) saturate(1.05);
+  /* Fondo blanco CDN: oscurecer blancos sin mix-blend (falla en algunos GPUs) */
+  filter: contrast(1.15) brightness(1.05);
 }
 .logo-remote.logo-treatment-border-only .logo-img {
   filter: none;
