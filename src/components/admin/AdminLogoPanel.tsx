@@ -84,6 +84,21 @@ export function AdminLogoPanel() {
     setLoading(false);
   }
 
+  async function fillSuggestedUrl() {
+    setLoading(true);
+    setMsg("");
+    try {
+      const res = await fetch(`/api/admin/logos/suggest?slug=${encodeURIComponent(selected)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Sin URL");
+      setImageUrl(data.url);
+      setMsg(`URL automática: ${data.url}`);
+    } catch (err) {
+      setMsg(err instanceof Error ? err.message : "Error");
+    }
+    setLoading(false);
+  }
+
   async function runScript(script: string) {
     setLoading(true);
     setMsg("");
@@ -106,11 +121,16 @@ export function AdminLogoPanel() {
   return (
     <div className="bf-admin-logos">
       <div className="bf-admin-logo-help" role="note">
-        <strong>Logos en Vercel</strong>
+        <strong>Logos en producción (Vercel)</strong>
         <p>
-          No hay carpeta <code>public/logos/</code> en producción. Pega aquí la URL directa de cada PNG/JPG
-          (Imgur, CDN, tu hosting) o usa los logos automáticos del circuito. En tu PC puedes generar PNG locales con{" "}
-          <code>npm run logos:fetch</code>.
+          No se sube <code>public/logos/</code> al deploy (límite de tamaño). La web usa URLs CDN del archivo{" "}
+          <code>logo-overrides.json</code> y Taiyoro / RoyaleAPI / Wikimedia. Si un club no se ve bien, pulsa{" "}
+          <strong>Usar URL automática</strong> o pega un enlace directo PNG/JPG y guarda (va a Supabase Storage).
+        </p>
+        <p style={{ marginTop: 8, fontSize: 12, color: "var(--bp-dim)" }}>
+          En tu PC: <code>npm run logos:overrides:remote</code> regenera overrides ·{" "}
+          <code>npm run logos:2026</code> descarga PNG locales ·{" "}
+          <code>npm run supabase:apply:storage</code> crea el bucket si falla el guardado.
         </p>
       </div>
       <div className="bf-admin-logos-tabs">
@@ -231,7 +251,7 @@ export function AdminLogoPanel() {
               label="URL de imagen nueva"
               hint={
                 kind === "team"
-                  ? "Obligatorio: enlace directo a PNG/JPG del logo del club"
+                  ? "Opcional si ya se ve bien; si no, URL directa PNG/JPG o automática"
                   : "URL del logo del torneo"
               }
             >
@@ -239,9 +259,20 @@ export function AdminLogoPanel() {
                 type="url"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://…"
+                placeholder="https://cdn.royaleapi.com/… o Taiyoro / Wikimedia"
               />
             </AdminField>
+            {kind === "team" && (
+              <button
+                type="button"
+                className="bp-btn bp-btn-ghost"
+                disabled={loading}
+                style={{ width: "100%", marginBottom: 10 }}
+                onClick={() => void fillSuggestedUrl()}
+              >
+                Usar URL automática (CDN)
+              </button>
+            )}
             <button type="submit" className="bp-btn bp-btn-gold" disabled={loading} style={{ width: "100%" }}>
               <Image size={16} /> Aplicar cambio a este logo
             </button>

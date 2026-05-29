@@ -1,4 +1,191 @@
 {
-  "teams": {},
-  "tournaments": {}
+  "teams": {
+    "abc-ea-team": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/abc-ea-team.png",
+      "treatment": "strip-white"
+    },
+    "ace-xero": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/ace-xero.png",
+      "treatment": "strip-white"
+    },
+    "alguem-segura": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/alguem-segura.png",
+      "treatment": "strip-white"
+    },
+    "bc-gaming-sa": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/u8Z4JbKnQW.png",
+      "treatment": "strip-white"
+    },
+    "big": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/big.png",
+      "treatment": "strip-white"
+    },
+    "big-talents": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/big-talents.png",
+      "treatment": "strip-white"
+    },
+    "bounty-hunters-esports": {
+      "url": "https://dcdn-us.mitiendanube.com/stores/005/755/160/themes/common/logo-1895168094-1754889616-f340878967c6d193071f9fd53738e9821754889616.png",
+      "treatment": "strip-white"
+    },
+    "cmm": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/cmm.png",
+      "treatment": "strip-white"
+    },
+    "crazy-raccoon": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team_organization/4NwyTXWhWS.png",
+      "treatment": "strip-white"
+    },
+    "effort-result": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/effort-result.png",
+      "treatment": "strip-white"
+    },
+    "elevate": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/elevate.png",
+      "treatment": "strip-white"
+    },
+    "enosis-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/enosis-esports.png",
+      "treatment": "strip-white"
+    },
+    "eternal-esports": {
+      "url": "https://www.eternalesports.org/assets/img/logo/logo-transperent.png",
+      "treatment": "strip-white"
+    },
+    "feasible-gaming": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/feasible-gaming.png",
+      "treatment": "strip-white"
+    },
+    "frenzy-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/frenzy-esports.png",
+      "treatment": "strip-white"
+    },
+    "fut-esports": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/m4AcgzfdWQ.png",
+      "treatment": "strip-white"
+    },
+    "fut-esports-academy": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/fut-esports-academy.png",
+      "treatment": "strip-white"
+    },
+    "hmble": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/uN3jHnHEYY.png",
+      "treatment": "strip-white"
+    },
+    "kaioperro": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/kaioperro.png",
+      "treatment": "strip-white"
+    },
+    "kds-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/kds-esports.png",
+      "treatment": "strip-white"
+    },
+    "kebap": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/kebap.png",
+      "treatment": "strip-white"
+    },
+    "level-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/level-esports.png",
+      "treatment": "strip-white"
+    },
+    "loud": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/efvQ7HtKlM.png",
+      "treatment": "strip-white"
+    },
+    "metizport": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/metizport.png",
+      "treatment": "strip-white"
+    },
+    "natus-vincere": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/xbw8pWdpeS.png",
+      "treatment": "strip-white"
+    },
+    "new-heights-gaming": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/new-heights-gaming.png",
+      "treatment": "strip-white"
+    },
+    "novo-esports": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/ewynTmwYpE.png",
+      "treatment": "strip-white"
+    },
+    "olimpo-squad": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/olimpo-squad.png",
+      "treatment": "strip-white"
+    },
+    "only-realm": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/only-realm.png",
+      "treatment": "strip-white"
+    },
+    "reject": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/bpx0uvINKC.png",
+      "treatment": "strip-white"
+    },
+    "revenant-xspark": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/8T5KJjYJSw.png",
+      "treatment": "strip-white"
+    },
+    "rival-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/rival-esports.png",
+      "treatment": "strip-white"
+    },
+    "sk-gaming": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/hloCRfPjiy.png",
+      "treatment": "strip-white"
+    },
+    "skcalalas": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/fsHB1i6l6W.png",
+      "treatment": "strip-white"
+    },
+    "skcalalas-ea": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/skcalalas-ea.png",
+      "treatment": "strip-white"
+    },
+    "stmn-esports": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/10h5rsV5Gs.png",
+      "treatment": "strip-white"
+    },
+    "team-elektros": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/team-elektros.png",
+      "treatment": "strip-white"
+    },
+    "team-heretics": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/przYZPwpu2.png",
+      "treatment": "strip-white"
+    },
+    "totem-esports": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/HftcHjuA5m.png",
+      "treatment": "strip-white"
+    },
+    "toxic-lotus": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/5xKkvo8Z4w.png",
+      "treatment": "strip-white"
+    },
+    "tribe-gaming": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/VMrF2FfWfe.png",
+      "treatment": "strip-white"
+    },
+    "vatic-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/vatic-esports.png",
+      "treatment": "strip-white"
+    },
+    "wwl-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/wwl-esports.png",
+      "treatment": "strip-white"
+    },
+    "zeta-division": {
+      "url": "https://taiyoro-prod-media.s3.amazonaws.com/team/RXUjjDElIc.png",
+      "treatment": "strip-white"
+    },
+    "zoos-esports": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/zoos-esports.png",
+      "treatment": "strip-white"
+    },
+    "zurita-gang": {
+      "url": "https://cdn.royaleapi.com/static/img/team/logo/zurita-gang.png",
+      "treatment": "strip-white"
+    }
+  },
+  "tournaments": {},
+  "generatedAt": "2026-05-29T05:25:32.073Z",
+  "note": "CDN remoto para Vercel — regenerar con npm run logos:overrides:remote"
 }

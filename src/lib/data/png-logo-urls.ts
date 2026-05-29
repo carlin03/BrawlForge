@@ -27,6 +27,7 @@ import { isTeam2026 } from "./teams-2026";
 
 import { buildUiRemoteLogoChain, isLiquipediaImageUrl, wikimediaFromLogoFile } from "./team-logo-urls";
 import { toClientLogoSources } from "./logo-client-url";
+import { canServeLocalLogoFiles } from "./local-logos";
 
 
 
@@ -119,11 +120,6 @@ export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): str
   const liquipediaOverrides: string[] = [];
 
   for (const s of candidates) {
-    if (hasProcessedTeamLogo(s)) {
-      const local = localTeamUrl(s, cacheVersion);
-      if (!sources.includes(local)) sources.unshift(local);
-    }
-
     const overrideUrl = getTeamOverride(s, cfg);
     if (overrideUrl) {
       const busted = bust(overrideUrl, cacheVersion);
@@ -131,6 +127,15 @@ export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): str
         if (!liquipediaOverrides.includes(busted)) liquipediaOverrides.push(busted);
       } else if (!sources.includes(busted)) {
         sources.unshift(busted);
+      }
+    }
+  }
+
+  if (canServeLocalLogoFiles()) {
+    for (const s of candidates) {
+      if (hasProcessedTeamLogo(s)) {
+        const local = localTeamUrl(s, cacheVersion);
+        if (!sources.includes(local)) sources.push(local);
       }
     }
   }
@@ -176,11 +181,6 @@ export function buildTournamentLogoSources(slug: string, cfg?: LogoRuntimeConfig
     const sources = [bust(BSC_LOCAL_LOGO, cacheVersion), BSC_DEFAULT_LOGO];
 
     for (const s of [resolved, slug]) {
-      if (hasVerifiedLocalTournamentLogo(s)) {
-        const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
-        if (!sources.includes(local)) sources.unshift(local);
-      }
-
       const overrideUrl = getTournamentOverride(s, cfg);
       if (!overrideUrl) continue;
       const busted = bust(overrideUrl, cacheVersion);
@@ -188,6 +188,15 @@ export function buildTournamentLogoSources(slug: string, cfg?: LogoRuntimeConfig
         if (!sources.includes(busted)) sources.push(busted);
       } else if (!sources.includes(busted)) {
         sources.unshift(busted);
+      }
+    }
+
+    if (canServeLocalLogoFiles()) {
+      for (const s of [resolved, slug]) {
+        if (hasVerifiedLocalTournamentLogo(s)) {
+          const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
+          if (!sources.includes(local)) sources.push(local);
+        }
       }
     }
 
@@ -214,7 +223,7 @@ export function buildTournamentLogoSources(slug: string, cfg?: LogoRuntimeConfig
       }
     }
 
-    if (hasVerifiedLocalTournamentLogo(s)) {
+    if (canServeLocalLogoFiles() && hasVerifiedLocalTournamentLogo(s)) {
       const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
       if (!sources.includes(local)) sources.push(local);
     }
