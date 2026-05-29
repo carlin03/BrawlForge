@@ -91,6 +91,4 @@ export function getBsc2026TeamEntry(slug: string): Bsc2026TeamEntry | undefined 
   return BSC_2026_TEAM_REGISTRY[slug.trim().toLowerCase()];
 }
 
-export function getBsc2026TeamRegion(slug: string): Region | undefined {
-  return getBsc2026TeamEntry(slug)?.region;
-}
+export { getBsc2026TeamRegion } from "./bsc-2026-team-regions";

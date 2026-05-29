@@ -4,6 +4,7 @@ import { getTeams2026 } from "./teams-2026";
 import { BSC_2026_ACTIVE_TEAM_SLUGS, isBsc2026ActiveTeam } from "./bsc-2026-active-teams";
 import { BSC_2026_ROSTERS } from "./bsc-2026-rosters";
 import { BSC_2026_TEAM_REGISTRY, getBsc2026TeamEntry } from "./bsc-2026-team-registry";
+import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import { CURATED_TEAMS } from "./teams-curated";
 
 export interface EsportsTeam {
@@ -31,11 +32,12 @@ function buildTeamFromSlug(slug: string): EsportsTeam | null {
 
   if (!from2026 && !reg) return null;
 
+  const bscRegion = getBsc2026TeamRegion(slug);
   const base: EsportsTeam = {
     slug,
     name: reg?.name ?? from2026!.name,
     tag: reg?.tag ?? from2026!.tag,
-    region: reg?.region ?? from2026!.region,
+    region: bscRegion ?? reg?.region ?? from2026!.region,
     country: reg?.country ?? from2026!.country,
     earnings: from2026?.earnings ?? 0,
     rank: from2026?.rank ?? 99,
@@ -48,10 +50,19 @@ function buildTeamFromSlug(slug: string): EsportsTeam | null {
 
   const merged = curated ? { ...base, ...curated, liquipediaUrl: base.liquipediaUrl } : base;
   if (roster2026?.length) {
-    return { ...merged, region: reg?.region ?? merged.region, roster: roster2026 };
+    return { ...merged, region: bscRegion ?? reg?.region ?? merged.region, roster: roster2026 };
   }
   if (reg) {
-    return { ...merged, name: reg.name, tag: reg.tag, region: reg.region, roster: reg.roster };
+    return {
+      ...merged,
+      name: reg.name,
+      tag: reg.tag,
+      region: bscRegion ?? reg.region,
+      roster: reg.roster,
+    };
+  }
+  if (bscRegion) {
+    return { ...merged, region: bscRegion };
   }
   return merged;
 }

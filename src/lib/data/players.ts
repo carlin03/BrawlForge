@@ -102,12 +102,13 @@ function pushPlayer(
   const status = normalizeStatus(raw.status);
   if (status === "retired" && !rosterTeamForPlayer(slug)) return;
   seen.add(slug);
+  const teamRegion = getTeam(teamSlug)?.region;
   const base: EsportsPlayer = {
     slug,
     ign: raw.ign.replace(/<!--[\s\S]*?-->/g, "").split("\n")[0].trim(),
     realName: raw.realName,
     teamSlug,
-    region: raw.region,
+    region: teamRegion ?? raw.region,
     role: raw.role || "Player",
     status,
     liquipediaUrl: toLiquipediaUrl(raw.liquipediaPage),
