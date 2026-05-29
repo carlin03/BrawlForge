@@ -28,6 +28,25 @@
   justify-content: space-between;
   gap: 16px;
 }
+
+.bf-home-quick-bar {
+  padding: 14px 20px;
+}
+
+.bf-home-quick-bar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bp-muted);
+}
+
+.bf-home-quick-bar .bf-home-site-header-title,
+.bf-home-quick-bar .bf-home-site-header-brand {
+  display: none;
+}
 .bf-home-site-header-brand {
   display: flex;
   align-items: center;

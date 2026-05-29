@@ -12,6 +12,7 @@
 @import "./teams-showcase.css";
 @import "./rankings-hub.css";
 @import "./news-hub.css";
+@import "./profile-nav-premium.css";
 
 @keyframes bf-float {
   0%, 100% { transform: translateY(0) scale(1); }

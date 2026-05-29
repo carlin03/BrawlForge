@@ -13,6 +13,7 @@ import {
 import type { User } from "@supabase/supabase-js";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { isOwnerEmail, resolveIsAdmin } from "@/lib/admin-access";
+import { getCachedFavoriteTeamSlug, setCachedFavoriteTeamSlug } from "@/lib/profile-club-storage";
 
 export interface PlayerProfile {
   id: string;
@@ -111,7 +112,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      const mapped = mapProfile(u, data as Record<string, unknown> | null);
+      let mapped = mapProfile(u, data as Record<string, unknown> | null);
+      const cachedClub = getCachedFavoriteTeamSlug();
+      if (!mapped.favoriteTeamSlug && cachedClub) {
+        mapped = { ...mapped, favoriteTeamSlug: cachedClub };
+      }
+      if (mapped.favoriteTeamSlug) {
+        setCachedFavoriteTeamSlug(mapped.favoriteTeamSlug);
+      }
       setProfile(mapped);
 
       if (!mapped.isAdmin && isOwnerEmail(u.email) && !adminClaimAttempted.current) {

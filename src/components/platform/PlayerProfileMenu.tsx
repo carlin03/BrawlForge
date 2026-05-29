@@ -4,11 +4,12 @@ import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, ChevronRight, LogOut, Shield, Sparkles, Target, Trophy, User } from "lucide-react";
+import { ChevronDown, ChevronRight, LogOut, Shield, Sparkles, Target, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
 import { buildFallbackProfile } from "@/lib/profile-fallback";
-import { TeamLogo } from "@/components/ui/TeamLogo";
+import { teamName } from "@/lib/data";
+import { ProfileClubAvatar } from "@/components/platform/ProfileClubAvatar";
 
 export function PlayerProfileMenu() {
   const { profile, user, signOut, loading, isAdmin } = useAuth();
@@ -93,6 +94,8 @@ export function PlayerProfileMenu() {
   const predictPts = game?.predictPoints ?? effectiveProfile?.predictPoints ?? 0;
   const initials = (effectiveProfile?.ign || display).slice(0, 2).toUpperCase();
   const onProfilePage = pathname === "/profile";
+  const teamSlug = effectiveProfile?.favoriteTeamSlug ?? null;
+  const clubName = teamSlug ? teamName(teamSlug) : null;
 
   const dropdown = open ? (
     <div
@@ -114,15 +117,18 @@ export function PlayerProfileMenu() {
 
       <div className="bf-profile-dropdown-head">
         <div className="bf-profile-dropdown-head-row">
-          {effectiveProfile?.favoriteTeamSlug ? (
-            <TeamLogo slug={effectiveProfile.favoriteTeamSlug} size={40} glow={false} />
-          ) : (
-            <span className="bf-profile-dropdown-avatar">{initials}</span>
-          )}
+          <ProfileClubAvatar
+            teamSlug={teamSlug}
+            avatarUrl={effectiveProfile?.avatarUrl}
+            initials={initials}
+            size={48}
+            title={clubName ?? display}
+          />
           <div>
             <strong>{effectiveProfile?.ign ?? display}</strong>
             <span>{display}</span>
-            {user.email && <span className="bf-profile-hint">{user.email}</span>}
+            {clubName && <span className="bf-profile-hint">{clubName}</span>}
+            {user.email && !clubName && <span className="bf-profile-hint">{user.email}</span>}
           </div>
         </div>
       </div>
@@ -176,24 +182,27 @@ export function PlayerProfileMenu() {
     <div className="bf-profile-menu">
       <div
         ref={triggerRef}
-        className={`bf-profile-trigger-wrap ${open ? "is-open" : ""} ${onProfilePage ? "is-on-page" : ""}`}
+        className={`bf-profile-trigger-wrap bf-profile-trigger-premium ${open ? "is-open" : ""} ${onProfilePage ? "is-on-page" : ""}`}
       >
+        {teamSlug && <span className="bf-profile-nav-pro-badge">Pro</span>}
         <button
           type="button"
           className="bf-profile-trigger-main"
           onClick={goProfile}
           aria-label="Ver tu perfil"
-          title="Ver tu perfil"
+          title={clubName ? `Perfil · ${clubName}` : "Ver tu perfil"}
         >
-          {effectiveProfile?.favoriteTeamSlug ? (
-            <TeamLogo slug={effectiveProfile.favoriteTeamSlug} size={32} glow={false} />
-          ) : (
-            <span className="bf-profile-avatar">{initials}</span>
-          )}
+          <ProfileClubAvatar
+            teamSlug={teamSlug}
+            avatarUrl={effectiveProfile?.avatarUrl}
+            initials={initials}
+            size={36}
+          />
           <span className="bf-profile-trigger-text">
             <span className="bf-profile-ign">{effectiveProfile?.ign ?? display}</span>
             <span className="bf-profile-sub">
-              {fantasyPts} pts · #{fantasyRank ? fantasyRank.toLocaleString() : "—"}
+              {clubName ? clubName : `${fantasyPts} pts`}
+              {fantasyRank ? ` · #${fantasyRank.toLocaleString()}` : ""}
             </span>
           </span>
         </button>

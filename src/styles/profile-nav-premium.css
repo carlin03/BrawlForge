@@ -1,0 +1,194 @@
+/* Perfil nav — avatar circular premium (localhost = Vercel) */
+
+.bf-profile-club-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.bf-profile-club-avatar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 200, 46, 0.55);
+  background: linear-gradient(145deg, rgba(30, 24, 10, 0.9), rgba(8, 10, 16, 0.95));
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(0, 0, 0, 0.45),
+    inset 0 0 12px rgba(255, 200, 46, 0.08);
+  z-index: 0;
+}
+
+.bf-profile-club-avatar.has-team .bf-profile-club-avatar-ring {
+  border-color: rgba(255, 215, 0, 0.75);
+  box-shadow:
+    0 0 0 1px rgba(255, 200, 46, 0.2),
+    0 0 20px rgba(255, 200, 46, 0.25),
+    0 4px 18px rgba(0, 0, 0, 0.5);
+}
+
+.bf-profile-club-avatar-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 200, 46, 0.2), transparent 70%);
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bf-profile-club-avatar-logo,
+.bf-profile-club-avatar-initials,
+.bf-profile-club-avatar-img {
+  position: relative;
+  z-index: 1;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.bf-profile-club-avatar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88%;
+  height: 88%;
+}
+
+.bf-profile-club-avatar-logo .bf-logo-frame {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+}
+
+.bf-profile-club-avatar-logo .bf-logo-frame-ring {
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.bf-profile-club-avatar-logo .bf-logo-frame-inner {
+  width: 92%;
+  height: 92%;
+}
+
+.bf-profile-club-avatar-logo .logo-img {
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.bf-profile-club-avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88%;
+  height: 88%;
+  border-radius: 50%;
+  font-family: var(--bp-head);
+  font-size: calc(var(--bf-club-avatar-size, 40px) * 0.32);
+  font-weight: 900;
+  color: var(--bp-gold);
+  background: radial-gradient(circle at 30% 20%, rgba(255, 200, 46, 0.3), rgba(0, 0, 0, 0.55));
+}
+
+.bf-profile-club-avatar-img {
+  width: 88%;
+  height: 88%;
+  object-fit: cover;
+}
+
+/* Nav trigger premium */
+.bf-profile-trigger-wrap.bf-profile-trigger-premium {
+  border: 1px solid rgba(255, 200, 46, 0.4);
+  background: linear-gradient(135deg, rgba(22, 18, 8, 0.95), rgba(8, 10, 18, 0.92));
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(255, 200, 46, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.bf-profile-trigger-wrap.bf-profile-trigger-premium:hover,
+.bf-profile-trigger-wrap.bf-profile-trigger-premium.is-open {
+  border-color: rgba(255, 215, 0, 0.65);
+  box-shadow:
+    0 0 0 2px rgba(255, 200, 46, 0.15),
+    0 8px 28px rgba(0, 0, 0, 0.45),
+    0 0 32px rgba(255, 200, 46, 0.12);
+}
+
+.bf-profile-trigger-premium .bf-profile-trigger-main {
+  padding: 5px 10px 5px 5px;
+  gap: 10px;
+}
+
+.bf-profile-trigger-premium .bf-profile-ign {
+  max-width: 120px;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.bf-profile-trigger-premium .bf-profile-sub {
+  font-size: 10px;
+  color: var(--bp-gold);
+  opacity: 0.85;
+}
+
+.bf-profile-nav-pro-badge {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a1200;
+  background: linear-gradient(135deg, #ffe566, #e8a820);
+  box-shadow: 0 2px 8px rgba(255, 200, 46, 0.45);
+  z-index: 2;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.bf-profile-menu {
+  position: relative;
+}
+
+.bf-profile-dropdown-head-row .bf-profile-club-avatar {
+  --bf-club-avatar-size: 48px;
+}
+
+.bf-profile-avatar-wrap .bf-profile-club-avatar {
+  --bf-club-avatar-size: 88px;
+  width: 88px;
+  height: 88px;
+}
+
+.bf-profile-avatar-wrap .bf-profile-club-avatar-ring {
+  border-width: 3px;
+}
+
+.bf-profile-dropdown-avatar.bf-profile-club-avatar,
+.bf-profile-dropdown-head-row .bf-profile-dropdown-avatar {
+  /* legacy initials box replaced */
+}
+
+@media (max-width: 1100px) {
+  .bf-profile-trigger-premium .bf-profile-trigger-text {
+    display: none;
+  }
+  .bf-profile-nav-pro-badge {
+    display: none;
+  }
+}
+
+@media (min-width: 1101px) {
+  .bf-profile-trigger-premium .bf-profile-trigger-text {
+    display: block;
+  }
+}

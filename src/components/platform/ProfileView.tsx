@@ -23,6 +23,8 @@ import { PlayerCardMini } from "@/components/platform/PlayerCard";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 import { isBuiltinOwnerEmail, isOwnerEmail } from "@/lib/admin-access";
 import { buildFallbackProfile } from "@/lib/profile-fallback";
+import { setCachedFavoriteTeamSlug } from "@/lib/profile-club-storage";
+import { ProfileClubAvatar } from "@/components/platform/ProfileClubAvatar";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   getCompetitiveTeamSlugs,
@@ -104,6 +106,9 @@ export function ProfileView() {
     }
     setSaveMsg("Guardado");
     setProfileError("");
+    if (patch.favoriteTeamSlug !== undefined) {
+      setCachedFavoriteTeamSlug(patch.favoriteTeamSlug);
+    }
     await refreshProfile();
     setTimeout(() => setSaveMsg(""), 2500);
   }
@@ -170,11 +175,13 @@ export function ProfileView() {
         <div className="bf-profile-hero-inner">
           <div className="bf-profile-identity">
             <div className="bf-profile-avatar-wrap">
-              {effectiveProfile.favoriteTeamSlug ? (
-                <TeamLogo slug={effectiveProfile.favoriteTeamSlug} size={88} glow />
-              ) : (
-                <span className="bf-profile-avatar-lg">{initials}</span>
-              )}
+              <ProfileClubAvatar
+                teamSlug={effectiveProfile.favoriteTeamSlug}
+                avatarUrl={effectiveProfile.avatarUrl}
+                initials={initials}
+                size={88}
+                title={favoriteTeam?.name ?? effectiveProfile.displayName}
+              />
               {isAdmin && (
                 <span className="bf-profile-admin-badge" title="Administrador">
                   <Shield size={12} />
@@ -326,8 +333,13 @@ export function ProfileView() {
         <section className="bf-profile-panel bf-profile-panel-wide">
           <div className="bf-profile-panel-head">
             <h2>Club favorito</h2>
-            <p>Aparece en tu avatar y en el menú superior</p>
+            <p>Logo circular en la esquina superior derecha — igual en la web y en localhost</p>
           </div>
+          {!effectiveProfile.favoriteTeamSlug && (
+            <p className="bf-profile-sync-banner" role="status">
+              Elige un club abajo para activar tu avatar premium en el menú.
+            </p>
+          )}
           <input
             type="search"
             className="bf-profile-club-search"
