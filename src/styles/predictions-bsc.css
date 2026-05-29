@@ -2757,118 +2757,157 @@
   }
 }
 
-/* Bracket árbol: 2 semis arriba → final centrada abajo */
-.bf-bracket-quarters-row {
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+/* Bracket — misma arena AZUL | VS | ROJO que el resto de Pick'em */
+.bf-predict-bracket.is-arena-style {
+  padding: 12px 14px 14px;
 }
-.bf-bracket-quarters-row .bf-bracket-flow-duels {
-  margin-top: 4px;
-}
-.bf-bracket-tree {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.bf-bracket-pyramid {
   width: 100%;
-  max-width: 480px;
+  max-width: 920px;
   margin: 0 auto;
 }
-.bf-bracket-tree-semis {
+.bf-bracket-row.is-semis {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px 14px;
-  width: 100%;
+  gap: 10px 12px;
+  align-items: start;
 }
-.bf-bracket-semi-card {
-  padding: 8px;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.bf-bracket-row.is-quarters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.bf-bracket-semi-label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--bsc-blue-bright);
-  text-align: center;
-}
-.bf-bracket-semi-duel,
-.bf-bracket-final-duel {
+.bf-bracket-row.is-final {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 6px;
 }
-.bf-bracket-pick-team {
+.bf-bracket-duel {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 6px 8px;
+  gap: 6px;
   min-width: 0;
-  flex: 1;
-  max-width: 88px;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  background: rgba(255, 255, 255, 0.04);
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.bf-bracket-duel.is-quarter {
+  text-decoration: none;
   color: inherit;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.2);
+  transition: border-color 0.15s;
 }
-.bf-bracket-pick-team:hover:not(:disabled) {
+.bf-bracket-duel.is-quarter:hover {
   border-color: rgba(0, 153, 255, 0.35);
-  background: rgba(0, 40, 80, 0.25);
 }
-.bf-bracket-pick-team.is-selected {
-  border-color: var(--bsc-blue-bright);
-  background: rgba(0, 80, 160, 0.25);
-  box-shadow: 0 0 14px rgba(0, 153, 255, 0.2);
+.bf-bracket-duel.is-semi {
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 153, 255, 0.2);
+  background: rgba(0, 12, 28, 0.5);
 }
-.bf-bracket-pick-team:disabled {
-  opacity: 0.65;
-  cursor: wait;
+.bf-bracket-duel.is-final {
+  width: 100%;
+  max-width: 560px;
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 193, 7, 0.25);
+  background: linear-gradient(180deg, rgba(50, 38, 0, 0.35), rgba(0, 10, 24, 0.55));
+  box-shadow: 0 0 24px rgba(255, 193, 7, 0.1);
 }
-.bf-bracket-pick-name {
-  font-size: 8px;
-  font-weight: 800;
-  text-transform: uppercase;
+.bf-bracket-duel.is-final.is-waiting {
+  border-style: dashed;
+  opacity: 0.9;
+}
+.bf-bracket-duel-tag {
+  display: block;
   text-align: center;
-  line-height: 1.1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-  color: var(--bp-muted);
-}
-.bf-bracket-pick-team.is-selected .bf-bracket-pick-name {
-  color: var(--bp-text);
-}
-.bf-bracket-semi-winner {
-  margin: 6px 0 0;
   font-size: 9px;
-  font-weight: 600;
-  text-align: center;
-  color: var(--bp-dim);
-}
-.bf-bracket-semi-winner strong {
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--bsc-blue-bright);
+}
+.bf-bracket-duel-tag.is-gold {
+  color: var(--bp-gold);
+  font-size: 10px;
+}
+.bf-bracket-vote-arena {
+  width: 100%;
+}
+.bf-bracket-vote-arena .bf-bracket-poll {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-quarter {
+  grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+  gap: 4px;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-quarter .bf-vote-vs-label {
+  font-size: 0.95rem;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-quarter .bf-vote-name {
+  font-size: 9px;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-semi .bf-vote-vs {
+  width: 44px;
+  max-width: 44px;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-semi .bf-vote-vs-label {
+  font-size: 1.1rem;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-semi .bf-vote-side .bf-vote-pct {
+  font-size: 1.15rem;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-final .bf-vote-arena,
+.bf-predict-bsc .bf-bracket-duel.is-final .bf-vote-arena {
+  grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+  gap: 10px;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-final .bf-vote-vs,
+.bf-predict-bsc .bf-bracket-duel.is-final .bf-vote-vs {
+  width: 56px;
+  max-width: 56px;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-final .bf-vote-vs-label,
+.bf-predict-bsc .bf-bracket-duel.is-final .bf-vote-vs-label {
+  font-size: 1.55rem;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-final .bf-vote-side .bf-vote-pct {
+  font-size: 1.65rem;
+}
+.bf-predict-bsc .bf-bracket-vote-arena.is-final .bf-vote-name {
+  font-size: 13px;
+}
+.bf-bracket-vote-arena.is-placeholder .bf-vote-side.is-ghost {
+  pointer-events: none;
+  opacity: 0.55;
+  border-style: dashed;
+}
+.bf-bracket-ghost-mark {
+  font-family: var(--bp-head);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--bp-dim);
+  line-height: 1;
+}
+.bf-bracket-duel .bf-vote-side.is-link {
+  pointer-events: none;
 }
 .bf-bracket-tree-connectors {
   position: relative;
-  width: 72%;
-  height: 20px;
-  margin: 2px 0;
+  width: 56%;
+  height: 22px;
+  margin: 4px auto;
 }
 .bf-bracket-tree-connectors .bf-bracket-line {
   position: absolute;
   top: 0;
   width: 2px;
-  height: 12px;
-  background: rgba(0, 153, 255, 0.35);
+  height: 14px;
+  background: rgba(0, 153, 255, 0.4);
 }
 .bf-bracket-tree-connectors .bf-bracket-line:first-child {
   left: 25%;
@@ -2882,39 +2921,16 @@
   left: 25%;
   right: 25%;
   height: 2px;
-  background: rgba(0, 153, 255, 0.35);
+  background: rgba(0, 153, 255, 0.4);
 }
-.bf-bracket-tree-final {
-  width: 100%;
-  max-width: 240px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.25);
-  text-align: center;
-}
-.bf-bracket-tree-final.is-ready {
-  border-style: solid;
-  border-color: rgba(255, 193, 7, 0.35);
-  background: rgba(40, 30, 0, 0.2);
-  box-shadow: 0 0 16px rgba(255, 193, 7, 0.08);
-}
-.bf-bracket-tree-final .bf-bracket-flow-label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--bp-gold);
-}
-.bf-bracket-final-placeholder p {
-  margin: 0;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--bp-muted);
-}
-.bf-bracket-final-hint {
-  display: block;
-  margin-top: 4px;
-  font-size: 9px;
-  color: var(--bp-dim);
+@media (max-width: 640px) {
+  .bf-bracket-row.is-semis {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .bf-bracket-duel.is-final {
+    max-width: 100%;
+  }
 }
 .bf-bracket-final-note {
   margin: 8px 0 0;

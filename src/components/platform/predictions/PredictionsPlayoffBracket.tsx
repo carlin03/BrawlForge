@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { BracketVoteArena } from "@/components/platform/predictions/BracketVoteArena";
 import type {
   EnrichedPrediction,
   PlayoffBracketSlot,
@@ -17,20 +18,6 @@ import { teamName } from "@/lib/data";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
-
-function bracketTeamShort(slug: string): string {
-  const full = teamName(slug);
-  if (full.length <= 8) return full;
-  const words = full.split(/\s+/).filter(Boolean);
-  if (words.length >= 2) {
-    return words
-      .slice(0, 2)
-      .map((w) => w.slice(0, 3))
-      .join(" ")
-      .slice(0, 9);
-  }
-  return full.slice(0, 8);
-}
 
 type BracketDraftPick = { teamA: string; teamB: string; pick: "A" | "B" };
 
@@ -56,77 +43,44 @@ function writeBracketDraft(tournamentSlug: string, data: BracketDraftPick | null
   else sessionStorage.setItem(key, JSON.stringify(data));
 }
 
-function BracketTeamPick({
-  slug,
-  short,
-  selected,
-  disabled,
-  onClick,
-}: {
-  slug: string;
-  short: string;
-  selected: boolean;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      className={`bf-bracket-pick-team ${selected ? "is-selected" : ""}`}
-      disabled={disabled}
-      onClick={onClick}
-      title={teamName(slug)}
-      aria-pressed={selected}
-    >
-      <TeamLogo slug={slug} name="" size={28} glow={selected} />
-      <span className="bf-bracket-pick-name">{short}</span>
-    </button>
-  );
+function findEvent(events: EnrichedPrediction[], matchId?: string): EnrichedPrediction | undefined {
+  if (!matchId) return undefined;
+  return events.find((e) => e.matchId === matchId);
 }
 
 function BracketSemiDuel({
   slot,
   label,
   votes,
+  events,
   saving,
   onVote,
 }: {
   slot: PlayoffBracketSlot & { rewardPoints: number };
   label: string;
   votes: Record<string, "A" | "B">;
+  events: EnrichedPrediction[];
   saving: boolean;
   onVote: (matchId: string, side: "A" | "B", points: number) => void;
 }) {
   if (!slot.teamASlug || !slot.teamBSlug || !slot.matchId) return null;
 
-  const pick = votes[slot.matchId];
-  const winner = getBracketPickWinner(slot, votes);
+  const pick = votes[slot.matchId] ?? null;
+  const event = findEvent(events, slot.matchId);
 
   return (
-    <div className="bf-bracket-semi-card">
-      <span className="bf-bracket-semi-label">{label}</span>
-      <div className="bf-bracket-semi-duel">
-        <BracketTeamPick
-          slug={slot.teamASlug}
-          short={bracketTeamShort(slot.teamASlug)}
-          selected={pick === "A"}
-          disabled={saving}
-          onClick={() => onVote(slot.matchId!, "A", slot.rewardPoints)}
-        />
-        <span className="bf-bracket-chip-vs">vs</span>
-        <BracketTeamPick
-          slug={slot.teamBSlug}
-          short={bracketTeamShort(slot.teamBSlug)}
-          selected={pick === "B"}
-          disabled={saving}
-          onClick={() => onVote(slot.matchId!, "B", slot.rewardPoints)}
-        />
-      </div>
-      {winner && (
-        <p className="bf-bracket-semi-winner">
-          Tu pick: <strong>{bracketTeamShort(winner)}</strong>
-        </p>
-      )}
+    <div className="bf-bracket-duel is-semi">
+      <span className="bf-bracket-duel-tag">{label}</span>
+      <BracketVoteArena
+        size="semi"
+        teamASlug={slot.teamASlug}
+        teamBSlug={slot.teamBSlug}
+        pick={pick}
+        event={event}
+        disabled={saving}
+        onVoteA={() => onVote(slot.matchId!, "A", slot.rewardPoints)}
+        onVoteB={() => onVote(slot.matchId!, "B", slot.rewardPoints)}
+      />
     </div>
   );
 }
@@ -157,6 +111,8 @@ function BracketTree({
     if (!winner1 || !winner2) return null;
     return findBracketFinalEvent(events, bracket.tournamentSlug, winner1, winner2);
   }, [events, bracket.tournamentSlug, winner1, winner2]);
+
+  const finalEvent = officialFinal ?? undefined;
 
   useEffect(() => {
     if (!winner1 || !winner2) {
@@ -218,11 +174,7 @@ function BracketTree({
 
       if (officialFinal) {
         const apiSide: "A" | "B" =
-          officialFinal.teamASlug === winner1
-            ? side
-            : side === "A"
-              ? "B"
-              : "A";
+          officialFinal.teamASlug === winner1 ? side : side === "A" ? "B" : "A";
         setSaving(true);
         const res = await castVote(officialFinal.matchId, apiSide, officialFinal.rewardPoints);
         setSaving(false);
@@ -238,12 +190,13 @@ function BracketTree({
   );
 
   return (
-    <div className="bf-bracket-tree">
-      <div className="bf-bracket-tree-semis">
+    <div className="bf-bracket-pyramid">
+      <div className="bf-bracket-row is-semis">
         <BracketSemiDuel
           slot={tree.semis[0]}
           label="Semifinal 1"
           votes={votes}
+          events={events}
           saving={saving}
           onVote={voteSemi}
         />
@@ -251,6 +204,7 @@ function BracketTree({
           slot={tree.semis[1]}
           label="Semifinal 2"
           votes={votes}
+          events={events}
           saving={saving}
           onVote={voteSemi}
         />
@@ -262,45 +216,53 @@ function BracketTree({
         <span className="bf-bracket-line-h" />
       </div>
 
-      <div className={`bf-bracket-tree-final ${readyFinal ? "is-ready" : ""}`}>
-        <span className="bf-bracket-flow-label">Final</span>
-        {!readyFinal ? (
-          <div className="bf-bracket-final-placeholder">
-            <p>Elige el ganador de cada semifinal</p>
-            <span className="bf-bracket-final-hint">Los dos equipos aparecerán aquí abajo</span>
-          </div>
-        ) : (
-          <div className="bf-bracket-final-duel">
-            <BracketTeamPick
-              slug={winner1!}
-              short={bracketTeamShort(winner1!)}
-              selected={finalPickSide === "A"}
+      <div className="bf-bracket-row is-final">
+        <div className={`bf-bracket-duel is-final ${readyFinal ? "is-ready" : "is-waiting"}`}>
+          <span className="bf-bracket-duel-tag is-gold">Gran final</span>
+          {!readyFinal ? (
+            <div className="bf-vote-arena bf-bracket-vote-arena is-final is-placeholder">
+              <div className="bf-vote-side bf-vote-side-a is-ghost">
+                <span className="bf-vote-side-tag bf-vote-side-tag-a">AZUL</span>
+                <span className="bf-bracket-ghost-mark">?</span>
+                <span className="bf-vote-name">Ganador SF1</span>
+              </div>
+              <div className="bf-vote-vs">
+                <span className="bf-vote-vs-label">VS</span>
+                <span className="bf-vote-votes">Elige las semis</span>
+              </div>
+              <div className="bf-vote-side bf-vote-side-b is-ghost">
+                <span className="bf-vote-side-tag bf-vote-side-tag-b">ROJO</span>
+                <span className="bf-bracket-ghost-mark">?</span>
+                <span className="bf-vote-name">Ganador SF2</span>
+              </div>
+            </div>
+          ) : (
+            <BracketVoteArena
+              size="final"
+              teamASlug={winner1!}
+              teamBSlug={winner2!}
+              pick={finalPickSide}
+              event={finalEvent}
               disabled={saving}
-              onClick={() => voteFinal("A")}
+              onVoteA={() => void voteFinal("A")}
+              onVoteB={() => void voteFinal("B")}
             />
-            <span className="bf-bracket-chip-vs">vs</span>
-            <BracketTeamPick
-              slug={winner2!}
-              short={bracketTeamShort(winner2!)}
-              selected={finalPickSide === "B"}
-              disabled={saving}
-              onClick={() => voteFinal("B")}
-            />
-          </div>
-        )}
-        {readyFinal && !officialFinal && (
-          <p className="bf-bracket-final-note">
-            Vista previa del cruce — cuando el calendario publique esta final, tu voto se guardará en el
-            partido oficial.
-          </p>
-        )}
-        {officialFinal && finalPickSide && (
-          <p className="bf-bracket-final-note is-synced">
-            Voto guardado en la gran final del torneo.
-            <Link href={`/predictions#pick-${officialFinal.matchId}`}> Ver partido</Link>
-          </p>
-        )}
+          )}
+        </div>
       </div>
+
+      {readyFinal && !officialFinal && (
+        <p className="bf-bracket-final-note">
+          Vista previa del cruce — si coincide con la gran final del calendario, tu voto se sincroniza
+          automáticamente.
+        </p>
+      )}
+      {officialFinal && finalPickSide && (
+        <p className="bf-bracket-final-note is-synced">
+          Voto guardado en la gran final.
+          <Link href={`/predictions#pick-${officialFinal.matchId}`}> Ver partido</Link>
+        </p>
+      )}
 
       {err && (
         <p className="bf-bracket-error" role="alert">
@@ -311,30 +273,32 @@ function BracketTree({
   );
 }
 
-function BracketDuelChip({ slot }: { slot: PlayoffBracketSlot }) {
-  if (slot.status === "tbd" || !slot.teamASlug || !slot.teamBSlug) {
-    return (
-      <div className="bf-bracket-chip is-tbd" title="Por decidir">
-        <span>TBD</span>
-      </div>
-    );
-  }
-
+/** Cuartos: arena mini con el mismo VS central */
+function BracketQuarterDuel({ event }: { event: EnrichedPrediction }) {
   return (
     <Link
-      href={slot.matchId ? `/predictions#pick-${slot.matchId}` : "/predictions"}
-      className="bf-bracket-chip"
-      title={`${teamName(slot.teamASlug)} vs ${teamName(slot.teamBSlug)}`}
+      href={`/predictions#pick-${event.matchId}`}
+      className="bf-bracket-duel is-quarter"
+      title={`${teamName(event.teamASlug)} vs ${teamName(event.teamBSlug)}`}
     >
-      <span className="bf-bracket-chip-side">
-        <TeamLogo slug={slot.teamASlug} name="" size={20} glow={false} />
-        <span className="bf-bracket-chip-name">{bracketTeamShort(slot.teamASlug)}</span>
-      </span>
-      <span className="bf-bracket-chip-vs">vs</span>
-      <span className="bf-bracket-chip-side">
-        <TeamLogo slug={slot.teamBSlug} name="" size={20} glow={false} />
-        <span className="bf-bracket-chip-name">{bracketTeamShort(slot.teamBSlug)}</span>
-      </span>
+      <span className="bf-bracket-duel-tag">Cuartos</span>
+      <div className="bf-vote-arena bf-bracket-vote-arena is-quarter">
+        <div className="bf-vote-side bf-vote-side-a is-link">
+          <span className="bf-vote-side-logo">
+            <TeamLogo slug={event.teamASlug} name="" size={36} glow={false} />
+          </span>
+          <span className="bf-vote-name">{teamName(event.teamASlug)}</span>
+        </div>
+        <div className="bf-vote-vs">
+          <span className="bf-vote-vs-label">VS</span>
+        </div>
+        <div className="bf-vote-side bf-vote-side-b is-link">
+          <span className="bf-vote-side-logo">
+            <TeamLogo slug={event.teamBSlug} name="" size={36} glow={false} />
+          </span>
+          <span className="bf-vote-name">{teamName(event.teamBSlug)}</span>
+        </div>
+      </div>
     </Link>
   );
 }
@@ -348,29 +312,36 @@ export function PredictionsPlayoffBracket({
   votes: Record<string, "A" | "B">;
   events: EnrichedPrediction[];
 }) {
+  const quarterEvents = useMemo(() => {
+    if (!bracket.quarters?.length) return [];
+    return bracket.quarters
+      .map((s) => findEvent(events, s.matchId))
+      .filter((e): e is EnrichedPrediction => Boolean(e));
+  }, [bracket.quarters, events]);
+
   return (
-    <section className="bf-predict-bracket is-compact" aria-labelledby="predict-bracket-title">
+    <section
+      className="bf-predict-bracket is-compact is-arena-style"
+      aria-labelledby="predict-bracket-title"
+    >
       <div className="bf-predict-bracket-head">
         <div>
           <h2 id="predict-bracket-title" className="bf-predict-bracket-title">
-            {bracket.layout === "tree" ? "Bracket interactivo" : "Ruta playoff"}
+            Bracket interactivo
           </h2>
           <p className="bf-predict-bracket-sub">
             {bracket.tournamentName}
             {bracket.region ? ` · ${bracket.region}` : ""}
-            {bracket.layout === "tree" && " · Elige semifinales y final"}
+            {" · 2 semifinales + gran final"}
           </p>
         </div>
       </div>
 
-      {bracket.quarters && bracket.quarters.length > 0 && (
-        <div className="bf-bracket-quarters-row">
-          <span className="bf-bracket-flow-label">Cuartos</span>
-          <div className="bf-bracket-flow-duels">
-            {bracket.quarters.map((slot, i) => (
-              <BracketDuelChip key={slot.matchId ?? `qf-${i}`} slot={slot} />
-            ))}
-          </div>
+      {quarterEvents.length > 0 && (
+        <div className="bf-bracket-row is-quarters">
+          {quarterEvents.map((e) => (
+            <BracketQuarterDuel key={e.matchId} event={e} />
+          ))}
         </div>
       )}
 
@@ -378,25 +349,7 @@ export function PredictionsPlayoffBracket({
         <BracketTree tree={bracket.tree} bracket={bracket} votes={votes} events={events} />
       ) : (
         bracket.rounds && (
-          <div className="bf-bracket-flow" role="list" aria-label="Fases del bracket">
-            {bracket.rounds.map((round, roundIndex) => (
-              <div key={round.key} className="bf-bracket-flow-group" role="presentation">
-                {roundIndex > 0 && (
-                  <span className="bf-bracket-flow-arrow" aria-hidden>
-                    →
-                  </span>
-                )}
-                <div className={`bf-bracket-flow-stage is-${round.key}`} role="listitem">
-                  <span className="bf-bracket-flow-label">{round.shortTitle}</span>
-                  <div className="bf-bracket-flow-duels">
-                    {round.slots.map((slot, i) => (
-                      <BracketDuelChip key={slot.matchId ?? `${round.key}-${i}`} slot={slot} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="bf-bracket-final-note">Usa los partidos de la lista para votar esta fase.</p>
         )
       )}
     </section>
