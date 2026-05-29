@@ -58,9 +58,15 @@ export interface SiteSeoSettings {
   themeColor: string;
 }
 
+export interface CardWatermarkGlobalSettings {
+  opacity: number;
+  scale: number;
+}
+
 export interface ResolvedSiteSettings {
   branding: SiteBrandingSettings;
   seo: SiteSeoSettings;
+  cardWatermark?: CardWatermarkGlobalSettings;
 }
 
 export interface CmsModuleInfo {

@@ -3,6 +3,7 @@
  * Se usan cuando Supabase no tiene datos o los flags CMS están desactivados.
  */
 import { MAIN_NAV } from "@/lib/nav-config";
+import { DEFAULT_GLOBAL_WATERMARK } from "@/lib/data/card-theme-meta";
 import type { ResolvedCmsConfig, ResolvedNavItem, ResolvedThemeTokens } from "./types";
 
 export const CMS_CONFIG_VERSION = 1;
@@ -64,6 +65,7 @@ export const DEFAULT_LEGACY_CONFIG: ResolvedCmsConfig = {
       description: "Fantasy, predicciones y seguimiento competitivo de Brawl Stars.",
       themeColor: "#0a0c12",
     },
+    cardWatermark: { ...DEFAULT_GLOBAL_WATERMARK },
   },
   navigation: DEFAULT_NAVIGATION,
   theme: DEFAULT_THEME_TOKENS,

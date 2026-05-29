@@ -9,14 +9,18 @@ import { AdminPlayerTeamPicker } from "@/components/admin/AdminPlayerTeamPicker"
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import {
+  DEFAULT_GLOBAL_WATERMARK,
   getCardWatermarkFromMeta,
+  getWatermarkOpacity,
   mergeCardWatermarks,
   mergeCardWatermarkIntoMeta,
   parseCardThemeMeta,
   parseCardWatermark,
+  parseGlobalWatermarkDefaults,
   type CardThemeMeta,
   getWatermarkScale,
   type CardWatermarkConfig,
+  type GlobalWatermarkDefaults,
   watermarkForPlayerSync,
 } from "@/lib/data/card-theme-meta";
 import { getTeamCardTheme } from "@/lib/data/team-card-theme";
@@ -25,20 +29,89 @@ import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 import type { AdminTeamCatalogRow } from "@/lib/data/admin-catalog-fields";
 import type { AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
 
-function themeFromTeam(slug: string, meta: Record<string, unknown>): CardThemeMeta {
+function themeFromTeam(
+  slug: string,
+  meta: Record<string, unknown>,
+  global?: GlobalWatermarkDefaults | null,
+): CardThemeMeta {
   const parsed = parseCardThemeMeta(meta);
   const t = getTeamCardTheme(slug);
-  const base: CardThemeMeta = {
+  const wmRaw = parsed?.watermark;
+  return {
     primary: parsed?.primary ?? t.primary,
     secondary: parsed?.secondary ?? t.secondary,
     glow: parsed?.glow ?? t.glow,
-    watermark: parsed?.watermark ?? parseCardWatermark(null),
+    watermark: wmRaw ? parseCardWatermark(wmRaw, global) : parseCardWatermark(null, global),
   };
-  return base;
 }
 
-function watermarkFromPlayerMeta(meta: Record<string, unknown>): CardWatermarkConfig {
-  return getCardWatermarkFromMeta(meta) ?? parseCardWatermark(null);
+function watermarkFromPlayerMeta(
+  meta: Record<string, unknown>,
+  global?: GlobalWatermarkDefaults | null,
+): CardWatermarkConfig {
+  return getCardWatermarkFromMeta(meta) ?? parseCardWatermark(null, global);
+}
+
+function GlobalWatermarkPanel({
+  globalWm,
+  onChange,
+  onSaveGlobal,
+  onApplyAll,
+  loading,
+  teamCount,
+  playerCount,
+}: {
+  globalWm: GlobalWatermarkDefaults;
+  onChange: (g: GlobalWatermarkDefaults) => void;
+  onSaveGlobal: () => void;
+  onApplyAll: () => void;
+  loading: boolean;
+  teamCount: number;
+  playerCount: number;
+}) {
+  return (
+    <div className="bf-studio-global-wm">
+      <h4 className="bf-studio-watermark-title">Marca de fondo global</h4>
+      <p className="bf-studio-hint">
+        Opacidad y tamaño por defecto del escudo/PNG detrás de la foto en todas las cartas. Los clubs sin valor
+        propio usan estos números (por defecto 8% de opacidad).
+      </p>
+      <label className="bf-studio-field">
+        <span className="bf-studio-field-label">
+          Opacidad global: <strong>{globalWm.opacity}%</strong>
+        </span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={globalWm.opacity}
+          onChange={(e) => onChange({ ...globalWm, opacity: Number(e.target.value) })}
+          className="bf-studio-range"
+        />
+      </label>
+      <label className="bf-studio-field">
+        <span className="bf-studio-field-label">
+          Tamaño global: <strong>{globalWm.scale}%</strong> (0 = oculto)
+        </span>
+        <input
+          type="range"
+          min={0}
+          max={300}
+          value={globalWm.scale}
+          onChange={(e) => onChange({ ...globalWm, scale: Number(e.target.value) })}
+          className="bf-studio-range"
+        />
+      </label>
+      <div className="bf-studio-global-wm-actions">
+        <button type="button" className="bp-btn bp-btn-ghost" onClick={onSaveGlobal} disabled={loading}>
+          Guardar valores globales
+        </button>
+        <button type="button" className="bp-btn bp-btn-gold" onClick={onApplyAll} disabled={loading}>
+          Aplicar a todos los clubs ({teamCount}) y jugadores ({playerCount})
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function WatermarkFields({
@@ -71,13 +144,13 @@ function WatermarkFields({
       </label>
       <label className="bf-studio-field">
         <span className="bf-studio-field-label">
-          Opacidad: <strong>{watermark.opacity ?? 48}%</strong>
+          Opacidad: <strong>{getWatermarkOpacity(watermark)}%</strong>
         </span>
         <input
           type="range"
           min={0}
           max={100}
-          value={watermark.opacity ?? 48}
+          value={getWatermarkOpacity(watermark)}
           onChange={(e) => patch({ opacity: Number(e.target.value) })}
           className="bf-studio-range"
         />
@@ -160,6 +233,7 @@ export function StudioCardsVisualPanel() {
   const [syncRosterStyle, setSyncRosterStyle] = useState(true);
   const [copyClubImage, setCopyClubImage] = useState(true);
   const [copyClubStyle, setCopyClubStyle] = useState(true);
+  const [globalWm, setGlobalWm] = useState<GlobalWatermarkDefaults>({ ...DEFAULT_GLOBAL_WATERMARK });
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
   const [msgError, setMsgError] = useState(false);
@@ -192,10 +266,47 @@ export function StudioCardsVisualPanel() {
   }, [load]);
 
   useEffect(() => {
+    fetch("/api/cms/admin/platform")
+      .then((r) => r.json())
+      .then((data) => {
+        const raw = data?.config?.settings?.cardWatermark;
+        if (raw) setGlobalWm(parseGlobalWatermarkDefaults(raw));
+      })
+      .catch(() => {});
+  }, []);
+
+  const selectTeamSlug = useCallback(
+    (slug: string) => {
+      setSelectedSlug(slug);
+      const row = teams.find((t) => t.slug === slug);
+      if (row) {
+        setTheme(themeFromTeam(row.slug, row.meta, globalWm));
+        setBannerUrl(String(row.meta?.banner_url ?? ""));
+      }
+    },
+    [teams, globalWm],
+  );
+
+  const selectPlayerSlug = useCallback(
+    (slug: string) => {
+      setSelectedSlug(slug);
+      const row = players.find((p) => p.slug === slug);
+      if (!row) return;
+      setPhotoUrl(row.photo_url ?? "");
+      setBannerUrl(String(row.meta?.banner_url ?? ""));
+      setPlayerWatermark(watermarkFromPlayerMeta(row.meta, globalWm));
+      setPlayerTeamSlug(row.team_slug ?? null);
+      const club = row.team_slug ? teams.find((t) => t.slug === row.team_slug) : null;
+      if (club) setTheme(themeFromTeam(club.slug, club.meta, globalWm));
+    },
+    [players, teams, globalWm],
+  );
+
+  useEffect(() => {
     if (mode === "teams") {
       const row = teams.find((t) => t.slug === selectedSlug);
       if (row) {
-        setTheme(themeFromTeam(row.slug, row.meta));
+        setTheme(themeFromTeam(row.slug, row.meta, globalWm));
         setBannerUrl(String(row.meta?.banner_url ?? ""));
       }
       return;
@@ -204,11 +315,104 @@ export function StudioCardsVisualPanel() {
     if (!row) return;
     setPhotoUrl(row.photo_url ?? "");
     setBannerUrl(String(row.meta?.banner_url ?? ""));
-    setPlayerWatermark(watermarkFromPlayerMeta(row.meta));
+    setPlayerWatermark(watermarkFromPlayerMeta(row.meta, globalWm));
     setPlayerTeamSlug(row.team_slug ?? null);
     const club = row.team_slug ? teams.find((t) => t.slug === row.team_slug) : null;
-    if (club) setTheme(themeFromTeam(club.slug, club.meta));
-  }, [selectedSlug, mode, teams, players]);
+    if (club) setTheme(themeFromTeam(club.slug, club.meta, globalWm));
+  }, [selectedSlug, mode, teams, players, globalWm]);
+
+  async function persistGlobalWatermark() {
+    const res = await fetch("/api/cms/admin/platform", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        settings: {
+          card_watermark: {
+            opacity: globalWm.opacity,
+            scale: globalWm.scale,
+          },
+        },
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Error al guardar global");
+  }
+
+  async function saveGlobalWatermark() {
+    setLoading(true);
+    setMsg("");
+    setMsgError(false);
+    try {
+      await persistGlobalWatermark();
+      setMsg("Valores globales de marca guardados");
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error");
+      setMsgError(true);
+    }
+    setLoading(false);
+  }
+
+  async function applyGlobalToAll() {
+    if (
+      !confirm(
+        `¿Aplicar opacidad ${globalWm.opacity}% y tamaño ${globalWm.scale}% a los ${teams.length} clubs y ${players.length} jugadores?`,
+      )
+    ) {
+      return;
+    }
+    setLoading(true);
+    setMsg("");
+    setMsgError(false);
+    try {
+      await persistGlobalWatermark();
+      let teamOk = 0;
+      for (const t of teams) {
+        const parsed = parseCardThemeMeta(t.meta);
+        const base = getTeamCardTheme(t.slug);
+        const prevWm = parseCardWatermark(parsed?.watermark ?? null, globalWm);
+        const card_theme: CardThemeMeta = {
+          primary: parsed?.primary ?? base.primary,
+          secondary: parsed?.secondary ?? base.secondary,
+          glow: parsed?.glow ?? base.glow,
+          watermark: {
+            ...prevWm,
+            opacity: globalWm.opacity,
+            scale: globalWm.scale,
+          },
+        };
+        const meta = { ...t.meta, card_theme, banner_url: t.meta?.banner_url };
+        const res = await fetch("/api/admin/catalog", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            entity: "team",
+            row: { ...t, meta, profile: t.meta },
+          }),
+        });
+        if (res.ok) teamOk += 1;
+      }
+      let playerOk = 0;
+      for (const p of players) {
+        const prev = parseCardWatermark(getCardWatermarkFromMeta(p.meta) ?? null, globalWm);
+        const wm: CardWatermarkConfig = {
+          ...prev,
+          opacity: globalWm.opacity,
+          scale: globalWm.scale,
+        };
+        const meta = mergeCardWatermarkIntoMeta({ ...p.meta }, wm);
+        await upsertPlayerRow(p, { meta });
+        playerOk += 1;
+      }
+      setMsg(`Marca global aplicada: ${teamOk} clubs y ${playerOk} jugadores`);
+      await load();
+      if (mode === "teams" && selectedSlug) selectTeamSlug(selectedSlug);
+      else if (mode === "players" && selectedSlug) selectPlayerSlug(selectedSlug);
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error");
+      setMsgError(true);
+    }
+    setLoading(false);
+  }
 
   async function save() {
     if (!selectedSlug) return;
@@ -297,9 +501,9 @@ export function StudioCardsVisualPanel() {
       ? theme
       : previewClub
         ? {
-            ...themeFromTeam(previewClub.slug, previewClub.meta),
+            ...themeFromTeam(previewClub.slug, previewClub.meta, globalWm),
             watermark: mergeCardWatermarks(
-              themeFromTeam(previewClub.slug, previewClub.meta).watermark,
+              themeFromTeam(previewClub.slug, previewClub.meta, globalWm).watermark,
               playerWatermark,
             ),
           }
@@ -317,13 +521,25 @@ export function StudioCardsVisualPanel() {
     >
       <StudioToast message={msg} error={msgError} />
 
+      <GlobalWatermarkPanel
+        globalWm={globalWm}
+        onChange={setGlobalWm}
+        onSaveGlobal={saveGlobalWatermark}
+        onApplyAll={applyGlobalToAll}
+        loading={loading}
+        teamCount={teams.length}
+        playerCount={players.length}
+      />
+
       <div className="bf-studio-cards-mode">
         <button
           type="button"
           className={mode === "teams" ? "is-on" : ""}
           onClick={() => {
             setMode("teams");
-            if (teams[0]) setSelectedSlug(teams[0].slug);
+            const clubSlug = playerTeamSlug ?? players.find((p) => p.slug === selectedSlug)?.team_slug;
+            if (clubSlug && teams.some((t) => t.slug === clubSlug)) selectTeamSlug(clubSlug);
+            else if (teams[0]) selectTeamSlug(teams[0].slug);
           }}
         >
           Equipos ({teams.length})
@@ -333,7 +549,7 @@ export function StudioCardsVisualPanel() {
           className={mode === "players" ? "is-on" : ""}
           onClick={() => {
             setMode("players");
-            if (players[0]) setSelectedSlug(players[0].slug);
+            if (players[0]) selectPlayerSlug(players[0].slug);
           }}
         >
           Jugadores ({players.length})
@@ -351,7 +567,10 @@ export function StudioCardsVisualPanel() {
                 mode === "teams"
                   ? teams.find((t) => t.slug.includes(q) || t.name.toLowerCase().includes(q))
                   : players.find((p) => p.slug.includes(q) || p.ign.toLowerCase().includes(q));
-              if (hit) setSelectedSlug(hit.slug);
+              if (hit) {
+                if (mode === "teams") selectTeamSlug(hit.slug);
+                else selectPlayerSlug(hit.slug);
+              }
             }}
           />
           <ul className="bf-admin-list-scroll" style={{ maxHeight: 420 }}>
@@ -363,7 +582,7 @@ export function StudioCardsVisualPanel() {
                   <button
                     type="button"
                     className={`bf-admin-list-card ${selectedSlug === slug ? "is-on" : ""}`}
-                    onClick={() => setSelectedSlug(slug)}
+                    onClick={() => (mode === "teams" ? selectTeamSlug(slug) : selectPlayerSlug(slug))}
                   >
                     {mode === "teams" ? (
                       <TeamLogo slug={slug} name={title} size={40} />
@@ -460,7 +679,7 @@ export function StudioCardsVisualPanel() {
                   onChange={(slug) => {
                     setPlayerTeamSlug(slug);
                     const club = slug ? teams.find((t) => t.slug === slug) : null;
-                    if (club) setTheme(themeFromTeam(club.slug, club.meta));
+                    if (club) setTheme(themeFromTeam(club.slug, club.meta, globalWm));
                   }}
                   compact
                 />
@@ -511,7 +730,7 @@ export function StudioCardsVisualPanel() {
                     className="bp-btn bp-btn-ghost"
                     disabled={!copyClubImage && !copyClubStyle}
                     onClick={() => {
-                      const clubWm = themeFromTeam(previewClub.slug, previewClub.meta).watermark;
+                      const clubWm = themeFromTeam(previewClub.slug, previewClub.meta, globalWm).watermark;
                       const fromClub = watermarkForPlayerSync(clubWm, {
                         includeImage: copyClubImage,
                         includeStyle: copyClubStyle,

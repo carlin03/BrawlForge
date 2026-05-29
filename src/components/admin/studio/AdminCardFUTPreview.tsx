@@ -39,6 +39,7 @@ export function AdminCardFUTPreview({
     <div className="bf-admin-fut-preview-wrap">
       <p className="bf-studio-hint bf-admin-fut-preview-label">Vista previa de la carta</p>
       <div
+        key={`${teamSlug}-${mode}-${wm.image_url ?? ""}-${wm.opacity ?? ""}-${wm.scale ?? ""}`}
         className={`bf-card bf-card-fut bf-card-premium has-team-theme bf-card-md bf-admin-fut-preview${hasCustomWm ? " has-custom-watermark" : ""}`}
         style={themeStyle}
         data-team={teamSlug}

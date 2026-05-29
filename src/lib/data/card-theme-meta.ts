@@ -16,6 +16,34 @@ export type CardWatermarkConfig = {
 };
 
 export const DEFAULT_WATERMARK_SCALE = 100;
+export const DEFAULT_WATERMARK_OPACITY = 8;
+
+export type GlobalWatermarkDefaults = {
+  opacity: number;
+  scale: number;
+};
+
+export const DEFAULT_GLOBAL_WATERMARK: GlobalWatermarkDefaults = {
+  opacity: DEFAULT_WATERMARK_OPACITY,
+  scale: DEFAULT_WATERMARK_SCALE,
+};
+
+export function parseGlobalWatermarkDefaults(raw: unknown): GlobalWatermarkDefaults {
+  if (!raw || typeof raw !== "object") return { ...DEFAULT_GLOBAL_WATERMARK };
+  const o = raw as Record<string, unknown>;
+  const opacity =
+    typeof o.opacity === "number"
+      ? Math.min(100, Math.max(0, Math.round(o.opacity)))
+      : DEFAULT_WATERMARK_OPACITY;
+  const scale =
+    typeof o.scale === "number" ? clampWatermarkScale(o.scale) : DEFAULT_WATERMARK_SCALE;
+  return { opacity, scale };
+}
+
+export function getWatermarkOpacity(wm?: CardWatermarkConfig | null): number {
+  if (!wm || typeof wm.opacity !== "number") return DEFAULT_WATERMARK_OPACITY;
+  return Math.min(100, Math.max(0, Math.round(wm.opacity)));
+}
 
 export function watermarkScaleFromLegacy(size?: CardWatermarkSize): number {
   if (size === "sm") return 75;
@@ -42,20 +70,27 @@ export type CardThemeMeta = {
   watermark?: CardWatermarkConfig;
 };
 
-const DEFAULT_WATERMARK: CardWatermarkConfig = {
-  opacity: 48,
-  scale: DEFAULT_WATERMARK_SCALE,
-  show_team_logo_behind: true,
-};
+function defaultWatermark(global?: GlobalWatermarkDefaults | null): CardWatermarkConfig {
+  const g = global ?? DEFAULT_GLOBAL_WATERMARK;
+  return {
+    opacity: g.opacity,
+    scale: g.scale,
+    show_team_logo_behind: true,
+  };
+}
 
-export function parseCardWatermark(raw: unknown): CardWatermarkConfig {
-  if (!raw || typeof raw !== "object") return { ...DEFAULT_WATERMARK };
+export function parseCardWatermark(
+  raw: unknown,
+  global?: GlobalWatermarkDefaults | null,
+): CardWatermarkConfig {
+  const g = global ?? DEFAULT_GLOBAL_WATERMARK;
+  if (!raw || typeof raw !== "object") return defaultWatermark(g);
   const o = raw as Record<string, unknown>;
   const size = o.size === "sm" || o.size === "lg" ? o.size : "md";
   const opacity =
     typeof o.opacity === "number"
       ? Math.min(100, Math.max(0, Math.round(o.opacity)))
-      : DEFAULT_WATERMARK.opacity!;
+      : g.opacity;
   const scale =
     typeof o.scale === "number"
       ? clampWatermarkScale(o.scale)
@@ -120,11 +155,12 @@ export function cardThemeToTeamTheme(theme: CardThemeMeta): TeamCardTheme {
 /** Lee watermark de card_theme o card_watermark (jugadores). */
 export function getCardWatermarkFromMeta(
   meta?: Record<string, unknown> | null,
+  global?: GlobalWatermarkDefaults | null,
 ): CardWatermarkConfig | undefined {
   if (!meta) return undefined;
   const fromTheme = parseCardThemeMeta(meta)?.watermark;
-  if (fromTheme) return fromTheme;
-  if (meta.card_watermark) return parseCardWatermark(meta.card_watermark);
+  if (fromTheme) return parseCardWatermark(fromTheme, global);
+  if (meta.card_watermark) return parseCardWatermark(meta.card_watermark, global);
   return undefined;
 }
 
@@ -155,7 +191,7 @@ export function mergeCardWatermarkIntoMeta(
   const next = { ...meta };
   const hasCustom =
     watermark?.image_url?.trim() ||
-    (watermark?.opacity != null && watermark.opacity !== DEFAULT_WATERMARK.opacity) ||
+    (watermark?.opacity != null && watermark.opacity !== DEFAULT_WATERMARK_OPACITY) ||
     (watermark?.scale != null && watermark.scale !== DEFAULT_WATERMARK_SCALE);
   if (hasCustom && watermark) {
     next.card_watermark = watermark;

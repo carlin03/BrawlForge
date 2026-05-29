@@ -36,6 +36,7 @@ export async function resolveCmsConfig(): Promise<ResolvedCmsConfig> {
   const settings = {
     branding: { ...base.settings.branding, ...settingsDb?.branding },
     seo: { ...base.settings.seo, ...settingsDb?.seo },
+    cardWatermark: settingsDb?.cardWatermark ?? base.settings.cardWatermark,
   };
 
   let navigation: ResolvedNavItem[] = DEFAULT_NAVIGATION;

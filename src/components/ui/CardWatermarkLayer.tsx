@@ -34,8 +34,11 @@ export function CardWatermarkLayer({
     ["--bf-card-watermark-scale" as string]: String(scalePct / 100),
   } as React.CSSProperties;
 
+  const layerKey = `${teamSlug}-${customUrl ?? "club"}-${scalePct}-${opacityPct}`;
+
   return (
     <div
+      key={layerKey}
       className={`bf-card-team-watermark ${cardSizeClass} ${cardSize === "mini" ? "is-mini" : ""} ${customUrl ? "has-custom-img" : ""}`.trim()}
       style={layerStyle}
     >

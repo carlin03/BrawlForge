@@ -40,7 +40,11 @@ export async function PATCH(request: Request) {
 
   const body = (await request.json()) as {
     flags?: Record<string, boolean>;
-    settings?: { branding?: Record<string, unknown>; seo?: Record<string, unknown> };
+    settings?: {
+      branding?: Record<string, unknown>;
+      seo?: Record<string, unknown>;
+      card_watermark?: Record<string, unknown>;
+    };
   };
 
   const updated: string[] = [];
@@ -81,6 +85,19 @@ export async function PATCH(request: Request) {
     );
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
     updated.push("settings:seo");
+  }
+
+  if (body.settings?.card_watermark) {
+    const { error } = await supabase.from("site_settings").upsert(
+      {
+        key: "card_watermark",
+        value: body.settings.card_watermark,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "key" },
+    );
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+    updated.push("settings:card_watermark");
   }
 
   await logCmsAudit({

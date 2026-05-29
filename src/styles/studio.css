@@ -867,6 +867,20 @@
   margin: 0 auto;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
 }
+.bf-studio-global-wm {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-radius: var(--bp-r);
+  border: 1px solid rgba(255, 77, 90, 0.28);
+  background: linear-gradient(135deg, rgba(255, 77, 90, 0.06), rgba(10, 12, 18, 0.95));
+}
+.bf-studio-global-wm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
 .bf-studio-watermark-block {
   padding: 14px 16px;
   border-radius: var(--bp-r);

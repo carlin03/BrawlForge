@@ -34,6 +34,7 @@ export function TeamCardWatermark({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      key={slug}
       ref={imgRef}
       src={src}
       alt=""

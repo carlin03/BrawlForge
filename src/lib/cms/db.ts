@@ -42,6 +42,9 @@ export async function loadSettingsFromDb(): Promise<Partial<ResolvedSiteSettings
     const v = row.value as Record<string, unknown>;
     if (row.key === "branding" && v) out.branding = v as unknown as ResolvedSiteSettings["branding"];
     if (row.key === "seo" && v) out.seo = v as unknown as ResolvedSiteSettings["seo"];
+    if (row.key === "card_watermark" && v) {
+      out.cardWatermark = v as unknown as ResolvedSiteSettings["cardWatermark"];
+    }
   }
   return Object.keys(out).length ? out : null;
 }
