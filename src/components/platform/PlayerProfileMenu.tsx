@@ -6,13 +6,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, ChevronRight, LogOut, Shield, Sparkles, Target, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { getCachedFavoriteTeamSlug } from "@/lib/profile-club-storage";
 import { useGame } from "@/contexts/GameContext";
 import { buildFallbackProfile } from "@/lib/profile-fallback";
 import { teamName } from "@/lib/data";
 import { ProfileClubAvatar } from "@/components/platform/ProfileClubAvatar";
 
 export function PlayerProfileMenu() {
-  const { profile, user, signOut, loading, isAdmin } = useAuth();
+  const { profile, user, signOut, loading, isAdmin, patchProfile } = useAuth();
   const { game } = useGame();
   const router = useRouter();
   const pathname = usePathname();
@@ -47,6 +48,15 @@ export function PlayerProfileMenu() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    const onClub = (e: Event) => {
+      const slug = (e as CustomEvent<{ slug: string | null }>).detail?.slug ?? null;
+      patchProfile({ favoriteTeamSlug: slug });
+    };
+    window.addEventListener("bf-favorite-team-changed", onClub);
+    return () => window.removeEventListener("bf-favorite-team-changed", onClub);
+  }, [patchProfile]);
 
   useEffect(() => {
     if (!open) return;
@@ -94,7 +104,8 @@ export function PlayerProfileMenu() {
   const predictPts = game?.predictPoints ?? effectiveProfile?.predictPoints ?? 0;
   const initials = (effectiveProfile?.ign || display).slice(0, 2).toUpperCase();
   const onProfilePage = pathname === "/profile";
-  const teamSlug = effectiveProfile?.favoriteTeamSlug ?? null;
+  const teamSlug =
+    effectiveProfile?.favoriteTeamSlug ?? getCachedFavoriteTeamSlug() ?? null;
   const clubName = teamSlug ? teamName(teamSlug) : null;
 
   const dropdown = open ? (

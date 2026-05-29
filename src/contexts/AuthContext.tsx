@@ -44,6 +44,8 @@ type AuthContextValue = {
   signInWithGoogle: () => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  /** Actualiza perfil en memoria al instante (p. ej. club favorito en nav). */
+  patchProfile: (patch: Partial<PlayerProfile>) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -218,7 +220,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setProfile(null);
     adminClaimAttempted.current = false;
+    setCachedFavoriteTeamSlug(null);
   }, [supabase]);
+
+  const patchProfile = useCallback((patch: Partial<PlayerProfile>) => {
+    setProfile((prev) => (prev ? { ...prev, ...patch } : prev));
+  }, []);
 
   const isAdmin = resolveIsAdmin(user?.email ?? null, Boolean(profile?.isAdmin));
 
@@ -234,9 +241,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signUp,
       signInWithGoogle,
       signOut,
-      refreshProfile: () => loadProfile(user),
+      refreshProfile: async () => {
+        if (user) await loadProfile(user);
+      },
+      patchProfile,
     }),
-    [user, profile, isAdmin, loading, supabaseReady, signIn, signUp, signInWithGoogle, signOut, loadProfile],
+    [user, profile, isAdmin, loading, supabaseReady, signIn, signUp, signInWithGoogle, signOut, loadProfile, patchProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

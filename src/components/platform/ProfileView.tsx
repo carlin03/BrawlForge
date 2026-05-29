@@ -33,7 +33,7 @@ import {
 } from "@/lib/data";
 
 export function ProfileView() {
-  const { profile, user, loading, isAdmin, refreshProfile, signOut } = useAuth();
+  const { profile, user, loading, isAdmin, refreshProfile, patchProfile, signOut } = useAuth();
   const { game } = useGame();
   const router = useRouter();
 
@@ -108,6 +108,18 @@ export function ProfileView() {
     setProfileError("");
     if (patch.favoriteTeamSlug !== undefined) {
       setCachedFavoriteTeamSlug(patch.favoriteTeamSlug);
+      patchProfile({ favoriteTeamSlug: patch.favoriteTeamSlug });
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("bf-favorite-team-changed", { detail: { slug: patch.favoriteTeamSlug } }),
+        );
+      }
+    }
+    if (patch.displayName !== undefined || patch.ign !== undefined) {
+      patchProfile({
+        ...(patch.displayName !== undefined ? { displayName: patch.displayName } : {}),
+        ...(patch.ign !== undefined ? { ign: patch.ign } : {}),
+      });
     }
     await refreshProfile();
     setTimeout(() => setSaveMsg(""), 2500);
@@ -119,6 +131,11 @@ export function ProfileView() {
 
   async function pickClub(slug: string) {
     const next = effectiveProfile?.favoriteTeamSlug === slug ? null : slug;
+    setCachedFavoriteTeamSlug(next);
+    patchProfile({ favoriteTeamSlug: next });
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("bf-favorite-team-changed", { detail: { slug: next } }));
+    }
     await saveProfile({ favoriteTeamSlug: next });
   }
 
