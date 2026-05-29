@@ -4,6 +4,7 @@ import { CardWatermarkLayer } from "@/components/ui/CardWatermarkLayer";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import {
+  cardImageSrcCandidates,
   cardThemeToTeamTheme,
   parseCardWatermark,
   type CardThemeMeta,
@@ -34,6 +35,7 @@ export function AdminCardFUTPreview({
   const hasCustomWm = Boolean(wm.image_url?.trim());
   const themeStyle = teamCardThemeVars(cardThemeToTeamTheme(theme), "md", wm) as React.CSSProperties;
   const label = mode === "player" ? (playerIgn ?? "Jugador") : (teamTag ?? teamName);
+  const previewPhotoSrc = photoUrl?.trim() ? cardImageSrcCandidates(photoUrl)[0] : undefined;
 
   return (
     <div className="bf-admin-fut-preview-wrap">
@@ -56,10 +58,10 @@ export function AdminCardFUTPreview({
           </div>
         </div>
         <div className="bf-card-logo-stage">
-          {mode === "player" && photoUrl?.trim() ? (
+          {mode === "player" && previewPhotoSrc ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={photoUrl.trim()}
+              src={previewPhotoSrc}
               alt=""
               className="bf-admin-fut-preview-photo"
               onError={(e) => {

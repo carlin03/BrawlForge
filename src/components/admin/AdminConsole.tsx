@@ -20,6 +20,7 @@ import {
 import { AdminEntityCreateDialog } from "@/components/admin/AdminEntityCreateDialog";
 import { AdminTournamentsPanel } from "@/components/admin/AdminTournamentsPanel";
 import { buildPlayerMeta, buildTeamMeta } from "@/lib/data/profile-wiki";
+import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 import { AdminUsersPanel } from "@/components/admin/AdminUsersPanel";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminLogoPanel } from "@/components/admin/AdminLogoPanel";
@@ -251,12 +252,15 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
   }
 
   function savePlayerWiki(player: PlayerWikiState) {
+    const rawPhoto = player.photo_url?.trim() ?? "";
+    const photo_url = rawPhoto ? normalizeAdminMediaUrl(rawPhoto) ?? rawPhoto : null;
     const meta = {
       ...player.meta,
-      ...buildPlayerMeta(player.profile, player.photo_url),
+      ...buildPlayerMeta(player.profile, photo_url),
     };
     save("player", {
       ...player,
+      photo_url,
       social: player.social,
       profile: player.profile,
       meta,

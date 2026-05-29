@@ -36,6 +36,17 @@ export type FantasyLeaderboardRow = {
   ign: string;
 };
 
+export type PredictionLeaderboardRow = {
+  rank: number;
+  user_id: string;
+  display_name: string;
+  ign: string;
+  predict_points: number;
+  predict_streak: number;
+  predict_correct: number;
+  predict_attempts: number;
+};
+
 export type UserGameState = {
   votes: Record<string, "A" | "B">;
   fantasy: Record<

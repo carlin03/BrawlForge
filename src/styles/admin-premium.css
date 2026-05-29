@@ -256,6 +256,18 @@
   gap: 12px;
   flex-wrap: wrap;
 }
+.bf-admin-editor-footer {
+  margin-top: 20px;
+  padding: 14px 0 4px;
+  border-top: 1px solid var(--bp-line);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: linear-gradient(to top, var(--bp-panel) 88%, transparent);
+}
 
 .bf-admin-field {
   display: block;

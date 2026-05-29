@@ -1,4 +1,5 @@
 import type { TeamCardTheme } from "./team-card-theme";
+import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 
 export type CardWatermarkSize = "sm" | "md" | "lg";
 
@@ -203,7 +204,7 @@ export function mergeCardWatermarkIntoMeta(
 
 /** Orden: directo primero (mejor en admin/CDN), proxy como respaldo. */
 export function cardImageSrcCandidates(url: string): string[] {
-  const u = url.trim();
+  const u = normalizeAdminMediaUrl(url.trim()) ?? url.trim();
   if (!u) return [];
   if (u.startsWith("/")) return [u];
   if (u.startsWith("http://") || u.startsWith("https://")) {

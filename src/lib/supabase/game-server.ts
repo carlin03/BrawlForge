@@ -4,6 +4,7 @@ import type {
   FantasyEntryRow,
   FantasyLeaderboardRow,
   FantasySquadSlotRow,
+  PredictionLeaderboardRow,
   UserGameState,
   VoteAggregate,
 } from "./game-types";
@@ -49,6 +50,30 @@ export async function ensureFantasyEntry(
     team_name: profile?.display_name ?? "Mi Equipo",
     total_points: 0,
   });
+}
+
+export async function fetchPredictionLeaderboard(
+  supabase: SupabaseClient,
+  limit = 15,
+): Promise<PredictionLeaderboardRow[]> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, display_name, ign, predict_points, predict_streak, predict_correct, predict_attempts")
+    .order("predict_points", { ascending: false })
+    .limit(limit);
+
+  if (error || !data) return [];
+
+  return data.map((row, i) => ({
+    rank: i + 1,
+    user_id: row.id as string,
+    display_name: (row.display_name as string) || "Jugador",
+    ign: (row.ign as string) || "Player",
+    predict_points: Number(row.predict_points ?? 0),
+    predict_streak: Number(row.predict_streak ?? 0),
+    predict_correct: Number(row.predict_correct ?? 0),
+    predict_attempts: Number(row.predict_attempts ?? 0),
+  }));
 }
 
 export async function fetchFantasyLeaderboard(

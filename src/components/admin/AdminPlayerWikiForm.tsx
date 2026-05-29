@@ -13,6 +13,7 @@ import {
   type SocialLinks,
 } from "@/lib/data/profile-wiki";
 import { AdminPlayerTeamPicker } from "@/components/admin/AdminPlayerTeamPicker";
+import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 import type { AdminTeamPickerOption } from "@/components/admin/AdminTeamLogoPicker";
 import {
   AdminTabBar,
@@ -299,17 +300,20 @@ export function AdminPlayerWikiForm({
 
       {tab === "redes" && (
         <div className="bf-admin-tab-panel">
-          <AdminField label="URL de la foto del jugador" hint="Se ve en cartas y ficha">
+          <AdminField
+            label="URL de la foto del jugador"
+            hint="Cualquier enlace directo (PNG/JPG/WebP). Puedes pegar sin https://"
+          >
             <input
-              type="url"
+              type="text"
               value={player.photo_url ?? ""}
               onChange={(e) => onChange({ ...player, photo_url: e.target.value })}
-              placeholder="https://…"
+              placeholder="https://… o cdn.ejemplo.com/foto.png"
             />
           </AdminField>
           {player.photo_url?.trim() && (
             <div className="bf-admin-photo-preview">
-              <img src={player.photo_url.trim()} alt="" />
+              <img src={toClientLogoUrl(player.photo_url.trim())} alt="" />
             </div>
           )}
           <AdminField label="Banner de perfil (opcional)">
@@ -340,6 +344,12 @@ export function AdminPlayerWikiForm({
             <Trash2 size={16} /> Eliminar del catálogo
           </button>
         )}
+      </div>
+
+      <div className="bf-admin-editor-footer">
+        <button type="submit" className="bp-btn bp-btn-gold" disabled={loading}>
+          <Save size={16} /> Guardar jugador
+        </button>
       </div>
     </form>
   );

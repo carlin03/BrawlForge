@@ -833,6 +833,15 @@
   flex-direction: column;
   gap: 18px;
 }
+.bf-studio-editor-footer {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--bp-line);
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 .bf-studio-color-grid {
   display: grid;
   gap: 12px;

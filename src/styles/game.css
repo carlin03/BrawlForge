@@ -1041,8 +1041,8 @@
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.05em;
-  color: var(--bp-gold);
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55), 0 0 20px rgba(255, 200, 46, 0.35);
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
   padding: 2px 6px 4px 0;
 }
 .bf-card-lg .bf-card-ovr { font-size: 2.65rem; }
@@ -1076,7 +1076,8 @@
   background: rgba(0,153,255,0.2); color: var(--bp-blue-bright); border: 1px solid rgba(0,153,255,0.35);
 }
 .bf-card-cap-mult {
-  font-size: 8px; font-weight: 800; color: var(--bp-gold); letter-spacing: 0.06em;
+  font-size: 8px; font-weight: 800; color: #fff; letter-spacing: 0.06em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 .bf-card-logo-stage {
@@ -1104,9 +1105,12 @@
 }
 .bf-card-fut-stat { text-align: center; }
 .bf-card-fut-stat strong {
-  display: block; font-family: var(--bp-head); font-size: 13px; font-weight: 900; color: var(--bp-text);
+  display: block; font-family: var(--bp-head); font-size: 13px; font-weight: 900; color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
 }
-.bf-card-fut-stat span { font-size: 8px; font-weight: 700; color: var(--bp-dim); text-transform: uppercase; }
+.bf-card-fut-stat span {
+  font-size: 8px; font-weight: 700; color: rgba(255, 255, 255, 0.72); text-transform: uppercase;
+}
 
 .bf-card-trend { display: flex; justify-content: center; margin-top: 6px; z-index: 1; }
 
@@ -1311,8 +1315,11 @@
     inset 0 0 32px color-mix(in srgb, var(--bf-team-primary) 18%, transparent);
 }
 .bf-card.has-team-theme .bf-card-ovr {
-  color: color-mix(in srgb, var(--bf-team-glow) 70%, #fff);
-  text-shadow: 0 2px 16px color-mix(in srgb, var(--bf-team-glow) 55%, transparent);
+  color: #fff;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65);
+}
+.bf-card.has-team-theme .bf-card-fut-stat strong {
+  color: #fff;
 }
 .bf-card.has-team-theme .bf-card-team {
   color: color-mix(in srgb, var(--bf-team-glow) 55%, var(--bp-muted));
@@ -1371,7 +1378,7 @@
   display: flex; flex-wrap: wrap; gap: 6px 10px; justify-content: center;
   font-size: 9px; color: var(--bp-dim); z-index: 1; margin: 0 4px 6px;
 }
-.bf-card-detail-row strong { color: var(--bp-text); font-weight: 800; }
+.bf-card-detail-row strong { color: #fff; font-weight: 800; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5); }
 .bf-card-detail-name {
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   color: var(--bp-muted);
@@ -1395,8 +1402,9 @@
 }
 .bf-card-mini:hover { transform: translateY(-4px) scale(1.06); }
 .bf-card-mini-ovr {
-  position: absolute; top: 6px; left: 8px; font-size: 10px; font-weight: 900; color: var(--bp-gold);
+  position: absolute; top: 6px; left: 8px; font-size: 10px; font-weight: 900; color: #fff;
   font-family: var(--bp-head);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
 }
 
 @keyframes bf-glow-pulse {

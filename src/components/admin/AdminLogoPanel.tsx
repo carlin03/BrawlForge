@@ -9,6 +9,7 @@ import { AdminField } from "@/components/admin/AdminField";
 import { getAdminBscTournaments } from "@/lib/data/bsc-tournaments";
 import { getAdminBscTeamsList } from "@/lib/data/admin-bsc-teams";
 import { notifyLogosUpdated, useRefreshLogos } from "@/contexts/LogoConfigContext";
+import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 import type { Region } from "@/lib/types";
 
 const REGION_FILTERS: { id: "all" | Region; label: string }[] = [
@@ -78,15 +79,21 @@ export function AdminLogoPanel() {
   const selectedTour = kind === "tournament" ? tournaments.find((t) => t.slug === selected) : null;
   const displayName = selectedTeam?.name ?? selectedTour?.shortName ?? selected;
 
-  async function saveOverride(e: React.FormEvent) {
-    e.preventDefault();
+  async function saveOverride(e?: React.FormEvent) {
+    e?.preventDefault();
     setLoading(true);
     setMsg("");
+    const normalized = normalizeAdminMediaUrl(imageUrl);
+    if (!normalized) {
+      setMsg("URL no válida. Pega un enlace https://… (también vale sin https:// al inicio).");
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch("/api/admin/logos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: selected, imageUrl, kind }),
+        body: JSON.stringify({ slug: selected, imageUrl: normalized, kind }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al guardar");
@@ -134,7 +141,13 @@ export function AdminLogoPanel() {
         </button>
       </div>
 
-      {msg && <div className={`bf-admin-toast ${msg.includes("Error") ? "is-error" : ""}`}>{msg}</div>}
+      {msg && (
+        <div
+          className={`bf-admin-toast ${msg.includes("Error") || msg.includes("no válida") ? "is-error" : ""}`}
+        >
+          {msg}
+        </div>
+      )}
 
       <div className="bf-admin-logos-layout">
         <div className="bf-admin-sidebar" style={{ maxHeight: "none" }}>
@@ -230,20 +243,30 @@ export function AdminLogoPanel() {
           <form onSubmit={saveOverride}>
             <AdminField
               label="URL de imagen"
-              hint="Enlace directo https://… — se muestra tal cual en toda la web"
+              hint="Cualquier CDN o enlace directo (PNG, JPG, SVG, WebP). Puedes pegar sin https://"
             >
               <input
-                type="url"
+                type="text"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://…"
-                required
+                placeholder="https://… o cdn.ejemplo.com/logo.png"
               />
             </AdminField>
             <button type="submit" className="bp-btn bp-btn-gold" disabled={loading} style={{ width: "100%" }}>
               <Image size={16} /> Guardar URL del logo
             </button>
           </form>
+          <div className="bf-admin-editor-footer">
+            <button
+              type="button"
+              className="bp-btn bp-btn-gold"
+              disabled={loading || !selected}
+              style={{ width: "100%" }}
+              onClick={() => void saveOverride()}
+            >
+              <Image size={16} /> Guardar URL del logo
+            </button>
+          </div>
         </div>
       </div>
     </div>

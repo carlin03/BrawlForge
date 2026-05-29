@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { getPlayerPhotoUrl } from "@/lib/data/player-photo";
+import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 import { useResolvedPlayer } from "@/hooks/useResolvedEntity";
 import { teamName } from "@/lib/data";
 
@@ -27,7 +28,8 @@ export function PlayerPhoto({
   photoUrlOverride,
 }: PlayerPhotoProps) {
   const player = useResolvedPlayer(playerSlug);
-  const photoUrl = photoUrlOverride?.trim() || getPlayerPhotoUrl(player);
+  const rawPhoto = photoUrlOverride?.trim() || getPlayerPhotoUrl(player);
+  const photoUrl = rawPhoto ? toClientLogoUrl(rawPhoto) : undefined;
   const club = teamSlug ?? player?.teamSlug;
   const label = name ?? player?.ign ?? playerSlug;
   const [failed, setFailed] = useState(false);

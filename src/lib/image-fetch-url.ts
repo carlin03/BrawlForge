@@ -1,4 +1,4 @@
-/** Permite cualquier URL pública https/http para logos (admin manual). Bloquea SSRF básico. */
+/** URLs de imagen en admin: https/http públicas o rutas locales `/…`. Bloquea SSRF básico. */
 
 const BLOCKED_HOSTS = new Set([
   "localhost",
@@ -20,17 +20,34 @@ function isPrivateIpv4(host: string): boolean {
   return false;
 }
 
-export function isPublicImageFetchUrl(raw: string): boolean {
-  let parsed: URL;
-  try {
-    parsed = new URL(raw.trim());
-  } catch {
-    return false;
-  }
-  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return false;
-  const host = parsed.hostname.toLowerCase();
-  if (BLOCKED_HOSTS.has(host)) return false;
-  if (host.endsWith(".localhost")) return false;
-  if (isPrivateIpv4(host)) return false;
+function isAllowedRemoteHost(host: string): boolean {
+  const h = host.toLowerCase();
+  if (BLOCKED_HOSTS.has(h)) return false;
+  if (h.endsWith(".localhost")) return false;
+  if (isPrivateIpv4(h)) return false;
   return true;
+}
+
+/**
+ * Normaliza URLs pegadas en admin: añade https si falta, acepta //cdn… y conserva query (?v=…).
+ * Rutas locales `/logos/…` se devuelven tal cual.
+ */
+export function normalizeAdminMediaUrl(raw: string): string | null {
+  let u = raw.trim();
+  if (!u) return null;
+  if (u.startsWith("/") && !u.startsWith("//")) return u;
+  if (u.startsWith("//")) u = `https:${u}`;
+  else if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
+  try {
+    const parsed = new URL(u);
+    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return null;
+    if (!isAllowedRemoteHost(parsed.hostname)) return null;
+    return parsed.href;
+  } catch {
+    return null;
+  }
+}
+
+export function isPublicImageFetchUrl(raw: string): boolean {
+  return normalizeAdminMediaUrl(raw) !== null;
 }

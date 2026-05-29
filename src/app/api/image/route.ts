@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isPublicImageFetchUrl } from "@/lib/image-fetch-url";
+import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 
 export const dynamic = "force-dynamic";
 
@@ -10,12 +10,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
   }
 
-  if (!isPublicImageFetchUrl(url)) {
+  const fetchUrl = normalizeAdminMediaUrl(url);
+  if (!fetchUrl || fetchUrl.startsWith("/")) {
     return NextResponse.json({ error: "URL no permitida" }, { status: 403 });
   }
 
   try {
-    const upstream = await fetch(url, {
+    const upstream = await fetch(fetchUrl, {
       headers: {
         "User-Agent": "BrawlForge/1.0 (image proxy)",
         Accept: "image/png,image/webp,image/jpeg,image/gif,image/svg+xml,image/*,*/*",

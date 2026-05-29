@@ -26,6 +26,7 @@ import {
 import { getTeamCardTheme } from "@/lib/data/team-card-theme";
 import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
+import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 import type { AdminTeamCatalogRow } from "@/lib/data/admin-catalog-fields";
 import type { AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
 
@@ -459,18 +460,22 @@ export function StudioCardsVisualPanel() {
           banner_url: bannerUrl || undefined,
         };
         meta = mergeCardWatermarkIntoMeta(meta, playerWatermark);
+        const savedPhoto = photoUrl.trim()
+          ? normalizeAdminMediaUrl(photoUrl) ?? photoUrl.trim()
+          : "";
         await upsertPlayerRow(row, {
-          photo_url: photoUrl,
+          photo_url: savedPhoto || undefined,
           meta,
           team_slug: playerTeamSlug,
         });
         setPlayers((prev) =>
           prev.map((p) =>
             p.slug === selectedSlug
-              ? { ...p, photo_url: photoUrl, team_slug: playerTeamSlug, meta }
+              ? { ...p, photo_url: savedPhoto || null, team_slug: playerTeamSlug, meta }
               : p,
           ),
         );
+        if (savedPhoto) setPhotoUrl(savedPhoto);
         setMsg("Foto, club, marca y banner del jugador guardados");
       }
       await load();
@@ -749,9 +754,10 @@ export function StudioCardsVisualPanel() {
                 <span className="bf-studio-field-label">Foto del jugador (URL)</span>
                 <input
                   className="bf-studio-input"
+                  type="text"
                   value={photoUrl}
                   onChange={(e) => setPhotoUrl(e.target.value)}
-                  placeholder="https://…"
+                  placeholder="https://… o enlace directo sin https://"
                 />
               </label>
               <label className="bf-studio-field">
@@ -768,6 +774,19 @@ export function StudioCardsVisualPanel() {
             <p className="bf-studio-hint">
               Asigna un club arriba para ver la vista previa de carta con sus colores y marca.
             </p>
+          )}
+
+          {selectedSlug && (
+            <div className="bf-studio-editor-footer">
+              <button
+                type="button"
+                className="bp-btn bp-btn-gold"
+                onClick={save}
+                disabled={loading || !selectedSlug}
+              >
+                <Save size={16} /> Guardar cambios
+              </button>
+            </div>
           )}
         </div>
       </div>

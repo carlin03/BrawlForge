@@ -16,6 +16,7 @@ import {
   parseCardThemeMeta,
   parseCardWatermark,
 } from "@/lib/data/card-theme-meta";
+import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 import {
   buildPlayerMeta,
   buildTeamMeta,
@@ -240,7 +241,8 @@ export async function POST(request: Request) {
         ? (row.meta as Record<string, unknown>)
         : {};
     const profile = parsePlayerMeta(row.profile ?? rawMeta);
-    const photoUrl = row.photo_url ? String(row.photo_url).trim() : null;
+    const rawPhoto = row.photo_url ? String(row.photo_url).trim() : "";
+    const photoUrl = rawPhoto ? normalizeAdminMediaUrl(rawPhoto) ?? rawPhoto : null;
     const mains = profile.main_brawlers ?? [];
     const cardTheme = parseCardThemeMeta(rawMeta);
     let meta = mergeCardThemeIntoMeta(

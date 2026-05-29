@@ -317,17 +317,11 @@
 .bf-card-rare.bf-card-premium:hover { outline-color: rgba(0, 195, 255, 0.55); }
 .bf-arena-cards .bf-card-hero.bf-card-legend .bf-card-ovr,
 .bf-card-hero.bf-card-legend .bf-card-ovr {
-  color: var(--bp-gold);
-  filter: drop-shadow(0 2px 8px rgba(255, 200, 46, 0.6));
-}
-@supports (background-clip: text) {
-  .bf-arena-cards .bf-card-hero.bf-card-legend .bf-card-ovr,
-  .bf-card-hero.bf-card-legend .bf-card-ovr {
-    background: linear-gradient(180deg, #fff9e6, var(--bp-gold) 40%, #b8860b);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  background: none;
+  filter: none;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
 }
 .bf-card-fut.bf-card-premium .bf-card-shine {
   background: linear-gradient(

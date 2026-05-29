@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/admin-auth";
 import { canWriteLocalProjectFiles, tryWriteFile } from "@/lib/admin/project-fs";
 import { writeLogoOverrides } from "@/lib/admin/save-team-logo";
-import { isPublicImageFetchUrl } from "@/lib/image-fetch-url";
+import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 import { BSC_TOURNAMENT_ALIASES } from "@/lib/data/bsc-tournaments";
 import { TOURNAMENT_SLUG_ALIASES } from "@/lib/data/catalog";
 
@@ -76,11 +76,13 @@ export async function POST(request: Request) {
           { status: 400 },
         );
       }
-      if (!isPublicImageFetchUrl(imageUrl)) {
-        return NextResponse.json({ error: "URL de imagen no válida (https://…)" }, { status: 400 });
+      const persistedUrl = normalizeAdminMediaUrl(imageUrl);
+      if (!persistedUrl) {
+        return NextResponse.json(
+          { error: "URL no válida. Usa https://… o pega el enlace directo (también vale sin https://)." },
+          { status: 400 },
+        );
       }
-
-      const persistedUrl = imageUrl.split("?")[0];
       const { error: logoErr } = await supabase.from("team_logo_overrides").upsert({
         slug,
         public_url: persistedUrl,
@@ -117,11 +119,13 @@ export async function POST(request: Request) {
     if (!imageUrl) {
       return NextResponse.json({ error: "Pega la URL del logo del torneo." }, { status: 400 });
     }
-    if (!isPublicImageFetchUrl(imageUrl)) {
-      return NextResponse.json({ error: "URL de imagen no válida (https://…)" }, { status: 400 });
+    const persistedUrl = normalizeAdminMediaUrl(imageUrl);
+    if (!persistedUrl) {
+      return NextResponse.json(
+        { error: "URL no válida. Usa https://… o pega el enlace directo (también vale sin https://)." },
+        { status: 400 },
+      );
     }
-
-    const persistedUrl = imageUrl.split("?")[0];
     const slugs = tournamentSlugVariants(slug);
     const rows = slugs.map((s) => ({
       slug: s,
