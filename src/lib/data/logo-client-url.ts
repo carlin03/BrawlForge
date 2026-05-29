@@ -1,5 +1,7 @@
 /** URLs seguras para <img> en el cliente (Liquipedia bloquea hotlinking directo). */
 
+import { usesRemoteLogoPipeline } from "./local-logos";
+
 const DIRECT_HOSTS = [
   "taiyoro-prod-media.s3.amazonaws.com",
   "cdn.royaleapi.com",
@@ -12,6 +14,7 @@ const DIRECT_HOSTS = [
 
 function needsImageProxy(url: string): boolean {
   if (url.startsWith("/")) return false;
+  if (usesRemoteLogoPipeline()) return true;
   try {
     const host = new URL(url).hostname;
     if (host === "liquipedia.net" || host.endsWith(".liquipedia.net")) return true;
@@ -25,6 +28,7 @@ function needsImageProxy(url: string): boolean {
 export function toClientLogoUrl(url: string): string {
   const trimmed = url.trim();
   if (!trimmed) return trimmed;
+  if (trimmed.startsWith("/api/image")) return trimmed;
   if (needsImageProxy(trimmed)) {
     return `/api/image?url=${encodeURIComponent(trimmed)}`;
   }
@@ -38,4 +42,10 @@ export function toClientLogoSources(urls: string[]): string[] {
     if (mapped && !out.includes(mapped)) out.push(mapped);
   }
   return out;
+}
+
+export function isRemoteLogoSrc(src: string | undefined): boolean {
+  if (!src) return false;
+  if (src.startsWith("/logos/")) return false;
+  return src.startsWith("/api/image") || src.startsWith("http");
 }

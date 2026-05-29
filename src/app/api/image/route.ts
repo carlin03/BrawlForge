@@ -5,11 +5,16 @@ const ALLOWED_HOSTS = [
   "upload.wikimedia.org",
   "taiyoro-prod-media.s3.amazonaws.com",
   "cdn.royaleapi.com",
+  "mitiendanube.com",
+  "dcdn-us.mitiendanube.com",
+  "www.eternalesports.org",
+  "eternalesports.org",
 ];
 
 function hostAllowed(hostname: string): boolean {
   if (ALLOWED_HOSTS.includes(hostname)) return true;
   if (hostname.endsWith(".supabase.co") || hostname.endsWith(".supabase.in")) return true;
+  if (hostname.endsWith(".mitiendanube.com")) return true;
   return false;
 }
 

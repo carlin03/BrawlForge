@@ -43,10 +43,22 @@ table { border-spacing: 0; }
 .logo-img-invert {
   filter: brightness(0) invert(1);
 }
-/* mono-white ya viene procesado en PNG; sin filtros extra */
-.logo-treatment-mono-white .logo-img,
-.logo-treatment-strip-white .logo-img,
-.logo-treatment-border-only .logo-img {
+/* PNG locales en /logos/ ya vienen procesados */
+.logo-treatment-mono-white:not(.logo-remote) .logo-img,
+.logo-treatment-strip-white:not(.logo-remote) .logo-img,
+.logo-treatment-border-only:not(.logo-remote) .logo-img {
+  filter: none;
+}
+
+/* Vercel: logos CDN sin procesar — mismos efectos que los PNG locales */
+.logo-remote.logo-treatment-mono-white .logo-img {
+  filter: brightness(0) invert(1);
+}
+.logo-remote.logo-treatment-strip-white .logo-img {
+  mix-blend-mode: screen;
+  filter: contrast(1.08) saturate(1.05);
+}
+.logo-remote.logo-treatment-border-only .logo-img {
   filter: none;
 }
 .logo-missing-tag {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { usesRemoteLogoPipeline } from "@/lib/data/local-logos";
 
 const MIN_DIMENSION = 12;
 const WHITE_THRESHOLD = 235;
@@ -71,6 +72,7 @@ export function useLogoImage(sources: string[]) {
       }
       const currentSrc = sources[index];
       const trusted =
+        usesRemoteLogoPipeline() ||
         currentSrc?.startsWith("/logos/") ||
         currentSrc?.startsWith("/api/image") ||
         currentSrc?.includes("taiyoro-prod-media.s3.amazonaws.com") ||

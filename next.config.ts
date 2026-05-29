@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  env: {
+    /** En Vercel no hay public/logos: proxy + filtros CSS para logos remotos */
+    NEXT_PUBLIC_LOGO_PROXY: process.env.VERCEL === "1" ? "1" : "0",
+  },
   images: {
     remotePatterns: [
       {

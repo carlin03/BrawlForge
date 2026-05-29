@@ -14,6 +14,8 @@ import { isValidLogoSlug } from "@/lib/data/logo-slugs";
 import { getTeam } from "@/lib/data/teams";
 import { LogoFrame } from "@/components/ui/LogoFrame";
 import { useLogoImage } from "@/components/ui/useLogoImage";
+import { isRemoteLogoSrc } from "@/lib/data/logo-client-url";
+import { usesRemoteLogoPipeline } from "@/lib/data/local-logos";
 
 export const LOGO_SIZES = {
   xs: 20,
@@ -52,6 +54,7 @@ export function TeamLogo({ slug, name, tag, size = "md", className = "", glow = 
   const displayName = name || team?.name || (valid ? slug : "TBD");
   const loaded = status === "ready" && !!src;
   const treatment = valid ? getLogoTreatment(resolvedSlug) : "border-only";
+  const remoteLogo = usesRemoteLogoPipeline() && isRemoteLogoSrc(src);
 
   if (!valid || status === "failed" || !src) {
     return (
@@ -66,7 +69,7 @@ export function TeamLogo({ slug, name, tag, size = "md", className = "", glow = 
       size={pixelSize}
       kind="team"
       glow={glow && loaded}
-      className={`${className} ${loaded ? "is-loaded" : ""} logo-treatment-${treatment}`.trim()}
+      className={`${className} ${loaded ? "is-loaded" : ""} logo-treatment-${treatment} ${remoteLogo ? "logo-remote" : ""}`.trim()}
       title={displayName}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

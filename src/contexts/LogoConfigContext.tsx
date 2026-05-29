@@ -10,12 +10,16 @@ import {
   type ReactNode,
 } from "react";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
+import { logoOverrides } from "@/lib/data/logo-overrides";
 import type { LogoOverridesFile } from "@/lib/data/logo-overrides";
 import type { LogoRuntimeConfig } from "@/lib/data/png-logo-urls";
 
 const DEFAULT: LogoRuntimeConfig = {
   cacheVersion: LOGO_CACHE_VERSION,
-  overrides: { teams: {}, tournaments: {} },
+  overrides: {
+    teams: { ...logoOverrides.teams },
+    tournaments: { ...logoOverrides.tournaments },
+  },
 };
 
 export type { LogoRuntimeConfig };
