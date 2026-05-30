@@ -9,6 +9,7 @@ import { parseAchievements } from "@/lib/data/profile-wiki";
 export type PlayerExtras = {
   bio: string | null;
   country: string | null;
+  nationality: string | null;
   photoUrl: string | null;
   joinDate?: string;
   liquipediaUrl?: string;
@@ -51,6 +52,7 @@ export function mergeCatalogPlayer(
       ...base,
       bio: null,
       country: null,
+      nationality: null,
       photoUrl: null,
       joinDate: base.joinDate,
       liquipediaUrl: base.liquipediaUrl,
@@ -84,7 +86,8 @@ export function mergeCatalogPlayer(
     fantasyOwnership: row.fantasy_ownership ?? base.fantasyOwnership,
     rating: Number(row.rating ?? base.rating),
     bio: row.bio,
-    country: row.country,
+    nationality: row.nationality?.trim() || row.country?.trim() || null,
+    country: row.country?.trim() || row.nationality?.trim() || null,
     photoUrl,
     joinDate: row.join_date ?? base.joinDate,
     liquipediaUrl:

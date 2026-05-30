@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   buildTeamLogoSources,
   prependTeamLogoSources,
@@ -74,6 +74,11 @@ function TeamLogoRemote({
   const [src, setSrc] = useState(() => teamLogoProxyUrl(resolvedSlug, cacheVersion));
   const [failed, setFailed] = useState(false);
 
+  useEffect(() => {
+    setFailed(false);
+    setSrc(teamLogoProxyUrl(resolvedSlug, cacheVersion));
+  }, [resolvedSlug, cacheVersion, logoConfig.cacheVersion]);
+
   if (failed || !src) {
     return (
       <LogoFrame size={pixelSize} kind="team" glow={false} className={`logo-missing ${className}`.trim()} title={displayName}>
@@ -135,6 +140,7 @@ export function TeamLogo({
   if (valid && remote) {
     return (
       <TeamLogoRemote
+        key={slug}
         slug={slug}
         name={name}
         tag={tag}
@@ -185,6 +191,7 @@ export function TeamLogo({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        key={`${resolvedSlug}-${src ?? "none"}`}
         ref={imgRef}
         src={src}
         alt={displayName}

@@ -179,7 +179,9 @@ export function PlayerDetailView({ slug }: { slug: string }) {
                 <span className="bp-chip bp-chip-gold">{role}</span>
                 {player.isCaptain && <span className="bp-chip bp-chip-red">Capitán</span>}
                 <RegionBadge region={player.region} />
-                {player.country && <CountryFlag country={player.country} size={20} />}
+                {(player.nationality || player.country) && (
+                  <CountryFlag country={player.nationality || player.country!} size={20} />
+                )}
                 <span className={`bp-chip ${player.status === "active" ? "bp-chip-blue" : "bp-chip-red"}`}>
                   {player.status === "active" ? "Activo" : player.status}
                 </span>

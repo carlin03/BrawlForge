@@ -21,7 +21,7 @@ export function AdminPlayerTeamPicker({
       <div className="bf-admin-player-team-current">
         {current ? (
           <>
-            <TeamLogo slug={current.slug} name={current.name} size={44} />
+            <TeamLogo key={current.slug} slug={current.slug} name={current.name} size={44} />
             <span>
               <strong>{current.tag}</strong>
               <span className="bf-admin-player-team-current-name">{current.name}</span>

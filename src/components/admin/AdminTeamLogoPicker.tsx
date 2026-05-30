@@ -132,7 +132,7 @@ export function AdminTeamLogoPicker(props: BaseProps & (MultiProps | SingleProps
                   <Check size={14} strokeWidth={3} />
                 </span>
               )}
-              <TeamLogo slug={t.slug} name={t.name} size={compact ? 40 : 48} />
+              <TeamLogo key={t.slug} slug={t.slug} name={t.name} size={compact ? 40 : 48} />
               <span className="bf-admin-logo-tile-name">{t.tag}</span>
               {!compact && <span className="bf-admin-logo-tile-sub">{t.name}</span>}
             </button>

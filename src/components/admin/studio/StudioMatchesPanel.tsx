@@ -596,7 +596,12 @@ export function StudioMatchesPanel() {
               <div className="bf-studio-match-pick-head">
                 <div className={`bf-studio-match-picked ${form.team_a_slug ? "has-team" : ""}`}>
                   {form.team_a_slug ? (
-                    <TeamLogo slug={form.team_a_slug} name={teamName(form.team_a_slug)} size={48} />
+                    <TeamLogo
+                      key={form.team_a_slug || "a-empty"}
+                      slug={form.team_a_slug}
+                      name={teamName(form.team_a_slug)}
+                      size={48}
+                    />
                   ) : (
                     <span className="bf-studio-match-picked-empty">Local</span>
                   )}
@@ -605,7 +610,12 @@ export function StudioMatchesPanel() {
                 <span className="bf-studio-vs">VS</span>
                 <div className={`bf-studio-match-picked ${form.team_b_slug ? "has-team" : ""}`}>
                   {form.team_b_slug ? (
-                    <TeamLogo slug={form.team_b_slug} name={teamName(form.team_b_slug)} size={48} />
+                    <TeamLogo
+                      key={form.team_b_slug || "b-empty"}
+                      slug={form.team_b_slug}
+                      name={teamName(form.team_b_slug)}
+                      size={48}
+                    />
                   ) : (
                     <span className="bf-studio-match-picked-empty">Visitante</span>
                   )}

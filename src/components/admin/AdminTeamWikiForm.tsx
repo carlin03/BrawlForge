@@ -82,7 +82,7 @@ export function AdminTeamWikiForm({
       }}
     >
       <div className="bf-admin-editor-head">
-        <TeamLogo slug={team.slug} name={team.name} size={72} />
+        <TeamLogo key={team.slug} slug={team.slug} name={team.name} size={72} />
         <div>
           <h2>{team.name}</h2>
           <p className="bf-admin-field-hint" style={{ margin: 0 }}>

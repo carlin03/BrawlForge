@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { getPlayerPhotoUrl } from "@/lib/data/player-photo";
 import { toClientLogoUrl } from "@/lib/data/logo-client-url";
@@ -16,9 +16,11 @@ type PlayerPhotoProps = {
   fallbackLogo?: boolean;
   /** Vista previa en admin antes de guardar */
   photoUrlOverride?: string | null;
+  /** Admin: solo foto del formulario + club explícito (no mezclar con catálogo en cliente) */
+  skipCatalogPhoto?: boolean;
 };
 
-export function PlayerPhoto({
+function PlayerPhotoView({
   playerSlug,
   teamSlug,
   name,
@@ -26,13 +28,24 @@ export function PlayerPhoto({
   className = "",
   fallbackLogo = true,
   photoUrlOverride,
+  skipCatalogPhoto = false,
 }: PlayerPhotoProps) {
-  const player = useResolvedPlayer(playerSlug);
-  const rawPhoto = photoUrlOverride?.trim() || getPlayerPhotoUrl(player);
+  const resolved = useResolvedPlayer(playerSlug);
+  const player = skipCatalogPhoto ? null : resolved;
+  const rawPhoto = photoUrlOverride?.trim() || (!skipCatalogPhoto && getPlayerPhotoUrl(player)) || null;
   const photoUrl = rawPhoto ? toClientLogoUrl(rawPhoto) : undefined;
-  const club = teamSlug ?? player?.teamSlug;
+  const club =
+    teamSlug !== undefined && teamSlug !== null
+      ? teamSlug || undefined
+      : skipCatalogPhoto
+        ? undefined
+        : player?.teamSlug;
   const label = name ?? player?.ign ?? playerSlug;
   const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [playerSlug, teamSlug, photoUrlOverride, photoUrl, skipCatalogPhoto]);
 
   if (photoUrl && !failed) {
     return (
@@ -42,6 +55,7 @@ export function PlayerPhoto({
         title={label}
       >
         <img
+          key={`${playerSlug}-${photoUrl}`}
           src={photoUrl}
           alt={label}
           width={size}
@@ -55,7 +69,15 @@ export function PlayerPhoto({
   }
 
   if (fallbackLogo && club) {
-    return <TeamLogo slug={club} name={teamName(club)} size={size} className={className} />;
+    return (
+      <TeamLogo
+        key={`club-${playerSlug}-${club}`}
+        slug={club}
+        name={teamName(club)}
+        size={size}
+        className={className}
+      />
+    );
   }
 
   return (
@@ -67,4 +89,9 @@ export function PlayerPhoto({
       {label.slice(0, 2).toUpperCase()}
     </span>
   );
+}
+
+export function PlayerPhoto(props: PlayerPhotoProps) {
+  const mountKey = `${props.playerSlug}-${props.teamSlug ?? ""}-${props.photoUrlOverride ?? ""}-${props.skipCatalogPhoto ? "a" : "c"}`;
+  return <PlayerPhotoView key={mountKey} {...props} />;
 }

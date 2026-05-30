@@ -1,5 +1,6 @@
 import { tournaments, getTournament } from "./matches";
 import type { EsportsTournament } from "./matches";
+import type { Region } from "../types";
 
 export type AdminTournamentRow = {
   slug: string;
@@ -106,6 +107,32 @@ export function mergeAdminTournamentRows(
     });
   }
   return [...bySlug.values()].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+const TOUR_STATUSES = new Set(["live", "upcoming", "finished"]);
+
+/** Datos del formulario admin → aspecto de listado/ficha pública */
+export function adminRowToEsportsPreview(row: AdminTournamentRow): EsportsTournament {
+  const status = TOUR_STATUSES.has(row.status)
+    ? (row.status as EsportsTournament["status"])
+    : "upcoming";
+  const participants = row.participant_slugs ?? [];
+  return {
+    slug: row.slug,
+    name: row.name?.trim() || row.slug,
+    shortName: row.short_name?.trim() || row.name?.trim() || row.slug,
+    region: (row.region as Region) || "GLOBAL",
+    prizePool: row.prize_pool?.trim() || "TBA",
+    teams: row.teams_count || participants.length || 0,
+    status,
+    startDate: row.start_date?.trim() || "",
+    endDate: row.end_date?.trim() || row.start_date?.trim() || "",
+    location: row.location?.trim() || "—",
+    stage: row.stage?.trim() || "",
+    liquipediaUrl: "",
+    tier: row.tier ?? undefined,
+    participantSlugs: participants,
+  };
 }
 
 export function slugifyAdminId(raw: string): string {

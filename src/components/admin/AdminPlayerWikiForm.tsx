@@ -5,6 +5,11 @@ import Link from "next/link";
 import { Save, Trash2 } from "lucide-react";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
 import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
+import { PlayerNationalityBadge } from "@/components/ui/PlayerNationalityBadge";
+import {
+  playerNationalityFlagUrl,
+  resolvePlayerNationalityCountry,
+} from "@/lib/data/player-nationality";
 import type { AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
 import {
   parsePlayerMeta,
@@ -68,6 +73,10 @@ export function AdminPlayerWikiForm({
   const [tab, setTab] = useState<Tab>("basico");
   const p = player.profile;
   const mains = (p.main_brawlers ?? []).join(", ");
+  const nationalityCountry = resolvePlayerNationalityCountry(player);
+  const nationalityFlagCustom = playerNationalityFlagUrl(player.meta);
+  const metaFlagUrl =
+    typeof player.meta?.nationality_flag_url === "string" ? player.meta.nationality_flag_url : "";
 
   return (
     <form
@@ -77,12 +86,14 @@ export function AdminPlayerWikiForm({
         onSave();
       }}
     >
-      <div className="bf-admin-editor-head">
+      <div className="bf-admin-editor-head" key={`head-${player.slug}-${player.team_slug ?? "free"}-${player.photo_url ?? ""}`}>
         <PlayerPhoto
           playerSlug={player.slug}
           teamSlug={player.team_slug ?? undefined}
+          name={player.ign}
           size={96}
-          photoUrlOverride={player.photo_url}
+          photoUrlOverride={player.photo_url ?? ""}
+          skipCatalogPhoto
         />
         <div>
           <h2>{player.ign}</h2>
@@ -133,12 +144,16 @@ export function AdminPlayerWikiForm({
                 ))}
               </select>
             </AdminField>
-            <AdminField label="País / nacionalidad">
+            <AdminField
+              label="País / nacionalidad"
+              hint="Bandera en la carta FUT del jugador (independiente del país del club). Ej: Spain, Japan, es, jp…"
+            >
               <input
                 value={player.nationality ?? player.country ?? ""}
                 onChange={(e) =>
                   onChange({ ...player, nationality: e.target.value, country: e.target.value })
                 }
+                placeholder="Spain, Mexico, jp…"
               />
             </AdminField>
           </AdminFieldRow>
@@ -314,6 +329,35 @@ export function AdminPlayerWikiForm({
           {player.photo_url?.trim() && (
             <div className="bf-admin-photo-preview">
               <img src={toClientLogoUrl(player.photo_url.trim())} alt="" />
+            </div>
+          )}
+          <AdminField
+            label="Bandera / logo de nacionalidad (opcional)"
+            hint="PNG personalizado para la carta. Si está vacío, se usa la bandera según País/nacionalidad (pestaña Básico)."
+          >
+            <input
+              type="text"
+              value={metaFlagUrl}
+              onChange={(e) =>
+                onChange({
+                  ...player,
+                  meta: { ...(player.meta ?? {}), nationality_flag_url: e.target.value },
+                })
+              }
+              placeholder="https://… bandera.png"
+            />
+          </AdminField>
+          {nationalityCountry && (
+            <div className="bf-admin-photo-preview" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <PlayerNationalityBadge
+                key={`preview-${nationalityCountry}-${metaFlagUrl}`}
+                country={nationalityCountry}
+                customFlagUrl={metaFlagUrl || null}
+                size={32}
+              />
+              <span className="bf-admin-field-hint" style={{ margin: 0 }}>
+                Vista previa bandera en carta
+              </span>
             </div>
           )}
           <AdminField label="Banner de perfil (opcional)">

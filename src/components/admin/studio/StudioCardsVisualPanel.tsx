@@ -24,6 +24,11 @@ import {
   watermarkForPlayerSync,
 } from "@/lib/data/card-theme-meta";
 import { getTeamCardTheme } from "@/lib/data/team-card-theme";
+import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
+import {
+  playerNationalityFlagUrl,
+  resolvePlayerNationalityCountry,
+} from "@/lib/data/player-nationality";
 import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
@@ -478,6 +483,7 @@ export function StudioCardsVisualPanel() {
         if (savedPhoto) setPhotoUrl(savedPhoto);
         setMsg("Foto, club, marca y banner del jugador guardados");
       }
+      notifyCatalogUpdated();
       await load();
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Error");
@@ -590,11 +596,13 @@ export function StudioCardsVisualPanel() {
                     onClick={() => (mode === "teams" ? selectTeamSlug(slug) : selectPlayerSlug(slug))}
                   >
                     {mode === "teams" ? (
-                      <TeamLogo slug={slug} name={title} size={40} />
+                      <TeamLogo key={slug} slug={slug} name={title} size={40} />
                     ) : (
                       <PlayerPhoto
                         playerSlug={slug}
                         teamSlug={(item as AdminPlayerCatalogRow).team_slug ?? undefined}
+                        photoUrlOverride={(item as AdminPlayerCatalogRow).photo_url ?? ""}
+                        skipCatalogPhoto
                         size={40}
                       />
                     )}
@@ -694,6 +702,7 @@ export function StudioCardsVisualPanel() {
           {mode === "players" && playerRow && previewClub && previewTheme && (
             <>
               <AdminCardFUTPreview
+                key={`${playerRow.slug}-${playerTeamSlug ?? "none"}-${photoUrl}-${playerRow.nationality ?? playerRow.country ?? ""}`}
                 theme={previewTheme}
                 teamSlug={previewClub.slug}
                 teamName={previewClub.name}
@@ -701,6 +710,8 @@ export function StudioCardsVisualPanel() {
                 playerIgn={playerRow.ign}
                 playerSlug={playerRow.slug}
                 photoUrl={photoUrl}
+                playerNationality={resolvePlayerNationalityCountry(playerRow)}
+                nationalityFlagUrl={playerNationalityFlagUrl(playerRow.meta)}
                 mode="player"
               />
               <p className="bf-studio-hint">

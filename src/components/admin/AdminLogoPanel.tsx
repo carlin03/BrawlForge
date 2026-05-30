@@ -194,7 +194,7 @@ export function AdminLogoPanel() {
                   title={title}
                 >
                   {kind === "team" ? (
-                    <TeamLogo slug={slug} name={title} size={56} />
+                    <TeamLogo key={slug} slug={slug} name={title} size={56} />
                   ) : (
                     <TournamentLogo slug={slug} name={title} size={56} />
                   )}
@@ -216,7 +216,7 @@ export function AdminLogoPanel() {
           <div className="bf-admin-logo-sizes" key={previewKey}>
             <div className="bf-admin-logo-size-label">
               {kind === "team" ? (
-                <TeamLogo slug={selected} name={displayName} size={32} />
+                <TeamLogo key={`${selected}-32`} slug={selected} name={displayName} size={32} />
               ) : (
                 <TournamentLogo slug={selected} name={displayName} size={32} />
               )}
@@ -224,7 +224,7 @@ export function AdminLogoPanel() {
             </div>
             <div className="bf-admin-logo-size-label">
               {kind === "team" ? (
-                <TeamLogo slug={selected} name={displayName} size={64} />
+                <TeamLogo key={`${selected}-64`} slug={selected} name={displayName} size={64} />
               ) : (
                 <TournamentLogo slug={selected} name={displayName} size={64} />
               )}
@@ -232,7 +232,7 @@ export function AdminLogoPanel() {
             </div>
             <div className="bf-admin-logo-size-label">
               {kind === "team" ? (
-                <TeamLogo slug={selected} name={displayName} size={96} />
+                <TeamLogo key={`${selected}-96`} slug={selected} name={displayName} size={96} />
               ) : (
                 <TournamentLogo slug={selected} name={displayName} size={96} />
               )}

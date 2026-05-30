@@ -44,6 +44,7 @@ export function TournamentLogo({ slug, name, size = "md", className = "", glow =
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        key={`${slug}-${src ?? "none"}`}
         ref={imgRef}
         src={src}
         alt={cleanName}

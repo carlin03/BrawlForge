@@ -10,6 +10,7 @@ import {
   type CardThemeMeta,
 } from "@/lib/data/card-theme-meta";
 import { teamCardThemeVars } from "@/lib/data/team-card-theme";
+import { PlayerNationalityBadge } from "@/components/ui/PlayerNationalityBadge";
 
 export function AdminCardFUTPreview({
   theme,
@@ -19,6 +20,8 @@ export function AdminCardFUTPreview({
   playerIgn,
   playerSlug,
   photoUrl,
+  playerNationality,
+  nationalityFlagUrl,
   mode = "player",
 }: {
   theme: CardThemeMeta;
@@ -29,6 +32,9 @@ export function AdminCardFUTPreview({
   playerSlug?: string;
   /** URL en vivo del campo (antes de guardar) */
   photoUrl?: string;
+  /** País del jugador (bandera en la carta; no el del club) */
+  playerNationality?: string | null;
+  nationalityFlagUrl?: string | null;
   mode?: "team" | "player";
 }) {
   const wm = theme.watermark ?? parseCardWatermark(null);
@@ -70,18 +76,30 @@ export function AdminCardFUTPreview({
             />
           ) : mode === "player" && playerSlug ? (
             <PlayerPhoto
+              key={`${playerSlug}-${teamSlug}`}
               playerSlug={playerSlug}
               teamSlug={teamSlug}
               name={playerIgn}
               size={56}
             />
           ) : (
-            <TeamLogo slug={teamSlug} name={teamName} size={56} />
+            <TeamLogo key={teamSlug} slug={teamSlug} name={teamName} size={56} />
           )}
         </div>
         <div className="bf-card-identity">
           <div className="bf-card-name">{label}</div>
           <div className="bf-card-team">{teamName}</div>
+          {mode === "player" && playerNationality?.trim() && (
+            <div className="bf-card-country-row">
+              <PlayerNationalityBadge
+                key={`${playerSlug}-${playerNationality}-${nationalityFlagUrl ?? ""}`}
+                country={playerNationality.trim()}
+                customFlagUrl={nationalityFlagUrl}
+                size={18}
+                className="bf-card-country-flag"
+              />
+            </div>
+          )}
         </div>
         <div className="bf-card-fut-foot">
           <div className="bf-card-fut-stat">

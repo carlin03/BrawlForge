@@ -63,6 +63,14 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     load();
   }, [load]);
 
+  useEffect(() => {
+    const onCatalogUpdated = () => {
+      void load();
+    };
+    window.addEventListener("bf-catalog-updated", onCatalogUpdated);
+    return () => window.removeEventListener("bf-catalog-updated", onCatalogUpdated);
+  }, [load]);
+
   const value = useMemo<CatalogState>(() => {
     const teamsBySlug = new Map<string, CatalogTeamRow>();
     const playersBySlug = new Map<string, CatalogPlayerRow>();
@@ -101,4 +109,11 @@ export function useCatalogPlayer(slug: string): CatalogPlayerRow | undefined {
 export function useCatalogMarket(tournament: string, playerSlug: string): CatalogMarketRow | undefined {
   const { marketByKey } = useCatalog();
   return marketByKey.get(`${tournament}:${playerSlug}`);
+}
+
+/** Tras guardar jugador/equipo en admin — refresca useResolvedPlayer/Team en toda la app */
+export function notifyCatalogUpdated() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("bf-catalog-updated"));
+  }
 }

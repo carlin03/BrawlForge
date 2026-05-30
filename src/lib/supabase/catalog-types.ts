@@ -39,6 +39,7 @@ export interface CatalogPlayerRow {
   fantasy_ownership: number;
   rating: number;
   country: string | null;
+  nationality?: string | null;
   join_date: string | null;
   bio: string | null;
   photo_url: string | null;

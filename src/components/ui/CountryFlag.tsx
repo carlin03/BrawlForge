@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { flagUrl } from "@/lib/data/countries";
 
 interface CountryFlagProps {
@@ -12,6 +12,10 @@ interface CountryFlagProps {
 export function CountryFlag({ country, size = 16, className = "" }: CountryFlagProps) {
   const [failed, setFailed] = useState(false);
   const src = flagUrl(country, size <= 20 ? 20 : 40);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [country, size]);
 
   if (failed) {
     return (

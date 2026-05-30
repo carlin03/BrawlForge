@@ -10,6 +10,7 @@ import type { AdminTournamentRow } from "@/lib/data/admin-tournaments";
 import { mergeAdminTournamentRows } from "@/lib/data/admin-tournaments";
 import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { AdminTeamLogoPicker } from "@/components/admin/AdminTeamLogoPicker";
+import { AdminTournamentWebPreview } from "@/components/admin/AdminTournamentWebPreview";
 
 const REGIONS = ["GLOBAL", "EMEA", "EA", "NA", "SA", "CN"] as const;
 const STATUSES = [
@@ -174,14 +175,15 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
 
         {selected ? (
           <form
+            key={selected.slug}
             className="bf-admin-editor"
             onSubmit={(e) => {
               e.preventDefault();
               save(selected);
             }}
           >
-            <div className="bf-admin-editor-head">
-              <TournamentLogo slug={selected.slug} name={selected.name} size={72} />
+            <div className="bf-admin-editor-head" key={`head-${selected.slug}`}>
+              <TournamentLogo key={selected.slug} slug={selected.slug} name={selected.name} size={72} />
               <div>
                 <h2>{selected.name}</h2>
                 <p className="bf-admin-field-hint" style={{ margin: 0 }}>
@@ -189,6 +191,8 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
                 </p>
               </div>
             </div>
+
+            <AdminTournamentWebPreview row={selected} teams={teamList} />
 
             <AdminFieldRow>
               <AdminField label="Nombre completo">

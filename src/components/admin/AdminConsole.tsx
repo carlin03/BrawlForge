@@ -27,6 +27,7 @@ import { AdminLogoPanel } from "@/components/admin/AdminLogoPanel";
 import { AdminImportPanel } from "@/components/admin/AdminImportPanel";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
 import { TeamLogo } from "@/components/ui/TeamLogo";
+import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
 import { getLatestNews } from "@/lib/data";
 import { BSC_2026_ADMIN_TEAM_COUNT, mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
@@ -163,6 +164,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
       setMsg(data.message || "Cambios guardados");
+      notifyCatalogUpdated();
       const fresh = await load();
       if (fresh) {
         if (entity === "player") {
@@ -421,7 +423,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                       className={`bf-admin-list-card ${selectedTeam?.slug === t.slug ? "is-on" : ""}`}
                       onClick={() => setSelectedTeam(teamRowToWikiState(t as AdminTeamCatalogRow & Record<string, unknown>))}
                     >
-                      <TeamLogo slug={t.slug} name={t.name} size={44} />
+                      <TeamLogo key={t.slug} slug={t.slug} name={t.name} size={44} />
                       <span className="bf-admin-list-card-body">
                         <span className="bf-admin-list-card-title">{t.tag || t.name}</span>
                         <span className="bf-admin-list-card-sub">{t.name}</span>
@@ -437,6 +439,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
 
           {selectedTeam ? (
             <AdminTeamWikiForm
+              key={selectedTeam.slug}
               team={selectedTeam}
               players={players.map((p) => ({ slug: p.slug, ign: p.ign, team_slug: p.team_slug }))}
               loading={loading}
@@ -513,7 +516,12 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                       }
                     >
                       {p.team_slug ? (
-                        <TeamLogo slug={p.team_slug} name={club?.name} size={44} />
+                        <TeamLogo
+                          key={`${p.slug}-${p.team_slug ?? "none"}`}
+                          slug={p.team_slug ?? ""}
+                          name={club?.name}
+                          size={44}
+                        />
                       ) : (
                         <span className="bf-admin-list-fallback" style={{ width: 44, height: 44, fontSize: 18 }}>
                           ?
@@ -537,6 +545,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
 
           {selectedPlayer ? (
             <AdminPlayerWikiForm
+              key={selectedPlayer.slug}
               player={selectedPlayer}
               teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag, region: t.region }))}
               loading={loading}

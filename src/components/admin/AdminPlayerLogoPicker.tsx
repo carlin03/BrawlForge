@@ -72,7 +72,13 @@ export function AdminPlayerLogoPicker({
                   <Check size={14} strokeWidth={3} />
                 </span>
               )}
-              <PlayerPhoto playerSlug={p.slug} teamSlug={p.team_slug ?? teamSlug} size={48} />
+              <PlayerPhoto
+                playerSlug={p.slug}
+                teamSlug={p.team_slug ?? teamSlug}
+                photoUrlOverride=""
+                skipCatalogPhoto
+                size={48}
+              />
               <span className="bf-admin-logo-tile-name">{p.ign}</span>
               {p.team_slug && p.team_slug !== teamSlug && (
                 <span className="bf-admin-logo-tile-sub">{p.team_slug}</span>

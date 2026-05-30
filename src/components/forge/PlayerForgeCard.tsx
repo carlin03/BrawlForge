@@ -1,8 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { TeamLogo } from "@/components/ui/TeamLogo";
-import { CountryFlag } from "@/components/ui/CountryFlag";
-import { getPlayer, getTeam } from "@/lib/data";
+import { PlayerNationalityBadge } from "@/components/ui/PlayerNationalityBadge";
+import { getTeam } from "@/lib/data";
+import { useResolvedPlayer } from "@/hooks/useResolvedEntity";
+import {
+  playerNationalityFlagUrl,
+  resolvePlayerNationalityCountry,
+} from "@/lib/data/player-nationality";
 import { getPlayerPrice, getTrendingLabel, getTrendingClass, type MarketPlayer } from "@/lib/data/fantasy";
 
 function rarityClass(rating: number, isCaptain?: boolean): string {
@@ -35,9 +42,11 @@ export function PlayerForgeCard({
   trending,
   form,
 }: PlayerForgeCardProps) {
-  const player = getPlayer(playerSlug);
+  const player = useResolvedPlayer(playerSlug);
   if (!player) return null;
   const team = getTeam(player.teamSlug);
+  const nationalityCountry = resolvePlayerNationalityCountry(player);
+  const nationalityFlagUrl = playerNationalityFlagUrl(player.meta);
   const displayPrice = price ?? getPlayerPrice(playerSlug);
   const trendLabel = getTrendingLabel(trending);
   const ovr = variant === "market" ? Math.round(player.rating * 10) : (gameweekPoints ?? player.fantasyPoints);
@@ -57,9 +66,14 @@ export function PlayerForgeCard({
           </div>
           {trendLabel && variant === "market" ? (
             <span className={`bf-trend-badge ${getTrendingClass(trending)}`}>{trendLabel}</span>
-          ) : (
-            team && <CountryFlag country={team.country} size={24} />
-          )}
+          ) : nationalityCountry ? (
+            <PlayerNationalityBadge
+              key={`${playerSlug}-${nationalityCountry}`}
+              country={nationalityCountry}
+              customFlagUrl={nationalityFlagUrl}
+              size={24}
+            />
+          ) : null}
         </div>
         <div className="forge-card-art">
           <div className="forge-card-art-glow" />

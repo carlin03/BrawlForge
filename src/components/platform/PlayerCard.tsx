@@ -11,8 +11,12 @@ import {
   parseGlobalWatermarkDefaults,
 } from "@/lib/data/card-theme-meta";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
-import { CountryFlag } from "@/components/ui/CountryFlag";
+import { PlayerNationalityBadge } from "@/components/ui/PlayerNationalityBadge";
 import { getTeam, teamName, getFantasyRole } from "@/lib/data";
+import {
+  playerNationalityFlagUrl,
+  resolvePlayerNationalityCountry,
+} from "@/lib/data/player-nationality";
 import { getTeamCardTheme, teamCardThemeVars } from "@/lib/data/team-card-theme";
 import { useResolvedPlayer, useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { PriceDelta } from "@/components/platform/ui";
@@ -87,6 +91,8 @@ export function PlayerCard({
   const ownership = pickRate ?? p.fantasyOwnership;
   const trend = priceChange ?? 0;
   const photoSize = PHOTO_BY_SIZE[size];
+  const nationalityCountry = resolvePlayerNationalityCountry(p);
+  const nationalityFlagUrl = playerNationalityFlagUrl(playerMeta);
   const statusLabel =
     p.status === "active" ? "Activo" : p.status === "inactive" ? "Inactivo" : "Retirado";
 
@@ -124,9 +130,15 @@ export function PlayerCard({
       <div className="bf-card-identity">
         <div className="bf-card-name">{p.ign}</div>
         <div className="bf-card-team">{club?.name ?? teamName(displayClub)}</div>
-        {club?.country && (
+        {nationalityCountry && (
           <div className="bf-card-country-row">
-            <CountryFlag country={club.country} size={18} className="bf-card-country-flag" />
+            <PlayerNationalityBadge
+              key={`${playerSlug}-${nationalityCountry}-${nationalityFlagUrl ?? ""}`}
+              country={nationalityCountry}
+              customFlagUrl={nationalityFlagUrl}
+              size={18}
+              className="bf-card-country-flag"
+            />
           </div>
         )}
         <div className={`bf-card-extra-slot ${showExtended ? "" : "is-empty"}`}>
@@ -134,9 +146,14 @@ export function PlayerCard({
             <div className="bf-card-extra">
               <span className="bf-card-extra-pill">{role}</span>
               <span className="bf-card-extra-pill">{statusLabel}</span>
-              {club?.country && (
+              {nationalityCountry && (
                 <span className="bf-card-extra-meta bf-card-extra-flag">
-                  <CountryFlag country={club.country} size={14} />
+                  <PlayerNationalityBadge
+                    key={`ext-${playerSlug}-${nationalityCountry}`}
+                    country={nationalityCountry}
+                    customFlagUrl={nationalityFlagUrl}
+                    size={14}
+                  />
                 </span>
               )}
             </div>
