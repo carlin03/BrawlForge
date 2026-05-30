@@ -66,7 +66,7 @@ Servicios en `src/lib/services/catalog/` (`teams-catalog-svc`, `players-catalog-
 
 | Variable | Uso |
 |----------|-----|
-| `CRON_SECRET` | Bearer para `/api/cron/sync-matches` (cada 3 min en Vercel si `vercel.json` tiene cron) |
+| `CRON_SECRET` | Bearer para `/api/cron/sync-matches` (cron diario 08:00 UTC en plan Hobby; sync manual en Admin) |
 
 Admin → Partidos → **Sincronizar Supercell** llama `POST /api/cms/admin/matches/sync-supercell`.
 
