@@ -906,6 +906,104 @@
   flex-shrink: 0;
 }
 
+.bf-admin-match-bracket-preview {
+  padding: 14px 14px 10px;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.06), rgba(0, 0, 0, 0.45));
+  border-bottom: 1px solid var(--bp-line);
+}
+.bf-admin-match-bracket-preview .bf-admin-tournament-preview-label {
+  margin-bottom: 10px;
+}
+.bf-admin-match-vote-preview {
+  pointer-events: none;
+  margin: 0 !important;
+  max-width: 100%;
+}
+.bf-admin-match-vote-preview .bf-vote-side {
+  cursor: default;
+}
+.bf-admin-match-vote-preview .bf-vote-side.is-winner {
+  border-color: rgba(255, 200, 46, 0.55);
+}
+.bf-admin-match-preview-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--nv-display, inherit);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.bf-admin-match-preview-score-sep {
+  display: none;
+}
+.bf-admin-match-preview-score .is-win {
+  color: var(--bf-yellow, var(--bp-gold));
+}
+.bf-admin-match-preview-foot-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+}
+.bf-studio-match-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.bf-studio-match-item .bf-studio-match-item-main {
+  padding: 14px;
+}
+.bf-admin-match-preview {
+  margin-top: 4px;
+}
+.bf-admin-match-preview-row {
+  pointer-events: none;
+  border-radius: 0;
+}
+.bf-admin-match-preview-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.bf-admin-match-hero-frame {
+  padding: 16px;
+}
+.bf-admin-match-duel .fu-duel-logo {
+  pointer-events: none;
+  text-decoration: none;
+}
+.bf-admin-match-preview-predict {
+  pointer-events: none;
+}
+.bf-admin-match-mini-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--bp-line);
+}
+.bf-admin-match-mini-score {
+  font-family: var(--nv-display, inherit);
+  font-weight: 800;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 48px;
+  justify-content: center;
+}
+.bf-admin-match-mini-score .is-win {
+  color: var(--bf-yellow, var(--bp-gold));
+}
+
 .bf-admin-news-preview {
   padding: 20px;
   border-radius: 14px;

@@ -1,0 +1,223 @@
+import type { Region } from "../types";
+import type { EsportsMatch } from "./matches";
+import type { PredictionEvent } from "./predictions";
+import { getTournament } from "./matches";
+import { getMatchStageMeta, getPredictDisplayStatus } from "./match-stage-meta";
+import type { EnrichedPrediction } from "./predictions-ui";
+import {
+  parseMatchMeta,
+  type MatchDisplayStatus,
+  type MatchImportance,
+  type MatchMeta,
+  type MatchPredictionsConfig,
+} from "./match-meta";
+
+/** Estado del formulario de partidos en admin (StudioMatchesPanel). */
+export type AdminMatchFormState = {
+  team_a_slug: string;
+  team_b_slug: string;
+  tournament_slug: string;
+  scheduled_at: string;
+  status: string;
+  stage: string;
+  format: string;
+  score_a: number;
+  score_b: number;
+  importance: MatchImportance;
+  display_status: MatchDisplayStatus;
+  featured_label: string;
+  pred_winner: boolean;
+  pred_exact: boolean;
+  pred_mvp: boolean;
+  pred_first_map: boolean;
+  pred_decisive_map: boolean;
+  pred_brawler_used: boolean;
+  pred_brawler_mvp: boolean;
+  pred_advanced: boolean;
+  map_pool: string[];
+  map_order: string[];
+  map_current: string;
+  map_decisive: string;
+  bans_maps_a: string[];
+  bans_maps_b: string[];
+  brawlers_meta: string[];
+  brawlers_recommended: string[];
+  brawlers_banned_a: string[];
+  brawlers_banned_b: string[];
+};
+
+export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
+  const predictions: MatchPredictionsConfig = {
+    winner: form.pred_winner,
+    exact_score: form.pred_exact,
+    mvp: form.pred_mvp,
+    first_map: form.pred_first_map,
+    decisive_map: form.pred_decisive_map,
+    brawler_most_used: form.pred_brawler_used,
+    brawler_mvp: form.pred_brawler_mvp,
+    advanced: form.pred_advanced,
+  };
+  return {
+    importance: form.importance,
+    display_status: form.display_status,
+    allow_exact_score: form.pred_exact,
+    featured_label: form.featured_label.trim() || undefined,
+    predictions,
+    maps: form.map_pool.length
+      ? {
+          possible: form.map_pool,
+          order: form.map_order.length ? form.map_order : form.map_pool,
+          current: form.map_current || undefined,
+          decisive: form.map_decisive || undefined,
+        }
+      : undefined,
+    bans: {
+      maps_a: form.bans_maps_a,
+      maps_b: form.bans_maps_b,
+      brawlers_a: form.brawlers_banned_a,
+      brawlers_b: form.brawlers_banned_b,
+    },
+    brawlers: {
+      meta: form.brawlers_meta.length ? form.brawlers_meta : undefined,
+      recommended: form.brawlers_recommended.length ? form.brawlers_recommended : undefined,
+    },
+  };
+}
+
+const MATCH_STATUSES = new Set(["live", "upcoming", "finished", "cancelled"]);
+
+export function adminMatchFormToEsportsMatch(
+  matchId: string | null,
+  form: AdminMatchFormState,
+): EsportsMatch | null {
+  if (!form.team_a_slug?.trim() || !form.team_b_slug?.trim()) return null;
+  const status = MATCH_STATUSES.has(form.status)
+    ? (form.status as EsportsMatch["status"])
+    : "upcoming";
+  const date = form.scheduled_at
+    ? new Date(form.scheduled_at).toISOString()
+    : new Date().toISOString();
+  return {
+    id: matchId?.trim() || "vista-previa",
+    teamASlug: form.team_a_slug.trim(),
+    teamBSlug: form.team_b_slug.trim(),
+    scoreA: Number(form.score_a) || 0,
+    scoreB: Number(form.score_b) || 0,
+    tournamentSlug: form.tournament_slug || "bsc-2026",
+    stage: form.stage || "Group Stage",
+    date,
+    status,
+    region: "GLOBAL" as Region,
+    format: form.format || "Bo3",
+    meta: buildMatchMetaFromForm(form),
+  };
+}
+
+export function matchCatalogRowToForm(m: {
+  id: string;
+  team_a_slug: string;
+  team_b_slug: string;
+  tournament_slug: string;
+  scheduled_at: string;
+  status: string;
+  stage?: string | null;
+  format?: string | null;
+  score_a: number;
+  score_b: number;
+  meta?: Record<string, unknown>;
+}): AdminMatchFormState & { id: string } {
+  const meta = parseMatchMeta(m.meta);
+  const preds = meta.predictions ?? {};
+  return {
+    id: m.id,
+    team_a_slug: m.team_a_slug,
+    team_b_slug: m.team_b_slug,
+    tournament_slug: m.tournament_slug,
+    scheduled_at: m.scheduled_at.slice(0, 16),
+    status: m.status,
+    stage: m.stage ?? "Group Stage",
+    format: m.format ?? "Bo3",
+    score_a: m.score_a ?? 0,
+    score_b: m.score_b ?? 0,
+    importance: meta.importance ?? "normal",
+    display_status: meta.display_status ?? "upcoming",
+    featured_label: meta.featured_label ?? "",
+    pred_winner: preds.winner !== false,
+    pred_exact: !!preds.exact_score,
+    pred_mvp: !!preds.mvp,
+    pred_first_map: !!preds.first_map,
+    pred_decisive_map: !!preds.decisive_map,
+    pred_brawler_used: !!preds.brawler_most_used,
+    pred_brawler_mvp: !!preds.brawler_mvp,
+    pred_advanced: !!preds.advanced,
+    map_pool: meta.maps?.possible ?? [],
+    map_order: meta.maps?.order ?? meta.maps?.possible ?? [],
+    map_current: meta.maps?.current ?? "",
+    map_decisive: meta.maps?.decisive ?? "",
+    bans_maps_a: meta.bans?.maps_a ?? [],
+    bans_maps_b: meta.bans?.maps_b ?? [],
+    brawlers_meta: meta.brawlers?.meta ?? [],
+    brawlers_recommended: meta.brawlers?.recommended ?? [],
+    brawlers_banned_a: meta.bans?.brawlers_a ?? [],
+    brawlers_banned_b: meta.bans?.brawlers_b ?? [],
+  };
+}
+
+/** Evento enriquecido para BracketMatchCard / vista previa admin (sin depender de getMatch). */
+export function adminMatchToEnrichedPrediction(
+  form: AdminMatchFormState & { id: string },
+): EnrichedPrediction | null {
+  const es = adminMatchFormToEsportsMatch(form.id, form);
+  if (!es) return null;
+  const tour = getTournament(es.tournamentSlug);
+  const stageMeta = getMatchStageMeta(es.stage);
+  const displayStatus = getPredictDisplayStatus({
+    eventStatus: es.status === "finished" ? "closed" : "open",
+    matchStatus: es.status,
+  });
+  const featured =
+    form.importance === "week_featured" ||
+    form.importance === "historic" ||
+    form.importance === "featured";
+  const base: PredictionEvent = {
+    id: `admin-prev-${es.id}`,
+    matchId: es.id,
+    teamASlug: es.teamASlug,
+    teamBSlug: es.teamBSlug,
+    pickAPct: 50,
+    pickBPct: 50,
+    totalVotes: 0,
+    rewardPoints: es.format?.includes("5") ? 75 : es.format?.includes("3") ? 50 : 35,
+    deadline: es.date,
+    stage: es.stage,
+    tournamentSlug: es.tournamentSlug,
+    featured,
+    importance: form.importance,
+    userPick: null,
+    status: es.status === "finished" ? "closed" : "open",
+  };
+  return {
+    ...base,
+    outcome: "pending",
+    pointsEarned: 0,
+    matchDate: es.date,
+    matchStatus: es.status,
+    region: tour?.region ?? es.region,
+    tournamentShortName: tour?.shortName ?? tour?.name ?? es.tournamentSlug,
+    stageMeta,
+    displayStatus,
+  };
+}
+
+export function countEnabledPredictions(form: AdminMatchFormState): number {
+  let n = 0;
+  if (form.pred_winner) n++;
+  if (form.pred_exact) n++;
+  if (form.pred_mvp) n++;
+  if (form.pred_first_map) n++;
+  if (form.pred_decisive_map) n++;
+  if (form.pred_brawler_used) n++;
+  if (form.pred_brawler_mvp) n++;
+  if (form.pred_advanced) n++;
+  return n;
+}

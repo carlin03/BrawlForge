@@ -7,11 +7,16 @@ import { MATCH_ROUND_OPTIONS } from "@/lib/data/match-round-types";
 import {
   MATCH_IMPORTANCE_OPTIONS,
   MATCH_DISPLAY_STATUS_OPTIONS,
-  parseMatchMeta,
   type MatchImportance,
   type MatchDisplayStatus,
-  type MatchPredictionsConfig,
 } from "@/lib/data/match-meta";
+import {
+  buildMatchMetaFromForm,
+  matchCatalogRowToForm,
+  type AdminMatchFormState,
+} from "@/lib/data/admin-match-form";
+import { AdminMatchWebPreview } from "@/components/admin/AdminMatchWebPreview";
+import { AdminMatchBracketCardPreview } from "@/components/admin/AdminMatchBracketCardPreview";
 import Link from "next/link";
 import { VisualMapPicker } from "@/components/admin/studio/VisualMapPicker";
 import { VisualBrawlerPicker } from "@/components/admin/studio/VisualBrawlerPicker";
@@ -48,66 +53,6 @@ type MatchRow = {
   score_b: number;
   meta?: Record<string, unknown>;
 };
-
-function buildMatchMeta(form: {
-  importance: MatchImportance;
-  display_status: MatchDisplayStatus;
-  featured_label: string;
-  pred_winner: boolean;
-  pred_exact: boolean;
-  pred_mvp: boolean;
-  pred_first_map: boolean;
-  pred_decisive_map: boolean;
-  pred_brawler_used: boolean;
-  pred_brawler_mvp: boolean;
-  pred_advanced: boolean;
-  map_pool: string[];
-  map_order: string[];
-  map_current: string;
-  map_decisive: string;
-  bans_maps_a: string[];
-  bans_maps_b: string[];
-  brawlers_meta: string[];
-  brawlers_recommended: string[];
-  brawlers_banned_a: string[];
-  brawlers_banned_b: string[];
-}) {
-  const predictions: MatchPredictionsConfig = {
-    winner: form.pred_winner,
-    exact_score: form.pred_exact,
-    mvp: form.pred_mvp,
-    first_map: form.pred_first_map,
-    decisive_map: form.pred_decisive_map,
-    brawler_most_used: form.pred_brawler_used,
-    brawler_mvp: form.pred_brawler_mvp,
-    advanced: form.pred_advanced,
-  };
-  return {
-    importance: form.importance,
-    display_status: form.display_status,
-    allow_exact_score: form.pred_exact,
-    featured_label: form.featured_label.trim() || undefined,
-    predictions,
-    maps: form.map_pool.length
-      ? {
-          possible: form.map_pool,
-          order: form.map_order.length ? form.map_order : form.map_pool,
-          current: form.map_current || undefined,
-          decisive: form.map_decisive || undefined,
-        }
-      : undefined,
-    bans: {
-      maps_a: form.bans_maps_a,
-      maps_b: form.bans_maps_b,
-      brawlers_a: form.brawlers_banned_a,
-      brawlers_b: form.brawlers_banned_b,
-    },
-    brawlers: {
-      meta: form.brawlers_meta.length ? form.brawlers_meta : undefined,
-      recommended: form.brawlers_recommended.length ? form.brawlers_recommended : undefined,
-    },
-  };
-}
 
 type MatchFilter = "all" | "upcoming" | "live" | "finished";
 
@@ -231,40 +176,12 @@ export function StudioMatchesPanel() {
   }
 
   function loadMatchForEdit(m: MatchRow) {
-    const meta = parseMatchMeta(m.meta);
-    const preds = meta.predictions ?? {};
+    const rowForm = matchCatalogRowToForm(m);
     setEditingId(m.id);
+    const { id: _id, ...rest } = rowForm;
     setForm({
-      team_a_slug: m.team_a_slug,
-      team_b_slug: m.team_b_slug,
-      tournament_slug: m.tournament_slug,
-      scheduled_at: m.scheduled_at.slice(0, 16),
+      ...rest,
       status: (MATCH_STATUS_OPTIONS.some((s) => s.id === m.status) ? m.status : "upcoming") as (typeof MATCH_STATUS_OPTIONS)[number]["id"],
-      stage: m.stage ?? "Group Stage",
-      format: m.format ?? "Bo5",
-      score_a: m.score_a ?? 0,
-      score_b: m.score_b ?? 0,
-      importance: meta.importance ?? "normal",
-      display_status: meta.display_status ?? "upcoming",
-      featured_label: meta.featured_label ?? "",
-      pred_winner: preds.winner !== false,
-      pred_exact: !!preds.exact_score,
-      pred_mvp: !!preds.mvp,
-      pred_first_map: !!preds.first_map,
-      pred_decisive_map: !!preds.decisive_map,
-      pred_brawler_used: !!preds.brawler_most_used,
-      pred_brawler_mvp: !!preds.brawler_mvp,
-      pred_advanced: !!preds.advanced,
-      map_pool: meta.maps?.possible ?? [],
-      map_order: meta.maps?.order ?? meta.maps?.possible ?? [],
-      map_current: meta.maps?.current ?? "",
-      map_decisive: meta.maps?.decisive ?? "",
-      bans_maps_a: meta.bans?.maps_a ?? [],
-      bans_maps_b: meta.bans?.maps_b ?? [],
-      brawlers_meta: meta.brawlers?.meta ?? [],
-      brawlers_recommended: meta.brawlers?.recommended ?? [],
-      brawlers_banned_a: meta.bans?.brawlers_a ?? [],
-      brawlers_banned_b: meta.bans?.brawlers_b ?? [],
     });
     setFormTab("general");
     setPanelView("form");
@@ -381,7 +298,7 @@ export function StudioMatchesPanel() {
           format: form.format,
           score_a: form.score_a,
           score_b: form.score_b,
-          meta: buildMatchMeta(form),
+          meta: buildMatchMetaFromForm(form),
         },
       }),
     });
@@ -518,6 +435,7 @@ export function StudioMatchesPanel() {
                   <ul className="bf-studio-match-list" id="bf-studio-match-list">
                     {filtered.map((m) => (
                       <li key={m.id} className="bf-studio-match-item">
+                        <AdminMatchBracketCardPreview match={matchCatalogRowToForm(m)} />
                         <div className="bf-studio-match-item-main">
                           <div className="bf-studio-match-item-head">
                             <strong>
@@ -622,6 +540,8 @@ export function StudioMatchesPanel() {
                   <span>{form.team_b_slug ? teamName(form.team_b_slug) : "Equipo B"}</span>
                 </div>
               </div>
+
+              <AdminMatchWebPreview matchId={editingId} form={form as AdminMatchFormState} />
 
               <div className="bf-studio-form-visual bf-studio-match-teams-pick">
                 <StudioField label="Equipo local (azul)" hint="Clic en el escudo — lado izquierdo en web y predicciones">
