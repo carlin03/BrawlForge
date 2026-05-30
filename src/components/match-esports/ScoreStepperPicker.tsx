@@ -23,6 +23,7 @@ export function ScoreStepperPicker({
   teamBName,
   initialScore,
   disabled,
+  onExactChange,
 }: {
   matchId: string;
   format: string;
@@ -32,6 +33,7 @@ export function ScoreStepperPicker({
   teamBName: string;
   initialScore?: string | null;
   disabled?: boolean;
+  onExactChange?: (exact: string | null) => void;
 }) {
   const rules = getSeriesRules(format);
   const { isLoggedIn } = useAuth();
@@ -57,6 +59,7 @@ export function ScoreStepperPicker({
       const exact = isValidSeriesScore(a, b, format) ? scoreToExactString(a, b) : null;
       patchMatchPrediction(matchId, { exactScore: exact ?? undefined });
       writeExactScore(matchId, exact);
+      onExactChange?.(exact);
       if (!isLoggedIn || !exact) return;
       setSaving(true);
       setErr("");
@@ -64,7 +67,7 @@ export function ScoreStepperPicker({
       setSaving(false);
       if (res.error) setErr(res.error);
     },
-    [format, isLoggedIn, matchId, saveExactScore],
+    [format, isLoggedIn, matchId, saveExactScore, onExactChange],
   );
 
   function bump(side: "A" | "B", delta: number) {

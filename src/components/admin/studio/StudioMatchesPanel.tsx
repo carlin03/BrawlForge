@@ -18,8 +18,12 @@ import {
 import { AdminMatchWebPreview } from "@/components/admin/AdminMatchWebPreview";
 import { AdminMatchBracketCardPreview } from "@/components/admin/AdminMatchBracketCardPreview";
 import Link from "next/link";
-import { VisualMapPicker } from "@/components/admin/studio/VisualMapPicker";
 import { StudioAssetsCatalogEditor } from "@/components/admin/studio/StudioAssetsCatalogEditor";
+import {
+  applyTemplateToMatchForm,
+  DEFAULT_TOURNAMENT_MATCH_TEMPLATES,
+  suggestTemplateForTournament,
+} from "@/lib/data/tournament-match-templates";
 import {
   StudioCard,
   StudioField,
@@ -181,6 +185,27 @@ export function StudioMatchesPanel() {
     () => getBscCircuitTournaments(40).map((t) => ({ slug: t.slug, name: t.shortName || t.name })),
     [],
   );
+  const matchTemplates = DEFAULT_TOURNAMENT_MATCH_TEMPLATES;
+  const [templateId, setTemplateId] = useState("");
+
+  function applyMatchTemplate(id: string) {
+    setTemplateId(id);
+    const t = matchTemplates.find((x) => x.id === id);
+    if (!t || id === "custom-empty") return;
+    const applied = applyTemplateToMatchForm(t);
+    setForm((f) => ({
+      ...f,
+      format: applied.format,
+      map_pool: applied.map_pool,
+      map_order: applied.map_order,
+      map_decisive: applied.map_decisive,
+      pred_map_winners: true,
+      pred_map_picks: true,
+      pred_exact: true,
+    }));
+    setMsg(`Plantilla aplicada: ${t.label}`);
+    setError(false);
+  }
 
   useEffect(() => {
     setListLayout(readStoredLayout());
@@ -725,7 +750,14 @@ export function StudioMatchesPanel() {
                 <StudioField label="Torneo">
                   <StudioSelect
                     value={form.tournament_slug}
-                    onChange={(e) => setForm({ ...form, tournament_slug: e.target.value })}
+                    onChange={(e) => {
+                      const slug = e.target.value;
+                      const suggested = suggestTemplateForTournament(slug, matchTemplates);
+                      setForm({ ...form, tournament_slug: slug });
+                      if (suggested && !templateId) {
+                        applyMatchTemplate(suggested.id);
+                      }
+                    }}
                   >
                     {tournaments.map((t) => (
                       <option key={t.slug} value={t.slug}>
@@ -734,6 +766,31 @@ export function StudioMatchesPanel() {
                     ))}
                   </StudioSelect>
                 </StudioField>
+
+                <StudioField
+                  label="Plantilla de partido"
+                  hint="Rellena formato, map pool y orden. Edita datos por mapa en Catálogo mapas."
+                >
+                  <StudioSelect
+                    value={templateId}
+                    onChange={(e) => applyMatchTemplate(e.target.value)}
+                  >
+                    <option value="">— Elegir plantilla BSC —</option>
+                    {matchTemplates.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.label}
+                      </option>
+                    ))}
+                  </StudioSelect>
+                </StudioField>
+
+                {form.map_order.length > 0 && (
+                  <p className="bf-studio-hint">
+                    Serie: <strong>{form.format}</strong> · {form.map_order.length} mapas en orden (
+                    {form.map_order.slice(0, 4).join(" → ")}
+                    {form.map_order.length > 4 ? "…" : ""})
+                  </p>
+                )}
 
                 <StudioField label="Fecha y hora">
                   <StudioInput
@@ -830,8 +887,9 @@ export function StudioMatchesPanel() {
                 {formTab === "predict" && (
                   <div className="bf-studio-check-col">
                     <p className="bf-studio-hint">
-                      Define el pool y orden en la pestaña <strong>Mapas</strong>. La serie (ganador por mapa,
-                      3+2+3 picks) se muestra en la ficha bajo <strong>Predicciones</strong>.
+                      Usa una <strong>plantilla</strong> en General para el pool. En la web: predicciones
+                      principales arriba, ganadores por mapa en avanzadas, draft 3+2+3 en{" "}
+                      <strong>Análisis de mapas</strong>.
                     </p>
                     <label className="bf-studio-check">
                       <input
@@ -944,77 +1002,22 @@ export function StudioMatchesPanel() {
                 )}
 
                 {formTab === "maps" && (
-                  <>
-                    <VisualMapPicker
-                      label="Map pool (imágenes en web)"
-                      selected={form.map_pool}
-                      onChange={(map_pool) =>
-                        setForm({
-                          ...form,
-                          map_pool,
-                          map_order: map_pool.filter((m) => form.map_order.includes(m)).length
-                            ? form.map_order.filter((m) => map_pool.includes(m))
-                            : map_pool,
-                        })
-                      }
-                    />
-                    <VisualMapPicker
-                      label="Orden de mapas"
-                      pool={form.map_pool.map((name) => ({ name }))}
-                      selected={form.map_order}
-                      onChange={(map_order) => setForm({ ...form, map_order })}
-                    />
-                    <StudioField label="Mapa actual">
-                      <StudioSelect
-                        value={form.map_current}
-                        onChange={(e) => setForm({ ...form, map_current: e.target.value })}
-                      >
-                        <option value="">—</option>
-                        {form.map_order.map((m) => (
-                          <option key={m} value={m}>
-                            {m}
-                          </option>
-                        ))}
-                      </StudioSelect>
-                    </StudioField>
-                    <StudioField label="Mapa decisivo">
-                      <StudioSelect
-                        value={form.map_decisive}
-                        onChange={(e) => setForm({ ...form, map_decisive: e.target.value })}
-                      >
-                        <option value="">—</option>
-                        {form.map_order.map((m) => (
-                          <option key={m} value={m}>
-                            {m}
-                          </option>
-                        ))}
-                      </StudioSelect>
-                    </StudioField>
-                    <VisualMapPicker
-                      label={`Bans · ${form.team_a_slug ? teamName(form.team_a_slug) : "Team A"}`}
-                      pool={form.map_pool.map((name) => ({ name }))}
-                      selected={form.bans_maps_a}
-                      onChange={(bans_maps_a) => setForm({ ...form, bans_maps_a })}
-                      variant="ban"
-                    />
-                    <VisualMapPicker
-                      label={`Bans · ${form.team_b_slug ? teamName(form.team_b_slug) : "Team B"}`}
-                      pool={form.map_pool.map((name) => ({ name }))}
-                      selected={form.bans_maps_b}
-                      onChange={(bans_maps_b) => setForm({ ...form, bans_maps_b })}
-                      variant="ban"
-                    />
-                  </>
+                  <div className="bf-studio-map-catalog-panel">
+                    <p className="bf-studio-hint">
+                      Catálogo global de mapas: imagen, modo, mejores picks, win rates y notas. Se reutilizan
+                      en todos los partidos. El pool de cada partido viene de la <strong>plantilla</strong> en
+                      General.
+                    </p>
+                    <StudioAssetsCatalogEditor section="maps" />
+                  </div>
                 )}
 
                 {formTab === "brawlers" && (
                   <div className="bf-studio-brawler-catalog-panel">
                     <p className="bf-studio-hint">
-                      Catálogo global: crea, edita, activa o desactiva brawlers y mapas con URL de imagen
-                      personalizada. Las composiciones (picks/bans por mapa) se configuran en la web pública
-                      desde <strong>Predicciones</strong> del partido.
+                      Catálogo global de brawlers. URL personalizada si el retrato oficial no carga.
                     </p>
-                    <StudioAssetsCatalogEditor />
+                    <StudioAssetsCatalogEditor section="brawlers" />
                   </div>
                 )}
               </div>

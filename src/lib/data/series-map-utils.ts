@@ -14,7 +14,15 @@ export function maxMapsInSeries(format: string): number {
   return 3;
 }
 
-/** Índice 0-based del mapa decisivo cuando el marcador exacto fuerza último mapa (1-1, 2-2, 3-3). */
+/** Mapas visibles antes de marcador decisivo (BO3→2, BO5→3, BO7→4). */
+export function initialMapsVisibleCount(format: string): number {
+  const f = format.toLowerCase();
+  if (f.includes("7")) return 4;
+  if (f.includes("5")) return 3;
+  if (f.includes("1")) return 1;
+  return 2;
+}
+
 export function decisiveMapIndexFromSeriesScore(
   scoreA: number,
   scoreB: number,
@@ -35,6 +43,11 @@ export function decisiveMapIndexFromExactString(
   return decisiveMapIndexFromSeriesScore(p.a, p.b, format);
 }
 
+/** ¿Marcador exacto fuerza mapa decisivo? (1-1, 2-2, 3-3) */
+export function isDecisiveExactScore(exact: string | undefined, format: string): boolean {
+  return decisiveMapIndexFromExactString(exact, format) != null;
+}
+
 export function mapOrderWithDecisive(
   order: string[],
   decisiveIndex: number | null,
@@ -50,4 +63,32 @@ export function mapOrderWithDecisive(
       (decisiveIndex != null && index === decisiveIndex) ||
       (!!manualDecisive && name === manualDecisive),
   }));
+}
+
+/** Slots completos del pool (análisis de mapas). */
+export function allSeriesMapSlots(
+  order: string[],
+  exactScore: string | undefined,
+  manualDecisive: string | undefined,
+  format: string,
+): MapSeriesSlot[] {
+  const decisiveIdx = decisiveMapIndexFromExactString(exactScore, format);
+  return mapOrderWithDecisive(order, decisiveIdx, manualDecisive, format);
+}
+
+/**
+ * Mapas para predicción avanzada (ganador por mapa): solo los relevantes según formato y marcador.
+ * BO3: 1–2; con 1-1 aparece mapa 3. BO5: 1–3; con 2-2 mapa 5. BO7: 1–4; con 3-3 mapa 7.
+ */
+export function visiblePredictionMapSlots(
+  order: string[],
+  exactScore: string | undefined,
+  manualDecisive: string | undefined,
+  format: string,
+): MapSeriesSlot[] {
+  const all = allSeriesMapSlots(order, exactScore, manualDecisive, format);
+  const decisiveIdx = decisiveMapIndexFromExactString(exactScore, format);
+  const initialMax = initialMapsVisibleCount(format) - 1;
+  const maxVisible = decisiveIdx != null ? Math.max(initialMax, decisiveIdx) : initialMax;
+  return all.filter((s) => s.index <= maxVisible);
 }

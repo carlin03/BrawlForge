@@ -1073,9 +1073,162 @@
   font-size: 18px;
 }
 
-/* Predicciones: eje mapas + draft 3 | 2 | 3 */
-.bf-match-predict-center.is-map-first .bf-match-predict-tier.is-map-axis {
-  margin-top: 0;
+/* Predicciones compactas + análisis separado */
+.bf-match-predict-center.is-compact .bf-match-predict-unified-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bf-match-predict-main-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.bf-match-predict-main-item.is-score {
+  grid-column: 1 / -1;
+}
+.bf-match-predict-main-item.is-full,
+.bf-match-predict-hint.is-full {
+  grid-column: 1 / -1;
+}
+.bf-match-esports-h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 800;
+}
+.bf-match-subsection-head {
+  margin-bottom: 12px;
+}
+.bf-match-advanced-maps {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bf-advanced-map-winners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.bf-advanced-map-winner-card {
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bf-advanced-map-winner-card.is-decisive {
+  border-color: rgba(255, 193, 7, 0.45);
+  background: rgba(255, 193, 7, 0.05);
+}
+.bf-advanced-map-winner-num {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+}
+.bf-advanced-map-winner-num em {
+  margin-left: 6px;
+  color: #ffd54f;
+  font-style: normal;
+}
+.bf-advanced-map-winner-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 4px 0 8px;
+}
+.bf-match-map-analysis {
+  margin-top: 32px;
+}
+.bf-map-analysis-lane {
+  margin-bottom: 28px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+.bf-map-analysis-lane.is-decisive-lane {
+  border-color: rgba(255, 193, 7, 0.5);
+  box-shadow: 0 0 32px rgba(255, 193, 7, 0.1);
+}
+.bf-map-analysis-hero {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+  padding: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bf-map-analysis-prediction {
+  padding: 14px 18px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bf-map-analysis-pred-duel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 8px 0;
+}
+.bf-map-analysis-pred-duel .is-picked-team {
+  outline: 2px solid var(--bp-gold);
+  border-radius: 50%;
+  padding: 4px;
+}
+.bf-map-analysis-vs {
+  font-weight: 900;
+  color: var(--bp-dim);
+}
+.bf-map-strategic-panel {
+  padding: 16px 18px 20px;
+  background: rgba(0, 0, 0, 0.15);
+}
+.bf-map-strategic-panel h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-dim);
+}
+.bf-map-strategic-group {
+  margin-bottom: 12px;
+}
+.bf-map-strategic-group > span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--bp-muted);
+}
+.bf-map-strategic-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bf-map-win-rates {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bf-map-win-rates li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.bf-map-win-rates strong {
+  margin-left: auto;
+  color: var(--bp-gold);
+}
+.bf-map-strategic-notes {
+  font-size: 12px;
+  color: var(--bp-muted);
+  margin: 8px 0 0;
+  font-style: italic;
 }
 .bf-predict-points-bar {
   display: flex;

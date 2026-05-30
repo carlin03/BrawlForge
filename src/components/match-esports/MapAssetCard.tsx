@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Ban } from "lucide-react";
-import { resolveMapDef } from "@/lib/data/game-assets-catalog";
+import { resolveMapCatalogEntry } from "@/lib/data/game-assets-catalog";
 import { useGameAssetsCatalog } from "@/hooks/useGameAssetsCatalog";
 import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 
@@ -22,7 +22,7 @@ export function MapAssetCard({
   size?: "md" | "lg";
 }) {
   const { maps } = useGameAssetsCatalog();
-  const def = resolveMapDef(name, maps);
+  const def = resolveMapCatalogEntry(name, maps);
   const [failed, setFailed] = useState(false);
   const src = failed ? undefined : toClientLogoUrl(def.imageUrl);
 

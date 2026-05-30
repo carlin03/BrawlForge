@@ -5,13 +5,14 @@ import {
   mergeBrawlerCatalog,
   mergeMapCatalog,
   type GameAssetsCatalog,
+  type MapCatalogEntry,
 } from "@/lib/data/game-assets-catalog";
-import type { BsBrawlerDef, BsMapDef } from "@/lib/data/bs-catalog";
+import type { BsBrawlerDef } from "@/lib/data/bs-catalog";
 
-let cache: { brawlers: BsBrawlerDef[]; maps: BsMapDef[] } | null = null;
+let cache: { brawlers: BsBrawlerDef[]; maps: MapCatalogEntry[] } | null = null;
 let inflight: Promise<void> | null = null;
 
-async function loadCatalog(): Promise<{ brawlers: BsBrawlerDef[]; maps: BsMapDef[] }> {
+async function loadCatalog(): Promise<{ brawlers: BsBrawlerDef[]; maps: MapCatalogEntry[] }> {
   if (cache) return cache;
   if (!inflight) {
     inflight = fetch("/api/game-assets")
@@ -36,7 +37,7 @@ async function loadCatalog(): Promise<{ brawlers: BsBrawlerDef[]; maps: BsMapDef
 
 export function useGameAssetsCatalog() {
   const [brawlers, setBrawlers] = useState<BsBrawlerDef[]>(() => cache?.brawlers ?? mergeBrawlerCatalog(null));
-  const [maps, setMaps] = useState<BsMapDef[]>(() => cache?.maps ?? mergeMapCatalog(null));
+  const [maps, setMaps] = useState<MapCatalogEntry[]>(() => cache?.maps ?? mergeMapCatalog(null));
   const [ready, setReady] = useState(!!cache);
 
   useEffect(() => {
