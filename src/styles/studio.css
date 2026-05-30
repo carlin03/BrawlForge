@@ -652,10 +652,60 @@
   }
 }
 
+.bf-studio-match-list-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.bf-studio-match-toolbar-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-dim);
+  margin-bottom: 6px;
+}
+.bf-studio-match-toolbar-hint {
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--bp-muted);
+  font-size: 10px;
+}
+
 .bf-studio-match-list {
+  display: grid;
+  gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
+}
+.bf-studio-match-list--cols-1 {
+  grid-template-columns: 1fr;
+}
+.bf-studio-match-list--cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.bf-studio-match-list--cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 1200px) {
+  .bf-studio-match-list--cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 768px) {
+  .bf-studio-match-list--cols-2,
+  .bf-studio-match-list--cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bf-studio-match-list .bf-studio-match-item {
+  margin-bottom: 0;
+  min-width: 0;
 }
 
 .bf-studio-match-item {
@@ -664,6 +714,27 @@
   background: var(--bp-surface, #131824);
   border: 1px solid var(--bp-line);
   margin-bottom: 8px;
+}
+
+/* Tarjeta más compacta en rejilla 2–3 columnas */
+.bf-studio-match-list--cols-2 .bf-admin-match-bracket-preview,
+.bf-studio-match-list--cols-3 .bf-admin-match-bracket-preview {
+  padding: 10px;
+}
+.bf-studio-match-list--cols-3 .bf-admin-match-vote-preview .bf-vote-side-logo img,
+.bf-studio-match-list--cols-3 .bf-admin-match-vote-preview .bf-vote-side-logo span {
+  width: 44px !important;
+  height: 44px !important;
+}
+.bf-studio-match-list--cols-3 .bf-admin-match-vote-preview .bf-vote-name-lg {
+  font-size: 11px;
+}
+.bf-studio-match-list--cols-3 .bf-studio-match-item-main .bf-studio-field {
+  margin-bottom: 8px;
+}
+.bf-studio-match-list--cols-3 .bf-studio-round-badges {
+  max-height: 120px;
+  overflow-y: auto;
 }
 
 .bf-studio-match-meta {

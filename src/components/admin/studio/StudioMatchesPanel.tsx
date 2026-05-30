@@ -55,6 +55,23 @@ type MatchRow = {
 };
 
 type MatchFilter = "all" | "upcoming" | "live" | "finished";
+type MatchListLayout = "auto" | "1" | "2" | "3";
+
+const MATCH_LIST_LAYOUT_KEY = "bf-admin-match-list-layout";
+
+function readStoredLayout(): MatchListLayout {
+  if (typeof window === "undefined") return "auto";
+  const v = window.localStorage.getItem(MATCH_LIST_LAYOUT_KEY);
+  if (v === "1" || v === "2" || v === "3" || v === "auto") return v;
+  return "auto";
+}
+
+function resolveListColumns(filter: MatchFilter, layout: MatchListLayout): 1 | 2 | 3 {
+  if (layout === "1") return 1;
+  if (layout === "2") return 2;
+  if (layout === "3") return 3;
+  return filter === "finished" ? 3 : 1;
+}
 
 function MatchScoreQuickRow({
   match,
@@ -111,6 +128,7 @@ export function StudioMatchesPanel() {
   const [msg, setMsg] = useState("");
   const [error, setError] = useState(false);
   const [listFilter, setListFilter] = useState<MatchFilter>("all");
+  const [listLayout, setListLayout] = useState<MatchListLayout>("auto");
   const [panelView, setPanelView] = useState<"list" | "form">("list");
   const [syncing, setSyncing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -152,6 +170,17 @@ export function StudioMatchesPanel() {
     () => getBscCircuitTournaments(40).map((t) => ({ slug: t.slug, name: t.shortName || t.name })),
     [],
   );
+
+  useEffect(() => {
+    setListLayout(readStoredLayout());
+  }, []);
+
+  function setListLayoutPersisted(layout: MatchListLayout) {
+    setListLayout(layout);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(MATCH_LIST_LAYOUT_KEY, layout);
+    }
+  }
 
   useEffect(() => {
     fetch("/api/admin/catalog?type=teams")
@@ -350,6 +379,7 @@ export function StudioMatchesPanel() {
         const pendingImport = web?.pendingImport ?? 0;
         const totalOnSite = web?.totalOnSite ?? 0;
         const filtered = matches.filter((m) => listFilter === "all" || m.status === listFilter);
+        const listColumns = resolveListColumns(listFilter, listLayout);
         return (
           <>
             <StudioToast message={msg} error={error} />
@@ -384,24 +414,59 @@ export function StudioMatchesPanel() {
                   (cuartos, semis…). Las opciones de predicción por partido están en{" "}
                   <strong>Editar completo → pestaña Predicciones</strong>.
                 </p>
-                <div className="bf-studio-pills" role="group" style={{ marginBottom: 12 }}>
-                  {(
-                    [
-                      ["all", "Todos"],
-                      ["upcoming", "Próximos"],
-                      ["live", "En vivo"],
-                      ["finished", "Finalizados"],
-                    ] as const
-                  ).map(([id, label]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      className={`bf-studio-pill ${listFilter === id ? "is-on" : ""}`}
-                      onClick={() => setListFilter(id)}
-                    >
-                      {label}
-                    </button>
-                  ))}
+                <div className="bf-studio-match-list-toolbar">
+                  <div>
+                    <span className="bf-studio-match-toolbar-label">Estado</span>
+                    <div className="bf-studio-pills" role="group">
+                      {(
+                        [
+                          ["all", "Todos"],
+                          ["upcoming", "Próximos"],
+                          ["live", "En vivo"],
+                          ["finished", "Finalizados"],
+                        ] as const
+                      ).map(([id, label]) => (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`bf-studio-pill ${listFilter === id ? "is-on" : ""}`}
+                          onClick={() => setListFilter(id)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="bf-studio-match-toolbar-label">
+                      Partidos por fila
+                      {listLayout === "auto" && (
+                        <span className="bf-studio-match-toolbar-hint">
+                          {" "}
+                          (auto: 3 en Finalizados, 1 en el resto — ahora {listColumns})
+                        </span>
+                      )}
+                    </span>
+                    <div className="bf-studio-pills" role="group">
+                      {(
+                        [
+                          ["auto", "Auto"],
+                          ["1", "1×1"],
+                          ["2", "2×2"],
+                          ["3", "3×3"],
+                        ] as const
+                      ).map(([id, label]) => (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`bf-studio-pill ${listLayout === id ? "is-on" : ""}`}
+                          onClick={() => setListLayoutPersisted(id)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 {filtered.length === 0 ? (
                   <div className="bf-studio-empty-inline">
@@ -432,7 +497,12 @@ export function StudioMatchesPanel() {
                     </button>
                   </div>
                 ) : (
-                  <ul className="bf-studio-match-list" id="bf-studio-match-list">
+                  <ul
+                    className={`bf-studio-match-list bf-studio-match-list--cols-${listColumns}`}
+                    id="bf-studio-match-list"
+                    data-layout={listLayout}
+                    data-filter={listFilter}
+                  >
                     {filtered.map((m) => (
                       <li key={m.id} className="bf-studio-match-item">
                         <AdminMatchBracketCardPreview match={matchCatalogRowToForm(m)} />
