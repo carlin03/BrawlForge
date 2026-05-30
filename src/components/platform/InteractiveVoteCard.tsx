@@ -17,6 +17,12 @@ import { MatchStageBadge } from "@/components/platform/predictions/MatchStageBad
 import { MatchStatusPill } from "@/components/platform/predictions/MatchStatusPill";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
+import {
+  type BracketRevealState,
+  isBracketReadyToVote,
+  mapBracketSlugToApiSide,
+} from "@/lib/data/bracket-reveal";
+import { teamName } from "@/lib/data";
 
 interface InteractiveVoteCardProps {
   event: PredictionEvent | EnrichedPrediction;
@@ -24,6 +30,12 @@ interface InteractiveVoteCardProps {
   initialPick?: "A" | "B" | null;
   /** Voto custom (p. ej. final dinámica del bracket) */
   voteOverride?: (side: "A" | "B") => Promise<{ error?: string } | void>;
+  /** Bracket progresivo: lados en gris hasta desbloquear con la ronda anterior */
+  bracketReveal?: BracketRevealState;
+}
+
+function labelForSlug(slug: string): string {
+  return teamName(slug);
 }
 
 export function InteractiveVoteCard({
@@ -31,6 +43,7 @@ export function InteractiveVoteCard({
   featured,
   initialPick = null,
   voteOverride,
+  bracketReveal,
 }: InteractiveVoteCardProps) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
@@ -41,8 +54,13 @@ export function InteractiveVoteCard({
 
   const hasVotes = hasRealVotes(event);
   const closed = event.status === "closed";
-  const labelA = getPredictionLabel(event, "A");
-  const labelB = getPredictionLabel(event, "B");
+  const revealA = bracketReveal?.sideA.revealed ?? true;
+  const revealB = bracketReveal?.sideB.revealed ?? true;
+  const slugA = revealA ? (bracketReveal?.sideA.teamSlug ?? event.teamASlug) : null;
+  const slugB = revealB ? (bracketReveal?.sideB.teamSlug ?? event.teamBSlug) : null;
+  const bracketReady = bracketReveal ? isBracketReadyToVote(bracketReveal) : true;
+  const labelA = slugA ? labelForSlug(slugA) : "Por definir";
+  const labelB = slugB ? labelForSlug(slugB) : "Por definir";
   const match = getMatch(event.matchId);
   const matchTime = formatPredictMatchTime(match?.date ?? event.deadline);
   const isLive = match?.status === "live";
@@ -76,6 +94,8 @@ export function InteractiveVoteCard({
 
   async function vote(side: "A" | "B") {
     if (closed || saving) return;
+    if (bracketReveal && (side === "A" ? !revealA : !revealB)) return;
+    if (bracketReveal && !bracketReady) return;
     if (!isLoggedIn) {
       router.push("/login?next=/predictions");
       return;
@@ -92,7 +112,19 @@ export function InteractiveVoteCard({
       }
       return;
     }
-    const res = await castVote(event.matchId, side, event.rewardPoints);
+    let apiSide: "A" | "B" = side;
+    if (bracketReveal && slugA && slugB) {
+      const pickedSlug = side === "A" ? slugA : slugB;
+      const mapped = mapBracketSlugToApiSide(event, pickedSlug);
+      if (!mapped) {
+        setSaving(false);
+        setErr("Tu bracket no coincide con este emparejamiento oficial.");
+        setPick(event.userPick ?? null);
+        return;
+      }
+      apiSide = mapped;
+    }
+    const res = await castVote(event.matchId, apiSide, event.rewardPoints);
     setSaving(false);
     if (res.error) {
       setErr(res.error);
@@ -113,6 +145,8 @@ export function InteractiveVoteCard({
         closed ? "is-closed" : "",
         pick === "A" ? "picked-a" : pick === "B" ? "picked-b" : "",
         contextEvent.displayStatus ? `status-${contextEvent.displayStatus}` : "",
+        bracketReveal && (!revealA || !revealB) ? "is-bracket-masked" : "",
+        bracketReveal && bracketReady ? "is-bracket-ready" : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -139,34 +173,45 @@ export function InteractiveVoteCard({
         </header>
       )}
 
-      <div className="bf-vote-arena">
+      <div className={`bf-vote-arena ${bracketReveal ? "is-bracket-arena" : ""}`}>
         <button
           type="button"
-          className={`bf-vote-side bf-vote-side-a ${pick === "A" ? "is-picked" : ""} ${closed && event.correctPick === "A" ? "is-winner" : ""}`}
+          className={`bf-vote-side bf-vote-side-a ${!revealA ? "is-ghost" : ""} ${pick === "A" ? "is-picked" : ""} ${closed && event.correctPick === "A" ? "is-winner" : ""}`}
           onClick={() => void vote("A")}
-          disabled={closed || saving}
-          aria-label={`Votar por ${labelA}`}
+          disabled={closed || saving || !revealA || (bracketReveal !== undefined && !bracketReady)}
+          aria-label={revealA ? `Votar por ${labelA}` : "Equipo por definir — vota el cuarto de arriba"}
         >
           <span className="bf-vote-side-tag bf-vote-side-tag-a" title={labelA}>
             AZUL
           </span>
           <span className="bf-vote-side-logo">
-            <TeamLogo slug={event.teamASlug} name={labelA} size={featured ? 72 : 56} />
+            {slugA ? (
+              <TeamLogo slug={slugA} name={labelA} size={featured ? 72 : 56} />
+            ) : (
+              <span className="bf-bracket-ghost-mark" aria-hidden>
+                ?
+              </span>
+            )}
           </span>
           <span className="bf-vote-name bf-vote-name-lg" title={labelA}>
-            {labelA}
+            {revealA ? labelA : "Por definir"}
           </span>
-          {hasVotes ? (
-            <span className="bf-vote-pct">{event.pickAPct}%</span>
-          ) : (
-            <span className="bf-vote-no-pct">Sin votos</span>
-          )}
-          {pick === "A" && !closed && <span className="bf-vote-pick-badge">Tu voto</span>}
+          {revealA &&
+            (hasVotes ? (
+              <span className="bf-vote-pct">{event.pickAPct}%</span>
+            ) : (
+              <span className="bf-vote-no-pct">Sin votos</span>
+            ))}
+          {pick === "A" && !closed && revealA && <span className="bf-vote-pick-badge">Tu voto</span>}
         </button>
 
         <div className="bf-vote-vs" aria-hidden>
           <span className="bf-vote-vs-label">VS</span>
-          {hasVotes ? (
+          {bracketReady && hasVotes ? (
+            <span className="bf-vote-votes">{event.totalVotes} votos</span>
+          ) : bracketReveal && !bracketReady ? (
+            <span className="bf-vote-votes">Bracket</span>
+          ) : hasVotes ? (
             <span className="bf-vote-votes">{event.totalVotes} votos</span>
           ) : (
             <span className="bf-vote-votes">Sé el primero</span>
@@ -175,30 +220,37 @@ export function InteractiveVoteCard({
 
         <button
           type="button"
-          className={`bf-vote-side bf-vote-side-b ${pick === "B" ? "is-picked" : ""} ${closed && event.correctPick === "B" ? "is-winner" : ""}`}
+          className={`bf-vote-side bf-vote-side-b ${!revealB ? "is-ghost" : ""} ${pick === "B" ? "is-picked" : ""} ${closed && event.correctPick === "B" ? "is-winner" : ""}`}
           onClick={() => void vote("B")}
-          disabled={closed || saving}
-          aria-label={`Votar por ${labelB}`}
+          disabled={closed || saving || !revealB || (bracketReveal !== undefined && !bracketReady)}
+          aria-label={revealB ? `Votar por ${labelB}` : "Equipo por definir — vota el cuarto de arriba"}
         >
           <span className="bf-vote-side-tag bf-vote-side-tag-b" title={labelB}>
             ROJO
           </span>
           <span className="bf-vote-side-logo">
-            <TeamLogo slug={event.teamBSlug} name={labelB} size={featured ? 72 : 56} />
+            {slugB ? (
+              <TeamLogo slug={slugB} name={labelB} size={featured ? 72 : 56} />
+            ) : (
+              <span className="bf-bracket-ghost-mark" aria-hidden>
+                ?
+              </span>
+            )}
           </span>
           <span className="bf-vote-name bf-vote-name-lg" title={labelB}>
-            {labelB}
+            {revealB ? labelB : "Por definir"}
           </span>
-          {hasVotes ? (
-            <span className="bf-vote-pct">{event.pickBPct}%</span>
-          ) : (
-            <span className="bf-vote-no-pct">Sin votos</span>
-          )}
-          {pick === "B" && !closed && <span className="bf-vote-pick-badge">Tu voto</span>}
+          {revealB &&
+            (hasVotes ? (
+              <span className="bf-vote-pct">{event.pickBPct}%</span>
+            ) : (
+              <span className="bf-vote-no-pct">Sin votos</span>
+            ))}
+          {pick === "B" && !closed && revealB && <span className="bf-vote-pick-badge">Tu voto</span>}
         </button>
       </div>
 
-      {hasVotes && (
+      {hasVotes && bracketReady && (
         <div className="bf-bsc-poll" role="presentation" aria-label={`Comunidad: ${labelA} ${event.pickAPct}% · ${labelB} ${event.pickBPct}%`}>
           <div className="bf-bsc-poll-a" style={{ flex: `${event.pickAPct} 1 0` }} title={`${labelA} ${event.pickAPct}%`} />
           <div className="bf-bsc-poll-b" style={{ flex: `${event.pickBPct} 1 0` }} title={`${labelB} ${event.pickBPct}%`} />
@@ -206,7 +258,10 @@ export function InteractiveVoteCard({
       )}
 
       <footer className="bf-vote-foot">
-        {!closed && !pick && !isLoggedIn && (
+        {bracketReveal && !bracketReady && !closed && (
+          <span className="bf-vote-hint">Vota la ronda anterior para desbloquear los equipos.</span>
+        )}
+        {!closed && bracketReady && !pick && !isLoggedIn && (
           <Link href="/login?next=/predictions" className="bf-bsc-vote-login">
             Inicia sesión para predecir
           </Link>

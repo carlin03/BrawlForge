@@ -2,12 +2,18 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
+import { BracketMatchCard } from "@/components/platform/predictions/BracketMatchCard";
 import type { EnrichedPrediction, PlayoffBracketView } from "@/lib/data/predictions-ui";
 import {
   findBracketFinalEvent,
   getBracketPickWinner,
 } from "@/lib/data/predictions-ui";
+import {
+  isBracketReadyToVote,
+  resolveFinalReveal,
+  resolveSemiReveal,
+  semiWinner,
+} from "@/lib/data/bracket-reveal";
 import { DEFAULT_PICKEM_STAGE_POINTS, getPickemRewardPoints } from "@/lib/data/pickem-reward-points";
 import { getMatchStageMeta } from "@/lib/data/match-stage-meta";
 import { useAuth } from "@/contexts/AuthContext";
@@ -66,9 +72,26 @@ function GranFinalRound({
   const [draftFinal, setDraftFinal] = useState<BracketDraftPick | null>(null);
 
   const needTwoSemis = bracket.semis.length >= 2;
-  const winner1 = bracket.semis[0] ? winnerFromEvent(bracket.semis[0], votes) : null;
-  const winner2 = bracket.semis[1] ? winnerFromEvent(bracket.semis[1], votes) : null;
-  const waitingSemis = needTwoSemis && (!winner1 || !winner2);
+  const semiReveal0 = bracket.semis[0]
+    ? resolveSemiReveal(0, bracket.semis[0], bracket.quarters, votes)
+    : null;
+  const semiReveal1 = bracket.semis[1]
+    ? resolveSemiReveal(1, bracket.semis[1], bracket.quarters, votes)
+    : null;
+  const winner1 =
+    bracket.semis[0] && semiReveal0
+      ? semiWinner(bracket.semis[0], semiReveal0, votes)
+      : bracket.semis[0]
+        ? winnerFromEvent(bracket.semis[0], votes)
+        : null;
+  const winner2 =
+    bracket.semis[1] && semiReveal1
+      ? semiWinner(bracket.semis[1], semiReveal1, votes)
+      : bracket.semis[1]
+        ? winnerFromEvent(bracket.semis[1], votes)
+        : null;
+  const finalReveal = resolveFinalReveal(bracket.semis, bracket.quarters, votes);
+  const waitingSemis = needTwoSemis && !isBracketReadyToVote(finalReveal);
 
   const officialFinal = useMemo(() => {
     if (needTwoSemis) {
@@ -193,20 +216,25 @@ function GranFinalRound({
         {bracket.tournamentName}
         {bracket.region ? ` · ${bracket.region}` : ""}
         {waitingSemis
-          ? " — Vota las semifinales; el cruce se arma con tus ganadores."
-          : " — Misma card que partidos clave, con más peso en puntos."}
+          ? " — Los equipos se desbloquean al votar las semifinales."
+          : " — Tu bracket personal; más puntos si aciertas."}
       </p>
-      {waitingSemis ? (
-        <p className="bf-predict-round-hint">Pendiente: elige ganador en las dos semifinales de arriba.</p>
-      ) : finalEvent ? (
+      {(finalEvent || bracket.final) && (
         <div className="bf-predict-bracket-grand-final">
-          <InteractiveVoteCard
-            event={finalEvent}
+          <BracketMatchCard
+            event={finalEvent ?? bracket.final!}
+            votes={votes}
+            bracketReveal={finalReveal}
             featured
-            voteOverride={officialFinal ? undefined : voteFinalOverride}
+            voteOverride={
+              waitingSemis || officialFinal ? undefined : voteFinalOverride
+            }
           />
         </div>
-      ) : null}
+      )}
+      {waitingSemis && (
+        <p className="bf-predict-round-hint">Pendiente: elige ganador en las dos semifinales de arriba.</p>
+      )}
       {err && (
         <p className="bf-predict-round-error" role="alert">
           {err}
@@ -216,7 +244,13 @@ function GranFinalRound({
   );
 }
 
-function BracketQuarterGrid({ matches }: { matches: EnrichedPrediction[] }) {
+function BracketQuarterGrid({
+  matches,
+  votes,
+}: {
+  matches: EnrichedPrediction[];
+  votes: Record<string, "A" | "B">;
+}) {
   const top = matches.slice(0, 2);
   const bottom = matches.slice(2, 4);
   return (
@@ -224,14 +258,14 @@ function BracketQuarterGrid({ matches }: { matches: EnrichedPrediction[] }) {
       {top.length > 0 && (
         <div className="bf-predict-bracket-qf-row">
           {top.map((e) => (
-            <InteractiveVoteCard key={e.id} event={e} />
+            <BracketMatchCard key={e.id} event={e} votes={votes} />
           ))}
         </div>
       )}
       {bottom.length > 0 && (
         <div className="bf-predict-bracket-qf-row">
           {bottom.map((e) => (
-            <InteractiveVoteCard key={e.id} event={e} />
+            <BracketMatchCard key={e.id} event={e} votes={votes} />
           ))}
         </div>
       )}
@@ -239,11 +273,24 @@ function BracketQuarterGrid({ matches }: { matches: EnrichedPrediction[] }) {
   );
 }
 
-function BracketSemiGrid({ matches }: { matches: EnrichedPrediction[] }) {
+function BracketSemiGrid({
+  matches,
+  quarters,
+  votes,
+}: {
+  matches: EnrichedPrediction[];
+  quarters: EnrichedPrediction[];
+  votes: Record<string, "A" | "B">;
+}) {
   return (
     <div className="bf-predict-bracket-sf">
-      {matches.map((e) => (
-        <InteractiveVoteCard key={e.id} event={e} />
+      {matches.map((e, i) => (
+        <BracketMatchCard
+          key={e.id}
+          event={e}
+          votes={votes}
+          bracketReveal={resolveSemiReveal(i, e, quarters, votes)}
+        />
       ))}
     </div>
   );
@@ -271,9 +318,9 @@ export function PredictionsRoundSections({
             <span className="bf-predict-pickem-count">{qf.length}</span>
           </h2>
           <p className="bf-predict-section-lead">
-            {bracket.tournamentName} — partidos normales del calendario (misma card que jornada).
+            {bracket.tournamentName} — elige ganadores; alimentan las semifinales de abajo.
           </p>
-          <BracketQuarterGrid matches={qf} />
+          <BracketQuarterGrid matches={qf} votes={votes} />
         </section>
       )}
 
@@ -284,9 +331,9 @@ export function PredictionsRoundSections({
             <span className="bf-predict-pickem-count">{sf.length}</span>
           </h2>
           <p className="bf-predict-section-lead">
-            Partidos clave del torneo — más puntos si aciertas.
+            Los equipos aparecen en gris hasta que votes los cuartos de arriba.
           </p>
-          <BracketSemiGrid matches={sf} />
+          <BracketSemiGrid matches={sf} quarters={qf} votes={votes} />
         </section>
       )}
 
