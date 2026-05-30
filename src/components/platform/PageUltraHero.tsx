@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 type PageUltraHeroProps = {
-  kicker: ReactNode;
+  kicker?: ReactNode;
   title: ReactNode;
   lead: string;
   stats?: ReactNode;
@@ -31,7 +31,7 @@ export function PageUltraHero({
       <div className="fu-hero-shine" aria-hidden />
       <div className="fu-hero-grid">
         <div>
-          <p className="fu-kicker">{kicker}</p>
+          {kicker ? <p className="fu-kicker">{kicker}</p> : null}
           <h1 className="fu-title">{title}</h1>
           <p className="fu-lead">{lead}</p>
           {actions && <div className="fu-cta-row">{actions}</div>}

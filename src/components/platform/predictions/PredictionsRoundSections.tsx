@@ -6,6 +6,7 @@ import { BracketMatchCard } from "@/components/platform/predictions/BracketMatch
 import { BracketPendingDuel } from "@/components/platform/predictions/BracketPendingDuel";
 import type { PredictRoundFilterKey } from "@/lib/data/predictions-filters";
 import { bracketShowsRound } from "@/lib/data/predictions-filters";
+import { resolveBracketLayout } from "@/lib/data/bracket-config";
 import type { EnrichedPrediction, PlayoffBracketView } from "@/lib/data/predictions-ui";
 import {
   findBracketFinalEvent,
@@ -278,37 +279,29 @@ function GranFinalRound({
 function BracketQuarterGrid({
   matches,
   votes,
+  layout,
 }: {
   matches: EnrichedPrediction[];
   votes: Record<string, "A" | "B">;
+  layout: ReturnType<typeof resolveBracketLayout>;
 }) {
-  if (matches.length === 1) {
+  if (matches.length === 0) return null;
+
+  if (matches.length === 1 || layout === "1") {
     return (
-      <div className="bf-predict-bracket-qf is-solo-round">
-        <div className="bf-predict-bracket-qf-row is-solo-round">
-          <BracketMatchCard event={matches[0]} votes={votes} />
-        </div>
+      <div className="bf-predict-bracket-qf bf-predict-bracket-stack is-solo-round">
+        {matches.map((e) => (
+          <BracketMatchCard key={e.id} event={e} votes={votes} />
+        ))}
       </div>
     );
   }
-  const top = matches.slice(0, 2);
-  const bottom = matches.slice(2, 4);
+
   return (
-    <div className="bf-predict-bracket-qf">
-      {top.length > 0 && (
-        <div className={`bf-predict-bracket-qf-row ${top.length === 1 ? "is-solo-round" : ""}`}>
-          {top.map((e) => (
-            <BracketMatchCard key={e.id} event={e} votes={votes} />
-          ))}
-        </div>
-      )}
-      {bottom.length > 0 && (
-        <div className={`bf-predict-bracket-qf-row ${bottom.length === 1 ? "is-solo-round" : ""}`}>
-          {bottom.map((e) => (
-            <BracketMatchCard key={e.id} event={e} votes={votes} />
-          ))}
-        </div>
-      )}
+    <div className="bf-predict-bracket-qf-grid" data-layout="2">
+      {matches.map((e) => (
+        <BracketMatchCard key={e.id} event={e} votes={votes} />
+      ))}
     </div>
   );
 }
@@ -317,13 +310,19 @@ function BracketSemiGrid({
   matches,
   quarters,
   votes,
+  layout,
 }: {
   matches: EnrichedPrediction[];
   quarters: EnrichedPrediction[];
   votes: Record<string, "A" | "B">;
+  layout: ReturnType<typeof resolveBracketLayout>;
 }) {
+  const solo = matches.length === 1 || layout === "1";
   return (
-    <div className={`bf-predict-bracket-sf ${matches.length === 1 ? "is-solo-round" : ""}`}>
+    <div
+      className={`bf-predict-bracket-sf ${solo ? "is-solo-round bf-predict-bracket-stack" : "is-layout-2"}`}
+      data-layout={layout}
+    >
       {matches.map((e, i) => (
         <BracketMatchCard
           key={e.id}
@@ -351,6 +350,8 @@ export function PredictionsRoundSections({
   const qf = bracket.quarters;
   const sf = bracket.semis;
   const show = bracketShowsRound(bracket, roundFilter);
+  const qfLayout = resolveBracketLayout(bracket.layout, qf.length);
+  const sfLayout = resolveBracketLayout(bracket.layout, sf.length);
 
   return (
     <>
@@ -363,7 +364,7 @@ export function PredictionsRoundSections({
           <p className="bf-predict-section-lead">
             {bracket.tournamentName} — elige ganadores; alimentan las semifinales de abajo.
           </p>
-          <BracketQuarterGrid matches={qf} votes={votes} />
+          <BracketQuarterGrid matches={qf} votes={votes} layout={qfLayout} />
         </section>
       )}
 
@@ -383,7 +384,7 @@ export function PredictionsRoundSections({
               Falta configurar la 2ª semifinal en admin (fase Semifinal).
             </p>
           )}
-          <BracketSemiGrid matches={sf} quarters={qf} votes={votes} />
+          <BracketSemiGrid matches={sf} quarters={qf} votes={votes} layout={sfLayout} />
         </section>
       )}
 

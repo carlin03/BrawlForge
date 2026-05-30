@@ -16,9 +16,9 @@ export function MatchEsportsExperience({ match }: { match: EsportsMatch }) {
   return (
     <div className="bf-match-esports">
       <MatchCompetitiveContext match={match} />
-      <MatchPredictionsCenter match={match} meta={meta} aggregates={aggregates} />
       <MatchMapsVisual meta={match.meta} teamASlug={match.teamASlug} teamBSlug={match.teamBSlug} />
       <MatchBrawlersVisual meta={match.meta} teamASlug={match.teamASlug} teamBSlug={match.teamBSlug} />
+      <MatchPredictionsCenter match={match} meta={meta} aggregates={aggregates} />
       <MatchStatsVisual match={match} />
     </div>
   );

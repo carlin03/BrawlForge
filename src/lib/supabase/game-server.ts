@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getRecentMatches } from "@/lib/data/matches";
+import { pickMetaToExtended } from "@/lib/match-pick-meta";
 import type {
   FantasyEntryRow,
   FantasyLeaderboardRow,
@@ -101,7 +102,7 @@ export async function fetchUserGameState(
   const [votesRes, entriesRes, profileRes, board] = await Promise.all([
     supabase
       .from("prediction_votes")
-      .select("match_id, pick, reward_points, points_awarded, exact_score")
+      .select("match_id, pick, reward_points, points_awarded, exact_score, pick_meta")
       .eq("user_id", userId),
     supabase.from("fantasy_entries").select("*").eq("user_id", userId),
     supabase
@@ -114,11 +115,14 @@ export async function fetchUserGameState(
 
   const votes: Record<string, "A" | "B"> = {};
   const exactScores: Record<string, string> = {};
+  const matchPicks: UserGameState["matchPicks"] = {};
   for (const v of votesRes.data ?? []) {
     votes[v.match_id] = v.pick as "A" | "B";
     if (v.exact_score && typeof v.exact_score === "string") {
       exactScores[v.match_id] = v.exact_score;
     }
+    const meta = pickMetaToExtended(v.pick_meta);
+    if (Object.keys(meta).length) matchPicks[v.match_id] = meta;
   }
 
   const fantasy: UserGameState["fantasy"] = {};
@@ -146,6 +150,7 @@ export async function fetchUserGameState(
   return {
     votes,
     exactScores,
+    matchPicks,
     fantasy,
     predictPoints: profileRes.data?.predict_points ?? 0,
     predictStreak: profileRes.data?.predict_streak ?? 0,

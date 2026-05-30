@@ -38,6 +38,11 @@ export function PlayerMvpPicker({
                   >
                     <PlayerPhoto playerSlug={p.slug} teamSlug={side === 0 ? teamASlug : teamBSlug} name={p.ign} size={56} />
                     <span className="bf-mvp-picker-ign">{p.ign}</span>
+                    {p.region && (
+                      <span className="bf-mvp-picker-flag" title={p.region}>
+                        {p.region}
+                      </span>
+                    )}
                     <span className="bf-mvp-picker-club">{side === 0 ? teamName(teamASlug) : teamName(teamBSlug)}</span>
                   </button>
                 ),

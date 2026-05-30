@@ -249,7 +249,8 @@ create table if not exists public.prediction_votes (
 );
 
 alter table public.prediction_votes
-  add column if not exists exact_score text;
+  add column if not exists exact_score text,
+  add column if not exists pick_meta jsonb not null default '{}'::jsonb;
 
 create table if not exists public.fantasy_squad_slots (
   id uuid primary key default gen_random_uuid(),

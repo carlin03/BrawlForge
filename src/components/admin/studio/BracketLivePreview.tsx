@@ -2,7 +2,7 @@
 
 import { BracketPendingDuel } from "@/components/platform/predictions/BracketPendingDuel";
 import { BracketMatchCard } from "@/components/platform/predictions/BracketMatchCard";
-import type { PlayoffBracketConfig, BracketLayoutMode } from "@/lib/data/bracket-config";
+import { resolveBracketLayout, type PlayoffBracketConfig, type BracketLayoutMode } from "@/lib/data/bracket-config";
 import { enrichPrediction } from "@/lib/data/predictions-ui";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { tournamentName } from "@/lib/data";
@@ -62,15 +62,21 @@ function PreviewDuel({
 
 export function BracketLivePreview({ config }: { config: PlayoffBracketConfig }) {
   const layout = config.layout;
-  const colsClass =
-    layout === "2" ? "bf-predict-bracket-qf-grid" : layout === "1" ? "bf-predict-bracket-stack" : "bf-predict-bracket-qf-grid";
+  /* Vista previa: layout según nº de cruces configurados, no según equipos ya asignados */
+  const qfLayout = resolveBracketLayout(layout, config.slots.quarters.length);
+  const sfLayout = resolveBracketLayout(layout, config.slots.semis.length);
+  const qfClass =
+    qfLayout === "2" ? "bf-predict-bracket-qf-grid" : "bf-predict-bracket-qf bf-predict-bracket-stack is-solo-round";
+  const sfClass =
+    sfLayout === "2" ? "bf-predict-bracket-sf is-layout-2" : "bf-predict-bracket-sf is-solo-round bf-predict-bracket-stack";
+  const previewLayoutClass = qfLayout === "2" || sfLayout === "2" ? "is-preview-layout-2" : "is-preview-layout-1";
 
   return (
-    <div className="bf-bracket-live-preview bf-predict-bsc">
+    <div className={`bf-bracket-live-preview bf-predict-bsc ${previewLayoutClass}`}>
       {config.rounds.quarters && (
         <section className={`bf-predict-bracket-round ${config.slots.quarters.length === 1 ? "is-solo-round" : ""}`}>
           <h3 className="bf-predict-bracket-round-title">Cuartos</h3>
-          <div className={colsClass}>
+          <div className={qfClass} data-layout={qfLayout}>
             {config.slots.quarters.map((slot, i) => (
               <PreviewDuel
                 key={i}
@@ -79,7 +85,7 @@ export function BracketLivePreview({ config }: { config: PlayoffBracketConfig })
                 teamB={slot.team_b_slug}
                 stage="Quarterfinal"
                 idx={i}
-                layout={layout}
+                layout={qfLayout}
               />
             ))}
           </div>
@@ -88,7 +94,7 @@ export function BracketLivePreview({ config }: { config: PlayoffBracketConfig })
       {config.rounds.semis && (
         <section className={`bf-predict-bracket-round ${config.slots.semis.length === 1 ? "is-solo-round" : ""}`}>
           <h3 className="bf-predict-bracket-round-title">Semifinales</h3>
-          <div className="bf-predict-bracket-sf-grid">
+          <div className={sfClass} data-layout={sfLayout}>
             {config.slots.semis.map((slot, i) => (
               <PreviewDuel
                 key={i}
@@ -97,7 +103,7 @@ export function BracketLivePreview({ config }: { config: PlayoffBracketConfig })
                 teamB={slot.team_b_slug}
                 stage="Semifinal"
                 idx={i}
-                layout={layout}
+                layout={sfLayout}
               />
             ))}
           </div>

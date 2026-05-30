@@ -3,21 +3,18 @@
 import Link from "next/link";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltraHero";
-import { Panel, FormDots } from "@/components/platform/ui";
 import { MatchEsportsExperience } from "@/components/match-esports/MatchEsportsExperience";
 import { TeamLogo } from "@/components/ui/TeamLogo";
-import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
   getMatch,
-  getTeam,
   teamName,
-  tournamentName,
-  getPlayersByTeam,
-  getFantasyRole,
 } from "@/lib/data";
-import { getPlayerPrice } from "@/lib/data/fantasy";
-export function MatchDetailView({ id }: { id: string }) {
-  const match = getMatch(id);
+import type { EsportsMatch } from "@/lib/data/matches";
+import { getTeam } from "@/lib/data";
+import { FormDots } from "@/components/platform/ui";
+
+export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch; id?: string }) {
+  const match = matchProp ?? (id ? getMatch(id) : undefined);
   if (!match) {
     return (
       <PageUltraShell>
@@ -35,8 +32,6 @@ export function MatchDetailView({ id }: { id: string }) {
   const teamB = getTeam(match.teamBSlug);
   const winA = match.status === "finished" && match.scoreA > match.scoreB;
   const winB = match.status === "finished" && match.scoreB > match.scoreA;
-  const rosterA = getPlayersByTeam(match.teamASlug).slice(0, 4);
-  const rosterB = getPlayersByTeam(match.teamBSlug).slice(0, 4);
 
   const scoreBlock =
     match.status === "upcoming" ? (
@@ -52,21 +47,7 @@ export function MatchDetailView({ id }: { id: string }) {
   return (
     <PageUltraShell className="bf-match-detail-ultra">
       <PageUltraHero
-        kicker={
-          <>
-            <Link href={`/tournaments/${match.tournamentSlug}`} className="bp-chip bp-chip-blue">
-              <TournamentLogo slug={match.tournamentSlug} name={tournamentName(match.tournamentSlug)} size={18} />
-              {tournamentName(match.tournamentSlug)}
-            </Link>
-            <span className="bp-chip">{match.stage}</span>
-            <span className="bp-chip">{match.format}</span>
-            {match.status === "live" && (
-              <span className="bp-chip bp-chip-live">
-                <span className="bp-live-dot" /> En directo
-              </span>
-            )}
-          </>
-        }
+        kicker={null}
         title={
           <>
             {teamName(match.teamASlug)} <em>vs</em> {teamName(match.teamBSlug)}
@@ -97,54 +78,13 @@ export function MatchDetailView({ id }: { id: string }) {
           </div>
         }
         actions={
-          <>
-            <Link href="/predictions" className="fu-btn fu-btn-red">
-              Predicciones
-            </Link>
-            <Link href={`/teams/${match.teamASlug}`} className="fu-btn fu-btn-ghost">
-              {teamA?.tag ?? "A"}
-            </Link>
-            <Link href={`/teams/${match.teamBSlug}`} className="fu-btn fu-btn-ghost">
-              {teamB?.tag ?? "B"}
-            </Link>
-          </>
+          <a href="#match-predictions" className="fu-btn fu-btn-red">
+            Ir a predicciones
+          </a>
         }
       />
 
       <MatchEsportsExperience match={match} />
-
-      <Panel title="Rosters en juego" className="fu-panel-glow">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--bp-line)" }}>
-          {[rosterA, rosterB].map((roster, side) => (
-            <div key={side} style={{ background: "var(--bp-panel)" }}>
-              <div
-                style={{
-                  padding: "10px 14px",
-                  fontSize: 12,
-                  fontWeight: 800,
-                  borderBottom: "1px solid var(--bp-line)",
-                }}
-              >
-                {side === 0 ? teamName(match.teamASlug) : teamName(match.teamBSlug)}
-              </div>
-              {roster.map(
-                (p) =>
-                  p && (
-                    <Link key={p.slug} href={`/players/${p.slug}`} className="bp-row">
-                      <div className="bp-row-main">
-                        <div className="bp-row-title">{p.ign}</div>
-                        <div className="bp-row-sub">
-                          {getFantasyRole(p.slug)} · OVR {p.fantasyPoints}
-                        </div>
-                      </div>
-                      <span className="bp-row-stat gold">{getPlayerPrice(p.slug)}M</span>
-                    </Link>
-                  ),
-              )}
-            </div>
-          ))}
-        </div>
-      </Panel>
     </PageUltraShell>
   );
 }

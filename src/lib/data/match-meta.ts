@@ -189,7 +189,7 @@ export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConf
   const advanced = p.advanced === true;
   return {
     winner: p.winner !== false,
-    exact_score: p.exact_score === true || meta.allow_exact_score === true,
+    exact_score: p.exact_score === true || meta.allow_exact_score === true || advanced,
     mvp: p.mvp === true || advanced,
     first_map: p.first_map === true || advanced,
     decisive_map: p.decisive_map === true || advanced,
@@ -197,6 +197,17 @@ export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConf
     brawler_mvp: p.brawler_mvp === true || advanced,
     advanced,
   };
+}
+
+export function hasAdvancedPredictionOptions(cfg: MatchPredictionsConfig): boolean {
+  return Boolean(
+    cfg.exact_score ||
+      cfg.mvp ||
+      cfg.first_map ||
+      cfg.decisive_map ||
+      cfg.brawler_most_used ||
+      cfg.brawler_mvp,
+  );
 }
 
 export function exactScoresForFormat(format: string): readonly string[] {

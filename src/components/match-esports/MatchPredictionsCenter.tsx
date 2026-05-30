@@ -1,9 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type { EsportsMatch } from "@/lib/data/matches";
 import type { MatchMeta } from "@/lib/data/match-meta";
-import { getMatchPredictionsConfig } from "@/lib/data/match-meta";
+import {
+  getMatchPredictionsConfig,
+  hasAdvancedPredictionOptions,
+} from "@/lib/data/match-meta";
 import { enrichPrediction } from "@/lib/data/predictions-ui";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { getMatchStageMeta } from "@/lib/data/match-stage-meta";
@@ -14,6 +18,7 @@ import { TeamSidePick } from "@/components/match-esports/TeamSidePick";
 import { PlayerMvpPicker } from "@/components/match-esports/PlayerMvpPicker";
 import { BrawlerAssetIcon } from "@/components/match-esports/BrawlerAssetIcon";
 import { MatchCommunityPulse } from "@/components/match-esports/MatchCommunityPulse";
+import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
 import { teamName } from "@/lib/data";
 import {
@@ -55,135 +60,204 @@ export function MatchPredictionsCenter({
   meta: MatchMeta;
   aggregates: Record<string, VoteAggregate>;
 }) {
-  const { game } = useGame();
+  const { isLoggedIn } = useAuth();
+  const { game, saveMatchPicks } = useGame();
   const votes = game?.votes ?? {};
   const cfg = getMatchPredictionsConfig(meta);
-  const [ext, setExt] = useState<MatchExtendedPrediction>(() => ({
-    ...getMatchPrediction(match.id),
-    exactScore: game?.exactScores?.[match.id] ?? getMatchPrediction(match.id).exactScore,
-  }));
-
-  const event = enrichPrediction(toEvent(match, votes), votes);
   const closed = match.status === "finished";
-  const brawlerPool =
-    meta.brawlers?.meta?.length ? meta.brawlers.meta : BS_BRAWLER_CATALOG.map((b) => b.name);
+  const savedPick = votes[match.id] ?? null;
+  const [optimisticPick, setOptimisticPick] = useState<"A" | "B" | null>(savedPick);
+  const winnerPick = savedPick ?? optimisticPick;
+  const showAdvanced = Boolean(winnerPick) && !closed;
+  const hasAdvanced = hasAdvancedPredictionOptions(cfg);
+
+  const loadExt = useCallback((): MatchExtendedPrediction => {
+    const fromDb = game?.matchPicks?.[match.id];
+    const local = getMatchPrediction(match.id);
+    return {
+      ...local,
+      ...fromDb,
+      exactScore: game?.exactScores?.[match.id] ?? local.exactScore ?? fromDb?.exactScore,
+    };
+  }, [game?.matchPicks, game?.exactScores, match.id]);
+
+  const [ext, setExt] = useState<MatchExtendedPrediction>(loadExt);
+
+  useEffect(() => {
+    setOptimisticPick(savedPick);
+  }, [savedPick]);
+
+  useEffect(() => {
+    setExt(loadExt());
+  }, [loadExt]);
+
+  const event = enrichPrediction(
+    toEvent(match, { ...votes, [match.id]: winnerPick ?? votes[match.id] }),
+    votes,
+  );
+
+  const brawlerPool = useMemo(() => {
+    const fromMeta = [
+      ...(meta.brawlers?.meta ?? []),
+      ...(meta.brawlers?.recommended ?? []),
+      ...(meta.brawlers?.most_used ?? []),
+    ];
+    const unique = [...new Set(fromMeta)];
+    if (unique.length >= 8) return unique;
+    return BS_BRAWLER_CATALOG.map((b) => b.name);
+  }, [meta.brawlers]);
 
   const patch = useCallback(
     (p: Partial<MatchExtendedPrediction>) => {
       const next = patchMatchPrediction(match.id, p);
       setExt(next);
+      if (isLoggedIn && winnerPick) {
+        void saveMatchPicks(match.id, next);
+      }
     },
-    [match.id],
+    [match.id, isLoggedIn, winnerPick, saveMatchPicks],
   );
 
-  if (closed && !votes[match.id]) {
-    return (
-      <section className="bf-match-predict-center is-closed">
-        <h2 className="bf-match-esports-h2">Predicciones cerradas</h2>
-        <MatchCommunityPulse
-          matchId={match.id}
-          teamASlug={match.teamASlug}
-          teamBSlug={match.teamBSlug}
-          aggregates={aggregates}
-          metaBrawler={meta.brawlers?.meta?.[0]}
-          exactLeader={ext.exactScore}
-        />
-      </section>
-    );
-  }
+  if (!cfg.winner && !hasAdvanced) return null;
 
   return (
-    <section className="bf-match-predict-center">
+    <section className="bf-match-predict-center" id="match-predictions">
       <h2 className="bf-match-esports-h2">Predicciones</h2>
 
       {cfg.winner && (
         <div className="bf-match-predict-winner">
-          <InteractiveVoteCard event={event} featured />
-        </div>
-      )}
-
-      {cfg.exact_score && votes[match.id] && !closed && (
-        <ScoreStepperPicker
-          matchId={match.id}
-          format={match.format}
-          teamASlug={match.teamASlug}
-          teamBSlug={match.teamBSlug}
-          teamAName={teamName(match.teamASlug)}
-          teamBName={teamName(match.teamBSlug)}
-          initialScore={game?.exactScores?.[match.id] ?? ext.exactScore}
-        />
-      )}
-
-      {cfg.first_map && votes[match.id] && !closed && (
-        <TeamSidePick
-          label="Primer mapa — ¿quién gana?"
-          teamASlug={match.teamASlug}
-          teamBSlug={match.teamBSlug}
-          teamAName={teamName(match.teamASlug)}
-          teamBName={teamName(match.teamBSlug)}
-          value={ext.firstMapWinner ?? null}
-          onChange={(v) => patch({ firstMapWinner: v })}
-        />
-      )}
-
-      {cfg.decisive_map && votes[match.id] && !closed && (
-        <TeamSidePick
-          label="Mapa decisivo — ¿quién gana?"
-          teamASlug={match.teamASlug}
-          teamBSlug={match.teamBSlug}
-          teamAName={teamName(match.teamASlug)}
-          teamBName={teamName(match.teamBSlug)}
-          value={ext.decisiveMapWinner ?? null}
-          onChange={(v) => patch({ decisiveMapWinner: v })}
-        />
-      )}
-
-      {cfg.mvp && votes[match.id] && !closed && (
-        <div className="bf-match-predict-block">
-          <h3 className="bf-match-predict-subh">MVP del partido</h3>
-          <PlayerMvpPicker
-            teamASlug={match.teamASlug}
-            teamBSlug={match.teamBSlug}
-            value={ext.mvpPlayerSlug ?? null}
-            onChange={(slug) => patch({ mvpPlayerSlug: slug })}
+          <InteractiveVoteCard
+            event={event}
+            featured
+            hideEmbeddedExactScore
+            loginNextPath={`/login?next=/matches/${match.id}`}
+            onPickChange={setOptimisticPick}
           />
         </div>
       )}
 
-      {cfg.brawler_most_used && votes[match.id] && !closed && (
-        <div className="bf-match-predict-block">
-          <h3 className="bf-match-predict-subh">Brawler más usado</h3>
-          <div className="bf-brawler-pick-row">
-            {brawlerPool.slice(0, 12).map((name) => (
-              <BrawlerAssetIcon
-                key={name}
-                name={name}
-                variant="pick"
-                size={64}
-                selected={ext.brawlerMostUsed === name}
-                onClick={() => patch({ brawlerMostUsed: name })}
+      {!closed && hasAdvanced && !showAdvanced && (
+        <p className="bf-match-predict-hint">
+          Elige el ganador del partido para desbloquear la predicción avanzada (marcador, MVP, mapas y
+          brawlers).
+        </p>
+      )}
+
+      {!closed && hasAdvanced && !showAdvanced && cfg.advanced && (
+        <p className="bf-match-predict-hint is-muted">
+          En admin tienes activadas las predicciones avanzadas para este partido.
+        </p>
+      )}
+
+      {showAdvanced && hasAdvanced && (
+        <div className="bf-match-predict-advanced">
+          <h3 className="bf-match-predict-advanced-title">Predicción avanzada</h3>
+          <p className="bf-match-predict-advanced-lead">
+            Ganador: <strong>{winnerPick === "A" ? teamName(match.teamASlug) : teamName(match.teamBSlug)}</strong>
+            {isLoggedIn ? " — completa los extras." : " — inicia sesión para guardarlos en tu cuenta."}
+          </p>
+
+          {!isLoggedIn && (
+            <p className="bf-match-predict-hint">
+              <Link href={`/login?next=/matches/${match.id}`}>Inicia sesión</Link> para guardar en Supabase.
+            </p>
+          )}
+
+          {cfg.exact_score && (
+            <div className="bf-match-predict-block">
+              <ScoreStepperPicker
+                matchId={match.id}
+                format={match.format}
+                teamASlug={match.teamASlug}
+                teamBSlug={match.teamBSlug}
+                teamAName={teamName(match.teamASlug)}
+                teamBName={teamName(match.teamBSlug)}
+                initialScore={game?.exactScores?.[match.id] ?? ext.exactScore}
+                disabled={!isLoggedIn}
               />
-            ))}
-          </div>
+            </div>
+          )}
+
+          {cfg.first_map && (
+            <div className="bf-match-predict-block">
+              <TeamSidePick
+                label="Primer mapa — ¿quién gana?"
+                teamASlug={match.teamASlug}
+                teamBSlug={match.teamBSlug}
+                teamAName={teamName(match.teamASlug)}
+                teamBName={teamName(match.teamBSlug)}
+                value={ext.firstMapWinner ?? null}
+                onChange={(v) => patch({ firstMapWinner: v })}
+              />
+            </div>
+          )}
+
+          {cfg.decisive_map && (
+            <div className="bf-match-predict-block">
+              <TeamSidePick
+                label="Mapa decisivo — ¿quién gana?"
+                teamASlug={match.teamASlug}
+                teamBSlug={match.teamBSlug}
+                teamAName={teamName(match.teamASlug)}
+                teamBName={teamName(match.teamBSlug)}
+                value={ext.decisiveMapWinner ?? null}
+                onChange={(v) => patch({ decisiveMapWinner: v })}
+              />
+            </div>
+          )}
+
+          {cfg.mvp && (
+            <div className="bf-match-predict-block">
+              <h4 className="bf-match-predict-subh">MVP del partido</h4>
+              <PlayerMvpPicker
+                teamASlug={match.teamASlug}
+                teamBSlug={match.teamBSlug}
+                value={ext.mvpPlayerSlug ?? null}
+                onChange={(slug) => patch({ mvpPlayerSlug: slug })}
+              />
+            </div>
+          )}
+
+          {cfg.brawler_most_used && (
+            <div className="bf-match-predict-block">
+              <h4 className="bf-match-predict-subh">Brawler más usado</h4>
+              <div className="bf-brawler-pick-row">
+                {brawlerPool.slice(0, 16).map((name) => (
+                  <BrawlerAssetIcon
+                    key={name}
+                    name={name}
+                    variant="pick"
+                    size={64}
+                    selected={ext.brawlerMostUsed === name}
+                    onClick={() => patch({ brawlerMostUsed: name })}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {cfg.brawler_mvp && (
+            <div className="bf-match-predict-block">
+              <h4 className="bf-match-predict-subh">Brawler MVP</h4>
+              <div className="bf-brawler-pick-row">
+                {brawlerPool.slice(0, 16).map((name) => (
+                  <BrawlerAssetIcon
+                    key={name}
+                    name={name}
+                    variant="pick"
+                    size={64}
+                    selected={ext.brawlerMvp === name}
+                    onClick={() => patch({ brawlerMvp: name })}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      {cfg.brawler_mvp && votes[match.id] && !closed && (
-        <div className="bf-match-predict-block">
-          <h3 className="bf-match-predict-subh">Brawler MVP</h3>
-          <div className="bf-brawler-pick-row">
-            {brawlerPool.slice(0, 12).map((name) => (
-              <BrawlerAssetIcon
-                key={name}
-                name={name}
-                variant="pick"
-                size={64}
-                selected={ext.brawlerMvp === name}
-                onClick={() => patch({ brawlerMvp: name })}
-              />
-            ))}
-          </div>
-        </div>
+      {closed && hasAdvanced && (
+        <p className="bf-match-predict-hint">Partido cerrado — predicción avanzada no disponible.</p>
       )}
 
       <MatchCommunityPulse
@@ -191,8 +265,8 @@ export function MatchPredictionsCenter({
         teamASlug={match.teamASlug}
         teamBSlug={match.teamBSlug}
         aggregates={aggregates}
-        metaBrawler={ext.brawlerMostUsed ?? meta.brawlers?.meta?.[0]}
-        exactLeader={ext.exactScore}
+        metaBrawler={ext.brawlerMostUsed ?? meta.brawlers?.most_used?.[0] ?? meta.brawlers?.meta?.[0]}
+        exactLeader={ext.exactScore ?? game?.exactScores?.[match.id]}
       />
     </section>
   );

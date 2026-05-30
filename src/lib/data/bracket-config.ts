@@ -2,6 +2,13 @@
 
 export type BracketLayoutMode = "auto" | "1" | "2";
 
+/** Resuelve layout guardado en CMS a 1 o 2 columnas en la UI. */
+export function resolveBracketLayout(layout: BracketLayoutMode, matchCount: number): "1" | "2" {
+  if (layout === "1") return "1";
+  if (layout === "2") return "2";
+  return matchCount <= 1 ? "1" : "2";
+}
+
 export type BracketSlot = {
   team_a_slug: string;
   team_b_slug: string;

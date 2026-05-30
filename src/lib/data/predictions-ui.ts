@@ -1,3 +1,4 @@
+import type { BracketLayoutMode, PlayoffBracketsStore } from "@/lib/data/bracket-config";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { getMatch, getTournament } from "@/lib/data/matches";
 import { getPredictionLabel, getPredictionTournament } from "@/lib/data";
@@ -43,7 +44,7 @@ export type PlayoffBracketView = {
   tournamentSlug: string;
   tournamentName: string;
   region?: string;
-  layout: "tree";
+  layout: BracketLayoutMode;
   /** Hasta 4 cuartos */
   quarters: EnrichedPrediction[];
   /** 1–2 semifinales */
@@ -268,6 +269,7 @@ export function pickPlayoffTournamentSlug(events: EnrichedPrediction[]): string 
 export function buildPlayoffBracket(
   tournamentSlug: string,
   events: EnrichedPrediction[],
+  layout: BracketLayoutMode = "auto",
 ): PlayoffBracketView | null {
   const tour = getTournament(tournamentSlug);
   const tourEvents = events.filter((e) => e.tournamentSlug === tournamentSlug && e.stageMeta?.isPlayoff);
@@ -297,7 +299,7 @@ export function buildPlayoffBracket(
   if (!hasBracket) return null;
 
   return {
-    layout: "tree",
+    layout,
     tournamentSlug,
     tournamentName: tour?.shortName ?? tour?.name ?? tournamentSlug,
     region: tour?.region,
@@ -308,14 +310,18 @@ export function buildPlayoffBracket(
 }
 
 /** Todos los torneos con fase eliminatoria (varios brackets en /predictions). */
-export function buildAllPlayoffBrackets(events: EnrichedPrediction[]): PlayoffBracketView[] {
+export function buildAllPlayoffBrackets(
+  events: EnrichedPrediction[],
+  store?: PlayoffBracketsStore,
+): PlayoffBracketView[] {
   const slugs = new Set<string>();
   for (const e of events) {
     if (e.stageMeta?.isPlayoff) slugs.add(e.tournamentSlug);
   }
   const out: PlayoffBracketView[] = [];
   for (const slug of slugs) {
-    const b = buildPlayoffBracket(slug, events);
+    const layout = store?.[slug]?.layout ?? "auto";
+    const b = buildPlayoffBracket(slug, events, layout);
     if (b) out.push(b);
   }
   return out.sort((a, b) => {

@@ -2328,7 +2328,37 @@
   margin-bottom: 20px;
 }
 
-/* Cuartos: 2 arriba, 2 abajo */
+/* Cuartos: 2 por fila (rejilla) o 1 por fila (stack) */
+.bf-predict-bracket-qf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.bf-predict-bracket-qf-grid > * {
+  min-width: 0;
+  height: 100%;
+}
+.bf-predict-bracket-qf-grid .bf-bsc-vote-card {
+  height: 100%;
+}
+
+.bf-predict-bracket-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: min(100%, 760px);
+  margin: 0 auto;
+}
+.bf-predict-bracket-stack > * {
+  min-width: 0;
+}
+
+/* Legacy: 2 arriba + 2 abajo (misma rejilla 2 cols) */
 .bf-predict-bracket-qf {
   display: flex;
   flex-direction: column;
@@ -2470,6 +2500,12 @@
 }
 
 @media (max-width: 560px) {
+  .bf-predict-bracket-qf-grid[data-layout="2"] {
+    grid-template-columns: 1fr;
+  }
+  .bf-predict-bracket-sf.is-layout-2 {
+    grid-template-columns: 1fr;
+  }
   .bf-predict-bracket-qf-row,
   .bf-predict-bracket-sf {
     gap: 8px;

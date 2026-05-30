@@ -260,3 +260,30 @@
   border-radius: var(--bp-radius-lg);
   background: rgba(0, 0, 0, 0.35);
 }
+
+/* Admin: forzar 2 columnas en panel estrecho (no usar breakpoint de viewport) */
+.bf-bracket-live-preview.is-preview-layout-2 .bf-predict-bracket-qf-grid[data-layout="2"],
+.bf-bracket-live-preview.is-preview-layout-2 .bf-predict-bracket-sf.is-layout-2[data-layout="2"] {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.bf-bracket-live-preview.is-preview-layout-2 .bf-bracket-pending-duel {
+  min-height: 150px;
+}
+
+.bf-bracket-live-preview.is-preview-layout-2 .bf-bracket-pending-inner {
+  padding: 20px 12px;
+}
+
+.bf-bracket-live-preview.is-preview-layout-2 .bf-bracket-pending-title {
+  font-size: 0.95rem;
+}
+
+.bf-bracket-live-preview.is-preview-layout-2 .bf-bracket-pending-sub {
+  font-size: 11px;
+}

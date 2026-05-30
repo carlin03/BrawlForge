@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { FantasySquadSlot } from "@/lib/data/fantasy";
+import type { MatchExtendedPrediction } from "@/lib/match-predictions-storage";
 import type { UserGameState, VoteAggregate } from "@/lib/supabase/game-types";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -26,6 +27,7 @@ type GameContextValue = {
   ) => Promise<{ error?: string }>;
   castVote: (matchId: string, pick: "A" | "B", rewardPoints: number) => Promise<{ error?: string }>;
   saveExactScore: (matchId: string, exactScore: string | null) => Promise<{ error?: string }>;
+  saveMatchPicks: (matchId: string, picks: MatchExtendedPrediction) => Promise<{ error?: string }>;
 };
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -59,7 +61,8 @@ function gameStateEqual(a: UserGameState | null, b: UserGameState | null): boole
     a.fantasyPoints === b.fantasyPoints &&
     a.fantasyRank === b.fantasyRank &&
     JSON.stringify(a.votes) === JSON.stringify(b.votes) &&
-    JSON.stringify(a.exactScores) === JSON.stringify(b.exactScores)
+    JSON.stringify(a.exactScores) === JSON.stringify(b.exactScores) &&
+    JSON.stringify(a.matchPicks ?? {}) === JSON.stringify(b.matchPicks ?? {})
   );
 }
 
@@ -171,9 +174,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
     [refresh],
   );
 
+  const saveMatchPicks = useCallback(
+    async (matchId: string, picks: MatchExtendedPrediction) => {
+      const res = await fetch("/api/me/predictions", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matchId, picks }),
+      });
+      const json = await res.json();
+      if (!res.ok) return { error: json.error ?? "No se pudo guardar" };
+      await refresh();
+      return {};
+    },
+    [refresh],
+  );
+
   const value = useMemo(
-    () => ({ ready, aggregates, game, refresh, saveFantasy, castVote, saveExactScore }),
-    [ready, aggregates, game, refresh, saveFantasy, castVote, saveExactScore],
+    () => ({ ready, aggregates, game, refresh, saveFantasy, castVote, saveExactScore, saveMatchPicks }),
+    [ready, aggregates, game, refresh, saveFantasy, castVote, saveExactScore, saveMatchPicks],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

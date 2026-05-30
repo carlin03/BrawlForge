@@ -17,11 +17,15 @@ export function MatchMapsVisual({
 }) {
   const meta = parseMatchMeta(rawMeta);
   const pool = meta.maps?.possible ?? [];
-  const order = meta.maps?.order?.length ? meta.maps.order : pool;
-  const current = meta.maps?.current;
-  const decisive = meta.maps?.decisive;
+  const playedOrder = meta.maps?.played?.map((e) => e.name) ?? [];
+  const order =
+    meta.maps?.order?.length ? meta.maps.order : playedOrder.length ? playedOrder : pool;
+  const current = meta.maps?.current ?? meta.maps?.played?.find((e) => e.current)?.name;
+  const decisive = meta.maps?.decisive ?? meta.maps?.played?.find((e) => e.decisive)?.name;
 
-  if (!pool.length && !order.length) return null;
+  if (!pool.length && !order.length && !meta.bans?.maps_a?.length && !meta.bans?.maps_b?.length) {
+    return null;
+  }
 
   return (
     <section className="bf-match-esports-panel">

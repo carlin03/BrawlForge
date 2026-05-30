@@ -11,6 +11,7 @@ import { PredictionsHistorySection } from "@/components/platform/predictions/Pre
 import { PredictionsRoundSections } from "@/components/platform/predictions/PredictionsRoundSections";
 import { PredictionsClosingSoon } from "@/components/platform/predictions/PredictionsClosingSoon";
 import { PredictionsPickemToolbar } from "@/components/platform/predictions/PredictionsPickemToolbar";
+import type { PlayoffBracketsStore } from "@/lib/data/bracket-config";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { isKnownTeamSlug } from "@/lib/data";
 import type { UserGameState } from "@/lib/supabase/game-types";
@@ -38,11 +39,13 @@ export function PredictionsView({
   closed,
   game,
   syncing = false,
+  bracketStore = {},
 }: {
   open: PredictionEvent[];
   closed: PredictionEvent[];
   game: UserGameState | null;
   syncing?: boolean;
+  bracketStore?: PlayoffBracketsStore;
 }) {
   const { isLoggedIn } = useAuth();
   const votes = game?.votes ?? {};
@@ -104,8 +107,8 @@ export function PredictionsView({
   }, [selectedTournament]);
 
   const playoffBrackets = useMemo(
-    () => sortBracketsByDate(buildAllPlayoffBrackets(filteredOpen)),
-    [filteredOpen],
+    () => sortBracketsByDate(buildAllPlayoffBrackets(filteredOpen, bracketStore)),
+    [filteredOpen, bracketStore],
   );
 
   const bracketMatchIds = useMemo(

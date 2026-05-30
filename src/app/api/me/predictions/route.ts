@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { extendedToPickMeta } from "@/lib/match-pick-meta";
+import type { MatchExtendedPrediction } from "@/lib/match-predictions-storage";
 import { syncPredictorScores } from "@/lib/supabase/game-server";
 
 export async function POST(request: NextRequest) {
@@ -123,4 +125,57 @@ export async function PATCH(request: NextRequest) {
   }
 
   return NextResponse.json({ ok: true, matchId, exactScore });
+}
+
+/** Guarda predicciones avanzadas (MVP, mapas, brawlers). Requiere voto de ganador. */
+export async function PUT(request: NextRequest) {
+  const supabase = await createClient();
+  if (!supabase) return NextResponse.json({ error: "Supabase no configurado" }, { status: 503 });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Inicia sesión" }, { status: 401 });
+
+  const body = await request.json();
+  const matchId = body.matchId as string;
+  const picks = (body.picks ?? body.pickMeta) as MatchExtendedPrediction | undefined;
+  if (!matchId || !picks || typeof picks !== "object") {
+    return NextResponse.json({ error: "matchId y picks requeridos" }, { status: 400 });
+  }
+
+  const { data: existing } = await supabase
+    .from("prediction_votes")
+    .select("pick, pick_meta")
+    .eq("user_id", user.id)
+    .eq("match_id", matchId)
+    .maybeSingle();
+
+  if (!existing?.pick) {
+    return NextResponse.json({ error: "Vota primero al ganador del partido" }, { status: 400 });
+  }
+
+  const prev =
+    existing.pick_meta && typeof existing.pick_meta === "object"
+      ? (existing.pick_meta as Record<string, unknown>)
+      : {};
+  const pick_meta = { ...prev, ...extendedToPickMeta(picks) };
+
+  const { error } = await supabase
+    .from("prediction_votes")
+    .update({ pick_meta, updated_at: new Date().toISOString() })
+    .eq("user_id", user.id)
+    .eq("match_id", matchId);
+
+  if (error) {
+    if (error.message?.includes("pick_meta")) {
+      return NextResponse.json(
+        { error: "Ejecuta supabase/migrations/20260530200000_prediction_pick_meta.sql en Supabase." },
+        { status: 400 },
+      );
+    }
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  return NextResponse.json({ ok: true, matchId, pick_meta });
 }

@@ -7,10 +7,12 @@ import { MATCH_ROUND_OPTIONS } from "@/lib/data/match-round-types";
 import {
   MATCH_IMPORTANCE_OPTIONS,
   MATCH_DISPLAY_STATUS_OPTIONS,
+  parseMatchMeta,
   type MatchImportance,
   type MatchDisplayStatus,
   type MatchPredictionsConfig,
 } from "@/lib/data/match-meta";
+import Link from "next/link";
 import { VisualMapPicker } from "@/components/admin/studio/VisualMapPicker";
 import { VisualBrawlerPicker } from "@/components/admin/studio/VisualBrawlerPicker";
 import {
@@ -107,10 +109,64 @@ function buildMatchMeta(form: {
   };
 }
 
+type MatchFilter = "all" | "upcoming" | "live" | "finished";
+
+function MatchScoreQuickRow({
+  match,
+  onSave,
+}: {
+  match: MatchRow;
+  onSave: (patch: { score_a: number; score_b: number }) => void;
+}) {
+  const [scoreA, setScoreA] = useState(match.score_a);
+  const [scoreB, setScoreB] = useState(match.score_b);
+
+  useEffect(() => {
+    setScoreA(match.score_a);
+    setScoreB(match.score_b);
+  }, [match.score_a, match.score_b]);
+
+  function commit() {
+    if (scoreA === match.score_a && scoreB === match.score_b) return;
+    onSave({ score_a: scoreA, score_b: scoreB });
+  }
+
+  return (
+    <div className="bf-studio-match-score-quick">
+      <label>
+        <span>Marcador A</span>
+        <StudioInput
+          type="number"
+          min={0}
+          value={scoreA}
+          onChange={(e) => setScoreA(Number(e.target.value))}
+          onBlur={commit}
+        />
+      </label>
+      <span className="bf-studio-vs">–</span>
+      <label>
+        <span>Marcador B</span>
+        <StudioInput
+          type="number"
+          min={0}
+          value={scoreB}
+          onChange={(e) => setScoreB(Number(e.target.value))}
+          onBlur={commit}
+        />
+      </label>
+      <button type="button" className="bp-btn bp-btn-ghost" onClick={commit}>
+        Guardar marcador
+      </button>
+    </div>
+  );
+}
+
 export function StudioMatchesPanel() {
   const [teams, setTeams] = useState<TeamOption[]>([]);
   const [msg, setMsg] = useState("");
   const [error, setError] = useState(false);
+  const [listFilter, setListFilter] = useState<MatchFilter>("all");
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [formTab, setFormTab] = useState<"general" | "predict" | "maps" | "brawlers">("general");
   const [form, setForm] = useState({
     team_a_slug: "",
@@ -172,6 +228,109 @@ export function StudioMatchesPanel() {
     return `${form.team_a_slug}-vs-${form.team_b_slug}-${d}`.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
   }
 
+  function loadMatchForEdit(m: MatchRow) {
+    const meta = parseMatchMeta(m.meta);
+    const preds = meta.predictions ?? {};
+    setEditingId(m.id);
+    setForm({
+      team_a_slug: m.team_a_slug,
+      team_b_slug: m.team_b_slug,
+      tournament_slug: m.tournament_slug,
+      scheduled_at: m.scheduled_at.slice(0, 16),
+      status: (MATCH_STATUS_OPTIONS.some((s) => s.id === m.status) ? m.status : "upcoming") as (typeof MATCH_STATUS_OPTIONS)[number]["id"],
+      stage: m.stage ?? "Group Stage",
+      format: m.format ?? "Bo5",
+      score_a: m.score_a ?? 0,
+      score_b: m.score_b ?? 0,
+      importance: meta.importance ?? "normal",
+      display_status: meta.display_status ?? "upcoming",
+      featured_label: meta.featured_label ?? "",
+      pred_winner: preds.winner !== false,
+      pred_exact: !!preds.exact_score,
+      pred_mvp: !!preds.mvp,
+      pred_first_map: !!preds.first_map,
+      pred_decisive_map: !!preds.decisive_map,
+      pred_brawler_used: !!preds.brawler_most_used,
+      pred_brawler_mvp: !!preds.brawler_mvp,
+      pred_advanced: !!preds.advanced,
+      map_pool: meta.maps?.possible ?? [],
+      map_order: meta.maps?.order ?? meta.maps?.possible ?? [],
+      map_current: meta.maps?.current ?? "",
+      map_decisive: meta.maps?.decisive ?? "",
+      bans_maps_a: meta.bans?.maps_a ?? [],
+      bans_maps_b: meta.bans?.maps_b ?? [],
+      brawlers_meta: meta.brawlers?.meta ?? [],
+      brawlers_recommended: meta.brawlers?.recommended ?? [],
+      brawlers_banned_a: meta.bans?.brawlers_a ?? [],
+      brawlers_banned_b: meta.bans?.brawlers_b ?? [],
+    });
+    setFormTab("general");
+    setMsg(`Editando: ${m.id}`);
+    setError(false);
+  }
+
+  function resetNewMatchForm() {
+    setEditingId(null);
+    setForm({
+      team_a_slug: "",
+      team_b_slug: "",
+      tournament_slug: "bsc-2026-challengers-spain",
+      scheduled_at: new Date().toISOString().slice(0, 16),
+      status: "upcoming",
+      stage: "Group Stage",
+      format: "Bo5",
+      score_a: 0,
+      score_b: 0,
+      importance: "normal",
+      display_status: "upcoming",
+      featured_label: "",
+      pred_winner: true,
+      pred_exact: false,
+      pred_mvp: false,
+      pred_first_map: false,
+      pred_decisive_map: false,
+      pred_brawler_used: false,
+      pred_brawler_mvp: false,
+      pred_advanced: false,
+      map_pool: [],
+      map_order: [],
+      map_current: "",
+      map_decisive: "",
+      bans_maps_a: [],
+      bans_maps_b: [],
+      brawlers_meta: [],
+      brawlers_recommended: [],
+      brawlers_banned_a: [],
+      brawlers_banned_b: [],
+    });
+  }
+
+  async function patchMatch(
+    matchId: string,
+    patch: {
+      status?: string;
+      score_a?: number;
+      score_b?: number;
+      stage?: string;
+    },
+    reload: () => void,
+  ) {
+    setMsg("");
+    setError(false);
+    const res = await fetch("/api/cms/admin/matches", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: matchId, ...patch }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setMsg(data.error || "No se pudo actualizar");
+      setError(true);
+      return;
+    }
+    reload();
+  }
+
   async function patchMatchStage(matchId: string, stage: string, reload: () => void) {
     setMsg("");
     setError(false);
@@ -198,7 +357,7 @@ export function StudioMatchesPanel() {
     }
     setMsg("");
     setError(false);
-    const id = suggestId();
+    const id = editingId ?? suggestId();
     const res = await fetch("/api/cms/admin/matches", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -241,7 +400,7 @@ export function StudioMatchesPanel() {
         const matches = (data.matches ?? []) as MatchRow[];
         return (
           <>
-            <StudioCard title="Nuevo partido">
+            <StudioCard title={editingId ? `Editar partido · ${editingId}` : "Nuevo partido"}>
               <div className="bf-studio-match-pick-head">
                 <div className={`bf-studio-match-picked ${form.team_a_slug ? "has-team" : ""}`}>
                   {form.team_a_slug ? (
@@ -577,29 +736,76 @@ export function StudioMatchesPanel() {
                 )}
               </div>
 
-              <button type="button" className="bp-btn bp-btn-gold" onClick={() => saveMatch(reload)}>
-                Guardar partido
-              </button>
+              <div className="bf-studio-actions-row">
+                <button type="button" className="bp-btn bp-btn-gold" onClick={() => saveMatch(reload)}>
+                  {editingId ? "Guardar cambios" : "Guardar partido"}
+                </button>
+                {editingId && (
+                  <button type="button" className="bp-btn bp-btn-ghost" onClick={resetNewMatchForm}>
+                    Cancelar edición
+                  </button>
+                )}
+              </div>
               <StudioToast message={msg} error={error} />
             </StudioCard>
 
-            <h3 className="bf-studio-list-title">Partidos en el panel ({matches.length})</h3>
+            <h3 className="bf-studio-list-title">
+              Partidos creados ({matches.length})
+              <span className="bf-studio-muted" style={{ fontWeight: 600, marginLeft: 8 }}>
+                — resultados y estado se editan aquí (no hay API externa automática)
+              </span>
+            </h3>
+            <div className="bf-studio-pills" role="group" style={{ marginBottom: 12 }}>
+              {(
+                [
+                  ["all", "Todos"],
+                  ["upcoming", "Próximos"],
+                  ["live", "En vivo"],
+                  ["finished", "Finalizados"],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`bf-studio-pill ${listFilter === id ? "is-on" : ""}`}
+                  onClick={() => setListFilter(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             {matches.length === 0 ? (
               <p className="bf-studio-muted">Crea el primero con el formulario de arriba.</p>
             ) : (
               <ul className="bf-studio-match-list">
-                {matches.slice(0, 30).map((m) => (
+                {matches
+                  .filter((m) => listFilter === "all" || m.status === listFilter)
+                  .map((m) => (
                   <li key={m.id} className="bf-studio-match-item">
                     <div className="bf-studio-match-item-main">
-                      <strong>
-                        {teamName(m.team_a_slug)} vs {teamName(m.team_b_slug)}
-                      </strong>
+                      <div className="bf-studio-match-item-head">
+                        <strong>
+                          {teamName(m.team_a_slug)} vs {teamName(m.team_b_slug)}
+                        </strong>
+                        <code className="bf-studio-match-id">{m.id}</code>
+                      </div>
                       <span className="bf-studio-match-meta">
-                        {m.format ?? "Bo3"} · {new Date(m.scheduled_at).toLocaleString("es-ES")} ·{" "}
-                        {MATCH_STATUS_OPTIONS.find((s) => s.id === m.status)?.label ?? m.status}
-                        {(m.status === "live" || m.status === "finished") &&
-                          ` · ${m.score_a}-${m.score_b}`}
+                        {m.format ?? "Bo3"} · {new Date(m.scheduled_at).toLocaleString("es-ES")}
                       </span>
+                      <StudioField label="Estado (web en vivo / marcador)">
+                        <StudioPills
+                          options={MATCH_STATUS_OPTIONS}
+                          value={
+                            MATCH_STATUS_OPTIONS.some((s) => s.id === m.status)
+                              ? (m.status as (typeof MATCH_STATUS_OPTIONS)[number]["id"])
+                              : "upcoming"
+                          }
+                          onChange={(v) => patchMatch(m.id, { status: v }, reload)}
+                        />
+                      </StudioField>
+                      {(m.status === "live" || m.status === "finished") && (
+                        <MatchScoreQuickRow match={m} onSave={(patch) => patchMatch(m.id, patch, reload)} />
+                      )}
                       <StudioField label="Fase en web">
                         <StudioPills
                           options={ROUND_PILLS}
@@ -611,6 +817,18 @@ export function StudioMatchesPanel() {
                           onChange={(v) => patchMatchStage(m.id, v, reload)}
                         />
                       </StudioField>
+                      <div className="bf-studio-match-item-actions">
+                        <button
+                          type="button"
+                          className="bp-btn bp-btn-ghost"
+                          onClick={() => loadMatchForEdit(m)}
+                        >
+                          Editar completo
+                        </button>
+                        <Link href={`/matches/${m.id}`} className="bp-btn bp-btn-ghost" target="_blank">
+                          Ver en web
+                        </Link>
+                      </div>
                     </div>
                   </li>
                 ))}

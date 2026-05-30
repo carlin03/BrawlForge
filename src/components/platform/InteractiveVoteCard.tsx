@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { PredictionEvent } from "@/lib/data/predictions";
@@ -23,6 +23,7 @@ import {
   mapBracketSlugToApiSide,
 } from "@/lib/data/bracket-reveal";
 import { teamName } from "@/lib/data";
+import { getTeam } from "@/lib/data/teams";
 import { parseMatchMeta, getMatchPredictionsConfig } from "@/lib/data/match-meta";
 import { ScoreStepperPicker } from "@/components/match-esports/ScoreStepperPicker";
 
@@ -34,10 +35,21 @@ interface InteractiveVoteCardProps {
   voteOverride?: (side: "A" | "B") => Promise<{ error?: string } | void>;
   /** Bracket progresivo: lados en gris hasta desbloquear con la ronda anterior */
   bracketReveal?: BracketRevealState;
+  /** Tras elegir ganador (desbloquea predicción avanzada en ficha de partido) */
+  onPickChange?: (pick: "A" | "B" | null) => void;
+  /** En /matches/[id] el stepper va en MatchPredictionsCenter, no aquí */
+  hideEmbeddedExactScore?: boolean;
+  loginNextPath?: string;
 }
 
 function labelForSlug(slug: string): string {
   return teamName(slug);
+}
+
+function tagForSlug(slug: string | null): string {
+  if (!slug) return "—";
+  const team = getTeam(slug);
+  return team?.tag ?? teamName(slug).slice(0, 3).toUpperCase();
 }
 
 export function InteractiveVoteCard({
@@ -46,6 +58,9 @@ export function InteractiveVoteCard({
   initialPick = null,
   voteOverride,
   bracketReveal,
+  onPickChange,
+  hideEmbeddedExactScore = false,
+  loginNextPath,
 }: InteractiveVoteCardProps) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
@@ -53,6 +68,12 @@ export function InteractiveVoteCard({
   const [pick, setPick] = useState<"A" | "B" | null>(event.userPick ?? initialPick);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
+
+  useEffect(() => {
+    if (event.userPick !== undefined && event.userPick !== pick) {
+      setPick(event.userPick ?? null);
+    }
+  }, [event.userPick, event.matchId]);
 
   const hasVotes = hasRealVotes(event);
   const closed = event.status === "closed";
@@ -101,10 +122,11 @@ export function InteractiveVoteCard({
     if (bracketReveal && (side === "A" ? !revealA : !revealB)) return;
     if (bracketReveal && !bracketReady) return;
     if (!isLoggedIn) {
-      router.push("/login?next=/predictions");
+      router.push(loginNextPath ?? `/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/predictions")}`);
       return;
     }
     setPick(side);
+    onPickChange?.(side);
     setErr("");
     setSaving(true);
     if (voteOverride) {
@@ -113,6 +135,7 @@ export function InteractiveVoteCard({
       if (res && "error" in res && res.error) {
         setErr(res.error);
         setPick(event.userPick ?? null);
+        onPickChange?.(event.userPick ?? null);
       }
       return;
     }
@@ -186,7 +209,7 @@ export function InteractiveVoteCard({
           aria-label={revealA ? `Votar por ${labelA}` : "Equipo por definir — vota el cuarto de arriba"}
         >
           <span className="bf-vote-side-tag bf-vote-side-tag-a" title={labelA}>
-            AZUL
+            {tagForSlug(slugA)}
           </span>
           <span className="bf-vote-side-logo">
             {slugA ? (
@@ -230,7 +253,7 @@ export function InteractiveVoteCard({
           aria-label={revealB ? `Votar por ${labelB}` : "Equipo por definir — vota el cuarto de arriba"}
         >
           <span className="bf-vote-side-tag bf-vote-side-tag-b" title={labelB}>
-            ROJO
+            {tagForSlug(slugB)}
           </span>
           <span className="bf-vote-side-logo">
             {slugB ? (
@@ -261,7 +284,7 @@ export function InteractiveVoteCard({
         </div>
       )}
 
-      {!closed && predCfg.exact_score && match && pick && (
+      {!closed && !hideEmbeddedExactScore && predCfg.exact_score && match && pick && (
         <ScoreStepperPicker
           matchId={event.matchId}
           format={match.format}

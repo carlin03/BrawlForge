@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Flame, Target, Trophy, Clock, Radio } from "lucide-react";
 import type { EsportsMatch } from "@/lib/data/matches";
-import { parseMatchMeta, displayStatusLabel } from "@/lib/data/match-meta";
+import { parseMatchMeta, displayStatusLabel, featuredLabelFromMeta } from "@/lib/data/match-meta";
 import { tournamentName } from "@/lib/data";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { MATCH_ROUND_OPTIONS } from "@/lib/data/match-round-types";
@@ -22,6 +22,12 @@ export function MatchCompetitiveContext({ match }: { match: EsportsMatch }) {
         <TournamentLogo slug={match.tournamentSlug} name={tournamentName(match.tournamentSlug)} size={20} />
         {tournamentName(match.tournamentSlug)}
       </Link>
+      {meta.importance && meta.importance !== "normal" && (
+        <span className="bf-match-ctx-badge is-importance">
+          <Flame size={14} aria-hidden />
+          {featuredLabelFromMeta(meta)}
+        </span>
+      )}
       <span className="bf-match-ctx-badge is-round">
         <Flame size={14} aria-hidden />
         {round}

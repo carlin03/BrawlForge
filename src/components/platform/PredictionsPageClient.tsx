@@ -35,7 +35,13 @@ export function PredictionsPageClient() {
         <div className="bf-auth-page">Cargando predicciones…</div>
       )}
       {(ready || hasData) && (
-        <PredictionsView open={open} closed={closed} game={game} syncing={!ready} />
+        <PredictionsView
+          open={open}
+          closed={closed}
+          game={game}
+          syncing={!ready}
+          bracketStore={brackets}
+        />
       )}
     </>
   );

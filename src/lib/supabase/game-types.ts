@@ -51,6 +51,8 @@ export type PredictionLeaderboardRow = {
 export type UserGameState = {
   votes: Record<string, "A" | "B">;
   exactScores: Record<string, string>;
+  /** MVP, mapas, brawlers (desde prediction_votes.pick_meta). */
+  matchPicks: Record<string, import("@/lib/match-predictions-storage").MatchExtendedPrediction>;
   fantasy: Record<
     string,
     {
