@@ -36,7 +36,7 @@ export function StudioPredictionsPanel() {
 
   const loadMatchStats = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/catalog?type=matches");
+      const res = await fetch("/api/cms/admin/matches");
       const data = await res.json();
       const rows = (data.matches ?? []) as MatchRow[];
       setMatchStats({

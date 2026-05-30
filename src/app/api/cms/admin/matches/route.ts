@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { auditWrite, getSupabaseAdmin, requireCmsAdmin } from "@/lib/cms/admin-api";
+import {
+  buildCatalogUpsertBatch,
+  getWebMatchesForCatalog,
+} from "@/lib/cms/sync-matches-catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -13,10 +17,87 @@ export async function GET() {
     .from("matches_catalog")
     .select("*")
     .order("scheduled_at", { ascending: false })
-    .limit(200);
+    .limit(500);
 
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
-  return NextResponse.json({ ok: true, matches: data ?? [] });
+
+  const catalog = data ?? [];
+  const existingIds = new Set(catalog.map((m) => m.id));
+  const { pool, toImport, total } = getWebMatchesForCatalog(existingIds);
+
+  return NextResponse.json({
+    ok: true,
+    matches: catalog,
+    web: {
+      totalOnSite: total,
+      inCatalog: catalog.length,
+      pendingImport: toImport.length,
+    },
+    hint:
+      toImport.length > 0
+        ? "La web muestra partidos del calendario BSC en código. Pulsa «Importar partidos de la web» para editarlos aquí."
+        : undefined,
+  });
+}
+
+/** Copia el calendario visible en la web → matches_catalog (editable en admin). */
+export async function PUT(request: Request) {
+  const auth = await requireCmsAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const { supabase, error } = await getSupabaseAdmin();
+  if (error) return error;
+
+  let limit: number | undefined;
+  try {
+    const body = await request.json().catch(() => ({}));
+    if (typeof body?.limit === "number") limit = Math.min(500, Math.max(1, body.limit));
+  } catch {
+    /* sin body */
+  }
+
+  const { data: existing } = await supabase!
+    .from("matches_catalog")
+    .select("id")
+    .limit(1000);
+  const existingIds = new Set((existing ?? []).map((r) => r.id));
+  const { toImport, total } = getWebMatchesForCatalog(existingIds);
+  const batch = buildCatalogUpsertBatch(toImport, limit);
+
+  if (!batch.length) {
+    return NextResponse.json({
+      ok: true,
+      imported: 0,
+      message: "Todos los partidos de la web ya están en el catálogo.",
+      webTotal: total,
+      catalogCount: existingIds.size,
+    });
+  }
+
+  const { error: dbErr } = await supabase!.from("matches_catalog").upsert(batch, { onConflict: "id" });
+  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+
+  await supabase!
+    .from("site_feature_flags")
+    .upsert(
+      [
+        { flag: "cms.matches.enabled", enabled: true, description: "Partidos desde matches_catalog" },
+        { flag: "cms.catalog.primary", enabled: true, description: "Catálogo CMS prioritario" },
+      ],
+      { onConflict: "flag" },
+    );
+
+  await auditWrite("match.sync_from_web", "match", undefined, {
+    imported: batch.length,
+    pending: toImport.length - batch.length,
+  });
+
+  return NextResponse.json({
+    ok: true,
+    imported: batch.length,
+    message: `Importados ${batch.length} partidos. Ya puedes editarlos y poner en vivo.`,
+    webTotal: total,
+    catalogCount: existingIds.size + batch.length,
+  });
 }
 
 export async function POST(request: Request) {

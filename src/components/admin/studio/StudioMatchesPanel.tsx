@@ -167,6 +167,7 @@ export function StudioMatchesPanel() {
   const [error, setError] = useState(false);
   const [listFilter, setListFilter] = useState<MatchFilter>("all");
   const [panelView, setPanelView] = useState<"list" | "form">("list");
+  const [syncing, setSyncing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formTab, setFormTab] = useState<"general" | "predict" | "maps" | "brawlers">("general");
   const [form, setForm] = useState({
@@ -397,6 +398,25 @@ export function StudioMatchesPanel() {
     reload();
   }
 
+  async function syncFromWeb(reload: () => void) {
+    setSyncing(true);
+    setMsg("");
+    setError(false);
+    try {
+      const res = await fetch("/api/cms/admin/matches", { method: "PUT" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se pudo importar");
+      setMsg(data.message || `Importados ${data.imported ?? 0} partidos.`);
+      setError(false);
+      setPanelView("list");
+      reload();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error al importar");
+      setError(true);
+    }
+    setSyncing(false);
+  }
+
   return (
     <StudioModulePanel
       title="Partidos"
@@ -407,9 +427,15 @@ export function StudioMatchesPanel() {
     >
       {(data, reload) => {
         const matches = (data.matches ?? []) as MatchRow[];
+        const web = data.web as
+          | { totalOnSite?: number; inCatalog?: number; pendingImport?: number }
+          | undefined;
+        const pendingImport = web?.pendingImport ?? 0;
+        const totalOnSite = web?.totalOnSite ?? 0;
         const filtered = matches.filter((m) => listFilter === "all" || m.status === listFilter);
         return (
           <>
+            <StudioToast message={msg} error={error} />
             <div className="bf-studio-match-mode-tabs" role="tablist" aria-label="Vista de partidos">
               <button
                 type="button"
@@ -426,7 +452,7 @@ export function StudioMatchesPanel() {
                 aria-selected={panelView === "form"}
                 className={`bf-studio-competition-tab ${panelView === "form" ? "is-on" : ""}`}
                 onClick={() => {
-                  if (!editingId) resetNewMatchForm();
+                  if (!editingId) clearMatchForm();
                   setPanelView("form");
                 }}
               >
@@ -464,18 +490,28 @@ export function StudioMatchesPanel() {
                   <div className="bf-studio-empty-inline">
                     <p className="bf-studio-muted">
                       {matches.length === 0
-                        ? "Aún no hay partidos en matches_catalog. Crea el primero."
+                        ? "No hay partidos en Supabase todavía. Importa desde la web o crea uno nuevo."
                         : "Ningún partido con este filtro."}
                     </p>
+                    {pendingImport > 0 && (
+                      <button
+                        type="button"
+                        className="bp-btn bp-btn-gold"
+                        disabled={syncing}
+                        onClick={() => syncFromWeb(reload)}
+                      >
+                        {syncing ? "Importando…" : `Importar ${pendingImport} de la web`}
+                      </button>
+                    )}
                     <button
                       type="button"
-                      className="bp-btn bp-btn-gold"
+                      className="bp-btn bp-btn-ghost"
                       onClick={() => {
                         clearMatchForm();
                         setPanelView("form");
                       }}
                     >
-                      Crear partido
+                      Crear partido manual
                     </button>
                   </div>
                 ) : (

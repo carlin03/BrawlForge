@@ -214,6 +214,11 @@
   color: var(--bp-muted);
 }
 
+.bf-studio-alert.is-info {
+  background: rgba(0, 153, 255, 0.08);
+  border-color: rgba(0, 153, 255, 0.28);
+}
+
 .bf-studio-flag-list {
   list-style: none;
   margin: 0;
