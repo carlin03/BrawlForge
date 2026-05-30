@@ -78,8 +78,8 @@ export function StudioPredictionsPanel() {
                 <span>{matchStats.finished} finalizados</span>
               </div>
               <div className="bf-studio-predict-actions">
-                <Link href="/admin?module=matches" className="bp-btn bp-btn-gold">
-                  <Calendar size={16} /> Gestionar partidos
+                <Link href="/admin?module=competicion&tab=matches" className="bp-btn bp-btn-gold">
+                  <Calendar size={16} /> Lista de partidos (en vivo)
                 </Link>
                 <Link href="/predictions" className="bp-btn bp-btn-ghost" target="_blank">
                   Ver predicciones en la web

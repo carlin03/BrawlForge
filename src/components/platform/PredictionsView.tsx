@@ -235,7 +235,7 @@ export function PredictionsView({
           <Link href="/matches" className="bf-bsc-btn bf-bsc-btn-ghost">
             Ver calendario
           </Link>
-          <Link href="/admin?module=matches" className="bf-bsc-btn bf-bsc-btn-ghost">
+          <Link href="/admin?module=competicion&tab=matches" className="bf-bsc-btn bf-bsc-btn-ghost">
             Crear partidos en admin
           </Link>
         </div>

@@ -16,11 +16,42 @@ import {
 import { StudioCard, StudioPanel } from "./studio-ui";
 
 const QUICK_LINKS = [
-  { module: "operations", tab: "teams", label: "Equipos", desc: "Historia, palmarés, redes y galería", icon: Users },
-  { module: "operations", tab: "players", label: "Jugadores", desc: "Biografía larga, carrera y brawlers", icon: Users },
-  { module: "tournaments", label: "Torneos", desc: "Crear, participantes y premios", icon: Trophy },
+  {
+    module: "competicion",
+    tab: "teams",
+    label: "Equipos",
+    desc: "Clubes, roster, wiki y logos",
+    icon: Users,
+  },
+  {
+    module: "competicion",
+    tab: "players",
+    label: "Jugadores",
+    desc: "Fichas, equipo y estadísticas",
+    icon: Users,
+  },
+  {
+    module: "competicion",
+    tab: "tournaments",
+    label: "Torneos",
+    desc: "Crear, participantes y premios",
+    icon: Trophy,
+  },
+  {
+    module: "competicion",
+    tab: "matches",
+    label: "Partidos",
+    desc: "En vivo, marcador y predicciones",
+    icon: Calendar,
+  },
+  {
+    module: "competicion",
+    tab: "bracket",
+    label: "Bracket",
+    desc: "Playoffs con vista previa",
+    icon: Trophy,
+  },
   { module: "cards", label: "Tarjetas y fondos", desc: "Colores, fotos y banners", icon: Image },
-  { module: "matches", label: "Partidos", desc: "Crear y editar enfrentamientos", icon: Calendar },
   { module: "home_builder", label: "Página de inicio", desc: "Ordenar secciones de la home", icon: Layers },
   { module: "operations", tab: "news", label: "Noticias", desc: "Publicar novedades", icon: Newspaper },
   { module: "theme", label: "Colores", desc: "Aspecto visual del sitio", icon: Palette },
@@ -48,10 +79,20 @@ export function StudioDashboard() {
         })}
       </div>
 
+      <StudioCard title="Competición (recomendado)">
+        <p className="bf-studio-hint" style={{ margin: 0 }}>
+          Usa el menú <strong>Competición</strong> para equipos, torneos, partidos y bracket en un solo lugar. Los
+          cambios se guardan en Supabase y aparecen en la web. Si no guarda, revisa{" "}
+          <Link href="/admin?module=ajustes">Ajustes del sistema</Link> y ejecuta la sincronización.
+        </p>
+        <Link href="/admin?module=competicion&tab=matches" className="bp-btn bp-btn-gold" style={{ marginTop: 12 }}>
+          Abrir Competición
+        </Link>
+      </StudioCard>
+
       <StudioCard title="Consejo">
         <p className="bf-studio-hint" style={{ margin: 0 }}>
-          Los cambios que guardes aquí se reflejan en la web pública. Si algo no se ve al momento, espera unos
-          segundos y recarga la página con <strong>F5</strong>.
+          Si algo no se ve al momento, espera unos segundos y recarga con <strong>F5</strong>.
         </p>
       </StudioCard>
 

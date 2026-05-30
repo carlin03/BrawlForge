@@ -7,15 +7,11 @@ import {
   Home,
   LayoutGrid,
   Settings2,
-  Users,
-  User,
   Image,
   Newspaper,
   FileSpreadsheet,
   UserCircle,
   Layers,
-  Calendar,
-  GitBranch,
   Palette,
   Target,
   Trophy,
@@ -26,8 +22,6 @@ import {
 import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminConsole } from "@/components/admin/AdminConsole";
 import { StudioPlatformPanel } from "@/components/admin/studio/StudioPlatformPanel";
-import { StudioMatchesPanel } from "@/components/admin/studio/StudioMatchesPanel";
-import { StudioBracketBuilderPanel } from "@/components/admin/studio/StudioBracketBuilderPanel";
 import { StudioThemePanel } from "@/components/admin/studio/StudioThemePanel";
 import { StudioSeoPanel } from "@/components/admin/studio/StudioSeoPanel";
 import { StudioHomePanel } from "@/components/admin/studio/StudioHomePanel";
@@ -37,10 +31,14 @@ import { StudioMediaPanel } from "@/components/admin/studio/StudioMediaPanel";
 import { StudioCardsVisualPanel } from "@/components/admin/studio/StudioCardsVisualPanel";
 import { StudioAutomationPanel } from "@/components/admin/studio/StudioAutomationPanel";
 import { StudioDashboard } from "@/components/admin/studio/StudioDashboard";
-import { AdminTournamentsPanel } from "@/components/admin/AdminTournamentsPanel";
+import {
+  StudioCompetitionHub,
+  type CompetitionTab,
+} from "@/components/admin/studio/StudioCompetitionHub";
 
 export type StudioModule =
   | "inicio"
+  | "competicion"
   | "operations"
   | "matches"
   | "bracket"
@@ -56,7 +54,16 @@ export type StudioModule =
   | "platform"
   | "tournaments";
 
-type OpsTab = "teams" | "players" | "tournaments" | "logos" | "news" | "import" | "users";
+type OpsTab = "news" | "import" | "users";
+
+/** Rutas antiguas del menú → hub unificado */
+const LEGACY_MODULE_TO_COMPETITION: Partial<
+  Record<StudioModule, CompetitionTab>
+> = {
+  matches: "matches",
+  bracket: "bracket",
+  tournaments: "tournaments",
+};
 
 const MODULE_NAV: {
   id: StudioModule;
@@ -65,10 +72,13 @@ const MODULE_NAV: {
   lead: string;
 }[] = [
   { id: "inicio", label: "Inicio", icon: LayoutDashboard, lead: "Accesos rápidos a las tareas más habituales." },
-  { id: "operations", label: "Contenido", icon: LayoutGrid, lead: "Equipos, jugadores, torneos, logos y noticias." },
-  { id: "tournaments", label: "Torneos", icon: Trophy, lead: "Crear torneos, participantes, fechas y premios." },
-  { id: "matches", label: "Partidos", icon: Calendar, lead: "Crea enfrentamientos con un formulario guiado." },
-  { id: "bracket", label: "Bracket", icon: GitBranch, lead: "Constructor visual de playoffs con vista previa." },
+  {
+    id: "competicion",
+    label: "Competición",
+    icon: Trophy,
+    lead: "Equipos, jugadores, torneos, partidos en vivo y bracket.",
+  },
+  { id: "operations", label: "Sitio y comunidad", icon: LayoutGrid, lead: "Noticias, importación CSV y usuarios." },
   { id: "home_builder", label: "Página de inicio", icon: Layers, lead: "Secciones y cantidad de partidos en la portada." },
   { id: "theme", label: "Colores", icon: Palette, lead: "Paleta visual del sitio con selectores de color." },
   { id: "seo", label: "Búsqueda (SEO)", icon: Sparkles, lead: "Título y descripción para Google y redes." },
@@ -79,11 +89,7 @@ const MODULE_NAV: {
   { id: "automation", label: "Automatizaciones", icon: Sparkles, lead: "Tareas automáticas del sistema." },
 ];
 
-const OPS_LINKS: { tab: OpsTab; label: string; icon: typeof Users }[] = [
-  { tab: "teams", label: "Equipos", icon: Users },
-  { tab: "players", label: "Jugadores", icon: User },
-  { tab: "tournaments", label: "Torneos", icon: Trophy },
-  { tab: "logos", label: "Logos", icon: Image },
+const OPS_LINKS: { tab: OpsTab; label: string; icon: typeof Newspaper }[] = [
   { tab: "news", label: "Noticias", icon: Newspaper },
   { tab: "import", label: "Importar datos", icon: FileSpreadsheet },
   { tab: "users", label: "Usuarios", icon: UserCircle },
@@ -93,6 +99,7 @@ const MODULE_IDS = new Set(MODULE_NAV.map((m) => m.id));
 
 function moduleFromQuery(raw: string | null): StudioModule {
   if (raw === "platform") return "ajustes";
+  if (raw && LEGACY_MODULE_TO_COMPETITION[raw as StudioModule]) return "competicion";
   if (raw && MODULE_IDS.has(raw as StudioModule)) return raw as StudioModule;
   return "inicio";
 }
@@ -100,7 +107,7 @@ function moduleFromQuery(raw: string | null): StudioModule {
 function tabFromQuery(raw: string | null): OpsTab {
   const hit = OPS_LINKS.find((o) => o.tab === raw);
   if (hit) return hit.tab;
-  return "teams";
+  return "news";
 }
 
 export function BrawlForgeStudio() {
@@ -110,19 +117,32 @@ export function BrawlForgeStudio() {
   const [opsTab, setOpsTab] = useState<OpsTab>(() => tabFromQuery(searchParams.get("tab")));
 
   const syncUrl = useCallback(
-    (nextModule: StudioModule, nextTab?: OpsTab) => {
+    (nextModule: StudioModule, nextTab?: OpsTab | CompetitionTab) => {
       const p = new URLSearchParams();
       p.set("module", nextModule === "ajustes" ? "ajustes" : nextModule);
       if (nextModule === "operations" && nextTab) p.set("tab", nextTab);
+      if (nextModule === "competicion" && nextTab) p.set("tab", nextTab);
       router.replace(`/admin?${p.toString()}`, { scroll: false });
     },
     [router],
   );
 
   useEffect(() => {
-    setModule(moduleFromQuery(searchParams.get("module")));
-    setOpsTab(tabFromQuery(searchParams.get("tab")));
-  }, [searchParams]);
+    const moduleRaw = searchParams.get("module");
+    const legacyTab = moduleRaw ? LEGACY_MODULE_TO_COMPETITION[moduleRaw as StudioModule] : undefined;
+    if (legacyTab) {
+      const p = new URLSearchParams();
+      p.set("module", "competicion");
+      p.set("tab", legacyTab);
+      router.replace(`/admin?${p.toString()}`, { scroll: false });
+      return;
+    }
+    const nextModule = moduleFromQuery(moduleRaw);
+    setModule(nextModule);
+    if (nextModule === "operations") {
+      setOpsTab(tabFromQuery(searchParams.get("tab")));
+    }
+  }, [searchParams, router]);
 
   const activeModuleMeta = useMemo(() => MODULE_NAV.find((m) => m.id === module), [module]);
 
@@ -137,7 +157,8 @@ export function BrawlForgeStudio() {
     syncUrl("operations", tab);
   }
 
-  const showTopbar = module !== "inicio" && module !== "operations";
+  const showTopbar =
+    module !== "inicio" && module !== "operations" && module !== "competicion";
 
   return (
     <div className="bf-studio">
@@ -208,14 +229,14 @@ export function BrawlForgeStudio() {
         )}
 
         {module === "inicio" && <StudioDashboard />}
+        {module === "competicion" && (
+          <StudioCompetitionHub />
+        )}
         {module === "ajustes" && <StudioPlatformPanel />}
-        {module === "matches" && <StudioMatchesPanel />}
-        {module === "bracket" && <StudioBracketBuilderPanel />}
         {module === "theme" && <StudioThemePanel />}
         {module === "seo" && <StudioSeoPanel />}
         {module === "home_builder" && <StudioHomePanel />}
         {module === "cards" && <StudioCardsVisualPanel />}
-        {module === "tournaments" && <AdminTournamentsPanel teams={[]} />}
         {module === "fantasy_config" && <StudioFantasyPanel />}
         {module === "predictions_config" && <StudioPredictionsPanel />}
         {module === "media" && <StudioMediaPanel />}
@@ -225,8 +246,8 @@ export function BrawlForgeStudio() {
           <div className="bf-studio-embed">
             <header className="bf-studio-topbar">
               <div>
-                <h1 className="bf-studio-title">Contenido</h1>
-                <p className="bf-studio-lead">Equipos, jugadores, logos, noticias y usuarios.</p>
+                <h1 className="bf-studio-title">Sitio y comunidad</h1>
+                <p className="bf-studio-lead">Noticias, importación masiva y usuarios del panel.</p>
               </div>
             </header>
             <AdminConsole embedded initialTab={opsTab} />

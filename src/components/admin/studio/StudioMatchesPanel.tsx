@@ -166,6 +166,7 @@ export function StudioMatchesPanel() {
   const [msg, setMsg] = useState("");
   const [error, setError] = useState(false);
   const [listFilter, setListFilter] = useState<MatchFilter>("all");
+  const [panelView, setPanelView] = useState<"list" | "form">("list");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formTab, setFormTab] = useState<"general" | "predict" | "maps" | "brawlers">("general");
   const [form, setForm] = useState({
@@ -265,11 +266,12 @@ export function StudioMatchesPanel() {
       brawlers_banned_b: meta.bans?.brawlers_b ?? [],
     });
     setFormTab("general");
+    setPanelView("form");
     setMsg(`Editando: ${m.id}`);
     setError(false);
   }
 
-  function resetNewMatchForm() {
+  function clearMatchForm() {
     setEditingId(null);
     setForm({
       team_a_slug: "",
@@ -303,6 +305,11 @@ export function StudioMatchesPanel() {
       brawlers_banned_a: [],
       brawlers_banned_b: [],
     });
+  }
+
+  function resetNewMatchForm() {
+    clearMatchForm();
+    setPanelView("list");
   }
 
   async function patchMatch(
@@ -383,23 +390,172 @@ export function StudioMatchesPanel() {
       setError(true);
       return;
     }
-    setMsg("Partido guardado correctamente.");
+    setMsg(editingId ? "Partido actualizado." : "Partido guardado correctamente.");
     setError(false);
+    clearMatchForm();
+    setPanelView("list");
     reload();
   }
 
   return (
     <StudioModulePanel
       title="Partidos"
-      lead="Crea y edita enfrentamientos con un formulario sencillo. Aparecerán en la web y en predicciones."
+      lead="Pestaña Lista: en vivo y marcador. Pestaña Crear: equipos, mapas y predicciones del partido."
       apiPath="/api/cms/admin/matches"
       emptyTitle="No hay partidos guardados en el panel"
       emptyHint="Usa el formulario de arriba para crear el primero."
     >
       {(data, reload) => {
         const matches = (data.matches ?? []) as MatchRow[];
+        const filtered = matches.filter((m) => listFilter === "all" || m.status === listFilter);
         return (
           <>
+            <div className="bf-studio-match-mode-tabs" role="tablist" aria-label="Vista de partidos">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={panelView === "list"}
+                className={`bf-studio-competition-tab ${panelView === "list" ? "is-on" : ""}`}
+                onClick={() => setPanelView("list")}
+              >
+                Lista ({matches.length})
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={panelView === "form"}
+                className={`bf-studio-competition-tab ${panelView === "form" ? "is-on" : ""}`}
+                onClick={() => {
+                  if (!editingId) resetNewMatchForm();
+                  setPanelView("form");
+                }}
+              >
+                {editingId ? "Editar partido" : "Crear partido"}
+              </button>
+            </div>
+
+            {panelView === "list" && (
+              <StudioCard title={`Partidos en el catálogo (${matches.length})`}>
+                <p className="bf-studio-hint" style={{ marginTop: 0 }}>
+                  Aquí ves todo lo guardado en Supabase: pon <strong>En vivo</strong>, el marcador y la fase
+                  (cuartos, semis…). Las opciones de predicción por partido están en{" "}
+                  <strong>Editar completo → pestaña Predicciones</strong>.
+                </p>
+                <div className="bf-studio-pills" role="group" style={{ marginBottom: 12 }}>
+                  {(
+                    [
+                      ["all", "Todos"],
+                      ["upcoming", "Próximos"],
+                      ["live", "En vivo"],
+                      ["finished", "Finalizados"],
+                    ] as const
+                  ).map(([id, label]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      className={`bf-studio-pill ${listFilter === id ? "is-on" : ""}`}
+                      onClick={() => setListFilter(id)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {filtered.length === 0 ? (
+                  <div className="bf-studio-empty-inline">
+                    <p className="bf-studio-muted">
+                      {matches.length === 0
+                        ? "Aún no hay partidos en matches_catalog. Crea el primero."
+                        : "Ningún partido con este filtro."}
+                    </p>
+                    <button
+                      type="button"
+                      className="bp-btn bp-btn-gold"
+                      onClick={() => {
+                        clearMatchForm();
+                        setPanelView("form");
+                      }}
+                    >
+                      Crear partido
+                    </button>
+                  </div>
+                ) : (
+                  <ul className="bf-studio-match-list" id="bf-studio-match-list">
+                    {filtered.map((m) => (
+                      <li key={m.id} className="bf-studio-match-item">
+                        <div className="bf-studio-match-item-main">
+                          <div className="bf-studio-match-item-head">
+                            <strong>
+                              {teamName(m.team_a_slug)} vs {teamName(m.team_b_slug)}
+                            </strong>
+                            <code className="bf-studio-match-id">{m.id}</code>
+                          </div>
+                          <span className="bf-studio-match-meta">
+                            {m.format ?? "Bo3"} · {new Date(m.scheduled_at).toLocaleString("es-ES")}
+                          </span>
+                          <StudioField label="Estado (En vivo / marcador en web)">
+                            <StudioPills
+                              options={MATCH_STATUS_OPTIONS}
+                              value={
+                                MATCH_STATUS_OPTIONS.some((s) => s.id === m.status)
+                                  ? (m.status as (typeof MATCH_STATUS_OPTIONS)[number]["id"])
+                                  : "upcoming"
+                              }
+                              onChange={(v) => patchMatch(m.id, { status: v }, reload)}
+                            />
+                          </StudioField>
+                          {(m.status === "live" || m.status === "finished") && (
+                            <MatchScoreQuickRow
+                              match={m}
+                              onSave={(patch) => patchMatch(m.id, patch, reload)}
+                            />
+                          )}
+                          <StudioField label="Fase en /predictions">
+                            <StudioPills
+                              options={ROUND_PILLS}
+                              value={
+                                ROUND_PILLS.some((p) => p.id === (m.stage ?? ""))
+                                  ? (m.stage as (typeof ROUND_PILLS)[number]["id"])
+                                  : "Group Stage"
+                              }
+                              onChange={(v) => patchMatchStage(m.id, v, reload)}
+                            />
+                          </StudioField>
+                          <div className="bf-studio-match-item-actions">
+                            <button
+                              type="button"
+                              className="bp-btn bp-btn-gold"
+                              onClick={() => loadMatchForEdit(m)}
+                            >
+                              Editar completo
+                            </button>
+                            <Link href={`/matches/${m.id}`} className="bp-btn bp-btn-ghost" target="_blank">
+                              Ver en web
+                            </Link>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="bf-studio-actions-row" style={{ marginTop: 16 }}>
+                  <button type="button" className="bp-btn bp-btn-ghost" onClick={() => reload()}>
+                    Actualizar lista
+                  </button>
+                  <button
+                    type="button"
+                    className="bp-btn bp-btn-gold"
+                    onClick={() => {
+                      clearMatchForm();
+                      setPanelView("form");
+                    }}
+                  >
+                    + Nuevo partido
+                  </button>
+                </div>
+              </StudioCard>
+            )}
+
+            {panelView === "form" && (
             <StudioCard title={editingId ? `Editar partido · ${editingId}` : "Nuevo partido"}>
               <div className="bf-studio-match-pick-head">
                 <div className={`bf-studio-match-picked ${form.team_a_slug ? "has-team" : ""}`}>
@@ -747,92 +903,15 @@ export function StudioMatchesPanel() {
                 )}
               </div>
               <StudioToast message={msg} error={error} />
+              <button
+                type="button"
+                className="bp-btn bp-btn-ghost"
+                style={{ marginTop: 12 }}
+                onClick={() => setPanelView("list")}
+              >
+                ← Volver a la lista
+              </button>
             </StudioCard>
-
-            <h3 className="bf-studio-list-title">
-              Partidos creados ({matches.length})
-              <span className="bf-studio-muted" style={{ fontWeight: 600, marginLeft: 8 }}>
-                — resultados y estado se editan aquí (no hay API externa automática)
-              </span>
-            </h3>
-            <div className="bf-studio-pills" role="group" style={{ marginBottom: 12 }}>
-              {(
-                [
-                  ["all", "Todos"],
-                  ["upcoming", "Próximos"],
-                  ["live", "En vivo"],
-                  ["finished", "Finalizados"],
-                ] as const
-              ).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  className={`bf-studio-pill ${listFilter === id ? "is-on" : ""}`}
-                  onClick={() => setListFilter(id)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            {matches.length === 0 ? (
-              <p className="bf-studio-muted">Crea el primero con el formulario de arriba.</p>
-            ) : (
-              <ul className="bf-studio-match-list">
-                {matches
-                  .filter((m) => listFilter === "all" || m.status === listFilter)
-                  .map((m) => (
-                  <li key={m.id} className="bf-studio-match-item">
-                    <div className="bf-studio-match-item-main">
-                      <div className="bf-studio-match-item-head">
-                        <strong>
-                          {teamName(m.team_a_slug)} vs {teamName(m.team_b_slug)}
-                        </strong>
-                        <code className="bf-studio-match-id">{m.id}</code>
-                      </div>
-                      <span className="bf-studio-match-meta">
-                        {m.format ?? "Bo3"} · {new Date(m.scheduled_at).toLocaleString("es-ES")}
-                      </span>
-                      <StudioField label="Estado (web en vivo / marcador)">
-                        <StudioPills
-                          options={MATCH_STATUS_OPTIONS}
-                          value={
-                            MATCH_STATUS_OPTIONS.some((s) => s.id === m.status)
-                              ? (m.status as (typeof MATCH_STATUS_OPTIONS)[number]["id"])
-                              : "upcoming"
-                          }
-                          onChange={(v) => patchMatch(m.id, { status: v }, reload)}
-                        />
-                      </StudioField>
-                      {(m.status === "live" || m.status === "finished") && (
-                        <MatchScoreQuickRow match={m} onSave={(patch) => patchMatch(m.id, patch, reload)} />
-                      )}
-                      <StudioField label="Fase en web">
-                        <StudioPills
-                          options={ROUND_PILLS}
-                          value={
-                            ROUND_PILLS.some((p) => p.id === (m.stage ?? ""))
-                              ? (m.stage as (typeof ROUND_PILLS)[number]["id"])
-                              : "Group Stage"
-                          }
-                          onChange={(v) => patchMatchStage(m.id, v, reload)}
-                        />
-                      </StudioField>
-                      <div className="bf-studio-match-item-actions">
-                        <button
-                          type="button"
-                          className="bp-btn bp-btn-ghost"
-                          onClick={() => loadMatchForEdit(m)}
-                        >
-                          Editar completo
-                        </button>
-                        <Link href={`/matches/${m.id}`} className="bp-btn bp-btn-ghost" target="_blank">
-                          Ver en web
-                        </Link>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
             )}
           </>
         );
