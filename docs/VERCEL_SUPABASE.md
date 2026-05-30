@@ -42,7 +42,11 @@ Supabase → **Authentication** → **URL Configuration**:
 
 ## 5. SQL en Supabase
 
-Ejecuta en el SQL Editor (en orden si hace falta):
+Si ves **`infinite recursion detected in policy for relation "profiles"`** o el admin no carga jugadores/logs:
 
-1. `supabase/APPLY_CMS_ALL.sql`
-2. `supabase/ACTIVATE_CMS_PRODUCTION.sql`
+1. **`supabase/FIX_RLS_RECURSION_AND_ADMIN.sql`** — pégalo entero en SQL Editor y Run (arregla RLS + admin).
+
+Luego, si aún faltan módulos CMS:
+
+2. `supabase/APPLY_CMS_ALL.sql`
+3. `supabase/ACTIVATE_CMS_PRODUCTION.sql`

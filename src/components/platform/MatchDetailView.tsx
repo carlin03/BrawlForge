@@ -4,8 +4,7 @@ import Link from "next/link";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltraHero";
 import { Panel, FormDots } from "@/components/platform/ui";
-import { MatchVotePanel } from "@/components/platform/MatchVotePanel";
-import { MatchDetailPro } from "@/components/platform/MatchDetailPro";
+import { MatchEsportsExperience } from "@/components/match-esports/MatchEsportsExperience";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
@@ -17,7 +16,6 @@ import {
   getFantasyRole,
 } from "@/lib/data";
 import { getPlayerPrice } from "@/lib/data/fantasy";
-
 export function MatchDetailView({ id }: { id: string }) {
   const match = getMatch(id);
   if (!match) {
@@ -113,48 +111,40 @@ export function MatchDetailView({ id }: { id: string }) {
         }
       />
 
-      <div className="bp-detail-grid bf-stagger">
-        <Panel title="Predicción comunidad" className="fu-panel-glow">
-          <div className="bp-panel-body-pad">
-            <MatchVotePanel matchId={match.id} />
-          </div>
-        </Panel>
+      <MatchEsportsExperience match={match} />
 
-        <Panel title="Rosters en juego" className="fu-panel-glow">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--bp-line)" }}>
-            {[rosterA, rosterB].map((roster, side) => (
-              <div key={side} style={{ background: "var(--bp-panel)" }}>
-                <div
-                  style={{
-                    padding: "10px 14px",
-                    fontSize: 12,
-                    fontWeight: 800,
-                    borderBottom: "1px solid var(--bp-line)",
-                  }}
-                >
-                  {side === 0 ? teamName(match.teamASlug) : teamName(match.teamBSlug)}
-                </div>
-                {roster.map(
-                  (p) =>
-                    p && (
-                      <Link key={p.slug} href={`/players/${p.slug}`} className="bp-row">
-                        <div className="bp-row-main">
-                          <div className="bp-row-title">{p.ign}</div>
-                          <div className="bp-row-sub">
-                            {getFantasyRole(p.slug)} · OVR {p.fantasyPoints}
-                          </div>
-                        </div>
-                        <span className="bp-row-stat gold">{getPlayerPrice(p.slug)}M</span>
-                      </Link>
-                    ),
-                )}
+      <Panel title="Rosters en juego" className="fu-panel-glow">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "var(--bp-line)" }}>
+          {[rosterA, rosterB].map((roster, side) => (
+            <div key={side} style={{ background: "var(--bp-panel)" }}>
+              <div
+                style={{
+                  padding: "10px 14px",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  borderBottom: "1px solid var(--bp-line)",
+                }}
+              >
+                {side === 0 ? teamName(match.teamASlug) : teamName(match.teamBSlug)}
               </div>
-            ))}
-          </div>
-        </Panel>
-      </div>
-
-      <MatchDetailPro match={match} />
+              {roster.map(
+                (p) =>
+                  p && (
+                    <Link key={p.slug} href={`/players/${p.slug}`} className="bp-row">
+                      <div className="bp-row-main">
+                        <div className="bp-row-title">{p.ign}</div>
+                        <div className="bp-row-sub">
+                          {getFantasyRole(p.slug)} · OVR {p.fantasyPoints}
+                        </div>
+                      </div>
+                      <span className="bp-row-stat gold">{getPlayerPrice(p.slug)}M</span>
+                    </Link>
+                  ),
+              )}
+            </div>
+          ))}
+        </div>
+      </Panel>
     </PageUltraShell>
   );
 }

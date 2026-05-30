@@ -24,7 +24,7 @@ import {
 } from "@/lib/data/bracket-reveal";
 import { teamName } from "@/lib/data";
 import { parseMatchMeta, getMatchPredictionsConfig } from "@/lib/data/match-meta";
-import { ExactScorePicker } from "@/components/platform/predictions/ExactScorePicker";
+import { ScoreStepperPicker } from "@/components/match-esports/ScoreStepperPicker";
 
 interface InteractiveVoteCardProps {
   event: PredictionEvent | EnrichedPrediction;
@@ -262,9 +262,11 @@ export function InteractiveVoteCard({
       )}
 
       {!closed && predCfg.exact_score && match && pick && (
-        <ExactScorePicker
+        <ScoreStepperPicker
           matchId={event.matchId}
           format={match.format}
+          teamASlug={match.teamASlug}
+          teamBSlug={match.teamBSlug}
           teamAName={labelA}
           teamBName={labelB}
           initialScore={game?.exactScores?.[event.matchId] ?? null}

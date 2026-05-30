@@ -7,13 +7,12 @@ import { MATCH_ROUND_OPTIONS } from "@/lib/data/match-round-types";
 import {
   MATCH_IMPORTANCE_OPTIONS,
   MATCH_DISPLAY_STATUS_OPTIONS,
-  DEFAULT_MAP_POOL,
-  DEFAULT_BRAWLER_POOL,
   type MatchImportance,
   type MatchDisplayStatus,
   type MatchPredictionsConfig,
 } from "@/lib/data/match-meta";
-import { StudioChipPicker } from "@/components/admin/studio/StudioChipPicker";
+import { VisualMapPicker } from "@/components/admin/studio/VisualMapPicker";
+import { VisualBrawlerPicker } from "@/components/admin/studio/VisualBrawlerPicker";
 import {
   StudioCard,
   StudioField,
@@ -56,6 +55,9 @@ function buildMatchMeta(form: {
   pred_exact: boolean;
   pred_mvp: boolean;
   pred_first_map: boolean;
+  pred_decisive_map: boolean;
+  pred_brawler_used: boolean;
+  pred_brawler_mvp: boolean;
   pred_advanced: boolean;
   map_pool: string[];
   map_order: string[];
@@ -73,6 +75,9 @@ function buildMatchMeta(form: {
     exact_score: form.pred_exact,
     mvp: form.pred_mvp,
     first_map: form.pred_first_map,
+    decisive_map: form.pred_decisive_map,
+    brawler_most_used: form.pred_brawler_used,
+    brawler_mvp: form.pred_brawler_mvp,
     advanced: form.pred_advanced,
   };
   return {
@@ -124,6 +129,9 @@ export function StudioMatchesPanel() {
     pred_exact: false,
     pred_mvp: false,
     pred_first_map: false,
+    pred_decisive_map: false,
+    pred_brawler_used: false,
+    pred_brawler_mvp: false,
     pred_advanced: false,
     map_pool: [] as string[],
     map_order: [] as string[],
@@ -332,17 +340,19 @@ export function StudioMatchesPanel() {
                   />
                 </StudioField>
 
-                <StudioField label="Tipo de ronda" hint="Define filtros y sección en /predictions">
-                  <StudioSelect
-                    value={form.stage}
-                    onChange={(e) => setForm({ ...form, stage: e.target.value })}
-                  >
+                <StudioField label="Tipo de ronda" hint="Badges visuales en la web y filtros de /predictions">
+                  <div className="bf-studio-round-badges">
                     {MATCH_ROUND_OPTIONS.map((o) => (
-                      <option key={o.id} value={o.id}>
+                      <button
+                        key={o.id}
+                        type="button"
+                        className={`bf-studio-round-badge ${form.stage === o.id ? "is-on" : ""}`}
+                        onClick={() => setForm({ ...form, stage: o.id })}
+                      >
                         {o.label}
-                      </option>
+                      </button>
                     ))}
-                  </StudioSelect>
+                  </div>
                 </StudioField>
 
                 <StudioField label="Importancia del partido">
@@ -430,7 +440,7 @@ export function StudioMatchesPanel() {
                         checked={form.pred_mvp}
                         onChange={(e) => setForm({ ...form, pred_mvp: e.target.checked })}
                       />
-                      MVP prediction (futuro)
+                      MVP jugador
                     </label>
                     <label className="bf-studio-check">
                       <input
@@ -438,7 +448,31 @@ export function StudioMatchesPanel() {
                         checked={form.pred_first_map}
                         onChange={(e) => setForm({ ...form, pred_first_map: e.target.checked })}
                       />
-                      Primer mapa (futuro)
+                      Primer mapa
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={form.pred_decisive_map}
+                        onChange={(e) => setForm({ ...form, pred_decisive_map: e.target.checked })}
+                      />
+                      Mapa decisivo
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={form.pred_brawler_used}
+                        onChange={(e) => setForm({ ...form, pred_brawler_used: e.target.checked })}
+                      />
+                      Brawler más usado
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={form.pred_brawler_mvp}
+                        onChange={(e) => setForm({ ...form, pred_brawler_mvp: e.target.checked })}
+                      />
+                      Brawler MVP
                     </label>
                     <label className="bf-studio-check">
                       <input
@@ -446,16 +480,15 @@ export function StudioMatchesPanel() {
                         checked={form.pred_advanced}
                         onChange={(e) => setForm({ ...form, pred_advanced: e.target.checked })}
                       />
-                      Predicción avanzada (futuro)
+                      Activar todas las avanzadas
                     </label>
                   </div>
                 )}
 
                 {formTab === "maps" && (
                   <>
-                    <StudioChipPicker
-                      label="Map pool"
-                      pool={DEFAULT_MAP_POOL}
+                    <VisualMapPicker
+                      label="Map pool (imágenes en web)"
                       selected={form.map_pool}
                       onChange={(map_pool) =>
                         setForm({
@@ -466,14 +499,12 @@ export function StudioMatchesPanel() {
                             : map_pool,
                         })
                       }
-                      hint="Clic para añadir al pool"
                     />
-                    <StudioChipPicker
+                    <VisualMapPicker
                       label="Orden de mapas"
-                      pool={form.map_pool.length ? form.map_pool : DEFAULT_MAP_POOL}
+                      pool={form.map_pool.map((name) => ({ name }))}
                       selected={form.map_order}
                       onChange={(map_order) => setForm({ ...form, map_order })}
-                      hint="Orden de juego en el partido"
                     />
                     <StudioField label="Mapa actual">
                       <StudioSelect
@@ -501,16 +532,16 @@ export function StudioMatchesPanel() {
                         ))}
                       </StudioSelect>
                     </StudioField>
-                    <StudioChipPicker
-                      label={`Bans mapas · ${form.team_a_slug ? teamName(form.team_a_slug) : "Team A"}`}
-                      pool={form.map_pool.length ? form.map_pool : DEFAULT_MAP_POOL}
+                    <VisualMapPicker
+                      label={`Bans · ${form.team_a_slug ? teamName(form.team_a_slug) : "Team A"}`}
+                      pool={form.map_pool.map((name) => ({ name }))}
                       selected={form.bans_maps_a}
                       onChange={(bans_maps_a) => setForm({ ...form, bans_maps_a })}
                       variant="ban"
                     />
-                    <StudioChipPicker
-                      label={`Bans mapas · ${form.team_b_slug ? teamName(form.team_b_slug) : "Team B"}`}
-                      pool={form.map_pool.length ? form.map_pool : DEFAULT_MAP_POOL}
+                    <VisualMapPicker
+                      label={`Bans · ${form.team_b_slug ? teamName(form.team_b_slug) : "Team B"}`}
+                      pool={form.map_pool.map((name) => ({ name }))}
                       selected={form.bans_maps_b}
                       onChange={(bans_maps_b) => setForm({ ...form, bans_maps_b })}
                       variant="ban"
@@ -520,28 +551,24 @@ export function StudioMatchesPanel() {
 
                 {formTab === "brawlers" && (
                   <>
-                    <StudioChipPicker
-                      label="Meta"
-                      pool={DEFAULT_BRAWLER_POOL}
+                    <VisualBrawlerPicker
+                      label="Meta (iconos en ficha)"
                       selected={form.brawlers_meta}
                       onChange={(brawlers_meta) => setForm({ ...form, brawlers_meta })}
                     />
-                    <StudioChipPicker
+                    <VisualBrawlerPicker
                       label="Recomendados"
-                      pool={DEFAULT_BRAWLER_POOL}
                       selected={form.brawlers_recommended}
                       onChange={(brawlers_recommended) => setForm({ ...form, brawlers_recommended })}
                     />
-                    <StudioChipPicker
+                    <VisualBrawlerPicker
                       label="Baneados Team A"
-                      pool={DEFAULT_BRAWLER_POOL}
                       selected={form.brawlers_banned_a}
                       onChange={(brawlers_banned_a) => setForm({ ...form, brawlers_banned_a })}
                       variant="ban"
                     />
-                    <StudioChipPicker
+                    <VisualBrawlerPicker
                       label="Baneados Team B"
-                      pool={DEFAULT_BRAWLER_POOL}
                       selected={form.brawlers_banned_b}
                       onChange={(brawlers_banned_b) => setForm({ ...form, brawlers_banned_b })}
                       variant="ban"

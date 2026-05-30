@@ -21,17 +21,5 @@ create policy "logos public read"
 drop policy if exists "logos admin write" on storage.objects;
 create policy "logos admin write"
   on storage.objects for all
-  using (
-    bucket_id = 'logos'
-    and exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.is_admin = true
-    )
-  )
-  with check (
-    bucket_id = 'logos'
-    and exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.is_admin = true
-    )
-  );
+  using (bucket_id = 'logos' and public.is_cms_admin())
+  with check (bucket_id = 'logos' and public.is_cms_admin());

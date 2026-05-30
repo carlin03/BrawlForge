@@ -185,3 +185,78 @@
   gap: 12px;
   margin-top: 16px;
 }
+
+.bf-studio-round-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bf-studio-round-badge {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bf-studio-round-badge.is-on {
+  border-color: var(--bp-gold);
+  background: rgba(255, 200, 80, 0.12);
+  color: var(--bp-gold);
+}
+
+.bf-studio-final-score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 200px;
+}
+
+.bf-studio-final-score span {
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.bf-studio-visual-picker-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.bf-studio-visual-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.bf-studio-visual-picker-item {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--bp-radius);
+  background: none;
+  cursor: pointer;
+}
+
+.bf-studio-visual-picker-item.is-on {
+  border-color: var(--bp-gold);
+}
+
+.bf-studio-visual-picker-item .bf-map-asset {
+  pointer-events: none;
+}
+
+.bf-studio-visual-brawler-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bf-bracket-live-preview.bf-predict-bsc {
+  padding: 16px;
+  border-radius: var(--bp-radius-lg);
+  background: rgba(0, 0, 0, 0.35);
+}

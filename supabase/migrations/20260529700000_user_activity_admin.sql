@@ -1,5 +1,27 @@
 -- Actividad de usuarios, conteo de registrados y lectura admin de perfiles.
 
+create or replace function public.is_cms_admin()
+returns boolean
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+begin
+  if v_uid is null then
+    return false;
+  end if;
+  return exists (
+    select 1 from public.profiles p
+    where p.id = v_uid and coalesce(p.is_admin, false) = true
+  );
+end;
+$$;
+
+grant execute on function public.is_cms_admin() to anon, authenticated, service_role;
+
 alter table public.profiles
   add column if not exists last_seen_at timestamptz,
   add column if not exists last_path text,
@@ -103,6 +125,4 @@ grant execute on function public.registered_users_count() to anon, authenticated
 drop policy if exists "profiles admin read all" on public.profiles;
 create policy "profiles admin read all"
   on public.profiles for select
-  using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  using (public.is_cms_admin());

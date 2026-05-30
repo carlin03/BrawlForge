@@ -50,17 +50,37 @@ create policy "tournament logos public read"
   on public.tournament_logo_overrides for select
   using (true);
 
+create or replace function public.is_cms_admin()
+returns boolean
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+begin
+  if v_uid is null then
+    return false;
+  end if;
+  return exists (
+    select 1 from public.profiles p
+    where p.id = v_uid and coalesce(p.is_admin, false) = true
+  );
+end;
+$$;
+
+grant execute on function public.is_cms_admin() to anon, authenticated, service_role;
+
 create policy "team logos admin write"
   on public.team_logo_overrides for all
-  using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  using (public.is_cms_admin())
+  with check (public.is_cms_admin());
 
 create policy "tournament logos admin write"
   on public.tournament_logo_overrides for all
-  using (
-    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  using (public.is_cms_admin())
+  with check (public.is_cms_admin());
 
 create or replace function public.handle_new_user()
 returns trigger

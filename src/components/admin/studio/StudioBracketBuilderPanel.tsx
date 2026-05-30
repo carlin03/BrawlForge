@@ -20,50 +20,9 @@ import {
 } from "./studio-ui";
 import { AdminTeamLogoPicker } from "@/components/admin/AdminTeamLogoPicker";
 import { TeamLogo } from "@/components/ui/TeamLogo";
-import { BracketPendingDuel } from "@/components/platform/predictions/BracketPendingDuel";
+import { BracketLivePreview } from "@/components/admin/studio/BracketLivePreview";
 
 type TeamOption = { slug: string; name: string; tag: string; region?: string };
-
-function BracketPreviewSlot({
-  slot,
-  label,
-  layout,
-}: {
-  slot: BracketSlot;
-  label: string;
-  layout: BracketLayoutMode;
-}) {
-  const hasA = Boolean(slot.team_a_slug);
-  const hasB = Boolean(slot.team_b_slug);
-  if (!hasA && !hasB) {
-    return <BracketPendingDuel title="Pendiente de clasificación" subtitle="Asigna equipos en el editor." />;
-  }
-  const solo = layout === "1";
-  return (
-    <div className={`bf-bracket-builder-card ${solo ? "is-solo" : ""}`}>
-      <span className="bf-bracket-builder-card-label">{label}</span>
-      <div className="bf-bracket-builder-duel">
-        <div className="bf-bracket-builder-side">
-          {hasA ? (
-            <TeamLogo slug={slot.team_a_slug} name={teamName(slot.team_a_slug)} size={40} />
-          ) : (
-            <span className="bf-bracket-builder-tbd">?</span>
-          )}
-          <span>{hasA ? teamName(slot.team_a_slug) : "Pendiente"}</span>
-        </div>
-        <span className="bf-bracket-builder-vs">VS</span>
-        <div className="bf-bracket-builder-side">
-          {hasB ? (
-            <TeamLogo slug={slot.team_b_slug} name={teamName(slot.team_b_slug)} size={40} />
-          ) : (
-            <span className="bf-bracket-builder-tbd">?</span>
-          )}
-          <span>{hasB ? teamName(slot.team_b_slug) : "Pendiente"}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function SlotEditor({
   slot,
@@ -191,9 +150,6 @@ export function StudioBracketBuilderPanel() {
     setMsg(`Publicados ${data.count ?? 0} partidos en el catálogo.`);
   }
 
-  const previewCols =
-    config.layout === "2" ? "bf-bracket-builder-preview-2" : config.layout === "1" ? "bf-bracket-builder-preview-1" : "";
-
   return (
     <StudioPanel
       title="Bracket builder"
@@ -307,35 +263,8 @@ export function StudioBracketBuilderPanel() {
           )}
         </StudioCard>
 
-        <StudioCard title="Vista previa en vivo">
-          <div className={`bf-bracket-builder-preview ${previewCols}`}>
-            {config.rounds.quarters && (
-              <section className={config.slots.quarters.length === 1 ? "is-solo-round" : ""}>
-                <h3>Cuartos</h3>
-                <div className="bf-bracket-builder-preview-grid">
-                  {config.slots.quarters.map((slot, i) => (
-                    <BracketPreviewSlot key={i} slot={slot} label={`QF ${i + 1}`} layout={config.layout} />
-                  ))}
-                </div>
-              </section>
-            )}
-            {config.rounds.semis && (
-              <section className={config.slots.semis.length === 1 ? "is-solo-round" : ""}>
-                <h3>Semifinales</h3>
-                <div className="bf-bracket-builder-preview-grid">
-                  {config.slots.semis.map((slot, i) => (
-                    <BracketPreviewSlot key={i} slot={slot} label={`SF ${i + 1}`} layout={config.layout} />
-                  ))}
-                </div>
-              </section>
-            )}
-            {config.rounds.final && config.slots.final && (
-              <section className="is-solo-round">
-                <h3>Final</h3>
-                <BracketPreviewSlot slot={config.slots.final} label="GF" layout={config.layout} />
-              </section>
-            )}
-          </div>
+        <StudioCard title="Vista previa — igual que /predictions">
+          <BracketLivePreview config={config} />
         </StudioCard>
       </div>
 

@@ -12,7 +12,7 @@ import {
 } from "@/lib/data/match-meta";
 import { getH2HStats, getTeamMatchStats, formatRecentScore } from "@/lib/data/match-team-stats";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
-import { ExactScorePicker } from "@/components/platform/predictions/ExactScorePicker";
+import { ScoreStepperPicker } from "@/components/match-esports/ScoreStepperPicker";
 import { enrichPrediction } from "@/lib/data/predictions-ui";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { getMatchStageMeta } from "@/lib/data/match-stage-meta";
@@ -111,9 +111,11 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
             <InteractiveVoteCard event={predEvent} featured />
           </div>
           {predCfg.exact_score && (
-            <ExactScorePicker
+            <ScoreStepperPicker
               matchId={match.id}
               format={match.format}
+              teamASlug={match.teamASlug}
+              teamBSlug={match.teamBSlug}
               teamAName={teamName(match.teamASlug)}
               teamBName={teamName(match.teamBSlug)}
               initialScore={exactScores[match.id] ?? null}

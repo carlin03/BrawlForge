@@ -100,6 +100,9 @@ export type MatchPredictionsConfig = {
   exact_score?: boolean;
   mvp?: boolean;
   first_map?: boolean;
+  decisive_map?: boolean;
+  brawler_most_used?: boolean;
+  brawler_mvp?: boolean;
   advanced?: boolean;
 };
 
@@ -183,12 +186,16 @@ export function parseMatchMeta(raw: unknown): MatchMeta {
 
 export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConfig {
   const p = meta.predictions ?? {};
+  const advanced = p.advanced === true;
   return {
     winner: p.winner !== false,
     exact_score: p.exact_score === true || meta.allow_exact_score === true,
-    mvp: p.mvp === true,
-    first_map: p.first_map === true,
-    advanced: p.advanced === true,
+    mvp: p.mvp === true || advanced,
+    first_map: p.first_map === true || advanced,
+    decisive_map: p.decisive_map === true || advanced,
+    brawler_most_used: p.brawler_most_used === true || advanced,
+    brawler_mvp: p.brawler_mvp === true || advanced,
+    advanced,
   };
 }
 

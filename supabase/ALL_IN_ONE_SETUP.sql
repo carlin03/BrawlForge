@@ -50,13 +50,37 @@ create policy "team logos public read" on public.team_logo_overrides for select 
 drop policy if exists "tournament logos public read" on public.tournament_logo_overrides;
 create policy "tournament logos public read" on public.tournament_logo_overrides for select using (true);
 
+create or replace function public.is_cms_admin()
+returns boolean
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+begin
+  if v_uid is null then
+    return false;
+  end if;
+  return exists (
+    select 1 from public.profiles p
+    where p.id = v_uid and coalesce(p.is_admin, false) = true
+  );
+end;
+$$;
+
+grant execute on function public.is_cms_admin() to anon, authenticated, service_role;
+
 drop policy if exists "team logos admin write" on public.team_logo_overrides;
 create policy "team logos admin write" on public.team_logo_overrides for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  using (public.is_cms_admin())
+  with check (public.is_cms_admin());
 
 drop policy if exists "tournament logos admin write" on public.tournament_logo_overrides;
 create policy "tournament logos admin write" on public.tournament_logo_overrides for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  using (public.is_cms_admin())
+  with check (public.is_cms_admin());
 
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
@@ -374,32 +398,32 @@ create policy "news catalog public read" on public.news_catalog for select using
 
 drop policy if exists "news catalog admin write" on public.news_catalog;
 create policy "news catalog admin write" on public.news_catalog for all
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true))
-  with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  using (public.is_cms_admin())
+  with check (public.is_cms_admin());
 
 drop policy if exists "teams catalog admin insert" on public.teams_catalog;
 create policy "teams catalog admin insert" on public.teams_catalog for insert
-  with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  with check (public.is_cms_admin());
 
 drop policy if exists "teams catalog admin update" on public.teams_catalog;
 create policy "teams catalog admin update" on public.teams_catalog for update
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  using (public.is_cms_admin());
 
 drop policy if exists "teams catalog admin delete" on public.teams_catalog;
 create policy "teams catalog admin delete" on public.teams_catalog for delete
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  using (public.is_cms_admin());
 
 drop policy if exists "players catalog admin insert" on public.players_catalog;
 create policy "players catalog admin insert" on public.players_catalog for insert
-  with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  with check (public.is_cms_admin());
 
 drop policy if exists "players catalog admin update" on public.players_catalog;
 create policy "players catalog admin update" on public.players_catalog for update
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  using (public.is_cms_admin());
 
 drop policy if exists "players catalog admin delete" on public.players_catalog;
 create policy "players catalog admin delete" on public.players_catalog for delete
-  using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true));
+  using (public.is_cms_admin());
 
 -- ─── 6) Storage logos (admin en Vercel) ─────────────────────────────────────
 
@@ -424,20 +448,8 @@ create policy "logos public read"
 drop policy if exists "logos admin write" on storage.objects;
 create policy "logos admin write"
   on storage.objects for all
-  using (
-    bucket_id = 'logos'
-    and exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.is_admin = true
-    )
-  )
-  with check (
-    bucket_id = 'logos'
-    and exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.is_admin = true
-    )
-  );
+  using (bucket_id = 'logos' and public.is_cms_admin())
+  with check (bucket_id = 'logos' and public.is_cms_admin());
 
 -- =============================================================================
 -- FIN — Si ves "Success", la base está lista.
