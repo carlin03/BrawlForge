@@ -8,6 +8,8 @@ import type { EnrichedPrediction } from "@/lib/data/predictions-ui";
 import { formatPredictMatchTime } from "@/lib/data/predictions-ui";
 import { getPredictionLabel } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
+import { getMatch } from "@/lib/data/matches";
+import { featuredLabelFromMeta, parseMatchMeta } from "@/lib/data/match-meta";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +17,7 @@ import { useGame } from "@/contexts/GameContext";
 import { MatchStageBadge } from "@/components/platform/predictions/MatchStageBadge";
 import { MatchStatusPill } from "@/components/platform/predictions/MatchStatusPill";
 
-/** Partido del día — premium Pick'em */
+/** Partido destacado / de la semana — premium Pick'em (configurable en admin). */
 export function FeaturedPredictionDuel({ event }: { event: EnrichedPrediction }) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
@@ -30,6 +32,9 @@ export function FeaturedPredictionDuel({ event }: { event: EnrichedPrediction })
   const tour = event.tournamentShortName ?? event.tournamentSlug;
   const meta = event.stageMeta;
   const tierClass = meta?.cardClass ?? "is-tier-3";
+  const featuredKicker = featuredLabelFromMeta(
+    parseMatchMeta(getMatch(event.matchId)?.meta),
+  );
 
   async function vote(side: "A" | "B") {
     if (event.status === "closed" || saving) return;
@@ -58,7 +63,7 @@ export function FeaturedPredictionDuel({ event }: { event: EnrichedPrediction })
         <header className="bf-predict-featured-premium-head">
           <div className="bf-predict-featured-premium-kickers">
             <span className="bf-predict-featured-day-badge">
-              <Flame size={14} aria-hidden /> Partido del día
+              <Flame size={14} aria-hidden /> {featuredKicker}
             </span>
             {event.displayStatus && <MatchStatusPill status={event.displayStatus} />}
           </div>

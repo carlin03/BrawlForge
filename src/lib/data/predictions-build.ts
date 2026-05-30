@@ -1,5 +1,6 @@
 import { mergePickemAggregates } from "./pickem-demo-aggregates";
-import { getRecentMatches } from "./matches";
+import { getMatch, getRecentMatches } from "./matches";
+import { parseMatchMeta } from "./match-meta";
 import { getPickemOpenMatches } from "./pickem-open-matches";
 import { DEFAULT_PICKEM_STAGE_POINTS, getPickemRewardPoints } from "./pickem-reward-points";
 import type { PredictionEvent } from "./predictions";
@@ -21,6 +22,8 @@ export function buildPredictionEvents(
     const total = agg?.total_votes ?? 0;
     const pickA = pct(agg?.votes_a ?? 0, total);
     const rewardPoints = getPickemRewardPoints(m.stage, m.format);
+    const matchMeta = parseMatchMeta(getMatch(m.id)?.meta ?? m.meta);
+    const importance = matchMeta.importance;
     return {
       id: `vota-${m.id}`,
       matchId: m.id,
@@ -30,7 +33,11 @@ export function buildPredictionEvents(
       pickBPct: 100 - pickA,
       totalVotes: total,
       rewardPoints,
+      importance,
       featured:
+        importance === "week_featured" ||
+        importance === "featured" ||
+        importance === "historic" ||
         m.stage === "Grand Final" ||
         m.stage === "Semifinal" ||
         (m.stage === "Quarterfinal" && i < 2) ||

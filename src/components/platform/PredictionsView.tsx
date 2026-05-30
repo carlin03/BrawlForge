@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { FeaturedPredictionDuel } from "@/components/platform/predictions/FeaturedPredictionDuel";
@@ -15,10 +15,13 @@ import type { PredictionEvent } from "@/lib/data/predictions";
 import { isKnownTeamSlug } from "@/lib/data";
 import type { UserGameState } from "@/lib/supabase/game-types";
 import {
+  getAvailableRoundFilters,
   getPredictTournamentTabs,
   predictChronologySort,
   predictionMatchesSearch,
+  eventMatchesRoundFilter,
   sortBracketsByDate,
+  type PredictRoundFilterKey,
 } from "@/lib/data/predictions-filters";
 import {
   buildAllPlayoffBrackets,
@@ -44,6 +47,7 @@ export function PredictionsView({
   const { isLoggedIn } = useAuth();
   const votes = game?.votes ?? {};
   const [selectedTournament, setSelectedTournament] = useState<string | null>(null);
+  const [selectedRound, setSelectedRound] = useState<PredictRoundFilterKey>("all");
   const [search, setSearch] = useState("");
 
   const displayOpen = useMemo(
@@ -78,8 +82,26 @@ export function PredictionsView({
     if (search.trim()) {
       list = list.filter((e) => predictionMatchesSearch(e, search));
     }
+    if (selectedRound !== "all") {
+      list = list.filter((e) => eventMatchesRoundFilter(e, selectedRound));
+    }
     return [...list].sort(predictChronologySort);
-  }, [openEnriched, selectedTournament, search]);
+  }, [openEnriched, selectedTournament, search, selectedRound]);
+
+  const roundFilters = useMemo(
+    () => getAvailableRoundFilters(openEnriched, selectedTournament),
+    [openEnriched, selectedTournament],
+  );
+
+  useEffect(() => {
+    if (!roundFilters.includes(selectedRound)) {
+      setSelectedRound("all");
+    }
+  }, [roundFilters, selectedRound]);
+
+  useEffect(() => {
+    setSelectedRound("all");
+  }, [selectedTournament]);
 
   const playoffBrackets = useMemo(
     () => sortBracketsByDate(buildAllPlayoffBrackets(filteredOpen)),
@@ -93,13 +115,19 @@ export function PredictionsView({
 
   const featuredEvent = useMemo(() => {
     const pool = filteredOpen.filter((e) => !bracketMatchIds.has(e.matchId));
-    const f = pickFeaturedEvent(pool.length > 0 ? pool : filteredOpen);
+    const scope = selectedTournament
+      ? openEnriched.filter((e) => e.tournamentSlug === selectedTournament)
+      : openEnriched;
+    const f = pickFeaturedEvent(pool.length > 0 ? pool : scope);
     return f ? enrichPrediction(f, votes) : null;
-  }, [filteredOpen, votes, bracketMatchIds]);
+  }, [filteredOpen, openEnriched, votes, bracketMatchIds, selectedTournament]);
 
   const featuredId = featuredEvent?.matchId;
   const showFeatured = Boolean(
-    featuredEvent && !bracketMatchIds.has(featuredEvent.matchId) && !search.trim(),
+    featuredEvent &&
+      !bracketMatchIds.has(featuredEvent.matchId) &&
+      !search.trim() &&
+      (selectedRound === "all" || eventMatchesRoundFilter(featuredEvent, selectedRound)),
   );
 
   const regularMatches = useMemo(
@@ -130,7 +158,7 @@ export function PredictionsView({
 
   const popularBuckets = useMemo(() => categorizePopularPicks(filteredOpen), [filteredOpen]);
 
-  const showGlobalExtras = !selectedTournament && !search.trim();
+  const showGlobalExtras = !selectedTournament && !search.trim() && selectedRound === "all";
 
   return (
     <div className="bf-page-ultra bf-motion-page bf-predict-page bf-predict-bsc bf-predict-pickem">
@@ -144,6 +172,9 @@ export function PredictionsView({
         tabs={tournamentTabs}
         selectedSlug={selectedTournament}
         onSelectTournament={setSelectedTournament}
+        roundFilters={roundFilters}
+        selectedRound={selectedRound}
+        onSelectRound={setSelectedRound}
         search={search}
         onSearchChange={setSearch}
         resultCount={filteredOpen.length}
@@ -155,7 +186,7 @@ export function PredictionsView({
         <p className="bf-predict-round-hint">
           {selectedTournament
             ? "Este torneo no tiene cuartos/semis/final configurados en admin."
-            : "No hay cuartos/semis/final con fase configurada. En admin → Partidos elige Cuartos, Semifinal o Gran final."}
+            : "No hay cuartos/semis/final con fase configurada. En admin → Partidos elige la ronda correcta."}
         </p>
       )}
 
@@ -165,6 +196,7 @@ export function PredictionsView({
             bracket={bracket}
             votes={votes}
             events={filteredOpen.concat(closedEnriched)}
+            roundFilter={selectedRound}
           />
         </div>
       ))}
@@ -178,12 +210,12 @@ export function PredictionsView({
             <span className="bf-predict-pickem-count">{regularMatches.length}</span>
           </h2>
           <p className="bf-predict-section-lead">
-            Duelo 1 vs 1 — ordenados del más próximo al más lejano.
+            Duelo 1 vs 1 con contexto competitivo — del más próximo al más lejano.
           </p>
           <div className="bf-predict-duel-stack">
             {regularMatches.map((e) => (
-              <div key={e.id} className="bf-predict-bracket-grand-final">
-                <InteractiveVoteCard event={e} featured />
+              <div key={e.id} className="bf-predict-bracket-grand-final is-group-duel">
+                <InteractiveVoteCard event={e} featured={e.importance !== "normal"} />
               </div>
             ))}
           </div>
@@ -191,7 +223,7 @@ export function PredictionsView({
       )}
 
       {filteredOpen.length === 0 && displayOpen.length > 0 && (
-        <p className="bf-predict-round-hint">Ningún partido coincide con el filtro. Prueba otro equipo o torneo.</p>
+        <p className="bf-predict-round-hint">Ningún partido coincide con el filtro. Prueba otro equipo, torneo o ronda.</p>
       )}
 
       {displayOpen.length === 0 && (

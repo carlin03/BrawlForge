@@ -2,11 +2,13 @@
 
 import { useMemo } from "react";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
+import { BracketPendingDuel } from "@/components/platform/predictions/BracketPendingDuel";
 import type { EnrichedPrediction } from "@/lib/data/predictions-ui";
 import {
   type BracketRevealState,
   isBracketReadyToVote,
 } from "@/lib/data/bracket-reveal";
+import { isPendingTeamSlug } from "@/lib/data/match-meta";
 
 function displayPickFromVotes(
   event: EnrichedPrediction,
@@ -42,6 +44,28 @@ export function BracketMatchCard({
   const cardKey = bracketReveal
     ? `${event.matchId}-${revealKey(bracketReveal)}`
     : event.matchId;
+
+  const fullyPending =
+    bracketReveal &&
+    !isBracketReadyToVote(bracketReveal) &&
+    !bracketReveal.sideA.revealed &&
+    !bracketReveal.sideB.revealed;
+
+  const tbdPending =
+    isPendingTeamSlug(event.teamASlug) && isPendingTeamSlug(event.teamBSlug);
+
+  if (fullyPending || tbdPending) {
+    return (
+      <BracketPendingDuel
+        featured={featured}
+        subtitle={
+          bracketReveal
+            ? "Vota la ronda anterior para desbloquear este cruce."
+            : "El cruce se publicará cuando se confirme el emparejamiento."
+        }
+      />
+    );
+  }
 
   return (
     <InteractiveVoteCard

@@ -3,19 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { getBscCircuitTournaments } from "@/lib/data/matches";
 import { teamName } from "@/lib/data";
-import { DEFAULT_PICKEM_STAGE_POINTS, PICKEM_STAGE_OPTIONS } from "@/lib/data/pickem-reward-points";
-
-const PICKEM_STAGE_PILLS = PICKEM_STAGE_OPTIONS.map((o) => ({
-  id: o.id,
-  label:
-    o.pointsKey === "group"
-      ? "Grupos"
-      : o.pointsKey === "quarter"
-        ? "Cuartos"
-        : o.pointsKey === "semi"
-          ? "Semis"
-          : "Final",
-}));
+import { MATCH_ROUND_OPTIONS } from "@/lib/data/match-round-types";
+import {
+  MATCH_IMPORTANCE_OPTIONS,
+  MATCH_DISPLAY_STATUS_OPTIONS,
+  type MatchImportance,
+  type MatchDisplayStatus,
+} from "@/lib/data/match-meta";
 import {
   StudioCard,
   StudioField,
@@ -31,6 +25,11 @@ import { TeamLogo } from "@/components/ui/TeamLogo";
 
 type TeamOption = { slug: string; name: string; tag: string; region?: string };
 
+const ROUND_PILLS = MATCH_ROUND_OPTIONS.map((o) => ({
+  id: o.id,
+  label: o.filterLabel,
+}));
+
 type MatchRow = {
   id: string;
   team_a_slug: string;
@@ -42,7 +41,34 @@ type MatchRow = {
   format?: string | null;
   score_a: number;
   score_b: number;
+  meta?: Record<string, unknown>;
 };
+
+function buildMatchMeta(form: {
+  importance: MatchImportance;
+  display_status: MatchDisplayStatus;
+  allow_exact_score: boolean;
+  featured_label: string;
+  maps_possible: string;
+  bans_maps_a: string;
+  bans_maps_b: string;
+}) {
+  const maps = form.maps_possible
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return {
+    importance: form.importance,
+    display_status: form.display_status,
+    allow_exact_score: form.allow_exact_score,
+    featured_label: form.featured_label.trim() || undefined,
+    maps: maps.length ? { possible: maps } : undefined,
+    bans: {
+      maps_a: form.bans_maps_a.split(",").map((s) => s.trim()).filter(Boolean),
+      maps_b: form.bans_maps_b.split(",").map((s) => s.trim()).filter(Boolean),
+    },
+  };
+}
 
 export function StudioMatchesPanel() {
   const [teams, setTeams] = useState<TeamOption[]>([]);
@@ -54,10 +80,17 @@ export function StudioMatchesPanel() {
     tournament_slug: "bsc-2026-challengers-spain",
     scheduled_at: new Date().toISOString().slice(0, 16),
     status: "upcoming" as (typeof MATCH_STATUS_OPTIONS)[number]["id"],
-    stage: "Quarterfinal",
+    stage: "Group Stage",
     format: "Bo5",
     score_a: 0,
     score_b: 0,
+    importance: "normal" as MatchImportance,
+    display_status: "upcoming" as MatchDisplayStatus,
+    allow_exact_score: false,
+    featured_label: "",
+    maps_possible: "",
+    bans_maps_a: "",
+    bans_maps_b: "",
   });
 
   const tournaments = useMemo(
@@ -101,7 +134,7 @@ export function StudioMatchesPanel() {
       setError(true);
       return;
     }
-    setMsg(`Fase actualizada: ${PICKEM_STAGE_PILLS.find((p) => p.id === stage)?.label ?? stage}`);
+    setMsg(`Fase actualizada: ${ROUND_PILLS.find((p) => p.id === stage)?.label ?? stage}`);
     reload();
   }
 
@@ -120,8 +153,16 @@ export function StudioMatchesPanel() {
       body: JSON.stringify({
         match: {
           id,
-          ...form,
+          team_a_slug: form.team_a_slug,
+          team_b_slug: form.team_b_slug,
+          tournament_slug: form.tournament_slug,
           scheduled_at: new Date(form.scheduled_at).toISOString(),
+          status: form.status,
+          stage: form.stage,
+          format: form.format,
+          score_a: form.score_a,
+          score_b: form.score_b,
+          meta: buildMatchMeta(form),
         },
       }),
     });
@@ -226,20 +267,77 @@ export function StudioMatchesPanel() {
                   />
                 </StudioField>
 
-                <StudioField
-                  label="Fase (bracket / puntos)"
-                  hint="Jornada/grupos = grid normal · Cuartos = sección cuartos · Semis = clave · Final = 1 grande"
-                >
+                <StudioField label="Tipo de ronda" hint="Define filtros y sección en /predictions">
                   <StudioSelect
                     value={form.stage}
                     onChange={(e) => setForm({ ...form, stage: e.target.value })}
                   >
-                    {PICKEM_STAGE_OPTIONS.map((o) => (
+                    {MATCH_ROUND_OPTIONS.map((o) => (
                       <option key={o.id} value={o.id}>
-                        {o.label} (+{DEFAULT_PICKEM_STAGE_POINTS[o.pointsKey]} pts)
+                        {o.label}
                       </option>
                     ))}
                   </StudioSelect>
+                </StudioField>
+
+                <StudioField label="Importancia del partido">
+                  <StudioPills
+                    options={MATCH_IMPORTANCE_OPTIONS.map((o) => ({ id: o.id, label: o.label }))}
+                    value={form.importance}
+                    onChange={(v) => setForm({ ...form, importance: v })}
+                  />
+                </StudioField>
+
+                {form.importance !== "normal" && (
+                  <StudioField label="Etiqueta destacado (opcional)" hint="Vacío = etiqueta por defecto">
+                    <StudioInput
+                      value={form.featured_label}
+                      onChange={(e) => setForm({ ...form, featured_label: e.target.value })}
+                      placeholder="Partido de la semana"
+                    />
+                  </StudioField>
+                )}
+
+                <StudioField label="Estado visible">
+                  <StudioPills
+                    options={MATCH_DISPLAY_STATUS_OPTIONS.map((o) => ({ id: o.id, label: o.label }))}
+                    value={form.display_status}
+                    onChange={(v) => setForm({ ...form, display_status: v })}
+                  />
+                </StudioField>
+
+                <StudioField label="Predicción avanzada">
+                  <label className="bf-studio-check">
+                    <input
+                      type="checkbox"
+                      checked={form.allow_exact_score}
+                      onChange={(e) => setForm({ ...form, allow_exact_score: e.target.checked })}
+                    />
+                    Permitir resultado exacto (BO3/BO5)
+                  </label>
+                </StudioField>
+
+                <StudioField label="Mapas posibles" hint="Separados por coma">
+                  <StudioInput
+                    value={form.maps_possible}
+                    onChange={(e) => setForm({ ...form, maps_possible: e.target.value })}
+                    placeholder="Belle's Rock, Bridge Too Far, …"
+                  />
+                </StudioField>
+
+                <StudioField label="Bans de mapas (A / B)" hint="Slugs o nombres, separados por coma">
+                  <div className="bf-studio-score-row">
+                    <StudioInput
+                      value={form.bans_maps_a}
+                      onChange={(e) => setForm({ ...form, bans_maps_a: e.target.value })}
+                      placeholder="Team A bans"
+                    />
+                    <StudioInput
+                      value={form.bans_maps_b}
+                      onChange={(e) => setForm({ ...form, bans_maps_b: e.target.value })}
+                      placeholder="Team B bans"
+                    />
+                  </div>
                 </StudioField>
 
                 <StudioField label="Formato">
@@ -299,10 +397,10 @@ export function StudioMatchesPanel() {
                       </span>
                       <StudioField label="Fase en web">
                         <StudioPills
-                          options={PICKEM_STAGE_PILLS}
+                          options={ROUND_PILLS}
                           value={
-                            PICKEM_STAGE_PILLS.some((p) => p.id === (m.stage ?? ""))
-                              ? (m.stage as (typeof PICKEM_STAGE_PILLS)[number]["id"])
+                            ROUND_PILLS.some((p) => p.id === (m.stage ?? ""))
+                              ? (m.stage as (typeof ROUND_PILLS)[number]["id"])
                               : "Group Stage"
                           }
                           onChange={(v) => patchMatchStage(m.id, v, reload)}

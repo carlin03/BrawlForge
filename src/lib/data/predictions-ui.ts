@@ -220,8 +220,14 @@ export function pointsToNextRank(
   };
 }
 
-export function pickFeaturedEvent(open: PredictionEvent[]): PredictionEvent | null {
+export function pickFeaturedEvent(
+  open: (PredictionEvent & { importance?: string })[],
+): PredictionEvent | null {
   if (!open.length) return null;
+  const week = open.find((e) => e.importance === "week_featured");
+  if (week) return week;
+  const featured = open.find((e) => e.importance === "featured" || e.importance === "historic");
+  if (featured) return featured;
   const ranked = [...open].sort(stageImportanceSort);
   return ranked[0] ?? null;
 }

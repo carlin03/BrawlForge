@@ -1,5 +1,6 @@
 import type { EsportsMatch } from "@/lib/data/matches";
 import { matches as legacyMatches } from "@/lib/data/matches";
+import { parseMatchMeta } from "@/lib/data/match-meta";
 import { createClient } from "@/lib/supabase/server";
 import { isCmsResolverActive, isFlagEnabled, mergeFlags } from "../flags";
 import { loadFlagsFromDb } from "../db";
@@ -16,6 +17,7 @@ function rowToMatch(row: {
   format: string | null;
   score_a: number;
   score_b: number;
+  meta?: unknown;
 }): EsportsMatch {
   return {
     id: row.id,
@@ -29,6 +31,7 @@ function rowToMatch(row: {
     status: row.status as EsportsMatch["status"],
     region: (row.region ?? "GLOBAL") as EsportsMatch["region"],
     format: row.format ?? "Bo3",
+    meta: parseMatchMeta(row.meta),
   };
 }
 
@@ -38,7 +41,7 @@ export async function loadMatchesFromDb(): Promise<EsportsMatch[] | null> {
   const { data, error } = await supabase
     .from("matches_catalog")
     .select(
-      "id, tournament_slug, team_a_slug, team_b_slug, scheduled_at, status, stage, region, format, score_a, score_b",
+      "id, tournament_slug, team_a_slug, team_b_slug, scheduled_at, status, stage, region, format, score_a, score_b, meta",
     )
     .eq("published", true)
     .order("scheduled_at", { ascending: true });

@@ -23,6 +23,8 @@ export interface PredictionEvent {
   stage: string;
   tournamentSlug: string;
   featured?: boolean;
+  /** Desde matches_catalog.meta.importance (admin). */
+  importance?: string;
   userPick?: "A" | "B" | null;
   status: "open" | "closed";
   correctPick?: "A" | "B";

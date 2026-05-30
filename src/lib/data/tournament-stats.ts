@@ -138,6 +138,7 @@ const STATUS_ORDER: Record<EsportsMatch["status"], number> = {
   live: 0,
   upcoming: 1,
   finished: 2,
+  cancelled: 3,
 };
 
 export function groupMatchesByRound(matches: EsportsMatch[]): TournamentMatchday[] {

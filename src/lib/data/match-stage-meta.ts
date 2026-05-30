@@ -1,5 +1,7 @@
 /** Importancia de ronda y copy competitivo para Pick'em / predicciones */
 
+import { MATCH_ROUND_OPTIONS } from "./match-round-types";
+
 export type StageRoundKey =
   | "group"
   | "last_chance"
@@ -37,6 +39,30 @@ const STAKES: Record<StageRoundKey, string> = {
 export function getMatchStageMeta(stage: string): MatchStageMeta {
   const raw = (stage || "Match").trim();
   const s = raw.toLowerCase();
+
+  const preset = MATCH_ROUND_OPTIONS.find((o) => o.id === raw);
+  if (preset) {
+    const tier =
+      preset.roundKey === "grand_final"
+        ? 5
+        : preset.roundKey === "semi" || preset.roundKey === "final"
+          ? 4
+          : preset.roundKey === "quarter"
+            ? 3
+            : preset.roundKey === "group"
+              ? 1
+              : 2;
+    return {
+      tier: tier as StageTier,
+      roundKey: preset.roundKey,
+      label: preset.filterLabel,
+      fullLabel: preset.label,
+      badgeClass: `is-round-${preset.roundKey}`,
+      cardClass: `is-tier-${tier}`,
+      isPlayoff: preset.isPlayoff,
+      stakesLine: STAKES[preset.roundKey],
+    };
+  }
 
   let roundKey: StageRoundKey = "other";
   let tier: StageTier = 2;

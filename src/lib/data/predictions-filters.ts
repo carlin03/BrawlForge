@@ -1,5 +1,14 @@
 import { teamName } from "./index";
+import {
+  filterKeyFromRoundKey,
+  filterKeyFromStage,
+  type PredictRoundFilterKey,
+  PREDICT_ROUND_FILTER_OPTIONS,
+} from "./match-round-types";
 import type { EnrichedPrediction, PlayoffBracketView } from "./predictions-ui";
+
+export type { PredictRoundFilterKey };
+export { PREDICT_ROUND_FILTER_OPTIONS };
 
 export function predictChronologySort(a: EnrichedPrediction, b: EnrichedPrediction): number {
   return (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline);
@@ -37,6 +46,52 @@ export function getPredictTournamentTabs(events: EnrichedPrediction[]): PredictT
     }
   }
   return [...map.values()].sort((a, b) => a.earliest.localeCompare(b.earliest));
+}
+
+/** Filtros de ronda dinámicos según partidos abiertos del torneo (o global). */
+export function getAvailableRoundFilters(
+  events: EnrichedPrediction[],
+  tournamentSlug?: string | null,
+): PredictRoundFilterKey[] {
+  const list = tournamentSlug
+    ? events.filter((e) => e.tournamentSlug === tournamentSlug)
+    : events;
+  const keys = new Set<PredictRoundFilterKey>();
+  for (const e of list) {
+    const fk =
+      filterKeyFromStage(e.stage) ??
+      filterKeyFromRoundKey(e.stageMeta?.roundKey ?? "other");
+    if (fk) keys.add(fk);
+  }
+  const out: PredictRoundFilterKey[] = ["all"];
+  if (keys.has("group")) out.push("group");
+  if (keys.has("quarter")) out.push("quarter");
+  if (keys.has("semi")) out.push("semi");
+  if (keys.has("final")) out.push("final");
+  return out;
+}
+
+export function eventMatchesRoundFilter(
+  e: EnrichedPrediction,
+  filter: PredictRoundFilterKey,
+): boolean {
+  if (filter === "all") return true;
+  const fk =
+    filterKeyFromStage(e.stage) ??
+    filterKeyFromRoundKey(e.stageMeta?.roundKey ?? "other");
+  return fk === filter;
+}
+
+export function bracketShowsRound(
+  bracket: PlayoffBracketView,
+  filter: PredictRoundFilterKey,
+): { quarters: boolean; semis: boolean; final: boolean } {
+  if (filter === "all") return { quarters: true, semis: true, final: true };
+  return {
+    quarters: filter === "quarter" && bracket.quarters.length > 0,
+    semis: filter === "semi" && bracket.semis.length > 0,
+    final: filter === "final" && Boolean(bracket.final),
+  };
 }
 
 export function predictionMatchesSearch(e: EnrichedPrediction, query: string): boolean {

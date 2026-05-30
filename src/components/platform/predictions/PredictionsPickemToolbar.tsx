@@ -1,12 +1,17 @@
 "use client";
 
 import { Search } from "lucide-react";
+import type { PredictRoundFilterKey } from "@/lib/data/predictions-filters";
+import { PREDICT_ROUND_FILTER_OPTIONS } from "@/lib/data/predictions-filters";
 import type { PredictTournamentTab } from "@/lib/data/predictions-filters";
 
 export function PredictionsPickemToolbar({
   tabs,
   selectedSlug,
   onSelectTournament,
+  roundFilters,
+  selectedRound,
+  onSelectRound,
   search,
   onSearchChange,
   resultCount,
@@ -14,10 +19,15 @@ export function PredictionsPickemToolbar({
   tabs: PredictTournamentTab[];
   selectedSlug: string | null;
   onSelectTournament: (slug: string | null) => void;
+  roundFilters: PredictRoundFilterKey[];
+  selectedRound: PredictRoundFilterKey;
+  onSelectRound: (round: PredictRoundFilterKey) => void;
   search: string;
   onSearchChange: (q: string) => void;
   resultCount: number;
 }) {
+  const roundPills = PREDICT_ROUND_FILTER_OPTIONS.filter((o) => roundFilters.includes(o.id));
+
   return (
     <div className="bf-predict-pickem-toolbar">
       <div className="bf-predict-pickem-search">
@@ -50,6 +60,21 @@ export function PredictionsPickemToolbar({
             >
               {t.name}
               <span className="bf-predict-tjump-count">{t.openCount}</span>
+            </button>
+          ))}
+        </nav>
+      )}
+
+      {selectedSlug && roundPills.length > 1 && (
+        <nav className="bf-predict-round-jump" aria-label="Filtrar por ronda">
+          {roundPills.map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              className={`bf-predict-tjump-pill is-round ${selectedRound === o.id ? "is-on" : ""}`}
+              onClick={() => onSelectRound(o.id)}
+            >
+              {o.label}
             </button>
           ))}
         </nav>

@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BracketMatchCard } from "@/components/platform/predictions/BracketMatchCard";
+import { BracketPendingDuel } from "@/components/platform/predictions/BracketPendingDuel";
+import type { PredictRoundFilterKey } from "@/lib/data/predictions-filters";
+import { bracketShowsRound } from "@/lib/data/predictions-filters";
 import type { EnrichedPrediction, PlayoffBracketView } from "@/lib/data/predictions-ui";
 import {
   findBracketFinalEvent,
@@ -247,17 +250,22 @@ function GranFinalRound({
           : " — Tu bracket personal; más puntos si aciertas."}
       </p>
       <div className="bf-predict-bracket-grand-final">
-        <BracketMatchCard
-          event={finalEvent ?? finalCardEvent}
-          votes={votes}
-          bracketReveal={finalReveal}
-          featured
-          voteOverride={waitingSemis || officialFinal ? undefined : voteFinalOverride}
-        />
+        {waitingSemis ? (
+          <BracketPendingDuel
+            featured
+            title="Pendiente de clasificación"
+            subtitle="Por determinar — elige ganador en las dos semifinales para armar la gran final."
+          />
+        ) : (
+          <BracketMatchCard
+            event={finalEvent ?? finalCardEvent}
+            votes={votes}
+            bracketReveal={finalReveal}
+            featured
+            voteOverride={officialFinal ? undefined : voteFinalOverride}
+          />
+        )}
       </div>
-      {waitingSemis && (
-        <p className="bf-predict-round-hint">Pendiente: elige ganador en las dos semifinales de arriba.</p>
-      )}
       {err && (
         <p className="bf-predict-round-error" role="alert">
           {err}
@@ -274,19 +282,28 @@ function BracketQuarterGrid({
   matches: EnrichedPrediction[];
   votes: Record<string, "A" | "B">;
 }) {
+  if (matches.length === 1) {
+    return (
+      <div className="bf-predict-bracket-qf is-solo-round">
+        <div className="bf-predict-bracket-qf-row is-solo-round">
+          <BracketMatchCard event={matches[0]} votes={votes} />
+        </div>
+      </div>
+    );
+  }
   const top = matches.slice(0, 2);
   const bottom = matches.slice(2, 4);
   return (
     <div className="bf-predict-bracket-qf">
       {top.length > 0 && (
-        <div className="bf-predict-bracket-qf-row">
+        <div className={`bf-predict-bracket-qf-row ${top.length === 1 ? "is-solo-round" : ""}`}>
           {top.map((e) => (
             <BracketMatchCard key={e.id} event={e} votes={votes} />
           ))}
         </div>
       )}
       {bottom.length > 0 && (
-        <div className="bf-predict-bracket-qf-row">
+        <div className={`bf-predict-bracket-qf-row ${bottom.length === 1 ? "is-solo-round" : ""}`}>
           {bottom.map((e) => (
             <BracketMatchCard key={e.id} event={e} votes={votes} />
           ))}
@@ -305,21 +322,8 @@ function BracketSemiGrid({
   quarters: EnrichedPrediction[];
   votes: Record<string, "A" | "B">;
 }) {
-  if (matches.length === 1) {
-    const e = matches[0];
-    return (
-      <div className="bf-predict-bracket-grand-final">
-        <BracketMatchCard
-          event={e}
-          votes={votes}
-          featured
-          bracketReveal={resolveSemiReveal(0, e, quarters, votes)}
-        />
-      </div>
-    );
-  }
   return (
-    <div className="bf-predict-bracket-sf">
+    <div className={`bf-predict-bracket-sf ${matches.length === 1 ? "is-solo-round" : ""}`}>
       {matches.map((e, i) => (
         <BracketMatchCard
           key={e.id}
@@ -337,17 +341,20 @@ export function PredictionsRoundSections({
   bracket,
   votes,
   events,
+  roundFilter = "all",
 }: {
   bracket: PlayoffBracketView;
   votes: Record<string, "A" | "B">;
   events: EnrichedPrediction[];
+  roundFilter?: PredictRoundFilterKey;
 }) {
   const qf = bracket.quarters;
   const sf = bracket.semis;
+  const show = bracketShowsRound(bracket, roundFilter);
 
   return (
     <>
-      {qf.length > 0 && (
+      {show.quarters && qf.length > 0 && (
         <section className="bf-predict-active-main" aria-labelledby="predict-qf-title">
           <h2 id="predict-qf-title" className="bf-predict-pickem-section-title">
             Cuartos de final
@@ -360,7 +367,7 @@ export function PredictionsRoundSections({
         </section>
       )}
 
-      {sf.length > 0 && (
+      {show.semis && sf.length > 0 && (
         <section className="bf-predict-key-matches" aria-labelledby="predict-sf-title">
           <h2 id="predict-sf-title" className="bf-predict-pickem-section-title">
             Semifinales
@@ -380,7 +387,7 @@ export function PredictionsRoundSections({
         </section>
       )}
 
-      {(sf.length > 0 || bracket.final) && (
+      {show.final && (sf.length > 0 || bracket.final) && (
         <GranFinalRound bracket={bracket} votes={votes} events={events} />
       )}
     </>

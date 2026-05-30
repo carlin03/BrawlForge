@@ -2572,10 +2572,104 @@
   font-weight: 700;
   color: var(--bp-dim);
 }
-.bf-predict-bracket-sf.is-single-slot {
+/* Una sola card en la ronda — centrada y más grande */
+.bf-predict-bracket-sf.is-solo-round,
+.bf-predict-bracket-qf.is-solo-round,
+.bf-predict-bracket-qf-row.is-solo-round {
+  max-width: min(100%, 720px);
+  margin-left: auto;
+  margin-right: auto;
+}
+.bf-predict-bracket-sf.is-solo-round {
   grid-template-columns: 1fr;
+}
+.bf-predict-bracket-qf-row.is-solo-round {
+  grid-template-columns: 1fr;
+}
+.bf-predict-bracket-sf.is-solo-round .bf-bsc-vote-card,
+.bf-predict-bracket-qf-row.is-solo-round .bf-bsc-vote-card {
+  min-height: 200px;
+}
+.bf-predict-duel-stack.is-group-duel .bf-bsc-vote-card {
+  border-color: rgba(0, 153, 255, 0.18) !important;
+}
+
+.bf-predict-round-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 4px;
+}
+.bf-predict-tjump-pill.is-round {
+  font-size: 11px;
+  padding: 6px 12px;
+}
+
+/* Pendiente de clasificación — premium */
+.bf-bracket-pending-duel {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  background: linear-gradient(165deg, rgba(30, 35, 48, 0.9), rgba(8, 10, 16, 0.95));
+  min-height: 200px;
+}
+.bf-bracket-pending-duel.is-featured {
+  min-height: 240px;
+  border-color: rgba(255, 193, 7, 0.35);
+}
+.bf-bracket-pending-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255, 193, 7, 0.08), transparent 60%);
+  pointer-events: none;
+}
+.bf-bracket-pending-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px 20px;
+  text-align: center;
+}
+.bf-bracket-pending-icon {
+  color: var(--bp-dim);
+  opacity: 0.7;
+}
+.bf-bracket-pending-title {
+  margin: 0;
+  font-family: var(--bp-head);
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--bp-text);
+}
+.bf-bracket-pending-duel.is-featured .bf-bracket-pending-title {
+  font-size: 1.35rem;
+}
+.bf-bracket-pending-sub {
+  margin: 0;
   max-width: 420px;
-  margin: 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--bp-muted);
+}
+.bf-bracket-pending-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .bf-predict-round-hint {
   margin: 0 0 12px;

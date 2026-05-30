@@ -5,6 +5,7 @@ import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltraHero";
 import { Panel, FormDots } from "@/components/platform/ui";
 import { MatchVotePanel } from "@/components/platform/MatchVotePanel";
+import { MatchDetailExtras } from "@/components/platform/MatchDetailExtras";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
@@ -162,6 +163,8 @@ export function MatchDetailView({ id }: { id: string }) {
           </div>
         </Panel>
       </div>
+
+      <MatchDetailExtras match={match} />
 
       {h2h.length > 0 && (
         <Panel title="Historial cara a cara" flush className="fu-panel-glow">

@@ -14,6 +14,8 @@ import { isValidLogoSlug } from "./logo-slugs";
 import { toLiquipediaUrl, normalizeParticipantList } from "./catalog";
 import { getMatchPool } from "./match-pool";
 
+import type { MatchMeta } from "./match-meta";
+
 export interface EsportsMatch {
   id: string;
   teamASlug: string;
@@ -23,10 +25,11 @@ export interface EsportsMatch {
   tournamentSlug: string;
   stage: string;
   date: string;
-  status: "live" | "upcoming" | "finished";
+  status: "live" | "upcoming" | "finished" | "cancelled";
   region: Region;
   format: string;
   liquipediaUrl?: string;
+  meta?: MatchMeta;
 }
 
 export interface EsportsTournament {
