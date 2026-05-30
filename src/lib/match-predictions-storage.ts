@@ -14,10 +14,31 @@ export type MatchExtendedPrediction = {
   mapWinners?: Record<number, "A" | "B">;
   /** Picks por mapa y equipo. */
   mapBrawlerPicks?: Record<number, MapTeamPicks>;
-  /** Bans de brawler predichos por equipo (hasta 2 c/u). */
+  /** Bans centrales por mapa (hasta 2). */
+  mapBrawlerBans?: Record<number, string[]>;
+  /** @deprecated Migrado a mapBrawlerBans */
   brawlerBansA?: string[];
   brawlerBansB?: string[];
 };
+
+export function normalizeMapBans(ext: MatchExtendedPrediction): Record<number, string[]> {
+  const out = { ...(ext.mapBrawlerBans ?? {}) };
+  return out;
+}
+
+export function usedBrawlersOnMap(
+  index: number,
+  ext: MatchExtendedPrediction,
+  exclude?: "a" | "b" | "bans",
+): string[] {
+  const row = ext.mapBrawlerPicks?.[index];
+  const bans = ext.mapBrawlerBans?.[index] ?? [];
+  const names: string[] = [];
+  if (exclude !== "a") names.push(...(row?.a ?? []));
+  if (exclude !== "b") names.push(...(row?.b ?? []));
+  if (exclude !== "bans") names.push(...bans);
+  return names;
+}
 
 export function readMatchPredictions(): Record<string, MatchExtendedPrediction> {
   if (typeof window === "undefined") return {};

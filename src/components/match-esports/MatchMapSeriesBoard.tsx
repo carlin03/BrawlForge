@@ -6,17 +6,20 @@ import type { MatchMeta } from "@/lib/data/match-meta";
 import { getMatchPredictionsConfig, parseMatchMeta } from "@/lib/data/match-meta";
 import { MapAssetCard } from "@/components/match-esports/MapAssetCard";
 import { TeamSidePick } from "@/components/match-esports/TeamSidePick";
-import { BrawlerSearchPicker } from "@/components/match-esports/BrawlerSearchPicker";
-import { TeamLogo } from "@/components/ui/TeamLogo";
+import { MapBrawlerDraftRow } from "@/components/match-esports/MapBrawlerDraftRow";
 import { teamName } from "@/lib/data";
+import {
+  getSeriesRules,
+  parseExactScore,
+} from "@/lib/data/match-format-rules";
 import {
   decisiveMapIndexFromExactString,
   decisiveMapIndexFromSeriesScore,
   mapOrderWithDecisive,
+  maxMapsInSeries,
 } from "@/lib/data/series-map-utils";
-import { parseExactScore } from "@/lib/data/match-format-rules";
-import type { MatchExtendedPrediction, MapTeamPicks } from "@/lib/match-predictions-storage";
-import { MAX_BRAWLER_BANS_PER_TEAM } from "@/lib/data/game-assets-catalog";
+import type { MatchExtendedPrediction } from "@/lib/match-predictions-storage";
+import { normalizeMapBans } from "@/lib/match-predictions-storage";
 
 type Props = {
   match: EsportsMatch;
@@ -35,6 +38,8 @@ export function MatchMapSeriesBoard({ match, meta, ext, onPatch, interactive }: 
     parsed.maps?.order?.length ? parsed.maps.order : playedOrder.length ? playedOrder : pool;
   const manualDecisive = parsed.maps?.decisive;
   const current = parsed.maps?.current;
+  const series = getSeriesRules(match.format);
+  const maxMaps = maxMapsInSeries(match.format);
 
   const decisiveFromScore = useMemo(() => {
     const fromExact = decisiveMapIndexFromExactString(ext.exactScore, match.format);
@@ -49,132 +54,116 @@ export function MatchMapSeriesBoard({ match, meta, ext, onPatch, interactive }: 
     [order, decisiveFromScore, manualDecisive, match.format],
   );
 
-  const allBanned = useMemo(
-    () => [
-      ...(parsed.bans?.brawlers_a ?? []),
-      ...(parsed.bans?.brawlers_b ?? []),
-      ...(ext.brawlerBansA ?? []),
-      ...(ext.brawlerBansB ?? []),
-    ],
-    [parsed.bans, ext.brawlerBansA, ext.brawlerBansB],
+  const matchBans = useMemo(
+    () => [...(parsed.bans?.brawlers_a ?? []), ...(parsed.bans?.brawlers_b ?? [])],
+    [parsed.bans],
   );
 
   if (!order.length && !pool.length) return null;
 
+  const showMapWinners = cfg.map_winners && interactive;
+  const showDraft = cfg.map_brawler_picks;
+  const showDraftInteractive = showDraft && interactive;
+  const showWinnerReadonly = cfg.map_winners && !interactive;
+  const showDraftReadonly = showDraft && !interactive;
+
   function setMapWinner(index: number, side: "A" | "B") {
-    const next = { ...ext.mapWinners, [index]: side };
-    onPatch({ mapWinners: next });
+    onPatch({ mapWinners: { ...ext.mapWinners, [index]: side } });
   }
 
   function setMapPicks(index: number, side: "a" | "b", picks: string[]) {
-    const prev: MapTeamPicks = ext.mapBrawlerPicks?.[index] ?? { a: [], b: [] };
+    const prev = ext.mapBrawlerPicks?.[index] ?? { a: [], b: [] };
     const row = side === "a" ? { ...prev, a: picks } : { ...prev, b: picks };
     onPatch({ mapBrawlerPicks: { ...ext.mapBrawlerPicks, [index]: row } });
   }
 
-  const showMapWinners = cfg.map_winners && interactive;
-  const showMapPicks = cfg.map_brawler_picks && interactive;
-  const showBrawlerBans =
-    interactive && (cfg.map_brawler_picks || cfg.map_winners);
+  function setMapBans(index: number, bans: string[]) {
+    const mapBrawlerBans = { ...normalizeMapBans(ext), [index]: bans };
+    onPatch({ mapBrawlerBans });
+  }
 
   return (
-    <div className="bf-map-series-board">
-      {showBrawlerBans && (
-        <div className="bf-map-series-bans-predict">
-          <h3>Bans de brawlers (predicción)</h3>
-          <div className="bf-map-series-bans-cols">
-            <BrawlerSearchPicker
-              label={teamName(match.teamASlug)}
-              selected={ext.brawlerBansA ?? []}
-              onChange={(brawlerBansA) => onPatch({ brawlerBansA })}
-              banned={[
-                ...(parsed.bans?.brawlers_a ?? []),
-                ...(parsed.bans?.brawlers_b ?? []),
-                ...(ext.brawlerBansB ?? []),
-              ]}
-              max={MAX_BRAWLER_BANS_PER_TEAM}
-              variant="ban"
-            />
-            <BrawlerSearchPicker
-              label={teamName(match.teamBSlug)}
-              selected={ext.brawlerBansB ?? []}
-              onChange={(brawlerBansB) => onPatch({ brawlerBansB })}
-              banned={[
-                ...(parsed.bans?.brawlers_a ?? []),
-                ...(parsed.bans?.brawlers_b ?? []),
-                ...(ext.brawlerBansA ?? []),
-              ]}
-              max={MAX_BRAWLER_BANS_PER_TEAM}
-              variant="ban"
-            />
-          </div>
+    <div className="bf-map-series-board is-premium">
+      <div className="bf-map-series-format-head">
+        <span className="bf-map-series-format-badge">{series.label}</span>
+        <span className="bf-map-series-format-hint">
+          Hasta {maxMaps} mapas · {slots.length} en el pool de este partido
+        </span>
+        <div className="bf-map-series-index-strip" aria-hidden>
+          {slots.map((s) => (
+            <span
+              key={s.index}
+              className={`bf-map-series-index-pill ${s.decisive ? "is-decisive" : ""} ${current === s.name ? "is-live" : ""}`}
+            >
+              {s.index + 1}
+            </span>
+          ))}
         </div>
-      )}
+      </div>
 
       {slots.map((slot) => (
         <article
           key={`${slot.name}-${slot.index}`}
-          className={`bf-map-series-lane ${slot.decisive ? "is-decisive-lane" : ""} ${current === slot.name ? "is-live" : ""}`}
+          className={`bf-map-lane-card ${slot.decisive ? "is-decisive-lane" : ""} ${current === slot.name ? "is-live" : ""}`}
         >
-          <header className="bf-map-series-lane-head">
-            <MapAssetCard
-              name={slot.name}
-              variant="order"
-              index={slot.index}
-              isCurrent={current === slot.name}
-              isDecisive={slot.decisive}
-              size="lg"
-            />
-            {slot.decisive && (
-              <span className="bf-map-series-decisive-badge">Mapa decisivo</span>
-            )}
+          <header className="bf-map-lane-header">
+            <div className="bf-map-lane-title">
+              <span className="bf-map-lane-number">Mapa {slot.index + 1}</span>
+              {slot.decisive && <span className="bf-map-series-decisive-badge">Mapa decisivo</span>}
+              {current === slot.name && <span className="bf-map-lane-live-tag">En juego</span>}
+            </div>
+            <div className="bf-map-lane-hero">
+              <MapAssetCard
+                name={slot.name}
+                variant="order"
+                index={slot.index}
+                isCurrent={current === slot.name}
+                isDecisive={slot.decisive}
+                size="lg"
+              />
+            </div>
           </header>
 
-          {showMapWinners && (
-            <TeamSidePick
-              label={`Ganador · Mapa ${slot.index + 1}`}
-              teamASlug={match.teamASlug}
-              teamBSlug={match.teamBSlug}
-              teamAName={teamName(match.teamASlug)}
-              teamBName={teamName(match.teamBSlug)}
-              value={ext.mapWinners?.[slot.index] ?? null}
-              onChange={(v) => v && setMapWinner(slot.index, v)}
-            />
+          {(showMapWinners || showWinnerReadonly) && (
+            <div className="bf-map-lane-winner">
+              {interactive ? (
+                <TeamSidePick
+                  label={`Ganador · Mapa ${slot.index + 1}`}
+                  teamASlug={match.teamASlug}
+                  teamBSlug={match.teamBSlug}
+                  teamAName={teamName(match.teamASlug)}
+                  teamBName={teamName(match.teamBSlug)}
+                  value={ext.mapWinners?.[slot.index] ?? null}
+                  onChange={(v) => v && setMapWinner(slot.index, v)}
+                />
+              ) : ext.mapWinners?.[slot.index] ? (
+                <p className="bf-map-lane-winner-readonly">
+                  Ganador predicho:{" "}
+                  <strong>
+                    {teamName(
+                      ext.mapWinners[slot.index] === "A" ? match.teamASlug : match.teamBSlug,
+                    )}
+                  </strong>
+                </p>
+              ) : null}
+            </div>
           )}
 
-          {showMapPicks && (
-            <div className="bf-map-series-picks">
-              <div className="bf-map-series-pick-col">
-                <div className="bf-map-series-pick-label">
-                  <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={28} />
-                  <span>{teamName(match.teamASlug)}</span>
-                </div>
-                <BrawlerSearchPicker
-                  selected={ext.mapBrawlerPicks?.[slot.index]?.a ?? []}
-                  onChange={(a) => setMapPicks(slot.index, "a", a)}
-                  banned={allBanned}
-                  pool={[
-                    ...(parsed.brawlers?.meta ?? []),
-                    ...(parsed.brawlers?.recommended ?? []),
-                  ]}
-                />
-              </div>
-              <div className="bf-map-series-pick-col">
-                <div className="bf-map-series-pick-label">
-                  <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={28} />
-                  <span>{teamName(match.teamBSlug)}</span>
-                </div>
-                <BrawlerSearchPicker
-                  selected={ext.mapBrawlerPicks?.[slot.index]?.b ?? []}
-                  onChange={(b) => setMapPicks(slot.index, "b", b)}
-                  banned={allBanned}
-                  pool={[
-                    ...(parsed.brawlers?.meta ?? []),
-                    ...(parsed.brawlers?.recommended ?? []),
-                  ]}
-                />
-              </div>
-            </div>
+          {(showDraftInteractive || showDraftReadonly) && (
+            <MapBrawlerDraftRow
+              mapIndex={slot.index}
+              ext={ext}
+              teamAName={teamName(match.teamASlug)}
+              teamBName={teamName(match.teamBSlug)}
+              picksA={ext.mapBrawlerPicks?.[slot.index]?.a ?? []}
+              picksB={ext.mapBrawlerPicks?.[slot.index]?.b ?? []}
+              centralBans={ext.mapBrawlerBans?.[slot.index] ?? []}
+              matchBans={matchBans}
+              onPicksA={(a) => setMapPicks(slot.index, "a", a)}
+              onPicksB={(b) => setMapPicks(slot.index, "b", b)}
+              onCentralBans={(bans) => setMapBans(slot.index, bans)}
+              interactive={showDraftInteractive}
+            />
           )}
         </article>
       ))}

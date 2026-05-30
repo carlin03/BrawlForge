@@ -50,7 +50,18 @@ export function mapImageUrl(slug: string): string {
 }
 
 export function brawlerImageUrl(slug: string): string {
-  return `https://cdn.brawlify.com/brawlers/borders/${slug}.png`;
+  return `https://cdn.brawlify.com/profile/${slug}.png`;
+}
+
+/** URLs alternativas si la principal falla (CDN). */
+export function brawlerImageFallbacks(slug: string, primary?: string): string[] {
+  const urls = [
+    primary?.trim(),
+    `https://cdn.brawlify.com/profile/${slug}.png`,
+    `https://cdn.brawlify.com/brawlers/borders/${slug}.png`,
+    `https://cdn.brawlify.com/brawlers/${slug}.png`,
+  ].filter((u): u is string => Boolean(u));
+  return [...new Set(urls)];
 }
 
 export function getMapDef(name: string): BsMapDef {

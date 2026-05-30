@@ -97,5 +97,8 @@ export function isBrawlerBanned(name: string, banned: string[]): boolean {
   return banned.some((b) => b.trim().toLowerCase() === key);
 }
 
-export const MAX_BRAWLER_BANS_PER_TEAM = 2;
+/** Bans centrales por mapa (draft competitivo). */
+export const MAX_BRAWLER_BANS_CENTRAL = 2;
+/** @deprecated Usar MAX_BRAWLER_BANS_CENTRAL */
+export const MAX_BRAWLER_BANS_PER_TEAM = MAX_BRAWLER_BANS_CENTRAL;
 export const MAX_BRAWLER_PICKS_PER_MAP = 3;

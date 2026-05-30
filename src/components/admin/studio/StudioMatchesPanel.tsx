@@ -19,7 +19,6 @@ import { AdminMatchWebPreview } from "@/components/admin/AdminMatchWebPreview";
 import { AdminMatchBracketCardPreview } from "@/components/admin/AdminMatchBracketCardPreview";
 import Link from "next/link";
 import { VisualMapPicker } from "@/components/admin/studio/VisualMapPicker";
-import { VisualBrawlerPicker } from "@/components/admin/studio/VisualBrawlerPicker";
 import { StudioAssetsCatalogEditor } from "@/components/admin/studio/StudioAssetsCatalogEditor";
 import {
   StudioCard,
@@ -830,6 +829,10 @@ export function StudioMatchesPanel() {
 
                 {formTab === "predict" && (
                   <div className="bf-studio-check-col">
+                    <p className="bf-studio-hint">
+                      Define el pool y orden en la pestaña <strong>Mapas</strong>. La serie (ganador por mapa,
+                      3+2+3 picks) se muestra en la ficha bajo <strong>Predicciones</strong>.
+                    </p>
                     <label className="bf-studio-check">
                       <input
                         type="checkbox"
@@ -1005,34 +1008,14 @@ export function StudioMatchesPanel() {
                 )}
 
                 {formTab === "brawlers" && (
-                  <>
-                    <VisualBrawlerPicker
-                      label="Meta (iconos en ficha)"
-                      selected={form.brawlers_meta}
-                      onChange={(brawlers_meta) => setForm({ ...form, brawlers_meta })}
-                    />
-                    <VisualBrawlerPicker
-                      label="Recomendados"
-                      selected={form.brawlers_recommended}
-                      onChange={(brawlers_recommended) => setForm({ ...form, brawlers_recommended })}
-                    />
-                    <VisualBrawlerPicker
-                      label="Baneados Team A"
-                      selected={form.brawlers_banned_a}
-                      onChange={(brawlers_banned_a) => setForm({ ...form, brawlers_banned_a })}
-                      variant="ban"
-                    />
-                    <VisualBrawlerPicker
-                      label="Baneados Team B"
-                      selected={form.brawlers_banned_b}
-                      onChange={(brawlers_banned_b) => setForm({ ...form, brawlers_banned_b })}
-                      variant="ban"
-                    />
-                    <details className="bf-studio-assets-catalog-fold">
-                      <summary>Catálogo global de brawlers y mapas (Supabase)</summary>
-                      <StudioAssetsCatalogEditor />
-                    </details>
-                  </>
+                  <div className="bf-studio-brawler-catalog-panel">
+                    <p className="bf-studio-hint">
+                      Catálogo global: crea, edita, activa o desactiva brawlers y mapas con URL de imagen
+                      personalizada. Las composiciones (picks/bans por mapa) se configuran en la web pública
+                      desde <strong>Predicciones</strong> del partido.
+                    </p>
+                    <StudioAssetsCatalogEditor />
+                  </div>
                 )}
               </div>
 
