@@ -99,7 +99,10 @@ export async function fetchUserGameState(
   defaultTournament: string,
 ): Promise<UserGameState> {
   const [votesRes, entriesRes, profileRes, board] = await Promise.all([
-    supabase.from("prediction_votes").select("match_id, pick, reward_points, points_awarded").eq("user_id", userId),
+    supabase
+      .from("prediction_votes")
+      .select("match_id, pick, reward_points, points_awarded, exact_score")
+      .eq("user_id", userId),
     supabase.from("fantasy_entries").select("*").eq("user_id", userId),
     supabase
       .from("profiles")
@@ -110,8 +113,12 @@ export async function fetchUserGameState(
   ]);
 
   const votes: Record<string, "A" | "B"> = {};
+  const exactScores: Record<string, string> = {};
   for (const v of votesRes.data ?? []) {
     votes[v.match_id] = v.pick as "A" | "B";
+    if (v.exact_score && typeof v.exact_score === "string") {
+      exactScores[v.match_id] = v.exact_score;
+    }
   }
 
   const fantasy: UserGameState["fantasy"] = {};
@@ -138,6 +145,7 @@ export async function fetchUserGameState(
 
   return {
     votes,
+    exactScores,
     fantasy,
     predictPoints: profileRes.data?.predict_points ?? 0,
     predictStreak: profileRes.data?.predict_streak ?? 0,

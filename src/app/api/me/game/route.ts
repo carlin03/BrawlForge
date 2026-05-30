@@ -24,6 +24,7 @@ export async function GET() {
   } catch {
     return NextResponse.json({
       votes: {},
+      exactScores: {},
       fantasy: {},
       predictPoints: 0,
       predictStreak: 0,

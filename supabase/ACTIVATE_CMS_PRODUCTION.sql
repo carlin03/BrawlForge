@@ -55,6 +55,10 @@ join auth.users u on u.id = p.id
 where lower(u.email) = lower('carlinperez022@gmail.com')
 on conflict do nothing;
 
+-- Resultado exacto en votos de predicción (BO3/BO5/BO7)
+alter table public.prediction_votes
+  add column if not exists exact_score text;
+
 -- Corregir budget fantasy (100M, no 50000000)
 update public.fantasy_rulesets set budget = 100 where id = 'bsc-2026-default';
 
@@ -73,3 +77,7 @@ on conflict (id) do update set
   rules = excluded.rules,
   is_active = true,
   updated_at = now();
+
+-- Resultado exacto en votos de predicción
+alter table public.prediction_votes
+  add column if not exists exact_score text;

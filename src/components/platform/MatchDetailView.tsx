@@ -5,7 +5,7 @@ import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltraHero";
 import { Panel, FormDots } from "@/components/platform/ui";
 import { MatchVotePanel } from "@/components/platform/MatchVotePanel";
-import { MatchDetailExtras } from "@/components/platform/MatchDetailExtras";
+import { MatchDetailPro } from "@/components/platform/MatchDetailPro";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
@@ -13,7 +13,6 @@ import {
   getTeam,
   teamName,
   tournamentName,
-  matches,
   getPlayersByTeam,
   getFantasyRole,
 } from "@/lib/data";
@@ -38,15 +37,6 @@ export function MatchDetailView({ id }: { id: string }) {
   const teamB = getTeam(match.teamBSlug);
   const winA = match.status === "finished" && match.scoreA > match.scoreB;
   const winB = match.status === "finished" && match.scoreB > match.scoreA;
-  const h2h = matches
-    .filter(
-      (m) =>
-        m.id !== match.id &&
-        m.status === "finished" &&
-        ((m.teamASlug === match.teamASlug && m.teamBSlug === match.teamBSlug) ||
-          (m.teamASlug === match.teamBSlug && m.teamBSlug === match.teamASlug)),
-    )
-    .slice(0, 5);
   const rosterA = getPlayersByTeam(match.teamASlug).slice(0, 4);
   const rosterB = getPlayersByTeam(match.teamBSlug).slice(0, 4);
 
@@ -164,29 +154,7 @@ export function MatchDetailView({ id }: { id: string }) {
         </Panel>
       </div>
 
-      <MatchDetailExtras match={match} />
-
-      {h2h.length > 0 && (
-        <Panel title="Historial cara a cara" flush className="fu-panel-glow">
-          {h2h.map((m) => {
-            const a = m.teamASlug === match.teamASlug ? m.teamASlug : m.teamBSlug;
-            const b = m.teamASlug === match.teamASlug ? m.teamBSlug : m.teamASlug;
-            const scoreOur =
-              m.teamASlug === match.teamASlug ? `${m.scoreA}-${m.scoreB}` : `${m.scoreB}-${m.scoreA}`;
-            return (
-              <div key={m.id} className="bp-row">
-                <div className="bp-row-main">
-                  <div className="bp-row-title">
-                    {teamName(a)} vs {teamName(b)}
-                  </div>
-                  <div className="bp-row-sub">{m.stage}</div>
-                </div>
-                <span className="bp-row-stat">{scoreOur}</span>
-              </div>
-            );
-          })}
-        </Panel>
-      )}
+      <MatchDetailPro match={match} />
     </PageUltraShell>
   );
 }

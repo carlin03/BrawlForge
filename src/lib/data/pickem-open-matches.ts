@@ -6,8 +6,8 @@ import { getMatchStageMeta } from "./match-stage-meta";
 
 const CURATED_IDS = new Set(BSC_UPCOMING_PREDICTION_MATCHES.map((m) => m.id));
 
-/** Partidos abiertos para Pick'em: calendario curado + CMS (admin con fase). */
-export function getPickemOpenMatches(): EsportsMatch[] {
+/** Partidos abiertos para Pick'em: calendario curado + CMS + brackets guardados. */
+export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[] {
   const pool = getMatchPool();
   const byId = new Map<string, EsportsMatch>();
 
@@ -34,6 +34,12 @@ export function getPickemOpenMatches(): EsportsMatch[] {
   for (const m of BSC_UPCOMING_PREDICTION_MATCHES) {
     if ((m.status === "upcoming" || m.status === "live") && isDisplayableMatch(m)) {
       byId.set(m.id, m);
+    }
+  }
+
+  for (const m of extra) {
+    if ((m.status === "upcoming" || m.status === "live") && isDisplayableMatch(m)) {
+      if (!byId.has(m.id)) byId.set(m.id, m);
     }
   }
 

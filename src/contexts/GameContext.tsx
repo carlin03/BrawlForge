@@ -25,6 +25,7 @@ type GameContextValue = {
     squad: FantasySquadSlot[],
   ) => Promise<{ error?: string }>;
   castVote: (matchId: string, pick: "A" | "B", rewardPoints: number) => Promise<{ error?: string }>;
+  saveExactScore: (matchId: string, exactScore: string | null) => Promise<{ error?: string }>;
 };
 
 const GameContext = createContext<GameContextValue | null>(null);
@@ -57,7 +58,8 @@ function gameStateEqual(a: UserGameState | null, b: UserGameState | null): boole
     a.predictAttempts === b.predictAttempts &&
     a.fantasyPoints === b.fantasyPoints &&
     a.fantasyRank === b.fantasyRank &&
-    JSON.stringify(a.votes) === JSON.stringify(b.votes)
+    JSON.stringify(a.votes) === JSON.stringify(b.votes) &&
+    JSON.stringify(a.exactScores) === JSON.stringify(b.exactScores)
   );
 }
 
@@ -154,9 +156,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
     [refresh],
   );
 
+  const saveExactScore = useCallback(
+    async (matchId: string, exactScore: string | null) => {
+      const res = await fetch("/api/me/predictions", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matchId, exactScore }),
+      });
+      const json = await res.json();
+      if (!res.ok) return { error: json.error ?? "No se pudo guardar" };
+      await refresh();
+      return {};
+    },
+    [refresh],
+  );
+
   const value = useMemo(
-    () => ({ ready, aggregates, game, refresh, saveFantasy, castVote }),
-    [ready, aggregates, game, refresh, saveFantasy, castVote],
+    () => ({ ready, aggregates, game, refresh, saveFantasy, castVote, saveExactScore }),
+    [ready, aggregates, game, refresh, saveFantasy, castVote, saveExactScore],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

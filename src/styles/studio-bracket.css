@@ -1,0 +1,187 @@
+.bf-studio-form-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.bf-studio-form-tab {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--bp-line);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bf-studio-form-tab.is-on {
+  border-color: var(--bp-gold);
+  background: rgba(255, 200, 80, 0.12);
+}
+
+.bf-studio-check-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bf-studio-check-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.bf-studio-chip-picker-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.bf-studio-chip {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bf-studio-chip.is-on {
+  border-color: var(--bp-gold);
+  background: rgba(255, 200, 80, 0.15);
+}
+
+.bf-studio-chip-picker.is-ban .bf-studio-chip.is-on {
+  border-color: #ff6b6b;
+  background: rgba(255, 80, 80, 0.15);
+}
+
+.bf-studio-chip-picker-label {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.bf-studio-chip-picker-hint {
+  display: block;
+  font-size: 11px;
+  color: var(--bp-dim);
+  margin-top: 2px;
+}
+
+.bf-studio-chip-picker-order {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--bp-muted);
+}
+
+.bf-bracket-builder-split {
+  display: grid;
+  gap: 20px;
+}
+
+@media (min-width: 1100px) {
+  .bf-bracket-builder-split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.bf-bracket-builder-slot-editor {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--bp-line);
+}
+
+.bf-bracket-builder-slot-pickers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.bf-bracket-builder-preview h3 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+}
+
+.bf-bracket-builder-preview section {
+  margin-bottom: 20px;
+}
+
+.bf-bracket-builder-preview section.is-solo-round {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bf-bracket-builder-preview-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.bf-bracket-builder-preview-2 .bf-bracket-builder-preview-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.bf-bracket-builder-preview-1 .bf-bracket-builder-card {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.bf-bracket-builder-card {
+  padding: 12px;
+  border-radius: var(--bp-radius);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--bp-line);
+}
+
+.bf-bracket-builder-card-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+}
+
+.bf-bracket-builder-duel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.bf-bracket-builder-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  flex: 1;
+  text-align: center;
+}
+
+.bf-bracket-builder-vs {
+  font-weight: 900;
+  color: var(--bp-dim);
+}
+
+.bf-bracket-builder-tbd {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.bf-studio-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}

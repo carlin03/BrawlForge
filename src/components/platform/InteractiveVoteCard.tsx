@@ -23,6 +23,8 @@ import {
   mapBracketSlugToApiSide,
 } from "@/lib/data/bracket-reveal";
 import { teamName } from "@/lib/data";
+import { parseMatchMeta, getMatchPredictionsConfig } from "@/lib/data/match-meta";
+import { ExactScorePicker } from "@/components/platform/predictions/ExactScorePicker";
 
 interface InteractiveVoteCardProps {
   event: PredictionEvent | EnrichedPrediction;
@@ -47,7 +49,7 @@ export function InteractiveVoteCard({
 }: InteractiveVoteCardProps) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
-  const { castVote } = useGame();
+  const { castVote, game } = useGame();
   const [pick, setPick] = useState<"A" | "B" | null>(event.userPick ?? initialPick);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
@@ -62,6 +64,8 @@ export function InteractiveVoteCard({
   const labelA = slugA ? labelForSlug(slugA) : "Por definir";
   const labelB = slugB ? labelForSlug(slugB) : "Por definir";
   const match = getMatch(event.matchId);
+  const matchMeta = parseMatchMeta(match?.meta);
+  const predCfg = getMatchPredictionsConfig(matchMeta);
   const matchTime = formatPredictMatchTime(match?.date ?? event.deadline);
   const isLive = match?.status === "live";
   const stageMeta =
@@ -255,6 +259,16 @@ export function InteractiveVoteCard({
           <div className="bf-bsc-poll-a" style={{ flex: `${event.pickAPct} 1 0` }} title={`${labelA} ${event.pickAPct}%`} />
           <div className="bf-bsc-poll-b" style={{ flex: `${event.pickBPct} 1 0` }} title={`${labelB} ${event.pickBPct}%`} />
         </div>
+      )}
+
+      {!closed && predCfg.exact_score && match && pick && (
+        <ExactScorePicker
+          matchId={event.matchId}
+          format={match.format}
+          teamAName={labelA}
+          teamBName={labelB}
+          initialScore={game?.exactScores?.[event.matchId] ?? null}
+        />
       )}
 
       <footer className="bf-vote-foot">

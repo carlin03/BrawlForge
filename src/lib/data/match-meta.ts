@@ -94,16 +94,69 @@ export type MatchBrawlersMeta = {
   featured?: string[];
 };
 
+/** Flags de predicción (admin + UI). `allow_exact_score` se mantiene por compatibilidad. */
+export type MatchPredictionsConfig = {
+  winner?: boolean;
+  exact_score?: boolean;
+  mvp?: boolean;
+  first_map?: boolean;
+  advanced?: boolean;
+};
+
+/** Reservado para predicciones avanzadas (MVP, primer mapa, etc.). */
+export type MatchAdvancedPredictionsMeta = {
+  mvp_player_slug?: string;
+  first_map_winner?: "A" | "B";
+  most_used_brawler?: string;
+  match_mvp_brawler?: string;
+};
+
 export type MatchMeta = {
   importance?: MatchImportance;
   display_status?: MatchDisplayStatus;
   allow_exact_score?: boolean;
   featured_label?: string;
+  round_type?: string;
+  predictions?: MatchPredictionsConfig;
+  advanced_predictions?: MatchAdvancedPredictionsMeta;
   maps?: MatchMapsMeta;
   bans?: MatchBansMeta;
   brawlers?: MatchBrawlersMeta;
   notes?: string;
 };
+
+export const DEFAULT_MAP_POOL = [
+  "Belle's Rock",
+  "Bridge Too Far",
+  "Center Stage",
+  "Double Swoosh",
+  "Flaring Phoenix",
+  "Gem Fort",
+  "Hard Rock Mine",
+  "Hot Potato",
+  "Kaboom Canyon",
+  "Layer Cake",
+  "Pinhole Punt",
+  "Safe Zone",
+  "Shooting Star",
+  "Sneaky Fields",
+  "Triple Dribble",
+] as const;
+
+export const DEFAULT_BRAWLER_POOL = [
+  "Kit",
+  "Cordelius",
+  "Mico",
+  "Surge",
+  "Charlie",
+  "Gray",
+  "Buster",
+  "Melodie",
+  "Angelo",
+  "Lily",
+  "Kenji",
+  "Draco",
+] as const;
 
 export const MATCH_IMPORTANCE_OPTIONS: { id: MatchImportance; label: string; featuredLabel: string }[] = [
   { id: "normal", label: "Normal", featuredLabel: "" },
@@ -126,6 +179,30 @@ export const BO5_EXACT_SCORES = ["3-0", "3-1", "3-2", "2-3", "1-3", "0-3"] as co
 export function parseMatchMeta(raw: unknown): MatchMeta {
   if (!raw || typeof raw !== "object") return {};
   return raw as MatchMeta;
+}
+
+export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConfig {
+  const p = meta.predictions ?? {};
+  return {
+    winner: p.winner !== false,
+    exact_score: p.exact_score === true || meta.allow_exact_score === true,
+    mvp: p.mvp === true,
+    first_map: p.first_map === true,
+    advanced: p.advanced === true,
+  };
+}
+
+export function exactScoresForFormat(format: string): readonly string[] {
+  const f = format.toLowerCase();
+  if (f.includes("7")) return ["4-0", "4-1", "4-2", "4-3", "3-4", "2-4", "1-4", "0-4"];
+  if (f.includes("5")) return BO5_EXACT_SCORES;
+  if (f.includes("1")) return ["1-0", "0-1"];
+  return BO3_EXACT_SCORES;
+}
+
+export function displayStatusLabel(status: MatchDisplayStatus | undefined, matchStatus?: string): string {
+  const id = status ?? (matchStatus as MatchDisplayStatus | undefined);
+  return MATCH_DISPLAY_STATUS_OPTIONS.find((o) => o.id === id)?.label ?? "Próximo";
 }
 
 export function featuredLabelFromMeta(meta: MatchMeta | undefined): string {

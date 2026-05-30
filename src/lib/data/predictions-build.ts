@@ -1,6 +1,8 @@
 import { mergePickemAggregates } from "./pickem-demo-aggregates";
 import { getMatch, getRecentMatches } from "./matches";
 import { parseMatchMeta } from "./match-meta";
+import type { PlayoffBracketsStore } from "./bracket-config";
+import { matchesFromBracketStore } from "./bracket-to-matches";
 import { getPickemOpenMatches } from "./pickem-open-matches";
 import { DEFAULT_PICKEM_STAGE_POINTS, getPickemRewardPoints } from "./pickem-reward-points";
 import type { PredictionEvent } from "./predictions";
@@ -14,9 +16,11 @@ function pct(votes: number, total: number): number {
 export function buildPredictionEvents(
   aggregates: Record<string, VoteAggregate>,
   userVotes: Record<string, "A" | "B"> = {},
+  bracketStore?: PlayoffBracketsStore,
 ): { open: PredictionEvent[]; closed: PredictionEvent[] } {
   const merged = mergePickemAggregates(aggregates);
-  const upcoming = getPickemOpenMatches();
+  const bracketMatches = bracketStore ? matchesFromBracketStore(bracketStore) : [];
+  const upcoming = getPickemOpenMatches(bracketMatches);
   const open: PredictionEvent[] = upcoming.map((m, i) => {
     const agg = merged[m.id];
     const total = agg?.total_votes ?? 0;

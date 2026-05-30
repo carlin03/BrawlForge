@@ -18,6 +18,7 @@ export type PredictionVoteRow = {
   pick: "A" | "B";
   reward_points: number;
   points_awarded: number;
+  exact_score?: string | null;
 };
 
 export type VoteAggregate = {
@@ -49,6 +50,7 @@ export type PredictionLeaderboardRow = {
 
 export type UserGameState = {
   votes: Record<string, "A" | "B">;
+  exactScores: Record<string, string>;
   fantasy: Record<
     string,
     {

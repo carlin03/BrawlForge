@@ -15,6 +15,7 @@ import {
   UserCircle,
   Layers,
   Calendar,
+  GitBranch,
   Palette,
   Target,
   Trophy,
@@ -26,6 +27,7 @@ import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminConsole } from "@/components/admin/AdminConsole";
 import { StudioPlatformPanel } from "@/components/admin/studio/StudioPlatformPanel";
 import { StudioMatchesPanel } from "@/components/admin/studio/StudioMatchesPanel";
+import { StudioBracketBuilderPanel } from "@/components/admin/studio/StudioBracketBuilderPanel";
 import { StudioThemePanel } from "@/components/admin/studio/StudioThemePanel";
 import { StudioSeoPanel } from "@/components/admin/studio/StudioSeoPanel";
 import { StudioHomePanel } from "@/components/admin/studio/StudioHomePanel";
@@ -41,6 +43,7 @@ export type StudioModule =
   | "inicio"
   | "operations"
   | "matches"
+  | "bracket"
   | "home_builder"
   | "theme"
   | "fantasy_config"
@@ -65,6 +68,7 @@ const MODULE_NAV: {
   { id: "operations", label: "Contenido", icon: LayoutGrid, lead: "Equipos, jugadores, torneos, logos y noticias." },
   { id: "tournaments", label: "Torneos", icon: Trophy, lead: "Crear torneos, participantes, fechas y premios." },
   { id: "matches", label: "Partidos", icon: Calendar, lead: "Crea enfrentamientos con un formulario guiado." },
+  { id: "bracket", label: "Bracket", icon: GitBranch, lead: "Constructor visual de playoffs con vista previa." },
   { id: "home_builder", label: "Página de inicio", icon: Layers, lead: "Secciones y cantidad de partidos en la portada." },
   { id: "theme", label: "Colores", icon: Palette, lead: "Paleta visual del sitio con selectores de color." },
   { id: "seo", label: "Búsqueda (SEO)", icon: Sparkles, lead: "Título y descripción para Google y redes." },
@@ -206,6 +210,7 @@ export function BrawlForgeStudio() {
         {module === "inicio" && <StudioDashboard />}
         {module === "ajustes" && <StudioPlatformPanel />}
         {module === "matches" && <StudioMatchesPanel />}
+        {module === "bracket" && <StudioBracketBuilderPanel />}
         {module === "theme" && <StudioThemePanel />}
         {module === "seo" && <StudioSeoPanel />}
         {module === "home_builder" && <StudioHomePanel />}
