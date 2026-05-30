@@ -8,7 +8,7 @@ import { PredictionsCompactHero } from "@/components/platform/predictions/Predic
 import { MyPredictionsMini } from "@/components/platform/predictions/MyPredictionsMini";
 import { PredictionsPopularRails } from "@/components/platform/predictions/PredictionsPopularRails";
 import { PredictionsHistorySection } from "@/components/platform/predictions/PredictionsHistorySection";
-import { PredictionsPlayoffBracket } from "@/components/platform/predictions/PredictionsPlayoffBracket";
+import { PredictionsRoundSections } from "@/components/platform/predictions/PredictionsRoundSections";
 import { PredictionsClosingSoon } from "@/components/platform/predictions/PredictionsClosingSoon";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { isKnownTeamSlug } from "@/lib/data";
@@ -90,23 +90,20 @@ export function PredictionsView({
     [openEnriched, featuredId, bracketMatchIds],
   );
 
-  const keyMatches = useMemo(
-    () => activeList.filter((e) => (e.stageMeta?.tier ?? 0) >= 4),
-    [activeList],
-  );
+  const regularMatches = useMemo(() => activeList, [activeList]);
 
-  const regularMatches = useMemo(
-    () => activeList.filter((e) => (e.stageMeta?.tier ?? 0) < 4),
-    [activeList],
+  const hasGroupMatches = useMemo(
+    () => regularMatches.some((e) => (e.stageMeta?.roundKey ?? "other") === "group"),
+    [regularMatches],
   );
 
   const closingSoon = useMemo(() => {
-    const ids = new Set([featuredId, ...keyMatches.map((e) => e.matchId)]);
+    const ids = new Set([featuredId, ...bracketMatchIds]);
     return getClosingSoonMatches(
       openEnriched.filter((e) => !ids.has(e.matchId)),
       3,
     );
-  }, [openEnriched, featuredId, keyMatches]);
+  }, [openEnriched, featuredId, bracketMatchIds]);
 
   const myPicks = useMemo(
     () => openEnriched.concat(closedEnriched).filter((e) => e.userPick),
@@ -126,7 +123,7 @@ export function PredictionsView({
       {featuredEvent && <FeaturedPredictionDuel event={featuredEvent} />}
 
       {playoffBracket && (
-        <PredictionsPlayoffBracket
+        <PredictionsRoundSections
           bracket={playoffBracket}
           votes={votes}
           events={openEnriched.concat(closedEnriched)}
@@ -135,46 +132,42 @@ export function PredictionsView({
 
       {syncing && <p className="bf-predict-sync-banner" aria-live="polite">Actualizando votos…</p>}
 
-      {keyMatches.length > 0 && (
-        <section className="bf-predict-key-matches" aria-labelledby="predict-key-title">
-          <h2 id="predict-key-title" className="bf-predict-pickem-section-title">
-            Partidos clave
-            <span className="bf-predict-pickem-count">{keyMatches.length}</span>
+      {regularMatches.length > 0 && (
+        <section className="bf-predict-active-main" aria-labelledby="predict-active-title">
+          <h2 id="predict-active-title" className="bf-predict-pickem-section-title">
+            {hasGroupMatches ? "Jornada y grupos" : "Partidos del calendario"}
+            <span className="bf-predict-pickem-count">{regularMatches.length}</span>
           </h2>
-          <p className="bf-predict-section-lead">Semifinales, finales y eliminatorias — mayor impacto en el torneo.</p>
-          <div className="bf-predict-pickem-grid is-key">
-            {keyMatches.map((e) => (
+          <p className="bf-predict-section-lead">
+            {hasGroupMatches
+              ? "Fase de grupos y partidos semanales — misma card estándar."
+              : "Resto de enfrentamientos abiertos para predecir."}
+          </p>
+          <div className="bf-predict-pickem-grid">
+            {regularMatches.map((e) => (
               <InteractiveVoteCard key={e.id} event={e} />
             ))}
           </div>
         </section>
       )}
 
-      <section className="bf-predict-active-main" aria-labelledby="predict-active-title">
-        <h2 id="predict-active-title" className="bf-predict-pickem-section-title">
-          Todos los partidos
-          <span className="bf-predict-pickem-count">{displayOpen.length}</span>
-        </h2>
+      {displayOpen.length === 0 && (
+        <div className="bf-bsc-predict-empty">
+          <p>No hay partidos abiertos para predecir ahora.</p>
+          <Link href="/matches" className="bf-bsc-btn bf-bsc-btn-ghost">
+            Ver calendario
+          </Link>
+        </div>
+      )}
 
-        {displayOpen.length === 0 ? (
-          <div className="bf-bsc-predict-empty">
-            <p>No hay partidos abiertos para predecir ahora.</p>
-            <Link href="/matches" className="bf-bsc-btn bf-bsc-btn-ghost">
-              Ver calendario
-            </Link>
-          </div>
-        ) : regularMatches.length === 0 && !keyMatches.length && featuredEvent ? (
+      {displayOpen.length > 0 &&
+        regularMatches.length === 0 &&
+        !playoffBracket &&
+        featuredEvent && (
           <p className="bf-predict-active-only-featured">
             Solo el destacado de arriba está abierto. Vota antes de que cierre.
           </p>
-        ) : (
-          <div className="bf-predict-pickem-grid">
-            {regularMatches.map((e) => (
-              <InteractiveVoteCard key={e.id} event={e} />
-            ))}
-          </div>
         )}
-      </section>
 
       <PredictionsClosingSoon matches={closingSoon} />
 

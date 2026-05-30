@@ -198,7 +198,7 @@ export function StudioMatchesPanel() {
 
                 <StudioField
                   label="Fase (bracket / puntos)"
-                  hint="Cuartos → 4 duelos arriba · Semifinal → 2 · Gran final → 1 grande abajo"
+                  hint="Jornada/grupos = grid normal · Cuartos = sección cuartos · Semis = clave · Final = 1 grande"
                 >
                   <StudioSelect
                     value={form.stage}

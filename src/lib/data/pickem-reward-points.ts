@@ -57,8 +57,8 @@ export function getPickemRewardPoints(
 }
 
 export const PICKEM_STAGE_OPTIONS = [
-  { id: "Group Stage", label: "Fase de grupos", pointsKey: "group" as const },
+  { id: "Group Stage", label: "Jornada / grupos (partido normal)", pointsKey: "group" as const },
   { id: "Quarterfinal", label: "Cuartos de final", pointsKey: "quarter" as const },
-  { id: "Semifinal", label: "Semifinal", pointsKey: "semi" as const },
+  { id: "Semifinal", label: "Semifinal (partido clave)", pointsKey: "semi" as const },
   { id: "Grand Final", label: "Gran final", pointsKey: "final" as const },
 ] as const;

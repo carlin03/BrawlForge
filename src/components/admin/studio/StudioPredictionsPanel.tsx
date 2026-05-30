@@ -56,7 +56,7 @@ export function StudioPredictionsPanel() {
   return (
     <StudioModulePanel
       title="Predicciones"
-      lead="Partidos del calendario → predicciones abiertas. Puntos por fase (grupos, cuartos, semis, final) y bracket en /predictions."
+      lead="En /predictions: jornada/grupos (grid normal), cuartos (grid normal), semis (partidos clave) y gran final (1 card grande). Puntos por fase abajo."
       apiPath="/api/cms/admin/predictions"
     >
       {(data) => {
@@ -65,9 +65,8 @@ export function StudioPredictionsPanel() {
           <>
             <StudioCard title="Calendario y partidos">
               <p className="bf-studio-hint" style={{ marginTop: 0 }}>
-                En cada partido define la <strong>fase</strong> (Cuartos, Semifinal, Gran final…) para que
-                aparezca en el bracket y con los puntos correctos. El bracket muestra 4×VS cuartos, 2×VS semis y
-                1×VS final grande.
+                En cada partido elige la <strong>fase</strong>: jornada/grupos → sección normal; cuartos → fila
+                de cuartos; semifinal → partidos clave; gran final → 1 duelo grande abajo.
               </p>
               <div className="bf-studio-predict-stats">
                 <span>
