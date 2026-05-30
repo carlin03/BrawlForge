@@ -282,6 +282,19 @@ function BracketSemiGrid({
   quarters: EnrichedPrediction[];
   votes: Record<string, "A" | "B">;
 }) {
+  if (matches.length === 1) {
+    const e = matches[0];
+    return (
+      <div className="bf-predict-bracket-grand-final">
+        <BracketMatchCard
+          event={e}
+          votes={votes}
+          featured
+          bracketReveal={resolveSemiReveal(0, e, quarters, votes)}
+        />
+      </div>
+    );
+  }
   return (
     <div className="bf-predict-bracket-sf">
       {matches.map((e, i) => (

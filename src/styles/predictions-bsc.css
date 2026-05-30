@@ -2372,7 +2372,15 @@
   min-height: 176px;
 }
 
-/* Gran final: una sola card, más grande */
+/* Partidos normales / gran final: un solo 1 vs 1 por bloque */
+.bf-predict-duel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
 .bf-predict-bracket-grand-final {
   width: 100%;
   max-width: min(100%, 760px);

@@ -157,12 +157,14 @@ export function PredictionsView({
           </h2>
           <p className="bf-predict-section-lead">
             {hasGroupMatches
-              ? "Fase de grupos y partidos semanales — misma card estándar."
-              : "Resto de enfrentamientos abiertos para predecir."}
+              ? "Cada partido es un duelo 1 vs 1 — misma presentación que la gran final."
+              : "Un enfrentamiento por bloque — solo azul vs rojo."}
           </p>
-          <div className="bf-predict-pickem-grid">
+          <div className="bf-predict-duel-stack">
             {regularMatches.map((e) => (
-              <InteractiveVoteCard key={e.id} event={e} />
+              <div key={e.id} className="bf-predict-bracket-grand-final">
+                <InteractiveVoteCard event={e} featured />
+              </div>
             ))}
           </div>
         </section>
