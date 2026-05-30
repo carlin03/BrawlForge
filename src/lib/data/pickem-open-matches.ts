@@ -30,6 +30,13 @@ export function getPickemOpenMatches(): EsportsMatch[] {
     }
   }
 
+  // Calendario curado gana siempre (evita perder semis/final en CMS incompleto)
+  for (const m of BSC_UPCOMING_PREDICTION_MATCHES) {
+    if ((m.status === "upcoming" || m.status === "live") && isDisplayableMatch(m)) {
+      byId.set(m.id, m);
+    }
+  }
+
   return [...byId.values()].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );

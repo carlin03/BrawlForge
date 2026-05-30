@@ -78,12 +78,21 @@ export function resolveFinalReveal(
 ): BracketRevealState {
   if (semis.length < 2) {
     const only = semis[0];
-    return only
-      ? {
-          sideA: { revealed: true, teamSlug: only.teamASlug },
-          sideB: { revealed: true, teamSlug: only.teamBSlug },
-        }
-      : { sideA: { revealed: false, teamSlug: null }, sideB: { revealed: false, teamSlug: null } };
+    if (!only) {
+      return { sideA: { revealed: false, teamSlug: null }, sideB: { revealed: false, teamSlug: null } };
+    }
+    const r = resolveSemiReveal(0, only, quarters, votes);
+    const w = semiWinner(only, r, votes);
+    if (quarters.length >= 2) {
+      return {
+        sideA: { revealed: !!w, teamSlug: w },
+        sideB: { revealed: false, teamSlug: null },
+      };
+    }
+    return {
+      sideA: { revealed: true, teamSlug: only.teamASlug },
+      sideB: { revealed: true, teamSlug: only.teamBSlug },
+    };
   }
 
   const r0 = resolveSemiReveal(0, semis[0], quarters, votes);

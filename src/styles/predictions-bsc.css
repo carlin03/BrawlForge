@@ -2496,16 +2496,45 @@
   max-width: 640px;
   margin: 0 auto;
 }
+.bf-predict-pickem-toolbar {
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bf-predict-pickem-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--bp-dim);
+}
+.bf-predict-pickem-search-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--bp-text);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+.bf-predict-pickem-search-input::placeholder {
+  color: var(--bp-dim);
+}
 .bf-predict-tournament-jump {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 0 0 16px;
   padding: 0 4px;
 }
 .bf-predict-tjump-pill {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 12px;
@@ -2516,10 +2545,37 @@
   background: rgba(0, 153, 255, 0.12);
   border: 1px solid rgba(0, 153, 255, 0.35);
   transition: background 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+  font-family: inherit;
 }
 .bf-predict-tjump-pill:hover {
   background: rgba(0, 153, 255, 0.22);
   border-color: rgba(0, 153, 255, 0.55);
+}
+.bf-predict-tjump-pill.is-on {
+  background: rgba(0, 153, 255, 0.28);
+  border-color: rgba(0, 195, 255, 0.65);
+  color: #fff;
+}
+.bf-predict-tjump-count {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0.85;
+}
+.bf-predict-toolbar-meta {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bp-dim);
+}
+.bf-predict-bracket-sf.is-single-slot {
+  grid-template-columns: 1fr;
+  max-width: 420px;
+  margin: 0 auto;
 }
 .bf-predict-round-hint {
   margin: 0 0 12px;

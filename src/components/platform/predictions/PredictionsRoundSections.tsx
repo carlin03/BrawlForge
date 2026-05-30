@@ -128,8 +128,35 @@ function GranFinalRound({
     }
   }, [bracket.tournamentSlug, displayWinners]);
 
+  const finalCardEvent = useMemo((): EnrichedPrediction => {
+    if (bracket.final) return bracket.final;
+    const ref = bracket.semis[0] ?? bracket.quarters[0];
+    return {
+      id: `bracket-gf-placeholder-${bracket.tournamentSlug}`,
+      matchId: `bracket-gf-placeholder-${bracket.tournamentSlug}`,
+      teamASlug: "tbd",
+      teamBSlug: "tbd",
+      pickAPct: 50,
+      pickBPct: 50,
+      totalVotes: 0,
+      rewardPoints: getPickemRewardPoints("Grand Final", "Bo5", DEFAULT_PICKEM_STAGE_POINTS),
+      featured: true,
+      userPick: null,
+      status: "open",
+      stage: "Grand Final",
+      tournamentSlug: bracket.tournamentSlug,
+      deadline: ref?.deadline ?? new Date().toISOString(),
+      stageMeta: getMatchStageMeta("Grand Final"),
+      displayStatus: "upcoming",
+      tournamentShortName: bracket.tournamentName,
+      region: bracket.region,
+      outcome: "none",
+      pointsEarned: 0,
+    };
+  }, [bracket]);
+
   const finalEvent = useMemo((): EnrichedPrediction | null => {
-    if (waitingSemis || !displayWinners) return bracket.final ?? null;
+    if (waitingSemis || !displayWinners) return finalCardEvent;
 
     const pts = getPickemRewardPoints("Grand Final", "Bo5", DEFAULT_PICKEM_STAGE_POINTS);
     const base = officialFinal ?? bracket.final;
@@ -172,7 +199,7 @@ function GranFinalRound({
       outcome: userPick ? "pending" : "none",
       pointsEarned: 0,
     };
-  }, [waitingSemis, displayWinners, officialFinal, bracket, votes, draftFinal]);
+  }, [waitingSemis, displayWinners, officialFinal, bracket, votes, draftFinal, finalCardEvent]);
 
   const voteFinalOverride = useCallback(
     async (side: "A" | "B") => {
@@ -219,19 +246,15 @@ function GranFinalRound({
           ? " — Los equipos se desbloquean al votar las semifinales."
           : " — Tu bracket personal; más puntos si aciertas."}
       </p>
-      {(finalEvent || bracket.final) && (
-        <div className="bf-predict-bracket-grand-final">
-          <BracketMatchCard
-            event={finalEvent ?? bracket.final!}
-            votes={votes}
-            bracketReveal={finalReveal}
-            featured
-            voteOverride={
-              waitingSemis || officialFinal ? undefined : voteFinalOverride
-            }
-          />
-        </div>
-      )}
+      <div className="bf-predict-bracket-grand-final">
+        <BracketMatchCard
+          event={finalEvent ?? finalCardEvent}
+          votes={votes}
+          bracketReveal={finalReveal}
+          featured
+          voteOverride={waitingSemis || officialFinal ? undefined : voteFinalOverride}
+        />
+      </div>
       {waitingSemis && (
         <p className="bf-predict-round-hint">Pendiente: elige ganador en las dos semifinales de arriba.</p>
       )}
@@ -344,8 +367,15 @@ export function PredictionsRoundSections({
             <span className="bf-predict-pickem-count">{sf.length}</span>
           </h2>
           <p className="bf-predict-section-lead">
-            Los equipos aparecen en gris hasta que votes los cuartos de arriba.
+            {qf.length > 0
+              ? "Dos semifinales — los equipos en gris hasta votar los cuartos de arriba."
+              : "Semifinales del torneo — elige ganador en cada duelo."}
           </p>
+          {qf.length >= 4 && sf.length < 2 && (
+            <p className="bf-predict-round-hint">
+              Falta configurar la 2ª semifinal en admin (fase Semifinal).
+            </p>
+          )}
           <BracketSemiGrid matches={sf} quarters={qf} votes={votes} />
         </section>
       )}

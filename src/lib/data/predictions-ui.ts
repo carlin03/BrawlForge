@@ -267,15 +267,24 @@ export function buildPlayoffBracket(
   const tourEvents = events.filter((e) => e.tournamentSlug === tournamentSlug && e.stageMeta?.isPlayoff);
   if (tourEvents.length < 1) return null;
 
-  const byRound = (key: PlayoffBracketRound["key"]) =>
-    tourEvents
-      .filter((e) => e.stageMeta?.roundKey === key || (key === "final" && e.stageMeta?.roundKey === "grand_final"))
-      .sort((a, b) => (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline));
+  const byDate = (list: EnrichedPrediction[]) =>
+    [...list].sort((a, b) => (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline));
 
-  const semis = byRound("semi");
-  const quarters = byRound("quarter");
-  const gfEvents = [...byRound("grand_final"), ...byRound("final")];
-  const final = gfEvents[0];
+  const quarters = byDate(tourEvents.filter((e) => e.stageMeta?.roundKey === "quarter"));
+  const semis = byDate(
+    tourEvents.filter(
+      (e) =>
+        e.stageMeta?.roundKey === "semi" ||
+        (/semifinal/i.test(e.stage) && !/grand/i.test(e.stage)),
+    ),
+  );
+  const final =
+    tourEvents.find((e) => e.stageMeta?.roundKey === "grand_final") ??
+    tourEvents.find(
+      (e) =>
+        e.stageMeta?.roundKey === "final" &&
+        !/semi|quarter|cuartos/i.test(e.stage),
+    );
 
   const hasBracket =
     quarters.length > 0 || semis.length > 0 || Boolean(final);
@@ -303,7 +312,17 @@ export function buildAllPlayoffBrackets(events: EnrichedPrediction[]): PlayoffBr
     const b = buildPlayoffBracket(slug, events);
     if (b) out.push(b);
   }
-  return out.sort((a, b) => a.tournamentName.localeCompare(b.tournamentName, "es"));
+  return out.sort((a, b) => {
+    const da = bracketEarliestIso(a);
+    const db = bracketEarliestIso(b);
+    return da.localeCompare(db);
+  });
+}
+
+function bracketEarliestIso(b: PlayoffBracketView): string {
+  const all = [...b.quarters, ...b.semis, ...(b.final ? [b.final] : [])];
+  if (!all.length) return "";
+  return all.map((e) => e.matchDate ?? e.deadline).sort()[0] ?? "";
 }
 
 export function getAllPlayoffBracketMatchIds(brackets: PlayoffBracketView[]): Set<string> {
