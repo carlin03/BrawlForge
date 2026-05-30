@@ -19,8 +19,7 @@ on conflict (id) do update set
   base_points = excluded.base_points,
   streak_bonus = excluded.streak_bonus,
   rules = excluded.rules,
-  is_active = true,
-  updated_at = now();
+  is_active = true;
 
 -- Asegurar flag CMS predicciones
 insert into public.site_feature_flags (flag, enabled, description)

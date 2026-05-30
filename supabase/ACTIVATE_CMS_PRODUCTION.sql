@@ -75,9 +75,4 @@ on conflict (id) do update set
   base_points = excluded.base_points,
   streak_bonus = excluded.streak_bonus,
   rules = excluded.rules,
-  is_active = true,
-  updated_at = now();
-
--- Resultado exacto en votos de predicción
-alter table public.prediction_votes
-  add column if not exists exact_score text;
+  is_active = true;

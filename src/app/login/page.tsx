@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BrandMark } from "@/components/ui/BrandMark";
+import { SupabaseStatus } from "@/components/auth/SupabaseStatus";
 import { useAuth } from "@/contexts/AuthContext";
 
 function authErrorMessage(code: string | null): string {
@@ -204,6 +205,10 @@ function LoginForm() {
             Volver a entrar
           </button>
         )}
+
+        <div style={{ marginTop: 20 }}>
+          <SupabaseStatus />
+        </div>
 
         <Link href="/" className="bf-home-link" style={{ display: "block", marginTop: 16, textAlign: "center" }}>
           Volver al inicio

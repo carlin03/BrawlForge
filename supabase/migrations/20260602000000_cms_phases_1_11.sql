@@ -519,8 +519,7 @@ insert into public.prediction_scoring (id, base_points, streak_bonus, rules, is_
   )
 on conflict (id) do update set
   rules = excluded.rules,
-  is_active = true,
-  updated_at = now();
+  is_active = true;
 
 insert into public.fantasy_seasons (id, name, tournament_slug, is_active) values
   ('bsc-2026', 'BSC 2026', 'world-finals-2026', true)

@@ -62,6 +62,19 @@ export function SupabaseStatus() {
           Proyecto: <code>{status.projectRef}</code> — comprueba que es el mismo en el dashboard.
         </p>
       )}
+      {!status.connected && status.message.includes("no configurado") && (
+        <ol className="bf-supabase-status-steps">
+          <li>
+            En <strong>Vercel</strong> → Settings → Environment Variables, añade{" "}
+            <code>NEXT_PUBLIC_SUPABASE_URL</code> y <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> (los mismos que en{" "}
+            <code>.env.local</code>).
+          </li>
+          <li>
+            Haz <strong>Redeploy</strong> del proyecto (las variables públicas solo aplican tras un build nuevo).
+          </li>
+          <li>Recarga esta página hasta ver &quot;Supabase conectado&quot;.</li>
+        </ol>
+      )}
       {status.connected && !ok && (
         <ol className="bf-supabase-status-steps">
           <li>
