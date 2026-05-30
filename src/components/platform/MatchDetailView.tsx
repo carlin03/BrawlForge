@@ -12,6 +12,10 @@ import {
 import type { EsportsMatch } from "@/lib/data/matches";
 import { getTeam } from "@/lib/data";
 import { FormDots } from "@/components/platform/ui";
+import { parseMatchMeta, displayStatusLabel } from "@/lib/data/match-meta";
+import { tournamentName } from "@/lib/data";
+import { TournamentLogo } from "@/components/ui/TournamentLogo";
+import { MatchRoundVisual } from "@/components/match-esports/MatchRoundVisual";
 
 export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch; id?: string }) {
   const match = matchProp ?? (id ? getMatch(id) : undefined);
@@ -30,8 +34,10 @@ export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch
 
   const teamA = getTeam(match.teamASlug);
   const teamB = getTeam(match.teamBSlug);
+  const meta = parseMatchMeta(match.meta);
   const winA = match.status === "finished" && match.scoreA > match.scoreB;
   const winB = match.status === "finished" && match.scoreB > match.scoreA;
+  const statusLabel = displayStatusLabel(meta.display_status, match.status);
 
   const scoreBlock =
     match.status === "upcoming" ? (
@@ -47,19 +53,37 @@ export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch
   return (
     <PageUltraShell className="bf-match-detail-ultra">
       <PageUltraHero
-        kicker={null}
+        kicker={
+          <span className="bf-match-detail-kicker">
+            <TournamentLogo slug={match.tournamentSlug} name={tournamentName(match.tournamentSlug)} size={22} />
+            {tournamentName(match.tournamentSlug)}
+            <span className="bf-match-detail-kicker-sep">·</span>
+            {match.region}
+            <span className="bf-match-detail-kicker-sep">·</span>
+            {match.format}
+            <span className="bf-match-detail-kicker-sep">·</span>
+            <span className={match.status === "live" ? "is-live" : ""}>{statusLabel}</span>
+          </span>
+        }
         title={
           <>
             {teamName(match.teamASlug)} <em>vs</em> {teamName(match.teamBSlug)}
           </>
         }
-        lead={new Date(match.date).toLocaleString("es-ES", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
+        lead={
+          <>
+            <MatchRoundVisual stage={match.stage || meta.round_type || "Group Stage"} size="lg" />
+            <span className="bf-match-detail-datetime">
+              {new Date(match.date).toLocaleString("es-ES", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </>
+        }
         showcase={
           <div className="fu-duel-showcase">
             <Link href={`/teams/${match.teamASlug}`} className="fu-duel-logo fu-card-float fu-card-float-1">

@@ -36,6 +36,19 @@ export function MatchStatsVisual({ match }: { match: EsportsMatch }) {
         </div>
       </div>
 
+      {(teamA?.rank != null || teamB?.rank != null) && (
+        <div className="bf-stats-rank-row">
+          <div>
+            <span>Ranking global</span>
+            <strong>#{teamA?.rank ?? "—"}</strong>
+          </div>
+          <div>
+            <span>Ranking global</span>
+            <strong>#{teamB?.rank ?? "—"}</strong>
+          </div>
+        </div>
+      )}
+
       <div className="bf-stats-compare-bars">
         {[
           { label: "Win rate", a: statsA.winRate, b: statsB.winRate, suffix: "%" },

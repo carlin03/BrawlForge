@@ -79,7 +79,7 @@ export function ScoreStepperPicker({
   }
 
   return (
-    <div className="bf-score-stepper" aria-label="Resultado exacto">
+    <div className="bf-score-stepper is-premium" aria-label="Resultado exacto">
       <p className="bf-score-stepper-kicker">
         Resultado exacto · {rules.label}
         <span className="bf-score-stepper-hint">Gana con {rules.winsNeeded} mapas</span>

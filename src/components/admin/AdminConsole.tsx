@@ -119,20 +119,34 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
   const [playerSearch, setPlayerSearch] = useState("");
   const [playerRegionFilter, setPlayerRegionFilter] = useState<"all" | string>("all");
   const [newsSearch, setNewsSearch] = useState("");
+  const [teamsSyncPending, setTeamsSyncPending] = useState(0);
+  const [playersSyncPending, setPlayersSyncPending] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
     setMsg("");
     setMsgError(false);
     try {
-      const res = await fetch("/api/admin/catalog?type=all");
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al cargar");
-      const mergedTeams = mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null);
-      const mergedPlayers = mergeAdminPlayerRows(Array.isArray(data.players) ? data.players : null);
+      const [teamsRes, playersRes, newsRes] = await Promise.all([
+        fetch("/api/admin/teams"),
+        fetch("/api/admin/players"),
+        fetch("/api/admin/catalog?type=news"),
+      ]);
+      const teamsData = await teamsRes.json();
+      const playersData = await playersRes.json();
+      const newsData = await newsRes.json();
+      if (!teamsRes.ok) throw new Error(teamsData.error || "Error equipos");
+      if (!playersRes.ok) throw new Error(playersData.error || "Error jugadores");
+      if (!newsRes.ok) throw new Error(newsData.error || "Error noticias");
+      const mergedTeams = mergeAdminTeamRows(Array.isArray(teamsData.teams) ? teamsData.teams : null);
+      const mergedPlayers = mergeAdminPlayerRows(
+        Array.isArray(playersData.players) ? playersData.players : null,
+      );
       setTeams(mergedTeams);
       setPlayers(mergedPlayers);
-      setNews(data.news ?? []);
+      setNews(newsData.news ?? []);
+      setTeamsSyncPending(Number(teamsData.sync?.pendingImport ?? 0));
+      setPlayersSyncPending(Number(playersData.sync?.pendingImport ?? 0));
       setMsg("Datos actualizados");
       return { teams: mergedTeams, players: mergedPlayers };
     } catch (e) {
@@ -148,6 +162,25 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
     load();
   }, [load]);
 
+  async function syncCatalogFromLocal(kind: "teams" | "players") {
+    setLoading(true);
+    setMsg("");
+    setMsgError(false);
+    try {
+      const url = kind === "teams" ? "/api/admin/teams" : "/api/admin/players";
+      const res = await fetch(url, { method: "PUT", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error al importar");
+      setMsg(data.message || "Importación completada");
+      notifyCatalogUpdated();
+      await load();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error");
+      setMsgError(true);
+    }
+    setLoading(false);
+  }
+
   async function save(
     entity: "team" | "player" | "news",
     row: TeamWikiState | PlayerWikiState | NewsRow,
@@ -156,11 +189,16 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
     setMsg("");
     setMsgError(false);
     try {
-      const res = await fetch("/api/admin/catalog", {
+      const isTeam = entity === "team";
+      const isPlayer = entity === "player";
+      const res = await fetch(
+        isTeam ? "/api/admin/teams" : isPlayer ? "/api/admin/players" : "/api/admin/catalog",
+        {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entity, row }),
-      });
+        body: JSON.stringify(isTeam || isPlayer ? { row } : { entity, row }),
+      },
+      );
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
       setMsg(data.message || "Cambios guardados");
@@ -273,7 +311,8 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
     if (!confirm(`¿Eliminar "${slug}" del catálogo en Supabase?`)) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/catalog?entity=${entity}&slug=${encodeURIComponent(slug)}`, {
+      const base = entity === "team" ? "/api/admin/teams" : "/api/admin/players";
+      const res = await fetch(`${base}?slug=${encodeURIComponent(slug)}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -378,7 +417,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
               label="Nuevo equipo"
               disabled={loading}
               onCreated={async (slug) => {
-                const res = await fetch("/api/admin/catalog?type=teams");
+                const res = await fetch("/api/admin/teams");
                 const data = await res.json();
                 const merged = mergeAdminTeamRows(data.teams ?? null);
                 setTeams(merged);
@@ -386,6 +425,16 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                 if (row) setSelectedTeam(teamRowToWikiState(row as AdminTeamCatalogRow & Record<string, unknown>));
               }}
             />
+            {teamsSyncPending > 0 && (
+              <button
+                type="button"
+                className="bp-btn bp-btn-gold bf-admin-sync-btn"
+                disabled={loading}
+                onClick={() => syncCatalogFromLocal("teams")}
+              >
+                Importar {teamsSyncPending} equipo(s) a Supabase
+              </button>
+            )}
             <div className="bf-admin-region-filters" role="group" aria-label="Filtrar equipos">
               {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
                 <button
@@ -471,7 +520,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
               teams={teams.map((t) => ({ slug: t.slug, name: t.name, tag: t.tag }))}
               disabled={loading}
               onCreated={async (slug) => {
-                const res = await fetch("/api/admin/catalog?type=players");
+                const res = await fetch("/api/admin/players");
                 const data = await res.json();
                 const merged = mergeAdminPlayerRows(data.players ?? null);
                 setPlayers(merged);
@@ -482,6 +531,16 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                   );
               }}
             />
+            {playersSyncPending > 0 && (
+              <button
+                type="button"
+                className="bp-btn bp-btn-gold bf-admin-sync-btn"
+                disabled={loading}
+                onClick={() => syncCatalogFromLocal("players")}
+              >
+                Importar {playersSyncPending} jugador(es) a Supabase
+              </button>
+            )}
             <div className="bf-admin-region-filters" role="group" aria-label="Filtrar jugadores">
               {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
                 <button

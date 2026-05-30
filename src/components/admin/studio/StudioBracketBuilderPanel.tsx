@@ -21,6 +21,8 @@ import {
 import { AdminTeamLogoPicker } from "@/components/admin/AdminTeamLogoPicker";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { BracketLivePreview } from "@/components/admin/studio/BracketLivePreview";
+import { BracketSlotSidePicker } from "@/components/admin/studio/BracketSlotSidePicker";
+import type { BracketRoundKind } from "@/lib/data/bracket-slot-display";
 
 type TeamOption = { slug: string; name: string; tag: string; region?: string };
 
@@ -29,38 +31,32 @@ function SlotEditor({
   onChange,
   teams,
   label,
+  round,
 }: {
   slot: BracketSlot;
   onChange: (s: BracketSlot) => void;
   teams: TeamOption[];
   label: string;
+  round: BracketRoundKind;
 }) {
   return (
     <div className="bf-bracket-builder-slot-editor">
       <strong>{label}</strong>
       <div className="bf-bracket-builder-slot-pickers">
-        <StudioField label="Equipo A">
-          <AdminTeamLogoPicker
-            teams={teams}
-            selected={slot.team_a_slug}
-            onChange={(slug) => onChange({ ...slot, team_a_slug: slug })}
-            disabledSlugs={slot.team_b_slug ? [slot.team_b_slug] : []}
-            compact
-            maxHeight="160px"
-            showRegionFilter={false}
-          />
-        </StudioField>
-        <StudioField label="Equipo B">
-          <AdminTeamLogoPicker
-            teams={teams}
-            selected={slot.team_b_slug}
-            onChange={(slug) => onChange({ ...slot, team_b_slug: slug })}
-            disabledSlugs={slot.team_a_slug ? [slot.team_a_slug] : []}
-            compact
-            maxHeight="160px"
-            showRegionFilter={false}
-          />
-        </StudioField>
+        <BracketSlotSidePicker
+          label="Lado A"
+          slug={slot.team_a_slug}
+          onChange={(slug) => onChange({ ...slot, team_a_slug: slug })}
+          teams={teams}
+          round={round}
+        />
+        <BracketSlotSidePicker
+          label="Lado B"
+          slug={slot.team_b_slug}
+          onChange={(slug) => onChange({ ...slot, team_b_slug: slug })}
+          teams={teams}
+          round={round}
+        />
       </div>
     </div>
   );
@@ -81,7 +77,7 @@ export function StudioBracketBuilderPanel() {
   );
 
   useEffect(() => {
-    fetch("/api/admin/catalog?type=teams")
+    fetch("/api/admin/teams")
       .then((r) => r.json())
       .then((data) => {
         const list = (data.teams ?? []) as { slug: string; name?: string; tag?: string; region?: string }[];
@@ -222,6 +218,7 @@ export function StudioBracketBuilderPanel() {
               <SlotEditor
                 key={`qf-${i}`}
                 label={`Cuartos ${i + 1}`}
+                round="quarter"
                 slot={slot}
                 teams={teams}
                 onChange={(s) => {
@@ -236,6 +233,7 @@ export function StudioBracketBuilderPanel() {
               <SlotEditor
                 key={`sf-${i}`}
                 label={`Semifinal ${i + 1}`}
+                round="semi"
                 slot={slot}
                 teams={teams}
                 onChange={(s) => {
@@ -248,6 +246,7 @@ export function StudioBracketBuilderPanel() {
           {config.rounds.final && config.slots.final && (
             <SlotEditor
               label="Gran final"
+              round="final"
               slot={config.slots.final}
               teams={teams}
               onChange={(s) => setConfig({ ...config, slots: { ...config.slots, final: s } })}
@@ -256,6 +255,7 @@ export function StudioBracketBuilderPanel() {
           {config.rounds.third_place && (
             <SlotEditor
               label="3er puesto"
+              round="final"
               slot={config.slots.third_place ?? { team_a_slug: "", team_b_slug: "" }}
               teams={teams}
               onChange={(s) => setConfig({ ...config, slots: { ...config.slots, third_place: s } })}

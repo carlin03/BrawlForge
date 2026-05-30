@@ -6,50 +6,25 @@ import type { EsportsMatch } from "@/lib/data/matches";
 import type { MatchMeta } from "@/lib/data/match-meta";
 import {
   getMatchPredictionsConfig,
+  getMatchPredictionPoints,
   hasAdvancedPredictionOptions,
 } from "@/lib/data/match-meta";
-import { enrichPrediction } from "@/lib/data/predictions-ui";
-import type { PredictionEvent } from "@/lib/data/predictions";
-import { getMatchStageMeta } from "@/lib/data/match-stage-meta";
-import { parseMatchMeta } from "@/lib/data/match-meta";
-import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
+import { teamName } from "@/lib/data";
 import { ScoreStepperPicker } from "@/components/match-esports/ScoreStepperPicker";
 import { TeamSidePick } from "@/components/match-esports/TeamSidePick";
 import { PlayerMvpPicker } from "@/components/match-esports/PlayerMvpPicker";
-import { BrawlerAssetIcon } from "@/components/match-esports/BrawlerAssetIcon";
+import { BrawlerSearchPicker } from "@/components/match-esports/BrawlerSearchPicker";
 import { MatchCommunityPulse } from "@/components/match-esports/MatchCommunityPulse";
+import { MatchWinnerDuel } from "@/components/match-esports/MatchWinnerDuel";
+import { MatchMapSeriesBoard } from "@/components/match-esports/MatchMapSeriesBoard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
-import { teamName } from "@/lib/data";
 import {
   getMatchPrediction,
   patchMatchPrediction,
   type MatchExtendedPrediction,
 } from "@/lib/match-predictions-storage";
 import type { VoteAggregate } from "@/lib/supabase/game-types";
-import { BS_BRAWLER_CATALOG } from "@/lib/data/bs-catalog";
-
-function toEvent(m: EsportsMatch, votes: Record<string, "A" | "B">): PredictionEvent {
-  const stageMeta = getMatchStageMeta(m.stage);
-  const parsed = parseMatchMeta(m.meta);
-  return {
-    id: `match-predict-${m.id}`,
-    matchId: m.id,
-    teamASlug: m.teamASlug,
-    teamBSlug: m.teamBSlug,
-    pickAPct: 50,
-    pickBPct: 50,
-    totalVotes: 0,
-    rewardPoints: 55,
-    deadline: m.date,
-    stage: m.stage,
-    tournamentSlug: m.tournamentSlug,
-    status: m.status === "finished" ? "closed" : "open",
-    userPick: votes[m.id] ?? null,
-    importance: parsed.importance,
-    featured: stageMeta.tier >= 4,
-  };
-}
 
 export function MatchPredictionsCenter({
   match,
@@ -64,12 +39,14 @@ export function MatchPredictionsCenter({
   const { game, saveMatchPicks } = useGame();
   const votes = game?.votes ?? {};
   const cfg = getMatchPredictionsConfig(meta);
+  const points = getMatchPredictionPoints(meta);
   const closed = match.status === "finished";
   const savedPick = votes[match.id] ?? null;
   const [optimisticPick, setOptimisticPick] = useState<"A" | "B" | null>(savedPick);
   const winnerPick = savedPick ?? optimisticPick;
   const showAdvanced = Boolean(winnerPick) && !closed;
   const hasAdvanced = hasAdvancedPredictionOptions(cfg);
+  const hasMapSeries = cfg.map_winners || cfg.map_brawler_picks;
 
   const loadExt = useCallback((): MatchExtendedPrediction => {
     const fromDb = game?.matchPicks?.[match.id];
@@ -91,174 +68,189 @@ export function MatchPredictionsCenter({
     setExt(loadExt());
   }, [loadExt]);
 
-  const event = enrichPrediction(
-    toEvent(match, { ...votes, [match.id]: winnerPick ?? votes[match.id] }),
-    votes,
+  const extWithScore = useMemo(
+    () => ({
+      ...ext,
+      exactScore: game?.exactScores?.[match.id] ?? ext.exactScore,
+    }),
+    [ext, game?.exactScores, match.id],
   );
 
-  const brawlerPool = useMemo(() => {
-    const fromMeta = [
+  const brawlerPool = useMemo(
+    () => [
       ...(meta.brawlers?.meta ?? []),
       ...(meta.brawlers?.recommended ?? []),
       ...(meta.brawlers?.most_used ?? []),
-    ];
-    const unique = [...new Set(fromMeta)];
-    if (unique.length >= 8) return unique;
-    return BS_BRAWLER_CATALOG.map((b) => b.name);
-  }, [meta.brawlers]);
+    ],
+    [meta.brawlers],
+  );
 
   const patch = useCallback(
     (p: Partial<MatchExtendedPrediction>) => {
       const next = patchMatchPrediction(match.id, p);
       setExt(next);
       if (isLoggedIn && winnerPick) {
-        void saveMatchPicks(match.id, next);
+        void saveMatchPicks(match.id, { ...next, exactScore: game?.exactScores?.[match.id] ?? next.exactScore });
       }
     },
-    [match.id, isLoggedIn, winnerPick, saveMatchPicks],
+    [match.id, isLoggedIn, winnerPick, saveMatchPicks, game?.exactScores],
   );
+
+  const pointsSummary = useMemo(() => {
+    const parts: string[] = [];
+    if (points.winner) parts.push(`Ganador +${points.winner}`);
+    if (points.exact_score) parts.push(`Exacto +${points.exact_score}`);
+    if (points.perfect_bonus) parts.push(`Perfecto +${points.perfect_bonus}`);
+    return parts.length ? parts.join(" · ") : null;
+  }, [points]);
 
   if (!cfg.winner && !hasAdvanced) return null;
 
   return (
-    <section className="bf-match-predict-center" id="match-predictions">
-      <h2 className="bf-match-esports-h2">Predicciones</h2>
+    <section className="bf-match-predict-center is-unified" id="match-predictions">
+      <header className="bf-match-section-head">
+        <h2 className="bf-match-esports-h2">Predicciones</h2>
+        <p className="bf-match-section-lead">
+          Vota el ganador, el marcador exacto, MVP y picks de mapas y brawlers según lo configurado en este
+          partido.
+        </p>
+        {pointsSummary && <p className="bf-match-predict-points-hint">{pointsSummary}</p>}
+      </header>
 
-      {cfg.winner && (
-        <div className="bf-match-predict-winner">
-          <InteractiveVoteCard
-            event={event}
-            featured
-            hideEmbeddedExactScore
-            loginNextPath={`/login?next=/matches/${match.id}`}
+      <div className="bf-match-predict-unified-card">
+        {cfg.winner && (
+          <MatchWinnerDuel
+            match={match}
+            pick={winnerPick}
             onPickChange={setOptimisticPick}
+            disabled={closed}
           />
-        </div>
-      )}
+        )}
 
-      {!closed && hasAdvanced && !showAdvanced && (
-        <p className="bf-match-predict-hint">
-          Elige el ganador del partido para desbloquear la predicción avanzada (marcador, MVP, mapas y
-          brawlers).
-        </p>
-      )}
-
-      {!closed && hasAdvanced && !showAdvanced && cfg.advanced && (
-        <p className="bf-match-predict-hint is-muted">
-          En admin tienes activadas las predicciones avanzadas para este partido.
-        </p>
-      )}
-
-      {showAdvanced && hasAdvanced && (
-        <div className="bf-match-predict-advanced">
-          <h3 className="bf-match-predict-advanced-title">Predicción avanzada</h3>
-          <p className="bf-match-predict-advanced-lead">
-            Ganador: <strong>{winnerPick === "A" ? teamName(match.teamASlug) : teamName(match.teamBSlug)}</strong>
-            {isLoggedIn ? " — completa los extras." : " — inicia sesión para guardarlos en tu cuenta."}
+        {!closed && hasAdvanced && !showAdvanced && (
+          <p className="bf-match-predict-hint">
+            Elige el ganador para desbloquear marcador exacto, MVP, mapas y brawlers.
           </p>
+        )}
 
-          {!isLoggedIn && (
-            <p className="bf-match-predict-hint">
-              <Link href={`/login?next=/matches/${match.id}`}>Inicia sesión</Link> para guardar en Supabase.
-            </p>
-          )}
+        {showAdvanced && hasAdvanced && (
+          <div className="bf-match-predict-advanced is-inline">
+            {!isLoggedIn && (
+              <p className="bf-match-predict-hint">
+                <Link href={`/login?next=/matches/${match.id}`}>Inicia sesión</Link> para guardar predicciones
+                avanzadas.
+              </p>
+            )}
 
-          {cfg.exact_score && (
-            <div className="bf-match-predict-block">
-              <ScoreStepperPicker
-                matchId={match.id}
-                format={match.format}
-                teamASlug={match.teamASlug}
-                teamBSlug={match.teamBSlug}
-                teamAName={teamName(match.teamASlug)}
-                teamBName={teamName(match.teamBSlug)}
-                initialScore={game?.exactScores?.[match.id] ?? ext.exactScore}
-                disabled={!isLoggedIn}
-              />
-            </div>
-          )}
-
-          {cfg.first_map && (
-            <div className="bf-match-predict-block">
-              <TeamSidePick
-                label="Primer mapa — ¿quién gana?"
-                teamASlug={match.teamASlug}
-                teamBSlug={match.teamBSlug}
-                teamAName={teamName(match.teamASlug)}
-                teamBName={teamName(match.teamBSlug)}
-                value={ext.firstMapWinner ?? null}
-                onChange={(v) => patch({ firstMapWinner: v })}
-              />
-            </div>
-          )}
-
-          {cfg.decisive_map && (
-            <div className="bf-match-predict-block">
-              <TeamSidePick
-                label="Mapa decisivo — ¿quién gana?"
-                teamASlug={match.teamASlug}
-                teamBSlug={match.teamBSlug}
-                teamAName={teamName(match.teamASlug)}
-                teamBName={teamName(match.teamBSlug)}
-                value={ext.decisiveMapWinner ?? null}
-                onChange={(v) => patch({ decisiveMapWinner: v })}
-              />
-            </div>
-          )}
-
-          {cfg.mvp && (
-            <div className="bf-match-predict-block">
-              <h4 className="bf-match-predict-subh">MVP del partido</h4>
-              <PlayerMvpPicker
-                teamASlug={match.teamASlug}
-                teamBSlug={match.teamBSlug}
-                value={ext.mvpPlayerSlug ?? null}
-                onChange={(slug) => patch({ mvpPlayerSlug: slug })}
-              />
-            </div>
-          )}
-
-          {cfg.brawler_most_used && (
-            <div className="bf-match-predict-block">
-              <h4 className="bf-match-predict-subh">Brawler más usado</h4>
-              <div className="bf-brawler-pick-row">
-                {brawlerPool.slice(0, 16).map((name) => (
-                  <BrawlerAssetIcon
-                    key={name}
-                    name={name}
-                    variant="pick"
-                    size={64}
-                    selected={ext.brawlerMostUsed === name}
-                    onClick={() => patch({ brawlerMostUsed: name })}
-                  />
-                ))}
+            {cfg.exact_score && (
+              <div className="bf-match-predict-block is-premium-score">
+                <ScoreStepperPicker
+                  matchId={match.id}
+                  format={match.format}
+                  teamASlug={match.teamASlug}
+                  teamBSlug={match.teamBSlug}
+                  teamAName={teamName(match.teamASlug)}
+                  teamBName={teamName(match.teamBSlug)}
+                  initialScore={game?.exactScores?.[match.id] ?? ext.exactScore}
+                  disabled={!isLoggedIn}
+                />
               </div>
-            </div>
-          )}
+            )}
 
-          {cfg.brawler_mvp && (
-            <div className="bf-match-predict-block">
-              <h4 className="bf-match-predict-subh">Brawler MVP</h4>
-              <div className="bf-brawler-pick-row">
-                {brawlerPool.slice(0, 16).map((name) => (
-                  <BrawlerAssetIcon
-                    key={name}
-                    name={name}
-                    variant="pick"
-                    size={64}
-                    selected={ext.brawlerMvp === name}
-                    onClick={() => patch({ brawlerMvp: name })}
-                  />
-                ))}
+            {hasMapSeries && (
+              <div className="bf-match-predict-block is-map-series">
+                <h4 className="bf-match-predict-subh">Serie de mapas</h4>
+                <p className="bf-match-predict-hint">
+                  Con marcador 1-1 (BO3), 2-2 (BO5) o 3-3 (BO7) se destaca el mapa decisivo automáticamente.
+                </p>
+                <MatchMapSeriesBoard
+                  match={match}
+                  meta={meta}
+                  ext={extWithScore}
+                  onPatch={patch}
+                  interactive={!closed}
+                />
               </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
 
-      {closed && hasAdvanced && (
-        <p className="bf-match-predict-hint">Partido cerrado — predicción avanzada no disponible.</p>
-      )}
+            {cfg.first_map && (
+              <div className="bf-match-predict-block">
+                <TeamSidePick
+                  label="Primer mapa — ¿quién gana?"
+                  teamASlug={match.teamASlug}
+                  teamBSlug={match.teamBSlug}
+                  teamAName={teamName(match.teamASlug)}
+                  teamBName={teamName(match.teamBSlug)}
+                  value={ext.firstMapWinner ?? null}
+                  onChange={(v) => patch({ firstMapWinner: v })}
+                />
+              </div>
+            )}
+
+            {cfg.decisive_map && (
+              <div className="bf-match-predict-block">
+                <TeamSidePick
+                  label="Mapa decisivo — ¿quién gana?"
+                  teamASlug={match.teamASlug}
+                  teamBSlug={match.teamBSlug}
+                  teamAName={teamName(match.teamASlug)}
+                  teamBName={teamName(match.teamBSlug)}
+                  value={ext.decisiveMapWinner ?? null}
+                  onChange={(v) => patch({ decisiveMapWinner: v })}
+                />
+              </div>
+            )}
+
+            {cfg.mvp && (
+              <div className="bf-match-predict-block">
+                <h4 className="bf-match-predict-subh">MVP del partido</h4>
+                <PlayerMvpPicker
+                  teamASlug={match.teamASlug}
+                  teamBSlug={match.teamBSlug}
+                  value={ext.mvpPlayerSlug ?? null}
+                  onChange={(slug) => patch({ mvpPlayerSlug: slug })}
+                />
+              </div>
+            )}
+
+            {cfg.brawler_most_used && (
+              <div className="bf-match-predict-block">
+                <BrawlerSearchPicker
+                  label="Brawler más usado"
+                  selected={ext.brawlerMostUsed ? [ext.brawlerMostUsed] : []}
+                  onChange={(list) => patch({ brawlerMostUsed: list[0] })}
+                  banned={[
+                    ...(meta.bans?.brawlers_a ?? []),
+                    ...(meta.bans?.brawlers_b ?? []),
+                  ]}
+                  max={1}
+                  pool={brawlerPool}
+                />
+              </div>
+            )}
+
+            {cfg.brawler_mvp && (
+              <div className="bf-match-predict-block">
+                <BrawlerSearchPicker
+                  label="Brawler MVP"
+                  selected={ext.brawlerMvp ? [ext.brawlerMvp] : []}
+                  onChange={(list) => patch({ brawlerMvp: list[0] })}
+                  banned={[
+                    ...(meta.bans?.brawlers_a ?? []),
+                    ...(meta.bans?.brawlers_b ?? []),
+                  ]}
+                  max={1}
+                  pool={brawlerPool}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {closed && hasAdvanced && (
+          <p className="bf-match-predict-hint">Partido cerrado — predicción avanzada no disponible.</p>
+        )}
+      </div>
 
       <MatchCommunityPulse
         matchId={match.id}

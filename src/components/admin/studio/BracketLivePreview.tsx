@@ -6,6 +6,10 @@ import { resolveBracketLayout, type PlayoffBracketConfig, type BracketLayoutMode
 import { enrichPrediction } from "@/lib/data/predictions-ui";
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { tournamentName } from "@/lib/data";
+import {
+  bracketSlotDisplayLabel,
+  isBracketPlaceholderSlug,
+} from "@/lib/data/bracket-slot-display";
 
 function slotToEvent(
   config: PlayoffBracketConfig,
@@ -49,8 +53,19 @@ function PreviewDuel({
   featured?: boolean;
   layout: BracketLayoutMode;
 }) {
+  const pendingA = isBracketPlaceholderSlug(teamA);
+  const pendingB = isBracketPlaceholderSlug(teamB);
   if (!teamA && !teamB) {
-    return <BracketPendingDuel title="Pendiente de clasificación" subtitle="Asigna equipos en el editor." />;
+    return <BracketPendingDuel title="Pendiente de clasificación" subtitle="Asigna equipos o ganadores de ronda anterior." />;
+  }
+  if (pendingA && pendingB) {
+    return (
+      <BracketPendingDuel
+        title={`${bracketSlotDisplayLabel(teamA)} vs ${bracketSlotDisplayLabel(teamB)}`}
+        subtitle="Predicción disponible cuando se definan los cruces anteriores."
+        featured={featured}
+      />
+    );
   }
   const event = enrichPrediction(slotToEvent(config, teamA, teamB, stage, idx), {});
   return (

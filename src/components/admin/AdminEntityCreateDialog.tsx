@@ -110,10 +110,18 @@ export function AdminEntityCreateDialog({
           region,
         });
       }
-      const res = await fetch("/api/admin/catalog", {
+      const url =
+        kind === "team"
+          ? "/api/admin/teams"
+          : kind === "player"
+            ? "/api/admin/players"
+            : "/api/admin/catalog";
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entity: kind === "tournament" ? "tournament" : kind, row: base }),
+        body: JSON.stringify(
+          kind === "tournament" ? { entity: "tournament", row: base } : { row: base },
+        ),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al crear");

@@ -23,6 +23,7 @@ import {
   mapBracketSlugToApiSide,
 } from "@/lib/data/bracket-reveal";
 import { teamName } from "@/lib/data";
+import { bracketSlotDisplayLabel, isBracketPlaceholderSlug } from "@/lib/data/bracket-slot-display";
 import { getTeam } from "@/lib/data/teams";
 import { parseMatchMeta, getMatchPredictionsConfig } from "@/lib/data/match-meta";
 import { ScoreStepperPicker } from "@/components/match-esports/ScoreStepperPicker";
@@ -82,8 +83,16 @@ export function InteractiveVoteCard({
   const slugA = revealA ? (bracketReveal?.sideA.teamSlug ?? event.teamASlug) : null;
   const slugB = revealB ? (bracketReveal?.sideB.teamSlug ?? event.teamBSlug) : null;
   const bracketReady = bracketReveal ? isBracketReadyToVote(bracketReveal) : true;
-  const labelA = slugA ? labelForSlug(slugA) : "Por definir";
-  const labelB = slugB ? labelForSlug(slugB) : "Por definir";
+  const labelA = slugA
+    ? isBracketPlaceholderSlug(slugA)
+      ? bracketSlotDisplayLabel(slugA)
+      : labelForSlug(slugA)
+    : "Por definir";
+  const labelB = slugB
+    ? isBracketPlaceholderSlug(slugB)
+      ? bracketSlotDisplayLabel(slugB)
+      : labelForSlug(slugB)
+    : "Por definir";
   const match = getMatch(event.matchId);
   const matchMeta = parseMatchMeta(match?.meta);
   const predCfg = getMatchPredictionsConfig(matchMeta);

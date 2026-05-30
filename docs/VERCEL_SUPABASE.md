@@ -50,3 +50,24 @@ Luego, si aún faltan módulos CMS:
 
 2. `supabase/APPLY_CMS_ALL.sql`
 3. `supabase/ACTIVATE_CMS_PRODUCTION.sql`
+
+## 6. APIs admin (no todo es manual)
+
+| Recurso | API | Importar desde código local |
+|---------|-----|------------------------------|
+| **Partidos** | `GET/POST/PATCH /api/cms/admin/matches` · `PUT` importa calendario web | Admin → Partidos → «Importar partidos de la web» |
+| **Equipos** | `GET/POST/DELETE /api/admin/teams` · `PUT` importa 50 clubes BSC | Admin → Equipos → botón si hay pendientes |
+| **Jugadores** | `GET/POST/DELETE /api/admin/players` · `PUT` importa plantillas BSC | Admin → Jugadores → botón si hay pendientes |
+| Torneos / noticias | `/api/admin/catalog` (global, solo esos tipos) | CSV o edición manual |
+
+Servicios en `src/lib/services/catalog/` (`teams-catalog-svc`, `players-catalog-svc`, `matches-catalog-svc`).
+
+## 7. Automatización Supercell (partidos en vivo)
+
+| Variable | Uso |
+|----------|-----|
+| `CRON_SECRET` | Bearer para `/api/cron/sync-matches` (cada 3 min en Vercel si `vercel.json` tiene cron) |
+
+Admin → Partidos → **Sincronizar Supercell** llama `POST /api/cms/admin/matches/sync-supercell`.
+
+Reglas: mismo torneo + equipos + día → **UPDATE** (no duplica). Mapas/brawlers/predicciones del admin **no se sobrescriben**. Solo estado, marcador y meta `sync`.

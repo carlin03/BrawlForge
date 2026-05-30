@@ -20,6 +20,7 @@ import { AdminMatchBracketCardPreview } from "@/components/admin/AdminMatchBrack
 import Link from "next/link";
 import { VisualMapPicker } from "@/components/admin/studio/VisualMapPicker";
 import { VisualBrawlerPicker } from "@/components/admin/studio/VisualBrawlerPicker";
+import { StudioAssetsCatalogEditor } from "@/components/admin/studio/StudioAssetsCatalogEditor";
 import {
   StudioCard,
   StudioField,
@@ -133,7 +134,7 @@ export function StudioMatchesPanel() {
   const [syncing, setSyncing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formTab, setFormTab] = useState<"general" | "predict" | "maps" | "brawlers">("general");
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<AdminMatchFormState>({
     team_a_slug: "",
     team_b_slug: "",
     tournament_slug: "bsc-2026-challengers-spain",
@@ -153,7 +154,18 @@ export function StudioMatchesPanel() {
     pred_decisive_map: false,
     pred_brawler_used: false,
     pred_brawler_mvp: false,
+    pred_map_winners: false,
+    pred_map_picks: false,
     pred_advanced: false,
+    points_winner: 0,
+    points_exact: 0,
+    points_mvp: 0,
+    points_map_winner: 0,
+    points_map_pick: 0,
+    points_brawler_ban: 0,
+    points_brawler_mvp: 0,
+    points_brawler_used: 0,
+    points_perfect_bonus: 0,
     map_pool: [] as string[],
     map_order: [] as string[],
     map_current: "",
@@ -183,7 +195,7 @@ export function StudioMatchesPanel() {
   }
 
   useEffect(() => {
-    fetch("/api/admin/catalog?type=teams")
+    fetch("/api/admin/teams")
       .then((r) => r.json())
       .then((data) => {
         const list = (data.teams ?? []) as { slug: string; name?: string; tag?: string; region?: string }[];
@@ -240,7 +252,18 @@ export function StudioMatchesPanel() {
       pred_decisive_map: false,
       pred_brawler_used: false,
       pred_brawler_mvp: false,
+      pred_map_winners: false,
+      pred_map_picks: false,
       pred_advanced: false,
+      points_winner: 0,
+      points_exact: 0,
+      points_mvp: 0,
+      points_map_winner: 0,
+      points_map_pick: 0,
+      points_brawler_ban: 0,
+      points_brawler_mvp: 0,
+      points_brawler_used: 0,
+      points_perfect_bonus: 0,
       map_pool: [],
       map_order: [],
       map_current: "",
@@ -363,6 +386,24 @@ export function StudioMatchesPanel() {
     setSyncing(false);
   }
 
+  async function syncFromSupercell(reload: () => void) {
+    setSyncing(true);
+    setMsg("");
+    setError(false);
+    try {
+      const res = await fetch("/api/cms/admin/matches/sync-supercell", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se pudo sincronizar");
+      setMsg(data.message || "Sincronización Supercell completada.");
+      setError(false);
+      reload();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error Supercell");
+      setError(true);
+    }
+    setSyncing(false);
+  }
+
   return (
     <StudioModulePanel
       title="Partidos"
@@ -410,10 +451,30 @@ export function StudioMatchesPanel() {
             {panelView === "list" && (
               <StudioCard title={`Partidos en el catálogo (${matches.length})`}>
                 <p className="bf-studio-hint" style={{ marginTop: 0 }}>
-                  Aquí ves todo lo guardado en Supabase: pon <strong>En vivo</strong>, el marcador y la fase
-                  (cuartos, semis…). Las opciones de predicción por partido están en{" "}
-                  <strong>Editar completo → pestaña Predicciones</strong>.
+                  Lista en Supabase: en vivo, marcador y fase.{" "}
+                  <strong>Sincronizar Supercell</strong> actualiza LIVE/FIN y marcador sin duplicar partidos
+                  manuales. Predicciones en <strong>Editar completo</strong>.
                 </p>
+                <div className="bf-studio-match-sync-actions">
+                  <button
+                    type="button"
+                    className="bp-btn bp-btn-gold"
+                    disabled={syncing}
+                    onClick={() => syncFromSupercell(reload)}
+                  >
+                    {syncing ? "Sincronizando…" : "Sincronizar Supercell (LIVE + marcador)"}
+                  </button>
+                  {pendingImport > 0 && (
+                    <button
+                      type="button"
+                      className="bp-btn bp-btn-ghost"
+                      disabled={syncing}
+                      onClick={() => syncFromWeb(reload)}
+                    >
+                      Importar {pendingImport} de la web (código)
+                    </button>
+                  )}
+                </div>
                 <div className="bf-studio-match-list-toolbar">
                   <div>
                     <span className="bf-studio-match-toolbar-label">Estado</span>
@@ -828,11 +889,54 @@ export function StudioMatchesPanel() {
                     <label className="bf-studio-check">
                       <input
                         type="checkbox"
+                        checked={form.pred_map_winners}
+                        onChange={(e) => setForm({ ...form, pred_map_winners: e.target.checked })}
+                      />
+                      Ganador por mapa (serie)
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={form.pred_map_picks}
+                        onChange={(e) => setForm({ ...form, pred_map_picks: e.target.checked })}
+                      />
+                      Picks y bans de brawlers por mapa
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
                         checked={form.pred_advanced}
                         onChange={(e) => setForm({ ...form, pred_advanced: e.target.checked })}
                       />
                       Activar todas las avanzadas
                     </label>
+                    <div className="bf-studio-points-grid">
+                      <p className="bf-studio-hint">Puntos por acierto en este partido (0 = usar global)</p>
+                      {(
+                        [
+                          ["points_winner", "Ganador"],
+                          ["points_exact", "Resultado exacto"],
+                          ["points_mvp", "MVP jugador"],
+                          ["points_map_winner", "Ganador mapa"],
+                          ["points_map_pick", "Pick brawler"],
+                          ["points_brawler_ban", "Ban brawler"],
+                          ["points_brawler_mvp", "Brawler MVP"],
+                          ["points_brawler_used", "Más usado"],
+                          ["points_perfect_bonus", "Bonus perfecto"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <StudioField key={key} label={label}>
+                          <StudioInput
+                            type="number"
+                            min={0}
+                            value={form[key]}
+                            onChange={(e) =>
+                              setForm({ ...form, [key]: Number(e.target.value) || 0 })
+                            }
+                          />
+                        </StudioField>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -924,6 +1028,10 @@ export function StudioMatchesPanel() {
                       onChange={(brawlers_banned_b) => setForm({ ...form, brawlers_banned_b })}
                       variant="ban"
                     />
+                    <details className="bf-studio-assets-catalog-fold">
+                      <summary>Catálogo global de brawlers y mapas (Supabase)</summary>
+                      <StudioAssetsCatalogEditor />
+                    </details>
                   </>
                 )}
               </div>

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 type PageUltraHeroProps = {
   kicker?: ReactNode;
   title: ReactNode;
-  lead: string;
+  lead: ReactNode;
   stats?: ReactNode;
   actions?: ReactNode;
   showcase?: ReactNode;

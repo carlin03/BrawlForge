@@ -1,5 +1,7 @@
 const KEY = "bf_match_predictions";
 
+export type MapTeamPicks = { a: string[]; b: string[] };
+
 export type MatchExtendedPrediction = {
   exactScore?: string;
   mvpPlayerSlug?: string;
@@ -8,6 +10,13 @@ export type MatchExtendedPrediction = {
   brawlerMostUsed?: string;
   brawlerMvp?: string;
   brawlerPick?: string;
+  /** Ganador por mapa (índice 0-based → A | B). */
+  mapWinners?: Record<number, "A" | "B">;
+  /** Picks por mapa y equipo. */
+  mapBrawlerPicks?: Record<number, MapTeamPicks>;
+  /** Bans de brawler predichos por equipo (hasta 2 c/u). */
+  brawlerBansA?: string[];
+  brawlerBansB?: string[];
 };
 
 export function readMatchPredictions(): Record<string, MatchExtendedPrediction> {

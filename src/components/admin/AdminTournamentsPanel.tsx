@@ -56,7 +56,7 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
       setTeamList(teamsProp);
       return;
     }
-    fetch("/api/admin/catalog?type=teams")
+    fetch("/api/admin/teams")
       .then((r) => r.json())
       .then((data) => {
         const merged = mergeAdminTeamRows(data.teams ?? null);

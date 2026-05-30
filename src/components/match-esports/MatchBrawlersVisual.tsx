@@ -25,55 +25,70 @@ export function MatchBrawlersVisual({
   if (!has) return null;
 
   return (
-    <section className="bf-match-esports-panel">
-      <h2 className="bf-match-esports-h2">Brawlers</h2>
+    <section className="bf-match-esports-panel bf-match-brawlers-premium">
+      <header className="bf-match-section-head">
+        <h2 className="bf-match-esports-h2">Brawlers</h2>
+        <p className="bf-match-section-lead">Meta, picks recomendados, más usados y baneos del set.</p>
+      </header>
+
       <div className="bf-brawler-sections">
         {meta.brawlers?.meta?.length ? (
-          <div>
-            <h3>Meta actual</h3>
-            <div className="bf-brawler-pick-row">
+          <div className="bf-brawler-block is-meta">
+            <h3>Meta recomendada</h3>
+            <div className="bf-brawler-icon-row is-large">
               {meta.brawlers.meta.map((n) => (
-                <BrawlerAssetIcon key={n} name={n} variant="meta" />
+                <BrawlerAssetIcon key={n} name={n} variant="meta" size={88} hideName />
+              ))}
+            </div>
+            <div className="bf-brawler-name-row" aria-hidden>
+              {meta.brawlers.meta.map((n) => (
+                <span key={n}>{n}</span>
               ))}
             </div>
           </div>
         ) : null}
+
         {meta.brawlers?.recommended?.length ? (
-          <div>
+          <div className="bf-brawler-block">
             <h3>Recomendados</h3>
-            <div className="bf-brawler-pick-row">
+            <div className="bf-brawler-icon-row">
               {meta.brawlers.recommended.map((n) => (
-                <BrawlerAssetIcon key={n} name={n} variant="default" />
+                <BrawlerAssetIcon key={n} name={n} variant="default" size={80} hideName />
               ))}
             </div>
           </div>
         ) : null}
+
         {meta.brawlers?.most_used?.length ? (
-          <div>
+          <div className="bf-brawler-block">
             <h3>Más usados</h3>
-            <div className="bf-brawler-pick-row">
+            <div className="bf-brawler-icon-row">
               {meta.brawlers.most_used.map((n) => (
-                <BrawlerAssetIcon key={n} name={n} variant="default" />
+                <BrawlerAssetIcon key={n} name={n} variant="default" size={80} hideName />
               ))}
             </div>
           </div>
         ) : null}
+
         {(meta.bans?.brawlers_a?.length || meta.bans?.brawlers_b?.length) && (
-          <div className="bf-brawler-bans-row">
-            <div>
-              <TeamLogo slug={teamASlug} name={teamName(teamASlug)} size={28} />
-              <div className="bf-brawler-pick-row">
-                {(meta.bans?.brawlers_a ?? []).map((n) => (
-                  <BrawlerAssetIcon key={n} name={n} variant="ban" />
-                ))}
+          <div className="bf-brawler-block is-bans">
+            <h3>Baneados</h3>
+            <div className="bf-brawler-bans-row">
+              <div className="bf-brawler-ban-col">
+                <TeamLogo slug={teamASlug} name={teamName(teamASlug)} size={32} />
+                <div className="bf-brawler-icon-row">
+                  {(meta.bans?.brawlers_a ?? []).map((n) => (
+                    <BrawlerAssetIcon key={n} name={n} variant="ban" size={72} hideName />
+                  ))}
+                </div>
               </div>
-            </div>
-            <div>
-              <TeamLogo slug={teamBSlug} name={teamName(teamBSlug)} size={28} />
-              <div className="bf-brawler-pick-row">
-                {(meta.bans?.brawlers_b ?? []).map((n) => (
-                  <BrawlerAssetIcon key={n} name={n} variant="ban" />
-                ))}
+              <div className="bf-brawler-ban-col">
+                <TeamLogo slug={teamBSlug} name={teamName(teamBSlug)} size={32} />
+                <div className="bf-brawler-icon-row">
+                  {(meta.bans?.brawlers_b ?? []).map((n) => (
+                    <BrawlerAssetIcon key={n} name={n} variant="ban" size={72} hideName />
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import { auditWrite, getSupabaseAdmin, requireCmsAdmin } from "@/lib/cms/admin-a
 import {
   buildCatalogUpsertBatch,
   getWebMatchesForCatalog,
-} from "@/lib/cms/sync-matches-catalog";
+} from "@/lib/services/catalog/matches-catalog-svc";
 
 export const dynamic = "force-dynamic";
 
@@ -131,6 +131,15 @@ export async function POST(request: Request) {
 
   const { error: dbErr } = await supabase!.from("matches_catalog").upsert(payload);
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  await supabase!.from("match_sync_state").upsert(
+    {
+      match_id: payload.id,
+      source: "manual",
+      last_sync_at: new Date().toISOString(),
+      meta: { editor: "admin" },
+    },
+    { onConflict: "match_id" },
+  );
   await auditWrite("match.upsert", "match", payload.id);
   return NextResponse.json({ ok: true, message: `Partido ${payload.id} guardado` });
 }

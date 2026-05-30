@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Ban } from "lucide-react";
-import { getBrawlerDef } from "@/lib/data/bs-catalog";
+import { resolveBrawlerDef } from "@/lib/data/game-assets-catalog";
+import { useGameAssetsCatalog } from "@/hooks/useGameAssetsCatalog";
 import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 
 export function BrawlerAssetIcon({
@@ -11,14 +12,18 @@ export function BrawlerAssetIcon({
   size = 72,
   onClick,
   selected,
+  hideName,
 }: {
   name: string;
   variant?: "default" | "meta" | "ban" | "pick";
   size?: number;
   onClick?: () => void;
   selected?: boolean;
+  /** Vista icono-first en ficha de partido */
+  hideName?: boolean;
 }) {
-  const def = getBrawlerDef(name);
+  const { brawlers } = useGameAssetsCatalog();
+  const def = resolveBrawlerDef(name, brawlers);
   const [failed, setFailed] = useState(false);
   const src = failed ? undefined : toClientLogoUrl(def.imageUrl);
   const Tag = onClick ? "button" : "div";
@@ -43,7 +48,7 @@ export function BrawlerAssetIcon({
           </span>
         )}
       </span>
-      <span className="bf-brawler-asset-name">{def.name}</span>
+      {!hideName && <span className="bf-brawler-asset-name">{def.name}</span>}
     </Tag>
   );
 }

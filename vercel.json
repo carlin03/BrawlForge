@@ -5,5 +5,11 @@
   "env": {
     "NODE_OPTIONS": "--max-old-space-size=6144",
     "SKIP_LOGO_DOWNLOAD": "1"
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/sync-matches",
+      "schedule": "*/3 * * * *"
+    }
+  ]
 }

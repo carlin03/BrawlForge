@@ -6,14 +6,18 @@ import type { EsportsMatch } from "@/lib/data/matches";
 import { parseMatchMeta, displayStatusLabel, featuredLabelFromMeta } from "@/lib/data/match-meta";
 import { tournamentName } from "@/lib/data";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
-import { MATCH_ROUND_OPTIONS } from "@/lib/data/match-round-types";
+import { MatchRoundVisual } from "@/components/match-esports/MatchRoundVisual";
 
 export function MatchCompetitiveContext({ match }: { match: EsportsMatch }) {
   const meta = parseMatchMeta(match.meta);
   const dt = new Date(match.date);
-  const round =
-    MATCH_ROUND_OPTIONS.find((o) => o.id === match.stage)?.label ?? match.stage;
   const status = displayStatusLabel(meta.display_status, match.status);
+  const dtDate = dt.toLocaleDateString("es-ES", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 
   return (
     <div className="bf-match-context-strip">
@@ -28,9 +32,10 @@ export function MatchCompetitiveContext({ match }: { match: EsportsMatch }) {
           {featuredLabelFromMeta(meta)}
         </span>
       )}
-      <span className="bf-match-ctx-badge is-round">
-        <Flame size={14} aria-hidden />
-        {round}
+      <MatchRoundVisual stage={match.stage || meta.round_type || "Group Stage"} size="sm" />
+      <span className="bf-match-ctx-badge is-date">
+        <Clock size={14} aria-hidden />
+        {dtDate}
       </span>
       <span className="bf-match-ctx-badge is-format">
         <Target size={14} aria-hidden />

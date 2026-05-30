@@ -9,6 +9,7 @@ import {
   type MatchDisplayStatus,
   type MatchImportance,
   type MatchMeta,
+  type MatchPredictionPoints,
   type MatchPredictionsConfig,
 } from "./match-meta";
 
@@ -33,7 +34,18 @@ export type AdminMatchFormState = {
   pred_decisive_map: boolean;
   pred_brawler_used: boolean;
   pred_brawler_mvp: boolean;
+  pred_map_winners: boolean;
+  pred_map_picks: boolean;
   pred_advanced: boolean;
+  points_winner: number;
+  points_exact: number;
+  points_mvp: number;
+  points_map_winner: number;
+  points_map_pick: number;
+  points_brawler_ban: number;
+  points_brawler_mvp: number;
+  points_brawler_used: number;
+  points_perfect_bonus: number;
   map_pool: string[];
   map_order: string[];
   map_current: string;
@@ -55,14 +67,29 @@ export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
     decisive_map: form.pred_decisive_map,
     brawler_most_used: form.pred_brawler_used,
     brawler_mvp: form.pred_brawler_mvp,
+    map_winners: form.pred_map_winners,
+    map_brawler_picks: form.pred_map_picks,
     advanced: form.pred_advanced,
   };
+  const prediction_points: MatchPredictionPoints = {
+    winner: form.points_winner || undefined,
+    exact_score: form.points_exact || undefined,
+    mvp: form.points_mvp || undefined,
+    map_winner: form.points_map_winner || undefined,
+    map_pick: form.points_map_pick || undefined,
+    brawler_ban: form.points_brawler_ban || undefined,
+    brawler_mvp: form.points_brawler_mvp || undefined,
+    brawler_most_used: form.points_brawler_used || undefined,
+    perfect_bonus: form.points_perfect_bonus || undefined,
+  };
+  const hasPoints = Object.values(prediction_points).some((v) => v != null && v > 0);
   return {
     importance: form.importance,
     display_status: form.display_status,
     allow_exact_score: form.pred_exact,
     featured_label: form.featured_label.trim() || undefined,
     predictions,
+    prediction_points: hasPoints ? prediction_points : undefined,
     maps: form.map_pool.length
       ? {
           possible: form.map_pool,
@@ -149,7 +176,18 @@ export function matchCatalogRowToForm(m: {
     pred_decisive_map: !!preds.decisive_map,
     pred_brawler_used: !!preds.brawler_most_used,
     pred_brawler_mvp: !!preds.brawler_mvp,
+    pred_map_winners: !!preds.map_winners,
+    pred_map_picks: !!preds.map_brawler_picks,
     pred_advanced: !!preds.advanced,
+    points_winner: meta.prediction_points?.winner ?? 0,
+    points_exact: meta.prediction_points?.exact_score ?? 0,
+    points_mvp: meta.prediction_points?.mvp ?? 0,
+    points_map_winner: meta.prediction_points?.map_winner ?? 0,
+    points_map_pick: meta.prediction_points?.map_pick ?? 0,
+    points_brawler_ban: meta.prediction_points?.brawler_ban ?? 0,
+    points_brawler_mvp: meta.prediction_points?.brawler_mvp ?? 0,
+    points_brawler_used: meta.prediction_points?.brawler_most_used ?? 0,
+    points_perfect_bonus: meta.prediction_points?.perfect_bonus ?? 0,
     map_pool: meta.maps?.possible ?? [],
     map_order: meta.maps?.order ?? meta.maps?.possible ?? [],
     map_current: meta.maps?.current ?? "",
@@ -218,6 +256,8 @@ export function countEnabledPredictions(form: AdminMatchFormState): number {
   if (form.pred_decisive_map) n++;
   if (form.pred_brawler_used) n++;
   if (form.pred_brawler_mvp) n++;
+  if (form.pred_map_winners) n++;
+  if (form.pred_map_picks) n++;
   if (form.pred_advanced) n++;
   return n;
 }

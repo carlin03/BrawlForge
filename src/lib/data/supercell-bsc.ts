@@ -43,6 +43,7 @@ export interface SupercellEvent {
   type: string;
   bracketType: string;
   numberOfContestants: number;
+  totalRanges?: number;
   estimatedUsers?: number;
   streams?: SupercellStream[];
 }
@@ -51,6 +52,8 @@ export interface SupercellBracketMatch {
   id: number;
   completed: boolean;
   winner?: number;
+  isSkipped?: boolean;
+  isFantasy?: boolean;
   contestant: { id: number; score: number }[];
 }
 
@@ -88,11 +91,12 @@ export function assetUrl(path: string, publicFolderId = "cache-bust"): string {
   return `${SUPERCELL_BSC_BASE}${path}${sep}publicFolderId=${publicFolderId}`;
 }
 
-async function fetchSupercellJson<T>(path: string): Promise<T | null> {
+async function fetchSupercellJson<T>(path: string, revalidate = 0): Promise<T | null> {
   try {
     const res = await fetch(`${SUPERCELL_BSC_API}${path}`, {
       headers: { Accept: "application/json", "User-Agent": "BrawlForge/1.0" },
-      next: { revalidate: 300 },
+      next: revalidate > 0 ? { revalidate } : undefined,
+      cache: revalidate > 0 ? undefined : "no-store",
     });
     if (!res.ok) return null;
     const text = await res.text();
@@ -103,13 +107,13 @@ async function fetchSupercellJson<T>(path: string): Promise<T | null> {
   }
 }
 
-export async function fetchSupercellEvents(): Promise<SupercellEvent[]> {
-  const data = await fetchSupercellJson<SupercellEvent[]>("/event");
+export async function fetchSupercellEvents(fresh = false): Promise<SupercellEvent[]> {
+  const data = await fetchSupercellJson<SupercellEvent[]>("/event", fresh ? 0 : 120);
   return data ?? [];
 }
 
-export async function fetchSupercellBracket(): Promise<SupercellBracket[]> {
-  const data = await fetchSupercellJson<SupercellBracket[]>("/bracket");
+export async function fetchSupercellBracket(fresh = false): Promise<SupercellBracket[]> {
+  const data = await fetchSupercellJson<SupercellBracket[]>("/bracket", fresh ? 0 : 120);
   return data ?? [];
 }
 

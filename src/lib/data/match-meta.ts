@@ -101,9 +101,24 @@ export type MatchPredictionsConfig = {
   mvp?: boolean;
   first_map?: boolean;
   decisive_map?: boolean;
+  map_winners?: boolean;
+  map_brawler_picks?: boolean;
   brawler_most_used?: boolean;
   brawler_mvp?: boolean;
   advanced?: boolean;
+};
+
+/** Puntos por acierto en este partido (admin). */
+export type MatchPredictionPoints = {
+  winner?: number;
+  exact_score?: number;
+  mvp?: number;
+  map_winner?: number;
+  map_pick?: number;
+  brawler_ban?: number;
+  brawler_mvp?: number;
+  brawler_most_used?: number;
+  perfect_bonus?: number;
 };
 
 /** Reservado para predicciones avanzadas (MVP, primer mapa, etc.). */
@@ -121,6 +136,7 @@ export type MatchMeta = {
   featured_label?: string;
   round_type?: string;
   predictions?: MatchPredictionsConfig;
+  prediction_points?: MatchPredictionPoints;
   advanced_predictions?: MatchAdvancedPredictionsMeta;
   maps?: MatchMapsMeta;
   bans?: MatchBansMeta;
@@ -193,6 +209,8 @@ export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConf
     mvp: p.mvp === true || advanced,
     first_map: p.first_map === true || advanced,
     decisive_map: p.decisive_map === true || advanced,
+    map_winners: p.map_winners === true || advanced,
+    map_brawler_picks: p.map_brawler_picks === true || advanced,
     brawler_most_used: p.brawler_most_used === true || advanced,
     brawler_mvp: p.brawler_mvp === true || advanced,
     advanced,
@@ -205,9 +223,15 @@ export function hasAdvancedPredictionOptions(cfg: MatchPredictionsConfig): boole
       cfg.mvp ||
       cfg.first_map ||
       cfg.decisive_map ||
+      cfg.map_winners ||
+      cfg.map_brawler_picks ||
       cfg.brawler_most_used ||
       cfg.brawler_mvp,
   );
+}
+
+export function getMatchPredictionPoints(meta: MatchMeta): MatchPredictionPoints {
+  return meta.prediction_points ?? {};
 }
 
 export function exactScoresForFormat(format: string): readonly string[] {
@@ -233,5 +257,7 @@ export function featuredLabelFromMeta(meta: MatchMeta | undefined): string {
 export function isPendingTeamSlug(slug: string | null | undefined): boolean {
   if (!slug) return true;
   const s = slug.toLowerCase();
-  return s === "tbd" || s === "team" || s === "por-definir";
+  if (s === "tbd" || s === "team" || s === "por-definir") return true;
+  if (s.startsWith("winner-")) return true;
+  return false;
 }

@@ -201,11 +201,10 @@ async function upsertPlayerRow(
   row: AdminPlayerCatalogRow,
   patch: { photo_url?: string; meta: Record<string, unknown>; team_slug?: string | null },
 ) {
-  const res = await fetch("/api/admin/catalog", {
+  const res = await fetch("/api/admin/players", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      entity: "player",
       row: {
         ...row,
         photo_url: patch.photo_url ?? row.photo_url,
@@ -247,11 +246,16 @@ export function StudioCardsVisualPanel() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/catalog?type=all");
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error");
-      const t = mergeAdminTeamRows(data.teams ?? null);
-      const p = mergeAdminPlayerRows(data.players ?? null);
+      const [teamsRes, playersRes] = await Promise.all([
+        fetch("/api/admin/teams"),
+        fetch("/api/admin/players"),
+      ]);
+      const teamsData = await teamsRes.json();
+      const playersData = await playersRes.json();
+      if (!teamsRes.ok) throw new Error(teamsData.error || "Error equipos");
+      if (!playersRes.ok) throw new Error(playersData.error || "Error jugadores");
+      const t = mergeAdminTeamRows(teamsData.teams ?? null);
+      const p = mergeAdminPlayerRows(playersData.players ?? null);
       setTeams(t);
       setPlayers(p);
       setSelectedSlug((cur) => {
@@ -387,11 +391,10 @@ export function StudioCardsVisualPanel() {
           },
         };
         const meta = { ...t.meta, card_theme, banner_url: t.meta?.banner_url };
-        const res = await fetch("/api/admin/catalog", {
+        const res = await fetch("/api/admin/teams", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            entity: "team",
             row: { ...t, meta, profile: t.meta },
           }),
         });
@@ -434,11 +437,10 @@ export function StudioCardsVisualPanel() {
           card_theme: theme,
           banner_url: bannerUrl || undefined,
         };
-        const res = await fetch("/api/admin/catalog", {
+        const res = await fetch("/api/admin/teams", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            entity: "team",
             row: { ...row, meta, profile: row.meta },
           }),
         });

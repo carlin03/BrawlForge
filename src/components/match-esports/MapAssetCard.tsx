@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Ban } from "lucide-react";
-import { getMapDef } from "@/lib/data/bs-catalog";
+import { resolveMapDef } from "@/lib/data/game-assets-catalog";
+import { useGameAssetsCatalog } from "@/hooks/useGameAssetsCatalog";
 import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 
 export function MapAssetCard({
@@ -11,20 +12,23 @@ export function MapAssetCard({
   index,
   isCurrent,
   isDecisive,
+  size,
 }: {
   name: string;
   variant?: "pool" | "order" | "ban";
   index?: number;
   isCurrent?: boolean;
   isDecisive?: boolean;
+  size?: "md" | "lg";
 }) {
-  const def = getMapDef(name);
+  const { maps } = useGameAssetsCatalog();
+  const def = resolveMapDef(name, maps);
   const [failed, setFailed] = useState(false);
   const src = failed ? undefined : toClientLogoUrl(def.imageUrl);
 
   return (
     <article
-      className={`bf-map-asset ${variant === "ban" ? "is-banned" : ""} ${isCurrent ? "is-current" : ""} ${isDecisive ? "is-decisive" : ""}`}
+      className={`bf-map-asset ${variant === "ban" ? "is-banned" : ""} ${isCurrent ? "is-current" : ""} ${isDecisive ? "is-decisive" : ""} ${size === "lg" ? "is-lg" : ""}`}
     >
       <div className="bf-map-asset-art">
         {src ? (
