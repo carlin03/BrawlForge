@@ -199,7 +199,7 @@ function GranFinalRound({
       {waitingSemis ? (
         <p className="bf-predict-round-hint">Pendiente: elige ganador en las dos semifinales de arriba.</p>
       ) : finalEvent ? (
-        <div className="bf-predict-pickem-grid is-key is-single-final">
+        <div className="bf-predict-bracket-grand-final">
           <InteractiveVoteCard
             event={finalEvent}
             featured
@@ -216,7 +216,40 @@ function GranFinalRound({
   );
 }
 
-/** Eliminatoria por rondas — mismas secciones que el resto de Pick'em (sin bracket especial). */
+function BracketQuarterGrid({ matches }: { matches: EnrichedPrediction[] }) {
+  const top = matches.slice(0, 2);
+  const bottom = matches.slice(2, 4);
+  return (
+    <div className="bf-predict-bracket-qf">
+      {top.length > 0 && (
+        <div className="bf-predict-bracket-qf-row">
+          {top.map((e) => (
+            <InteractiveVoteCard key={e.id} event={e} />
+          ))}
+        </div>
+      )}
+      {bottom.length > 0 && (
+        <div className="bf-predict-bracket-qf-row">
+          {bottom.map((e) => (
+            <InteractiveVoteCard key={e.id} event={e} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BracketSemiGrid({ matches }: { matches: EnrichedPrediction[] }) {
+  return (
+    <div className="bf-predict-bracket-sf">
+      {matches.map((e) => (
+        <InteractiveVoteCard key={e.id} event={e} />
+      ))}
+    </div>
+  );
+}
+
+/** Eliminatoria por rondas — cuartos 2+2, semis lado a lado, final grande. */
 export function PredictionsRoundSections({
   bracket,
   votes,
@@ -240,11 +273,7 @@ export function PredictionsRoundSections({
           <p className="bf-predict-section-lead">
             {bracket.tournamentName} — partidos normales del calendario (misma card que jornada).
           </p>
-          <div className="bf-predict-pickem-grid">
-            {qf.map((e) => (
-              <InteractiveVoteCard key={e.id} event={e} />
-            ))}
-          </div>
+          <BracketQuarterGrid matches={qf} />
         </section>
       )}
 
@@ -257,11 +286,7 @@ export function PredictionsRoundSections({
           <p className="bf-predict-section-lead">
             Partidos clave del torneo — más puntos si aciertas.
           </p>
-          <div className="bf-predict-pickem-grid is-key">
-            {sf.map((e) => (
-              <InteractiveVoteCard key={e.id} event={e} />
-            ))}
-          </div>
+          <BracketSemiGrid matches={sf} />
         </section>
       )}
 
