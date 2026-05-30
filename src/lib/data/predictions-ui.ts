@@ -265,7 +265,7 @@ export function buildPlayoffBracket(
 ): PlayoffBracketView | null {
   const tour = getTournament(tournamentSlug);
   const tourEvents = events.filter((e) => e.tournamentSlug === tournamentSlug && e.stageMeta?.isPlayoff);
-  if (tourEvents.length < 2) return null;
+  if (tourEvents.length < 1) return null;
 
   const byRound = (key: PlayoffBracketRound["key"]) =>
     tourEvents
@@ -290,6 +290,28 @@ export function buildPlayoffBracket(
     semis,
     final,
   };
+}
+
+/** Todos los torneos con fase eliminatoria (varios brackets en /predictions). */
+export function buildAllPlayoffBrackets(events: EnrichedPrediction[]): PlayoffBracketView[] {
+  const slugs = new Set<string>();
+  for (const e of events) {
+    if (e.stageMeta?.isPlayoff) slugs.add(e.tournamentSlug);
+  }
+  const out: PlayoffBracketView[] = [];
+  for (const slug of slugs) {
+    const b = buildPlayoffBracket(slug, events);
+    if (b) out.push(b);
+  }
+  return out.sort((a, b) => a.tournamentName.localeCompare(b.tournamentName, "es"));
+}
+
+export function getAllPlayoffBracketMatchIds(brackets: PlayoffBracketView[]): Set<string> {
+  const ids = new Set<string>();
+  for (const b of brackets) {
+    for (const id of getPlayoffBracketMatchIds(b)) ids.add(id);
+  }
+  return ids;
 }
 
 export function enrichPrediction(

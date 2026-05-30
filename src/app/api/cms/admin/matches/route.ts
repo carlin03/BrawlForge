@@ -54,6 +54,29 @@ export async function POST(request: Request) {
   return NextResponse.json({ ok: true, message: `Partido ${payload.id} guardado` });
 }
 
+export async function PATCH(request: Request) {
+  const auth = await requireCmsAdmin();
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const { supabase, error } = await getSupabaseAdmin();
+  if (error) return error;
+
+  const body = await request.json();
+  const id = body.id ?? body.match?.id;
+  if (!id) return NextResponse.json({ error: "id requerido" }, { status: 400 });
+
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (body.stage !== undefined) patch.stage = body.stage ? String(body.stage) : null;
+  if (body.format !== undefined) patch.format = String(body.format);
+  if (body.status !== undefined) patch.status = String(body.status);
+  if (body.score_a !== undefined) patch.score_a = Number(body.score_a);
+  if (body.score_b !== undefined) patch.score_b = Number(body.score_b);
+
+  const { error: dbErr } = await supabase!.from("matches_catalog").update(patch).eq("id", id);
+  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  await auditWrite("match.patch", "match", String(id));
+  return NextResponse.json({ ok: true, message: `Partido ${id} actualizado` });
+}
+
 export async function DELETE(request: Request) {
   const auth = await requireCmsAdmin();
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });

@@ -4,6 +4,18 @@ import { useEffect, useMemo, useState } from "react";
 import { getBscCircuitTournaments } from "@/lib/data/matches";
 import { teamName } from "@/lib/data";
 import { DEFAULT_PICKEM_STAGE_POINTS, PICKEM_STAGE_OPTIONS } from "@/lib/data/pickem-reward-points";
+
+const PICKEM_STAGE_PILLS = PICKEM_STAGE_OPTIONS.map((o) => ({
+  id: o.id,
+  label:
+    o.pointsKey === "group"
+      ? "Grupos"
+      : o.pointsKey === "quarter"
+        ? "Cuartos"
+        : o.pointsKey === "semi"
+          ? "Semis"
+          : "Final",
+}));
 import {
   StudioCard,
   StudioField,
@@ -73,6 +85,24 @@ export function StudioMatchesPanel() {
   function suggestId() {
     const d = form.scheduled_at.slice(0, 10).replace(/-/g, "");
     return `${form.team_a_slug}-vs-${form.team_b_slug}-${d}`.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
+  }
+
+  async function patchMatchStage(matchId: string, stage: string, reload: () => void) {
+    setMsg("");
+    setError(false);
+    const res = await fetch("/api/cms/admin/matches", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: matchId, stage }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setMsg(data.error || "No se pudo actualizar la fase");
+      setError(true);
+      return;
+    }
+    setMsg(`Fase actualizada: ${PICKEM_STAGE_PILLS.find((p) => p.id === stage)?.label ?? stage}`);
+    reload();
   }
 
   async function saveMatch(reload: () => void) {
@@ -257,17 +287,27 @@ export function StudioMatchesPanel() {
               <ul className="bf-studio-match-list">
                 {matches.slice(0, 30).map((m) => (
                   <li key={m.id} className="bf-studio-match-item">
-                    <div>
+                    <div className="bf-studio-match-item-main">
                       <strong>
                         {teamName(m.team_a_slug)} vs {teamName(m.team_b_slug)}
                       </strong>
                       <span className="bf-studio-match-meta">
-                        {m.stage ? `${m.stage} · ` : ""}
                         {m.format ?? "Bo3"} · {new Date(m.scheduled_at).toLocaleString("es-ES")} ·{" "}
                         {MATCH_STATUS_OPTIONS.find((s) => s.id === m.status)?.label ?? m.status}
                         {(m.status === "live" || m.status === "finished") &&
                           ` · ${m.score_a}-${m.score_b}`}
                       </span>
+                      <StudioField label="Fase en web">
+                        <StudioPills
+                          options={PICKEM_STAGE_PILLS}
+                          value={
+                            PICKEM_STAGE_PILLS.some((p) => p.id === (m.stage ?? ""))
+                              ? (m.stage as (typeof PICKEM_STAGE_PILLS)[number]["id"])
+                              : "Group Stage"
+                          }
+                          onChange={(v) => patchMatchStage(m.id, v, reload)}
+                        />
+                      </StudioField>
                     </div>
                   </li>
                 ))}

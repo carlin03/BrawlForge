@@ -1,11 +1,9 @@
-import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { mergePickemAggregates } from "./pickem-demo-aggregates";
-import { getRecentMatches, getUpcomingMatches } from "./matches";
+import { getRecentMatches } from "./matches";
+import { getPickemOpenMatches } from "./pickem-open-matches";
 import { DEFAULT_PICKEM_STAGE_POINTS, getPickemRewardPoints } from "./pickem-reward-points";
 import type { PredictionEvent } from "./predictions";
 import type { VoteAggregate } from "@/lib/supabase/game-types";
-
-const PICKEM_OPEN_IDS = new Set(BSC_UPCOMING_PREDICTION_MATCHES.map((m) => m.id));
 
 function pct(votes: number, total: number): number {
   if (total <= 0) return 0;
@@ -17,7 +15,7 @@ export function buildPredictionEvents(
   userVotes: Record<string, "A" | "B"> = {},
 ): { open: PredictionEvent[]; closed: PredictionEvent[] } {
   const merged = mergePickemAggregates(aggregates);
-  const upcoming = getUpcomingMatches().filter((m) => PICKEM_OPEN_IDS.has(m.id));
+  const upcoming = getPickemOpenMatches();
   const open: PredictionEvent[] = upcoming.map((m, i) => {
     const agg = merged[m.id];
     const total = agg?.total_votes ?? 0;

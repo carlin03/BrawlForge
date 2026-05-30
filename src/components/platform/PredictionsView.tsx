@@ -14,13 +14,12 @@ import type { PredictionEvent } from "@/lib/data/predictions";
 import { isKnownTeamSlug } from "@/lib/data";
 import type { UserGameState } from "@/lib/supabase/game-types";
 import {
-  buildPlayoffBracket,
+  buildAllPlayoffBrackets,
   categorizePopularPicks,
   enrichPrediction,
+  getAllPlayoffBracketMatchIds,
   getClosingSoonMatches,
-  getPlayoffBracketMatchIds,
   pickFeaturedEvent,
-  pickPlayoffTournamentSlug,
 } from "@/lib/data/predictions-ui";
 import { stageImportanceSort } from "@/lib/data/match-stage-meta";
 import { useAuth } from "@/contexts/AuthContext";
@@ -62,25 +61,24 @@ export function PredictionsView({
     [displayClosed, votes],
   );
 
-  const featuredEvent = useMemo(() => {
-    const f = pickFeaturedEvent(displayOpen);
-    return f ? enrichPrediction(f, votes) : null;
-  }, [displayOpen, votes]);
-
-  const featuredId = featuredEvent?.matchId;
-
-  const playoffBracket = useMemo(() => {
-    const slug =
-      featuredEvent?.tournamentSlug ??
-      pickPlayoffTournamentSlug(openEnriched.concat(closedEnriched));
-    if (!slug) return null;
-    return buildPlayoffBracket(slug, openEnriched.concat(closedEnriched));
-  }, [featuredEvent, openEnriched, closedEnriched]);
+  const playoffBrackets = useMemo(
+    () => buildAllPlayoffBrackets(openEnriched),
+    [openEnriched],
+  );
 
   const bracketMatchIds = useMemo(
-    () => getPlayoffBracketMatchIds(playoffBracket),
-    [playoffBracket],
+    () => getAllPlayoffBracketMatchIds(playoffBrackets),
+    [playoffBrackets],
   );
+
+  const featuredEvent = useMemo(() => {
+    const pool = displayOpen.filter((e) => !bracketMatchIds.has(e.id));
+    const f = pickFeaturedEvent(pool.length > 0 ? pool : displayOpen);
+    return f ? enrichPrediction(f, votes) : null;
+  }, [displayOpen, votes, bracketMatchIds]);
+
+  const featuredId = featuredEvent?.matchId;
+  const showFeatured = featuredEvent && !bracketMatchIds.has(featuredEvent.matchId);
 
   const activeList = useMemo(
     () =>
@@ -120,15 +118,34 @@ export function PredictionsView({
         game={game}
       />
 
-      {featuredEvent && <FeaturedPredictionDuel event={featuredEvent} />}
-
-      {playoffBracket && (
-        <PredictionsRoundSections
-          bracket={playoffBracket}
-          votes={votes}
-          events={openEnriched.concat(closedEnriched)}
-        />
+      {playoffBrackets.length > 0 && (
+        <nav className="bf-predict-tournament-jump" aria-label="Torneos con eliminatoria">
+          {playoffBrackets.map((b) => (
+            <a key={b.tournamentSlug} href={`#pickem-${b.tournamentSlug}`} className="bf-predict-tjump-pill">
+              {b.tournamentName}
+            </a>
+          ))}
+        </nav>
       )}
+
+      {showFeatured && <FeaturedPredictionDuel event={featuredEvent} />}
+
+      {playoffBrackets.length === 0 && displayOpen.length > 0 && (
+        <p className="bf-predict-round-hint">
+          No hay cuartos/semis/final con fase configurada. En admin → Partidos elige fase Cuartos, Semifinal o
+          Gran final.
+        </p>
+      )}
+
+      {playoffBrackets.map((bracket) => (
+        <div key={bracket.tournamentSlug} id={`pickem-${bracket.tournamentSlug}`}>
+          <PredictionsRoundSections
+            bracket={bracket}
+            votes={votes}
+            events={openEnriched.concat(closedEnriched)}
+          />
+        </div>
+      ))}
 
       {syncing && <p className="bf-predict-sync-banner" aria-live="polite">Actualizando votos…</p>}
 
@@ -157,17 +174,11 @@ export function PredictionsView({
           <Link href="/matches" className="bf-bsc-btn bf-bsc-btn-ghost">
             Ver calendario
           </Link>
+          <Link href="/admin?module=matches" className="bf-bsc-btn bf-bsc-btn-ghost">
+            Crear partidos en admin
+          </Link>
         </div>
       )}
-
-      {displayOpen.length > 0 &&
-        regularMatches.length === 0 &&
-        !playoffBracket &&
-        featuredEvent && (
-          <p className="bf-predict-active-only-featured">
-            Solo el destacado de arriba está abierto. Vota antes de que cierre.
-          </p>
-        )}
 
       <PredictionsClosingSoon matches={closingSoon} />
 

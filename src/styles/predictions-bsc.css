@@ -2332,6 +2332,31 @@
   max-width: 640px;
   margin: 0 auto;
 }
+.bf-predict-tournament-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0 4px;
+}
+.bf-predict-tjump-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: var(--bp-text);
+  background: rgba(0, 153, 255, 0.12);
+  border: 1px solid rgba(0, 153, 255, 0.35);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.bf-predict-tjump-pill:hover {
+  background: rgba(0, 153, 255, 0.22);
+  border-color: rgba(0, 153, 255, 0.55);
+}
 .bf-predict-round-hint {
   margin: 0 0 12px;
   padding: 10px 14px;
