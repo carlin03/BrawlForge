@@ -1,13 +1,19 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Copy, Download, Share2 } from "lucide-react";
+import { Copy, Download, Share2, Trophy, Target, Ban, Users, TrendingUp } from "lucide-react";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { TeamLogo } from "@/components/ui/TeamLogo";
+import { BrawlerAssetIcon } from "@/components/match-esports/BrawlerAssetIcon";
 import type { EsportsMatch } from "@/lib/data/matches";
 import type { MatchMeta } from "@/lib/data/match-meta";
 import { teamName } from "@/lib/data";
-import { resolveMatchMapOrder } from "@/lib/data/series-map-utils";
+import {
+  mapCountFromExactScore,
+  resolveMatchMapOrder,
+  visiblePredictionMapSlots,
+} from "@/lib/data/series-map-utils";
+import { parseMatchMeta } from "@/lib/data/match-meta";
 import type { MatchExtendedPrediction } from "@/lib/match-predictions-storage";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -72,9 +78,23 @@ export function MatchPredictionRecapCard({
   const { profile, user } = useAuth();
   const cardRef = useRef<HTMLElement>(null);
   const [copied, setCopied] = useState(false);
+  const [showRaw, setShowRaw] = useState(false);
 
   const displayName = profile?.ign || profile?.displayName || "Jugador";
   const userId = profile?.id ?? user?.id ?? "—";
+  const parsed = parseMatchMeta(meta);
+  const mapOrder = useMemo(() => resolveMatchMapOrder(meta, match.format), [meta, match.format]);
+  const mapSlots = useMemo(
+    () =>
+      visiblePredictionMapSlots(
+        mapOrder,
+        ext.exactScore,
+        parsed.maps?.decisive,
+        match.format,
+      ),
+    [mapOrder, ext.exactScore, parsed.maps?.decisive, match.format],
+  );
+  const mapCount = mapCountFromExactScore(ext.exactScore, match.format);
 
   const recapText = useMemo(
     () => buildRecapText(match, meta, ext, winnerPick, displayName, userId),
@@ -110,7 +130,7 @@ export function MatchPredictionRecapCard({
         });
         return;
       } catch {
-        /* fallback copy */
+        /* fallback */
       }
     }
     void copyText();
@@ -119,84 +139,214 @@ export function MatchPredictionRecapCard({
   if (!winnerPick) return null;
 
   return (
-    <article className="bf-prediction-recap-card" ref={cardRef} id="bf-prediction-recap">
-      <header className="bf-prediction-recap-brand">
-        <BrandMark size={32} />
-        <div>
-          <strong>BrawlForge</strong>
-          <span>
-            {displayName} · {userId.slice(0, 8)}
-          </span>
-        </div>
+    <section className="bf-prediction-recap-wrap" id="bf-prediction-recap">
+      <header className="bf-prediction-recap-section-head">
+        <h2 className="bf-match-esports-h2">Tu predicción</h2>
+        <p className="bf-match-section-lead">Resumen para compartir o guardar</p>
       </header>
 
-      <div className="bf-prediction-recap-match">
-        <div className="bf-prediction-recap-team">
-          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={36} />
-          <span>{teamName(match.teamASlug)}</span>
-        </div>
-        <span className="bf-prediction-recap-vs">VS</span>
-        <div className="bf-prediction-recap-team">
-          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={36} />
-          <span>{teamName(match.teamBSlug)}</span>
-        </div>
-      </div>
+      <article className="bf-prediction-recap-card is-premium" ref={cardRef}>
+        <div className="bf-prediction-recap-glow" aria-hidden />
 
-      <dl className="bf-prediction-recap-facts">
-        <div>
-          <dt>Ganador</dt>
-          <dd>{teamName(winnerPick === "A" ? match.teamASlug : match.teamBSlug)}</dd>
+        <header className="bf-prediction-recap-brand">
+          <BrandMark size={40} />
+          <div className="bf-prediction-recap-brand-text">
+            <strong>BrawlForge</strong>
+            <span className="bf-prediction-recap-user">
+              {displayName}
+              <em>ID {userId.slice(0, 8)}</em>
+            </span>
+          </div>
+          <span className="bf-prediction-recap-format">{match.format}</span>
+        </header>
+
+        <div className="bf-prediction-recap-duel">
+          <div
+            className={`bf-prediction-recap-team is-a ${winnerPick === "A" ? "is-winner-pick" : ""}`}
+          >
+            <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={52} />
+            <span>{teamName(match.teamASlug)}</span>
+            {winnerPick === "A" && (
+              <span className="bf-prediction-recap-winner-tag">
+                <Trophy size={12} aria-hidden />
+                Ganador
+              </span>
+            )}
+          </div>
+          <div className="bf-prediction-recap-center">
+            <span className="bf-prediction-recap-vs">VS</span>
+            {ext.exactScore && (
+              <span className="bf-prediction-recap-score-pill">{ext.exactScore}</span>
+            )}
+          </div>
+          <div
+            className={`bf-prediction-recap-team is-b ${winnerPick === "B" ? "is-winner-pick" : ""}`}
+          >
+            <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={52} />
+            <span>{teamName(match.teamBSlug)}</span>
+            {winnerPick === "B" && (
+              <span className="bf-prediction-recap-winner-tag">
+                <Trophy size={12} aria-hidden />
+                Ganador
+              </span>
+            )}
+          </div>
         </div>
-        {ext.exactScore && (
-          <div>
-            <dt>Marcador</dt>
-            <dd>{ext.exactScore}</dd>
-          </div>
-        )}
-        {ext.brawlerMvp && (
-          <div>
-            <dt>Mejor WR</dt>
-            <dd>{ext.brawlerMvp}</dd>
-          </div>
-        )}
-        {ext.brawlerMostUsed && (
-          <div>
-            <dt>Más usado</dt>
-            <dd>{ext.brawlerMostUsed}</dd>
-          </div>
-        )}
-        {ext.brawlerMostBanned && (
-          <div>
-            <dt>Más bloqueado</dt>
-            <dd>{ext.brawlerMostBanned}</dd>
-          </div>
-        )}
-        {ext.mvpPlayerSlug && (
-          <div>
-            <dt>MVP</dt>
-            <dd>{ext.mvpPlayerSlug}</dd>
-          </div>
-        )}
-      </dl>
 
-      <pre className="bf-prediction-recap-full" aria-label="Resumen completo">
-        {recapText}
-      </pre>
+        {(ext.brawlerMvp || ext.brawlerMostUsed || ext.brawlerMostBanned || ext.mvpPlayerSlug) && (
+          <div className="bf-prediction-recap-brawlers">
+            <h3 className="bf-prediction-recap-block-title">Brawlers del partido</h3>
+            <div className="bf-prediction-recap-brawler-row">
+              {ext.brawlerMvp && (
+                <div className="bf-prediction-recap-brawler-item">
+                  <TrendingUp size={14} aria-hidden />
+                  <span>Mejor WR</span>
+                  <BrawlerAssetIcon name={ext.brawlerMvp} size={48} hideName />
+                  <em>{ext.brawlerMvp}</em>
+                </div>
+              )}
+              {ext.brawlerMostUsed && (
+                <div className="bf-prediction-recap-brawler-item">
+                  <Users size={14} aria-hidden />
+                  <span>Más usado</span>
+                  <BrawlerAssetIcon name={ext.brawlerMostUsed} size={48} hideName />
+                  <em>{ext.brawlerMostUsed}</em>
+                </div>
+              )}
+              {ext.brawlerMostBanned && (
+                <div className="bf-prediction-recap-brawler-item">
+                  <Ban size={14} aria-hidden />
+                  <span>Más bloqueado</span>
+                  <BrawlerAssetIcon name={ext.brawlerMostBanned} size={48} hideName variant="ban" />
+                  <em>{ext.brawlerMostBanned}</em>
+                </div>
+              )}
+              {ext.mvpPlayerSlug && (
+                <div className="bf-prediction-recap-brawler-item is-player">
+                  <Target size={14} aria-hidden />
+                  <span>MVP jugador</span>
+                  <em>{ext.mvpPlayerSlug}</em>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
-      <div className="bf-prediction-recap-actions">
-        <button type="button" className="bf-btn bf-btn-outline" onClick={() => void copyText()}>
-          <Copy size={16} aria-hidden />
-          {copied ? "Copiado" : "Copiar"}
-        </button>
-        <button type="button" className="bf-btn-secondary" onClick={downloadTxt}>
-          <Download size={16} aria-hidden />
-          Descargar
-        </button>
-        <button type="button" className="bf-btn bf-btn-yellow" onClick={() => void share()}>
-          <Share2 size={16} aria-hidden />
-          Compartir
-        </button>
-      </div>
-    </article>
+        {mapSlots.length > 0 && (
+          <div className="bf-prediction-recap-maps">
+            <h3 className="bf-prediction-recap-block-title">
+              Serie por mapas
+              {mapCount != null && (
+                <span className="bf-prediction-recap-map-count">{mapCount} mapas</span>
+              )}
+            </h3>
+            <ul className="bf-prediction-recap-map-list">
+              {mapSlots.map((slot) => {
+                const w = ext.mapWinners?.[slot.index];
+                const picks = ext.mapBrawlerPicks?.[slot.index];
+                const cBans = ext.mapBrawlerBans?.[slot.index] ?? [];
+                const tBans = ext.mapTeamBans?.[slot.index];
+                return (
+                  <li
+                    key={`${slot.name}-${slot.index}`}
+                    className={`bf-prediction-recap-map-item ${slot.decisive ? "is-decisive" : ""}`}
+                  >
+                    <div className="bf-prediction-recap-map-head">
+                      <span className="bf-prediction-recap-map-num">Mapa {slot.index + 1}</span>
+                      <strong>{slot.name}</strong>
+                      {slot.decisive && <span className="bf-map-series-decisive-badge">Decisivo</span>}
+                    </div>
+                    {w && (
+                      <p className="bf-prediction-recap-map-winner">
+                        <TeamLogo
+                          slug={w === "A" ? match.teamASlug : match.teamBSlug}
+                          name=""
+                          size={20}
+                        />
+                        {teamName(w === "A" ? match.teamASlug : match.teamBSlug)}
+                      </p>
+                    )}
+                    <div className="bf-prediction-recap-map-draft">
+                      {picks?.a?.length ? (
+                        <div className="bf-prediction-recap-draft-col">
+                          <span>{teamName(match.teamASlug)}</span>
+                          <div className="bf-prediction-recap-icons">
+                            {picks.a.map((n) => (
+                              <BrawlerAssetIcon key={n} name={n} size={36} hideName />
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                      {cBans.length > 0 && (
+                        <div className="bf-prediction-recap-draft-col is-bans">
+                          <span>Bloqueos</span>
+                          <div className="bf-prediction-recap-icons">
+                            {cBans.map((n) => (
+                              <BrawlerAssetIcon key={n} name={n} size={36} hideName variant="ban" />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {picks?.b?.length ? (
+                        <div className="bf-prediction-recap-draft-col">
+                          <span>{teamName(match.teamBSlug)}</span>
+                          <div className="bf-prediction-recap-icons">
+                            {picks.b.map((n) => (
+                              <BrawlerAssetIcon key={n} name={n} size={36} hideName />
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                    {(tBans?.a?.length || tBans?.b?.length) && (
+                      <div className="bf-prediction-recap-team-bans">
+                        {tBans.a?.map((n) => (
+                          <BrawlerAssetIcon key={`a-${n}`} name={n} size={32} hideName variant="ban" />
+                        ))}
+                        {tBans.b?.map((n) => (
+                          <BrawlerAssetIcon key={`b-${n}`} name={n} size={32} hideName variant="ban" />
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
+        <footer className="bf-prediction-recap-footer">
+          <span className="bf-prediction-recap-domain">brawlforges.com</span>
+          <button
+            type="button"
+            className="bf-prediction-recap-raw-toggle"
+            onClick={() => setShowRaw((s) => !s)}
+          >
+            {showRaw ? "Ocultar texto" : "Ver texto plano"}
+          </button>
+        </footer>
+
+        {showRaw && (
+          <pre className="bf-prediction-recap-full" aria-label="Resumen texto">
+            {recapText}
+          </pre>
+        )}
+
+        <div className="bf-prediction-recap-actions">
+          <button type="button" className="bf-btn bf-btn-outline" onClick={() => void copyText()}>
+            <Copy size={16} aria-hidden />
+            {copied ? "Copiado" : "Copiar"}
+          </button>
+          <button type="button" className="bf-btn bf-btn-outline" onClick={downloadTxt}>
+            <Download size={16} aria-hidden />
+            Descargar
+          </button>
+          <button type="button" className="bf-btn bf-btn-yellow" onClick={() => void share()}>
+            <Share2 size={16} aria-hidden />
+            Compartir
+          </button>
+        </div>
+      </article>
+    </section>
   );
 }

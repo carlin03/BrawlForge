@@ -5,9 +5,7 @@ import type { EsportsMatch } from "@/lib/data/matches";
 import type { MatchMeta } from "@/lib/data/match-meta";
 import { getMatchPredictionsConfig, parseMatchMeta } from "@/lib/data/match-meta";
 import { MapPredictionLane } from "@/components/match-esports/MapPredictionLane";
-import { getSeriesRules } from "@/lib/data/match-format-rules";
 import {
-  mapCountFromExactScore,
   resolveMatchMapOrder,
   visiblePredictionMapSlots,
 } from "@/lib/data/series-map-utils";
@@ -47,8 +45,6 @@ export function MatchMapSeriesBoard({ match, meta, ext, points, onPatch, interac
     [parsed.bans],
   );
 
-  const mapCount = mapCountFromExactScore(ext.exactScore, match.format);
-
   const showMapWinners = cfg.map_winners || cfg.advanced || mapOrder.length > 0;
   const showDraft = cfg.map_brawler_picks || cfg.advanced || mapOrder.length > 0;
 
@@ -75,18 +71,9 @@ export function MatchMapSeriesBoard({ match, meta, ext, points, onPatch, interac
     onPatch({ mapTeamBans: { ...normalizeMapTeamBans(ext), [index]: row } });
   }
 
-  const gridClass =
-    slots.length === 5
-      ? "is-maps-5"
-      : slots.length === 4
-        ? "is-maps-4"
-        : slots.length >= 3
-          ? "is-maps-3"
-          : "";
-
   return (
     <div className="bf-map-series-board is-per-map-list">
-      <div className={`bf-map-pred-lanes bf-map-series-grid ${gridClass}`}>
+      <div className="bf-map-pred-lanes is-vertical">
         {slots.map((slot) => (
           <MapPredictionLane
             key={`${slot.name}-${slot.index}`}
