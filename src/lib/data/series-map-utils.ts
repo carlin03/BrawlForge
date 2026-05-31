@@ -1,4 +1,45 @@
-import { getSeriesRules, parseExactScore } from "./match-format-rules";
+import {
+  getSeriesRules,
+  isValidSeriesScore,
+  parseExactScore,
+} from "./match-format-rules";
+import type { MatchMeta } from "./match-meta";
+
+/** Orden BO3 por defecto (nombres BSC habituales) si el partido no tiene mapas en meta. */
+const DEFAULT_ORDER_BO3 = ["Triple Dribble", "Sneaky Fields", "Center Stage"] as const;
+const DEFAULT_ORDER_BO5 = [
+  "Gem Fort",
+  "Center Stage",
+  "Hot Zone",
+  "Bridge Too Far",
+  "Layer Cake",
+] as const;
+const DEFAULT_ORDER_BO7 = [
+  ...DEFAULT_ORDER_BO5,
+  "Double Swoosh",
+  "Kaboom Canyon",
+] as const;
+
+/** Mapas del partido para predicciones (meta → pool → plantilla por formato). */
+export function resolveMatchMapOrder(meta: MatchMeta | undefined, format: string): string[] {
+  const maps = meta?.maps;
+  const order = maps?.order?.map((n) => n.trim()).filter(Boolean) ?? [];
+  if (order.length) return order;
+
+  const possible = maps?.possible?.map((n) => n.trim()).filter(Boolean) ?? [];
+  if (possible.length) {
+    return possible.slice(0, maxMapsInSeries(format));
+  }
+
+  const played = maps?.played?.map((p) => p.name.trim()).filter(Boolean) ?? [];
+  if (played.length) return played;
+
+  const f = format.toLowerCase();
+  if (f.includes("7")) return [...DEFAULT_ORDER_BO7];
+  if (f.includes("5")) return [...DEFAULT_ORDER_BO5];
+  if (f.includes("1")) return [DEFAULT_ORDER_BO3[0]];
+  return [...DEFAULT_ORDER_BO3];
+}
 
 export type MapSeriesSlot = {
   name: string;
@@ -77,8 +118,21 @@ export function allSeriesMapSlots(
 }
 
 /**
- * Mapas para predicción avanzada (ganador por mapa): solo los relevantes según formato y marcador.
- * BO3: 1–2; con 1-1 aparece mapa 3. BO5: 1–3; con 2-2 mapa 5. BO7: 1–4; con 3-3 mapa 7.
+ * Mapas que se juegan según marcador exacto (regla BSC).
+ * BO3 2-0 → 2 mapas · 2-1 → 3 · BO5 3-0 → 3 · 3-2 → 5 · BO7 4-3 → 7, etc.
+ */
+export function mapCountFromExactScore(
+  exactScore: string | undefined,
+  format: string,
+): number | null {
+  const p = parseExactScore(exactScore);
+  if (!p || !isValidSeriesScore(p.a, p.b, format)) return null;
+  return p.a + p.b;
+}
+
+/**
+ * Mapas visibles para predecir: dependen del marcador exacto elegido.
+ * Sin marcador válido no se muestran mapas (hay que elegir resultado exacto antes).
  */
 export function visiblePredictionMapSlots(
   order: string[],
@@ -86,9 +140,19 @@ export function visiblePredictionMapSlots(
   manualDecisive: string | undefined,
   format: string,
 ): MapSeriesSlot[] {
+  const count = mapCountFromExactScore(exactScore, format);
+  if (count == null) return [];
+
   const all = allSeriesMapSlots(order, exactScore, manualDecisive, format);
-  const decisiveIdx = decisiveMapIndexFromExactString(exactScore, format);
-  const initialMax = initialMapsVisibleCount(format) - 1;
-  const maxVisible = decisiveIdx != null ? Math.max(initialMax, decisiveIdx) : initialMax;
-  return all.filter((s) => s.index <= maxVisible);
+  return all.filter((s) => s.index < count);
+}
+
+/** Misma visibilidad que predicciones (análisis de mapa alineado con la serie predicha). */
+export function visibleAnalysisMapSlots(
+  order: string[],
+  exactScore: string | undefined,
+  manualDecisive: string | undefined,
+  format: string,
+): MapSeriesSlot[] {
+  return visiblePredictionMapSlots(order, exactScore, manualDecisive, format);
 }

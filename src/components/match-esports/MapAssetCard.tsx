@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Ban } from "lucide-react";
-import { resolveMapCatalogEntry } from "@/lib/data/game-assets-catalog";
+import type { MatchMeta } from "@/lib/data/match-meta";
 import { useGameAssetsCatalog } from "@/hooks/useGameAssetsCatalog";
+import { resolveMapForMatch } from "@/lib/data/resolve-match-assets";
 import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 
 export function MapAssetCard({
@@ -13,6 +14,7 @@ export function MapAssetCard({
   isCurrent,
   isDecisive,
   size,
+  meta,
 }: {
   name: string;
   variant?: "pool" | "order" | "ban";
@@ -20,9 +22,11 @@ export function MapAssetCard({
   isCurrent?: boolean;
   isDecisive?: boolean;
   size?: "md" | "lg";
+  /** Si se pasa, aplica overrides opcionales del partido sobre la biblioteca. */
+  meta?: MatchMeta;
 }) {
   const { maps } = useGameAssetsCatalog();
-  const def = resolveMapCatalogEntry(name, maps);
+  const def = resolveMapForMatch(name, meta, maps);
   const [failed, setFailed] = useState(false);
   const src = failed ? undefined : toClientLogoUrl(def.imageUrl);
 

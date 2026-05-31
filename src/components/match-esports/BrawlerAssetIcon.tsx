@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Ban } from "lucide-react";
-import { resolveBrawlerDef } from "@/lib/data/game-assets-catalog";
+import type { MatchMeta } from "@/lib/data/match-meta";
 import { brawlerImageFallbacks } from "@/lib/data/bs-catalog";
 import { useGameAssetsCatalog } from "@/hooks/useGameAssetsCatalog";
+import { resolveBrawlerForMatch } from "@/lib/data/resolve-match-assets";
 import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 
 export function BrawlerAssetIcon({
@@ -14,6 +15,8 @@ export function BrawlerAssetIcon({
   onClick,
   selected,
   hideName,
+  meta,
+  disabled,
 }: {
   name: string;
   variant?: "default" | "meta" | "ban" | "pick";
@@ -21,21 +24,28 @@ export function BrawlerAssetIcon({
   onClick?: () => void;
   selected?: boolean;
   hideName?: boolean;
+  meta?: MatchMeta;
+  disabled?: boolean;
 }) {
   const { brawlers } = useGameAssetsCatalog();
-  const def = resolveBrawlerDef(name, brawlers);
+  const def = resolveBrawlerForMatch(name, meta, brawlers);
   const candidates = useMemo(
     () => brawlerImageFallbacks(def.slug, def.imageUrl).map((u) => toClientLogoUrl(u)),
     [def.slug, def.imageUrl],
   );
   const [urlIndex, setUrlIndex] = useState(0);
+
+  useEffect(() => {
+    setUrlIndex(0);
+  }, [def.slug, def.imageUrl, name]);
+
   const src = urlIndex < candidates.length ? candidates[urlIndex] : undefined;
-  const Tag = onClick ? "button" : "div";
+  const Tag = onClick && !disabled ? "button" : "div";
 
   return (
     <Tag
-      type={onClick ? "button" : undefined}
-      className={`bf-brawler-asset is-${variant} ${selected ? "is-on" : ""}`}
+      type={onClick && !disabled ? "button" : undefined}
+      className={`bf-brawler-asset is-${variant} ${selected ? "is-on" : ""} ${disabled ? "is-disabled" : ""}`}
       style={{ width: size, minWidth: size }}
       onClick={onClick}
       title={def.name}
@@ -59,7 +69,14 @@ export function BrawlerAssetIcon({
           </span>
         )}
       </span>
-      {!hideName && <span className="bf-brawler-asset-name">{def.name}</span>}
+      {!hideName && (
+        <span className="bf-brawler-asset-name">
+          {def.name}
+          {variant === "meta" && def.rarity && (
+            <span className="bf-brawler-asset-rarity">{def.rarity}</span>
+          )}
+        </span>
+      )}
     </Tag>
   );
 }

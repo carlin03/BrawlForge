@@ -18,7 +18,9 @@ import {
   Sparkles,
   LayoutDashboard,
   Sliders,
+  BookOpen,
 } from "lucide-react";
+import { StudioGlobalLibraryPanel } from "@/components/admin/studio/StudioGlobalLibraryPanel";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminConsole } from "@/components/admin/AdminConsole";
 import { StudioPlatformPanel } from "@/components/admin/studio/StudioPlatformPanel";
@@ -52,7 +54,8 @@ export type StudioModule =
   | "automation"
   | "ajustes"
   | "platform"
-  | "tournaments";
+  | "tournaments"
+  | "biblioteca";
 
 type OpsTab = "news" | "import" | "users";
 
@@ -72,6 +75,12 @@ const MODULE_NAV: {
   lead: string;
 }[] = [
   { id: "inicio", label: "Inicio", icon: LayoutDashboard, lead: "Accesos rápidos a las tareas más habituales." },
+  {
+    id: "biblioteca",
+    label: "Biblioteca",
+    icon: BookOpen,
+    lead: "Mapas y brawlers globales — configura una vez, reutiliza en todos los partidos.",
+  },
   {
     id: "competicion",
     label: "Competición",
@@ -229,6 +238,7 @@ export function BrawlForgeStudio() {
         )}
 
         {module === "inicio" && <StudioDashboard />}
+        {module === "biblioteca" && <StudioGlobalLibraryPanel />}
         {module === "competicion" && (
           <StudioCompetitionHub />
         )}

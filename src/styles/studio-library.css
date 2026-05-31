@@ -1,0 +1,92 @@
+/* Biblioteca global (Admin) */
+.bf-studio-library-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.bf-studio-library-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.bf-studio-library-tabs button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--bp-muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+.bf-studio-library-tabs button.is-on {
+  border-color: rgba(255, 200, 46, 0.45);
+  color: var(--bp-gold);
+  background: rgba(255, 200, 46, 0.08);
+}
+.bf-studio-library-search {
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 16px;
+}
+.bf-studio-library-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bf-studio-library-card {
+  border: 1px solid var(--bp-line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.bf-studio-library-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+.bf-studio-library-card-head::-webkit-details-marker {
+  display: none;
+}
+.bf-studio-library-card-body {
+  padding: 0 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bf-studio-map-order-library .bf-studio-subh {
+  margin: 16px 0 8px;
+  font-size: 13px;
+  color: var(--bp-muted);
+}
+.bf-studio-library-pick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+.bf-studio-library-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--bp-line);
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--bp-muted);
+}
+.bf-studio-library-pick.is-on {
+  border-color: rgba(255, 200, 46, 0.5);
+  box-shadow: 0 0 0 1px rgba(255, 200, 46, 0.15);
+}
+.bf-studio-map-order-strip-admin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

@@ -18,7 +18,7 @@ import {
 import { AdminMatchWebPreview } from "@/components/admin/AdminMatchWebPreview";
 import { AdminMatchBracketCardPreview } from "@/components/admin/AdminMatchBracketCardPreview";
 import Link from "next/link";
-import { StudioAssetsCatalogEditor } from "@/components/admin/studio/StudioAssetsCatalogEditor";
+import { MapOrderFromLibrary } from "@/components/admin/studio/MapOrderFromLibrary";
 import {
   applyTemplateToMatchForm,
   DEFAULT_TOURNAMENT_MATCH_TEMPLATES,
@@ -769,7 +769,7 @@ export function StudioMatchesPanel() {
 
                 <StudioField
                   label="Plantilla de partido"
-                  hint="Rellena formato, map pool y orden. Edita datos por mapa en Catálogo mapas."
+                  hint="Rellena formato, pool y orden. Imagen y estrategia vienen de Biblioteca global."
                 >
                   <StudioSelect
                     value={templateId}
@@ -1003,21 +1003,25 @@ export function StudioMatchesPanel() {
 
                 {formTab === "maps" && (
                   <div className="bf-studio-map-catalog-panel">
-                    <p className="bf-studio-hint">
-                      Catálogo global de mapas: imagen, modo, mejores picks, win rates y notas. Se reutilizan
-                      en todos los partidos. El pool de cada partido viene de la <strong>plantilla</strong> en
-                      General.
-                    </p>
-                    <StudioAssetsCatalogEditor section="maps" />
+                    <MapOrderFromLibrary
+                      mapOrder={form.map_order}
+                      mapPool={form.map_pool}
+                      onChangeOrder={(map_order) => setForm({ ...form, map_order })}
+                      onChangePool={(map_pool) => setForm({ ...form, map_pool })}
+                    />
                   </div>
                 )}
 
                 {formTab === "brawlers" && (
                   <div className="bf-studio-brawler-catalog-panel">
                     <p className="bf-studio-hint">
-                      Catálogo global de brawlers. URL personalizada si el retrato oficial no carga.
+                      Los datos de brawlers (imagen, rareza, clase, descripción) se cargan automáticamente desde
+                      la biblioteca al mostrar el partido. Aquí solo configuras predicciones y draft por mapa en
+                      la pestaña <strong>Predicciones</strong>.
                     </p>
-                    <StudioAssetsCatalogEditor section="brawlers" />
+                    <Link href="/admin?module=biblioteca" className="bp-btn bp-btn-ghost">
+                      Abrir Biblioteca global → Brawlers
+                    </Link>
                   </div>
                 )}
               </div>

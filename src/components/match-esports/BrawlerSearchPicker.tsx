@@ -40,7 +40,7 @@ export function BrawlerSearchPicker({
       base = catalog.filter((b) => keys.has(b.name.toLowerCase()) || keys.has(b.slug));
     }
     const needle = q.trim().toLowerCase();
-    if (!needle) return base.slice(0, 48);
+    if (!needle) return base;
     return base.filter(
       (b) => b.name.toLowerCase().includes(needle) || b.slug.includes(needle),
     );

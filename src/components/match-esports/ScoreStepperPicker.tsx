@@ -13,6 +13,7 @@ import { patchMatchPrediction } from "@/lib/match-predictions-storage";
 import { writeExactScore } from "@/lib/exact-score-storage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
+import { PredictionPointBadge } from "@/components/match-esports/PredictionPointBadge";
 
 export function ScoreStepperPicker({
   matchId,
@@ -24,6 +25,7 @@ export function ScoreStepperPicker({
   initialScore,
   disabled,
   onExactChange,
+  pointsReward,
 }: {
   matchId: string;
   format: string;
@@ -34,6 +36,7 @@ export function ScoreStepperPicker({
   initialScore?: string | null;
   disabled?: boolean;
   onExactChange?: (exact: string | null) => void;
+  pointsReward?: number;
 }) {
   const rules = getSeriesRules(format);
   const { isLoggedIn } = useAuth();
@@ -85,6 +88,7 @@ export function ScoreStepperPicker({
     <div className="bf-score-stepper is-premium" aria-label="Resultado exacto">
       <p className="bf-score-stepper-kicker">
         Resultado exacto · {rules.label}
+        <PredictionPointBadge points={pointsReward} />
         <span className="bf-score-stepper-hint">Gana con {rules.winsNeeded} mapas</span>
       </p>
 

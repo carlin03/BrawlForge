@@ -8,6 +8,7 @@ import { teamName } from "@/lib/data";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
+import { PredictionPointBadge } from "@/components/match-esports/PredictionPointBadge";
 
 export function MatchWinnerDuel({
   match,
@@ -19,6 +20,7 @@ export function MatchWinnerDuel({
   match: EsportsMatch;
   pick: "A" | "B" | null;
   onPickChange?: (p: "A" | "B" | null) => void;
+  /** Puntos por acierto (meta del partido o fallback). */
   rewardPoints?: number;
   disabled?: boolean;
 }) {
@@ -51,7 +53,10 @@ export function MatchWinnerDuel({
 
   return (
     <div className="bf-match-winner-duel">
-      <p className="bf-match-predict-block-title">Ganador del partido</p>
+      <p className="bf-match-predict-block-title">
+        Ganador del partido
+        <PredictionPointBadge points={rewardPoints} />
+      </p>
       <div className="bf-match-winner-duel-grid">
         <button
           type="button"
@@ -61,7 +66,7 @@ export function MatchWinnerDuel({
         >
           <TeamLogo slug={match.teamASlug} name={nameA} size={72} glow />
           <span className="bf-match-winner-name">{nameA}</span>
-          {pick === "A" && <span className="bf-match-winner-pick">Tu pick</span>}
+          {pick === "A" && <span className="bf-match-winner-pick">GANADOR</span>}
         </button>
 
         <span className="bf-match-winner-vs" aria-hidden>
@@ -76,7 +81,7 @@ export function MatchWinnerDuel({
         >
           <TeamLogo slug={match.teamBSlug} name={nameB} size={72} glow />
           <span className="bf-match-winner-name">{nameB}</span>
-          {pick === "B" && <span className="bf-match-winner-pick">Tu pick</span>}
+          {pick === "B" && <span className="bf-match-winner-pick">GANADOR</span>}
         </button>
       </div>
       {!isLoggedIn && !closed && (

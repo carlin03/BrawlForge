@@ -1,3 +1,4 @@
+import type { BrawlerOverride, MapStrategicOverride } from "./game-assets-catalog";
 import type { EsportsMatch } from "./matches";
 import { getPlayer, teamName } from "./index";
 
@@ -78,6 +79,8 @@ export type MatchMapsMeta = {
   order?: string[];
   decisive?: string;
   current?: string;
+  /** Sobrescritura opcional por nombre de mapa (solo este partido). */
+  map_overrides?: Record<string, MapStrategicOverride>;
 };
 
 export type MatchBansMeta = {
@@ -92,6 +95,7 @@ export type MatchBrawlersMeta = {
   recommended?: string[];
   meta?: string[];
   featured?: string[];
+  overrides?: Record<string, BrawlerOverride>;
 };
 
 /** Flags de predicción (admin + UI). `allow_exact_score` se mantiene por compatibilidad. */
@@ -209,8 +213,14 @@ export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConf
     mvp: p.mvp === true || advanced,
     first_map: p.first_map === true || advanced,
     decisive_map: p.decisive_map === true || advanced,
-    map_winners: p.map_winners === true || advanced,
-    map_brawler_picks: p.map_brawler_picks === true || advanced,
+    map_winners:
+      p.map_winners === true ||
+      advanced ||
+      Boolean(meta.maps?.order?.length || meta.maps?.possible?.length),
+    map_brawler_picks:
+      p.map_brawler_picks === true ||
+      advanced ||
+      Boolean(meta.maps?.order?.length || meta.maps?.possible?.length),
     brawler_most_used: p.brawler_most_used === true || advanced,
     brawler_mvp: p.brawler_mvp === true || advanced,
     advanced,

@@ -4,6 +4,7 @@
 @import "../styles/motion-ultra.css";
 @import "../styles/game.css";
 @import "../styles/studio.css";
+@import "../styles/studio-library.css";
 
 @layer base {
   html, body {
