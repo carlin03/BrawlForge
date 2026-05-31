@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Image, Save, Trash2 } from "lucide-react";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
+import { AdminCountryPicker } from "@/components/admin/AdminCountryPicker";
+import { countryValueForStorage } from "@/lib/data/country-picker";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import type { AdminTeamCatalogRow } from "@/lib/data/admin-catalog-fields";
 import {
@@ -113,8 +115,11 @@ export function AdminTeamWikiForm({
                 ))}
               </select>
             </AdminField>
-            <AdminField label="País">
-              <input value={team.country} onChange={(e) => onChange({ ...team, country: e.target.value })} />
+            <AdminField label="País" hint="Busca el país del club en la lista">
+              <AdminCountryPicker
+                value={countryValueForStorage(team.country ?? "")}
+                onChange={(code) => onChange({ ...team, country: code })}
+              />
             </AdminField>
           </AdminFieldRow>
           <AdminFieldRow>

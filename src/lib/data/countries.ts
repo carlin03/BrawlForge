@@ -97,8 +97,12 @@ function normalizeCountryKey(country: string): string {
 }
 
 export function getCountryCode(country: string): string {
+  const t = country.trim();
+  if (!t) return "un";
+  if (/^[a-z]{2}$/i.test(t)) return t.toLowerCase();
   const key = normalizeCountryKey(country);
   if (!key) return "un";
+  if (/^[a-z]{2}$/i.test(key)) return key.toLowerCase();
   return COUNTRY_CODES[key] ?? ALIASES[key.toLowerCase()] ?? "un";
 }
 

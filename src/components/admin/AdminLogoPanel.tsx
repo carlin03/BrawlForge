@@ -12,6 +12,7 @@ import {
   mergeAdminTeamRows,
   type AdminTeamCatalogRow,
 } from "@/lib/data/admin-bsc-teams";
+import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
 import { notifyLogosUpdated, useRefreshLogos } from "@/contexts/LogoConfigContext";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 import type { Region } from "@/lib/types";
@@ -123,9 +124,16 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
     );
   }, [teams, tournaments, search, kind, regionFilter]);
 
+  const catalogRows = catalogTeams ?? fetchedTeams ?? [];
   const selectedTeam = kind === "team" ? teams.find((t) => t.slug === selected) : null;
   const selectedTour = kind === "tournament" ? tournaments.find((t) => t.slug === selected) : null;
   const displayName = selectedTeam?.name ?? selectedTour?.shortName ?? selected;
+
+  useEffect(() => {
+    if (kind !== "team" || !selected) return;
+    const row = catalogRows.find((t) => t.slug === selected);
+    setImageUrl(row?.logo_url ?? "");
+  }, [kind, selected, catalogRows]);
 
   async function saveOverride(e?: React.FormEvent) {
     e?.preventDefault();
@@ -146,8 +154,10 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al guardar");
       setPreviewKey((k) => k + 1);
+      if (data.logoUrl) setImageUrl(String(data.logoUrl).split("?")[0]);
       await refreshLogos();
       notifyLogosUpdated({ cacheVersion: data.cacheVersion, logoUrl: data.logoUrl });
+      notifyCatalogUpdated();
       const warn = Array.isArray(data.warnings) && data.warnings.length ? ` Avisos: ${data.warnings.join("; ")}` : "";
       setMsg((data.message || "Logo guardado.") + warn);
     } catch (err) {

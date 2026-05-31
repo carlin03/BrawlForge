@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resolveTeamLogoSlug } from "@/lib/data/png-logo-urls";
+import { isDistinctCatalogTeamSlug, resolveTeamLogoSlug } from "@/lib/data/png-logo-urls";
 import { isValidLogoSlug } from "@/lib/data/logo-slugs";
 import { defaultTeamLogoConfig, fetchFirstTeamLogo } from "@/lib/team-logo-server";
 import { createClient } from "@/lib/supabase/server";
@@ -42,14 +42,26 @@ export async function GET(
   context: { params: Promise<{ slug: string }> },
 ) {
   const { slug: rawSlug } = await context.params;
-  const slug = resolveTeamLogoSlug(rawSlug);
-  if (!isValidLogoSlug(slug)) {
+  const key = String(rawSlug).trim().toLowerCase();
+  if (!isValidLogoSlug(key)) {
     return NextResponse.json({ error: "invalid_slug" }, { status: 404 });
   }
 
   const overrides = await loadRuntimeOverrides();
   const cfg = { cacheVersion: LOGO_CACHE_VERSION, overrides };
-  const hit = await fetchFirstTeamLogo(slug, cfg);
+
+  const supabase = await createClient();
+  let distinct = isDistinctCatalogTeamSlug(key);
+  if (!distinct && supabase) {
+    const { data } = await supabase.from("teams_catalog").select("slug").eq("slug", key).maybeSingle();
+    distinct = Boolean(data?.slug);
+  }
+
+  const slug = distinct ? key : resolveTeamLogoSlug(key);
+  let hit = await fetchFirstTeamLogo(key, cfg);
+  if (!hit && slug !== key) {
+    hit = await fetchFirstTeamLogo(slug, cfg);
+  }
   if (!hit) {
     return NextResponse.json({ error: "logo_not_found" }, { status: 404 });
   }

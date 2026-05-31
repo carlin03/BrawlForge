@@ -61,23 +61,35 @@ function TeamLogoRemote({
   cacheVersion: string;
   logoConfig: ReturnType<typeof useLogoConfig>;
 }) {
-  const resolvedSlug = resolveTeamLogoSlug(slug);
-  const team = getTeam(slug) ?? getTeam(resolvedSlug);
-  const displayName = name || team?.name || slug;
+  const key = slug.trim().toLowerCase();
+  const resolvedSlug = resolveTeamLogoSlug(key);
+  const logoSlug = key;
+  const team = getTeam(key) ?? getTeam(resolvedSlug);
+  const displayName = name || team?.name || key;
   const overrideEntry =
-    logoConfig.overrides?.teams[resolvedSlug] ?? logoConfig.overrides?.teams[slug];
+    logoConfig.overrides?.teams[key] ??
+    logoConfig.overrides?.teams[resolvedSlug];
   const treatment = resolveLogoTreatment(resolvedSlug, overrideEntry);
   const overrideUrl =
     overrideEntry?.url?.trim() ||
-    teamLogoOverrideUrl(resolvedSlug) ||
-    teamLogoOverrideUrl(slug);
-  const [src, setSrc] = useState(() => teamLogoProxyUrl(resolvedSlug, cacheVersion));
+    teamLogoOverrideUrl(key) ||
+    teamLogoOverrideUrl(resolvedSlug);
+  const directOverride = overrideUrl?.trim();
+  const [src, setSrc] = useState(() =>
+    directOverride ? directOverride.split("?")[0] + `?v=${encodeURIComponent(cacheVersion)}` : teamLogoProxyUrl(logoSlug, cacheVersion),
+  );
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     setFailed(false);
-    setSrc(teamLogoProxyUrl(resolvedSlug, cacheVersion));
-  }, [resolvedSlug, cacheVersion, logoConfig.cacheVersion]);
+    const bust = encodeURIComponent(cacheVersion);
+    if (directOverride) {
+      const base = directOverride.split("?")[0];
+      setSrc(`${base}?v=${bust}`);
+      return;
+    }
+    setSrc(teamLogoProxyUrl(logoSlug, cacheVersion));
+  }, [key, logoSlug, resolvedSlug, cacheVersion, logoConfig.cacheVersion, directOverride]);
 
   if (failed || !src) {
     return (

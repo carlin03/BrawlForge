@@ -21,7 +21,7 @@ export const TEAM_ROSTER_ALIASES: Record<string, string> = {
   "only-realm-na": "only-realm",
   "zeta-division-one": "zeta-division",
   "zeta-division-zero": "zeta-division",
-  "ninguem-segura": "alguem-segura",
+  /* ninguem-segura: equipo propio en catálogo — no aliasar (ver resolveTeamLogoSlug) */
   "bounty-hunters": "bounty-hunters-esports",
   "f-a-kaioperro": "kaioperro",
   "reply-totem": "totem-esports",

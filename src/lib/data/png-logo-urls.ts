@@ -17,6 +17,8 @@ const BSC_LOCAL_LOGO = "/images/bsc-2026.png";
 
 import { hasProcessedTeamLogo, LOGO_CACHE_VERSION } from "./logo-manifest";
 import { isTeam2026 } from "./teams-2026";
+import { getTeam } from "./teams";
+import { getCatalogOnlyTeam } from "./circuit-roster";
 import { buildUiRemoteLogoChain } from "./team-logo-urls";
 import { toClientLogoSources } from "./logo-client-url";
 
@@ -42,18 +44,29 @@ function bust(url: string, cacheVersion: string): string {
 
 
 
+/** Slug propio en catálogo Supabase/local — no redirigir a alias Liquipedia. */
+export function isDistinctCatalogTeamSlug(slug: string): boolean {
+  const key = slug.trim().toLowerCase();
+  if (!key) return false;
+  return Boolean(getCatalogOnlyTeam(key) ?? getTeam(key));
+}
+
 export function resolveTeamLogoSlug(slug: string): string {
+  const key = slug.trim().toLowerCase();
+  if (!key) return key;
 
-  const fromAlias = TEAM_ROSTER_ALIASES[slug];
+  if (isDistinctCatalogTeamSlug(key)) return key;
 
+  const fromAlias = TEAM_ROSTER_ALIASES[key];
   if (fromAlias) return fromAlias;
 
   const normalized = normalizeParticipantSlug(slug);
+  if (normalized) {
+    if (isDistinctCatalogTeamSlug(normalized)) return normalized;
+    return TEAM_ROSTER_ALIASES[normalized] ?? normalized;
+  }
 
-  if (normalized) return TEAM_ROSTER_ALIASES[normalized] ?? normalized;
-
-  return slug;
-
+  return key;
 }
 
 
@@ -68,8 +81,14 @@ function getTeamOverride(slug: string, cfg?: LogoRuntimeConfig): string | undefi
 }
 
 function teamSlugCandidates(slug: string): string[] {
-  const canonical = resolveTeamLogoSlug(slug);
-  return [...new Set([slug, canonical])];
+  const key = slug.trim().toLowerCase();
+  const canonical = resolveTeamLogoSlug(key);
+  const out = [key];
+  if (canonical !== key) out.push(canonical);
+  for (const [alias, target] of Object.entries(TEAM_ROSTER_ALIASES)) {
+    if (target === key || target === canonical) out.push(alias);
+  }
+  return [...new Set(out)];
 }
 
 function tournamentSlugCandidates(slug: string): string[] {

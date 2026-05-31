@@ -18,6 +18,8 @@ import {
   type SocialLinks,
 } from "@/lib/data/profile-wiki";
 import { AdminPlayerTeamPicker } from "@/components/admin/AdminPlayerTeamPicker";
+import { AdminCountryPicker } from "@/components/admin/AdminCountryPicker";
+import { countryValueForStorage } from "@/lib/data/country-picker";
 import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 import type { AdminTeamPickerOption } from "@/components/admin/AdminTeamLogoPicker";
 import {
@@ -146,14 +148,11 @@ export function AdminPlayerWikiForm({
             </AdminField>
             <AdminField
               label="País / nacionalidad"
-              hint="Bandera en la carta FUT del jugador (independiente del país del club). Ej: Spain, Japan, es, jp…"
+              hint="Busca y elige el país; se guarda el código ISO (bandera FUT). Independiente del país del club."
             >
-              <input
-                value={player.nationality ?? player.country ?? ""}
-                onChange={(e) =>
-                  onChange({ ...player, nationality: e.target.value, country: e.target.value })
-                }
-                placeholder="Spain, Mexico, jp…"
+              <AdminCountryPicker
+                value={countryValueForStorage(player.nationality ?? player.country ?? "")}
+                onChange={(code) => onChange({ ...player, nationality: code, country: code })}
               />
             </AdminField>
           </AdminFieldRow>

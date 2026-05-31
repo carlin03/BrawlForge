@@ -14,6 +14,7 @@ import { getPlayerComputedStats, getRosterPlayerStats } from "@/lib/data/entity-
 import { useResolvedPlayer, useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { useCatalogMarket } from "@/contexts/CatalogContext";
 import { parsePlayerMeta } from "@/lib/data/profile-wiki";
+import { countryDisplayLabel } from "@/lib/data/country-picker";
 import {
   ProfileArticleShell,
   ProfileBrawlerPool,
@@ -110,7 +111,13 @@ export function PlayerDetailView({ slug }: { slug: string }) {
     },
     { label: "Rol", value: player.role },
     { label: "Región", value: <RegionBadge region={player.region} /> },
-    { label: "País", value: player.country || team?.country || "—" },
+    {
+      label: "País",
+      value:
+        countryDisplayLabel(player.nationality || player.country) ||
+        countryDisplayLabel(team?.country) ||
+        "—",
+    },
     { label: "Estado", value: player.status === "active" ? "Activo" : player.status },
     player.isCaptain ? { label: "Capitán", value: "Sí", highlight: true } : { label: "Capitán", value: "No" },
     player.joinDate ? { label: "En el club desde", value: player.joinDate } : { label: "En el club desde", value: "—" },
