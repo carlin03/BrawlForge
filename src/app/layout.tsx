@@ -6,6 +6,7 @@ import { Providers } from "@/app/providers";
 import { CmsThemeInjector } from "@/components/cms/CmsThemeInjector";
 import { CmsRuntimeLoader } from "@/components/cms/CmsRuntimeLoader";
 import { resolveSiteSeo } from "@/lib/cms/resolve";
+import { SITE_URL } from "@/lib/site-url";
 
 const oswald = Oswald({
   variable: "--font-display",
@@ -22,6 +23,7 @@ const ibmPlex = IBM_Plex_Sans({
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await resolveSiteSeo();
   return {
+    metadataBase: new URL(SITE_URL),
     title: seo.title,
     description: seo.description,
     manifest: "/manifest.json",

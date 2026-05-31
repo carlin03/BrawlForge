@@ -5,6 +5,7 @@
 @import "../styles/game.css";
 @import "../styles/studio.css";
 @import "../styles/studio-library.css";
+@import "../styles/first-visit.css";
 
 @layer base {
   html, body {

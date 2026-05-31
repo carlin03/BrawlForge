@@ -16,6 +16,7 @@ import {
 import { parseMatchMeta } from "@/lib/data/match-meta";
 import type { MatchExtendedPrediction } from "@/lib/match-predictions-storage";
 import { useAuth } from "@/contexts/AuthContext";
+import { siteHost } from "@/lib/site-url";
 
 function buildRecapText(
   match: EsportsMatch,
@@ -317,7 +318,7 @@ export function MatchPredictionRecapCard({
         )}
 
         <footer className="bf-prediction-recap-footer">
-          <span className="bf-prediction-recap-domain">brawlforges.com</span>
+          <span className="bf-prediction-recap-domain">{siteHost()}</span>
           <button
             type="button"
             className="bf-prediction-recap-raw-toggle"
