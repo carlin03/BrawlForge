@@ -13,6 +13,7 @@ import {
   type WikiAchievement,
   type WikiSection,
 } from "@/lib/data/profile-wiki";
+import type { TeamSponsorEntry } from "@/lib/data/team-page-stats";
 
 export function AdminTabBar<T extends string>({
   tabs,
@@ -145,6 +146,71 @@ export function AdminAchievementsEditor({
       ))}
       <button type="button" className="bp-btn bp-btn-ghost" onClick={() => onChange([...value, emptyAchievement()])}>
         <Plus size={16} /> Añadir trofeo
+      </button>
+    </div>
+  );
+}
+
+function emptySponsor(): TeamSponsorEntry {
+  return { name: "", category: "", logo_url: "" };
+}
+
+export function AdminSponsorsEditor({
+  value,
+  onChange,
+}: {
+  value: TeamSponsorEntry[];
+  onChange: (v: TeamSponsorEntry[]) => void;
+}) {
+  return (
+    <div className="bf-admin-stack-editor">
+      <p className="bf-admin-field-hint">Patrocinadores visibles en la ficha pública (pestaña Partners).</p>
+      {value.map((s, i) => (
+        <div key={i} className="bf-admin-stack-card">
+          <AdminFieldRow>
+            <AdminField label="Nombre">
+              <input
+                value={s.name}
+                onChange={(e) => {
+                  const next = [...value];
+                  next[i] = { ...s, name: e.target.value };
+                  onChange(next);
+                }}
+              />
+            </AdminField>
+            <AdminField label="Categoría">
+              <input
+                value={s.category ?? ""}
+                onChange={(e) => {
+                  const next = [...value];
+                  next[i] = { ...s, category: e.target.value };
+                  onChange(next);
+                }}
+              />
+            </AdminField>
+          </AdminFieldRow>
+          <AdminField label="Logo URL">
+            <input
+              value={s.logo_url ?? ""}
+              onChange={(e) => {
+                const next = [...value];
+                next[i] = { ...s, logo_url: e.target.value };
+                onChange(next);
+              }}
+              placeholder="https://…"
+            />
+          </AdminField>
+          <button
+            type="button"
+            className="bf-admin-icon-btn is-danger"
+            onClick={() => onChange(value.filter((_, j) => j !== i))}
+          >
+            <Trash2 size={16} /> Quitar patrocinador
+          </button>
+        </div>
+      ))}
+      <button type="button" className="bp-btn bp-btn-ghost" onClick={() => onChange([...value, emptySponsor()])}>
+        <Plus size={16} /> Añadir patrocinador
       </button>
     </div>
   );

@@ -113,6 +113,7 @@ export function mergeAdminTeamRows(
     if (!slug || isHiddenTeam({ slug, name: String(row.name ?? "") })) continue;
     const base = bySlug.get(slug) ?? adminBscTeamToCatalogRow(slug);
     const roster = row.roster_slugs;
+    const fromDb = pickTeamFromDb(row);
     bySlug.set(slug, {
       ...base,
       name: String(row.name ?? base.name),
@@ -122,7 +123,14 @@ export function mergeAdminTeamRows(
       earnings: Number(row.earnings ?? base.earnings),
       rank: row.rank != null ? Number(row.rank) : base.rank,
       rank_change: Number(row.rank_change ?? base.rank_change),
-      form: Array.isArray(row.form) ? (row.form as string[]) : base.form,
+      form: Array.isArray(row.form)
+        ? (row.form as string[])
+        : typeof row.form === "string" && row.form.trim()
+          ? String(row.form)
+              .split(/[|,]/)
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : base.form,
       roster_slugs: Array.isArray(roster)
         ? (roster as string[])
         : typeof roster === "string" && roster.trim()
@@ -135,11 +143,12 @@ export function mergeAdminTeamRows(
       description: row.description ? String(row.description) : base.description,
       achievements: parseAchievements(row.achievements ?? base.achievements),
       social: parseSocial(row.social ?? base.social),
+      sponsors_json: fromDb.sponsors_json?.length ? fromDb.sponsors_json : base.sponsors_json,
       meta:
         row.meta && typeof row.meta === "object" && !Array.isArray(row.meta)
           ? (row.meta as Record<string, unknown>)
           : base.meta,
-      ...pickTeamFromDb(row),
+      ...fromDb,
     });
   }
   const orderIdx = new Map(BSC_2026_ACTIVE_TEAM_SLUGS.map((s, i) => [s, i]));

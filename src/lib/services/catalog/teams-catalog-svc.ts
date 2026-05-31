@@ -19,6 +19,7 @@ import {
   parseTeamMeta,
   pruneSocial,
 } from "@/lib/data/profile-wiki";
+import { parseTeamSponsors } from "@/lib/data/team-page-stats";
 import type { SupabaseServerClient } from "./roster-sync";
 
 export type TeamsCatalogSyncStatus = {
@@ -34,6 +35,15 @@ export function getLocalTeamsSyncBatch(existingSlugs: Set<string>) {
 }
 
 export function adminTeamRowToDbPayload(row: AdminTeamCatalogRow, syncedAt: string) {
+  const profile = parseTeamMeta(row.meta);
+  const sponsors =
+    row.sponsors_json?.length
+      ? row.sponsors_json
+      : profile.sponsors
+        ? Array.isArray(profile.sponsors)
+          ? profile.sponsors
+          : []
+        : [];
   return {
     slug: row.slug,
     name: row.name,
@@ -48,13 +58,18 @@ export function adminTeamRowToDbPayload(row: AdminTeamCatalogRow, syncedAt: stri
     logo_url: row.logo_url,
     description: row.description,
     coach: row.coach ?? null,
+    manager: row.manager ?? profile.manager ?? null,
+    captain_slug: row.captain_slug ?? null,
+    peak_rank: row.peak_rank ?? profile.peak_rank ?? null,
     founded_year: row.founded_year ?? null,
     headquarters: row.headquarters ?? null,
     website: row.website ?? null,
+    liquipedia_url: row.liquipedia_url ?? null,
     circuit_status: row.circuit_status ?? "active",
     bsc_qualified_2026: row.bsc_qualified_2026 !== false,
     circuit_summary: row.circuit_summary ?? null,
     achievements: row.achievements,
+    sponsors_json: sponsors,
     social: pruneSocial(row.social),
     meta: row.meta,
     synced_at: syncedAt,
@@ -87,13 +102,28 @@ export function buildTeamPayloadFromAdminRow(row: Record<string, unknown>, synce
     form: Array.isArray(row.form)
       ? row.form
       : String(row.form ?? "")
-          .split(",")
+          .split(/[|,]/)
           .map((s) => s.trim())
           .filter(Boolean),
+    manager:
+      row.manager != null && String(row.manager).trim()
+        ? String(row.manager).trim()
+        : profile.manager ?? null,
+    captain_slug:
+      row.captain_slug != null && String(row.captain_slug).trim()
+        ? String(row.captain_slug).trim()
+        : typeof rawMeta.captain_slug === "string"
+          ? rawMeta.captain_slug
+          : null,
+    peak_rank:
+      row.peak_rank != null && row.peak_rank !== ""
+        ? Number(row.peak_rank)
+        : profile.peak_rank ?? null,
+    liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
     roster_slugs: Array.isArray(row.roster_slugs)
       ? row.roster_slugs
       : String(row.roster_slugs ?? "")
-          .split(",")
+          .split(/[|,]/)
           .map((s) => s.trim())
           .filter(Boolean),
     logo_url: row.logo_url ? String(row.logo_url) : null,
@@ -106,6 +136,7 @@ export function buildTeamPayloadFromAdminRow(row: Record<string, unknown>, synce
     bsc_qualified_2026: row.bsc_qualified_2026 !== false,
     circuit_summary: row.circuit_summary ? String(row.circuit_summary) : null,
     achievements,
+    sponsors_json: parseTeamSponsors(row.sponsors_json ?? profile.sponsors ?? []),
     social,
     meta,
     synced_at: syncedAt,

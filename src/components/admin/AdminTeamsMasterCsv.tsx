@@ -1,10 +1,19 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Download, Upload } from "lucide-react";
+import { Download, Upload, AlertTriangle } from "lucide-react";
 import { downloadCsvText } from "@/lib/admin/export-catalog-csv";
-import { buildTeamsMasterCsv } from "@/lib/admin/teams-master-csv";
+import { buildTeamsMasterCsv, type TeamMasterCsvRowIssue } from "@/lib/admin/teams-master-csv";
 import type { AdminTeamCatalogRow } from "@/lib/data/admin-catalog-fields";
+
+type ImportReport = {
+  schema?: string;
+  imported?: number;
+  skipped?: number;
+  message?: string;
+  errors?: TeamMasterCsvRowIssue[];
+  issues?: TeamMasterCsvRowIssue[];
+};
 
 type Props = {
   teams: AdminTeamCatalogRow[];
@@ -16,10 +25,12 @@ export function AdminTeamsMasterCsv({ teams, disabled, onImported }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
+  const [report, setReport] = useState<ImportReport | null>(null);
 
   async function exportCsv() {
     setBusy(true);
     setHint(null);
+    setReport(null);
     try {
       const res = await fetch("/api/admin/teams/master-csv");
       if (!res.ok) {
@@ -28,7 +39,7 @@ export function AdminTeamsMasterCsv({ teams, disabled, onImported }: Props) {
       }
       const text = await res.text();
       downloadCsvText("teams-master.csv", text);
-      setHint("CSV maestro descargado.");
+      setHint("CSV maestro v2 descargado.");
     } catch (e) {
       downloadCsvText("teams-master.csv", buildTeamsMasterCsv(teams));
       setHint(
@@ -44,21 +55,32 @@ export function AdminTeamsMasterCsv({ teams, disabled, onImported }: Props) {
   async function importCsv(file: File) {
     setBusy(true);
     setHint(null);
+    setReport(null);
     try {
       const form = new FormData();
       form.append("file", file);
       const res = await fetch("/api/admin/teams/master-csv", { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al importar");
+      const data = (await res.json()) as ImportReport & { error?: string };
+      if (!res.ok) {
+        setReport(data);
+        throw new Error(data.error || "Error al importar");
+      }
+      setReport(data);
       setHint(data.message || `Importados ${data.imported ?? 0} equipos.`);
       await onImported?.();
     } catch (e) {
-      setHint(e instanceof Error ? e.message : "Error al importar");
+      if (!report) {
+        setHint(e instanceof Error ? e.message : "Error al importar");
+      }
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
     }
   }
+
+  const errorRows = report?.errors?.length
+    ? report.errors
+    : report?.issues?.filter((i) => i.errors.length) ?? [];
 
   return (
     <div className="bf-admin-master-csv">
@@ -91,13 +113,44 @@ export function AdminTeamsMasterCsv({ teams, disabled, onImported }: Props) {
       {hint && (
         <p className="bf-admin-field-hint" style={{ margin: "8px 0 0" }}>
           {hint}
+          {report?.schema ? ` · esquema ${report.schema}` : ""}
         </p>
       )}
+      {errorRows.length > 0 && (
+        <div className="bf-admin-csv-import-errors" role="alert">
+          <p className="bf-admin-csv-import-errors-title">
+            <AlertTriangle size={14} /> {errorRows.length} fila(s) con error (no importadas)
+          </p>
+          <ul className="bf-admin-csv-import-errors-list">
+            {errorRows.slice(0, 12).map((row) => (
+              <li key={`${row.slug}-${row.line}`}>
+                <strong>Línea {row.line}</strong> · <code>{row.slug}</code>
+                <ul>
+                  {row.errors.map((err) => (
+                    <li key={err}>{err}</li>
+                  ))}
+                  {row.warnings.map((w) => (
+                    <li key={w} className="is-warn">
+                      {w}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+          {errorRows.length > 12 && (
+            <p className="bf-admin-field-hint">… y {errorRows.length - 12} más</p>
+          )}
+        </div>
+      )}
       <p className="bf-admin-field-hint" style={{ margin: "4px 0 0", fontSize: 12 }}>
-        Una fila = todas las pestañas. Slug único; listas con <code>|</code>; palmarés en{" "}
-        <code>trophies_json</code>.{" "}
-        <a href="/plantillas/teams-master.csv" download>
+        CSV v2 (compatible v1).{" "}
+        <a href="/plantillas/teams-master-template.csv" download>
           Plantilla
+        </a>
+        {" · "}
+        <a href="/plantillas/teams-master-example.csv" download>
+          Ejemplo completo
         </a>
       </p>
     </div>

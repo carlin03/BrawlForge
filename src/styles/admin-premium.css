@@ -1823,3 +1823,36 @@
 .bf-admin-master-csv > .bp-btn + .bp-btn {
   margin-top: 0;
 }
+.bf-admin-csv-import-errors {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(220, 60, 60, 0.12);
+  border: 1px solid rgba(220, 60, 60, 0.35);
+  font-size: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.bf-admin-csv-import-errors-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: var(--bp-red-bright, #f87171);
+}
+.bf-admin-csv-import-errors-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+.bf-admin-csv-import-errors-list > li {
+  margin-bottom: 8px;
+}
+.bf-admin-csv-import-errors-list ul {
+  margin: 4px 0 0;
+  padding-left: 16px;
+}
+.bf-admin-csv-import-errors-list .is-warn {
+  color: var(--bp-gold);
+}

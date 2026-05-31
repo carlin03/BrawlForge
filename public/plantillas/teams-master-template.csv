@@ -1,0 +1,3 @@
+# schema=teams-master-v2
+# Filas _ejemplo y _ayuda no se importan. Listas con |. JSON en trophies_json, sponsors_json, card_theme_json.
+slug,name,tag,region,country,global_rank,rank_change,earnings,form,phase_tagline,circuit_summary,coach,manager,ceo,founded_year,headquarters,status,bsc_qualified,main_description,club_slogan,history_content,fun_facts,historic_rivals,roster_slugs,captain_slug,trophies_json,sponsors_json,twitter_url,youtube_url,twitch_url,discord_url,instagram_url,tiktok_url,website_url,logo_url,banner_url,gallery_urls,card_theme_json,peak_rank,aliases,wiki_url,liquipedia_slug,source_notes

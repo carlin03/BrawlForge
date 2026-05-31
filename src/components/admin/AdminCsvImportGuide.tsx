@@ -45,7 +45,8 @@ export function AdminCsvImportGuide({ compact }: { compact?: boolean }) {
           <Upload size={20} aria-hidden />
           <h3>Equipos (global o uno)</h3>
           <p>
-            <a href="/plantillas/teams-master.csv" download>teams-master.csv</a> — todas las pestañas del editor
+            <a href="/plantillas/teams-master-template.csv" download>teams-master-template.csv</a> — columnas v2 ·{" "}
+            <a href="/plantillas/teams-master-example.csv" download>ejemplo completo</a> — todas las pestañas del editor
             (Equipos → Exportar CSV). También{" "}
             <a href="/plantillas/teams.csv" download>teams.csv</a> — catálogo básico o exporta un club desde{" "}
             <Link href="/admin?module=competicion&tab=teams">Equipos</Link> → <strong>Descargar CSV de este equipo</strong>.

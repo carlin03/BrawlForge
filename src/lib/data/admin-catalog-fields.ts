@@ -1,6 +1,7 @@
 /** Campos extra del catálogo Supabase (admin + CSV). */
 
 import type { SocialLinks, WikiAchievement } from "./profile-wiki";
+import { parseTeamSponsors, type TeamSponsorEntry } from "./team-page-stats";
 
 export type AdminTeamCatalogRow = {
   slug: string;
@@ -16,13 +17,18 @@ export type AdminTeamCatalogRow = {
   logo_url: string | null;
   description: string | null;
   coach?: string | null;
+  manager?: string | null;
+  captain_slug?: string | null;
+  peak_rank?: number | null;
   founded_year?: number | null;
   headquarters?: string | null;
   website?: string | null;
+  liquipedia_url?: string | null;
   circuit_status?: string;
   bsc_qualified_2026?: boolean;
   circuit_summary?: string | null;
   achievements: WikiAchievement[];
+  sponsors_json?: TeamSponsorEntry[];
   social: SocialLinks;
   meta: Record<string, unknown>;
 };
@@ -54,12 +60,17 @@ export type AdminPlayerCatalogRow = {
 export function pickTeamFromDb(row: Record<string, unknown>): Partial<AdminTeamCatalogRow> {
   return {
     coach: row.coach ? String(row.coach) : null,
+    manager: row.manager ? String(row.manager) : null,
+    captain_slug: row.captain_slug ? String(row.captain_slug) : null,
+    peak_rank: row.peak_rank != null ? Number(row.peak_rank) : null,
     founded_year: row.founded_year != null ? Number(row.founded_year) : null,
     headquarters: row.headquarters ? String(row.headquarters) : null,
     website: row.website ? String(row.website) : null,
+    liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
     circuit_status: row.circuit_status ? String(row.circuit_status) : "active",
     bsc_qualified_2026: row.bsc_qualified_2026 !== false,
     circuit_summary: row.circuit_summary ? String(row.circuit_summary) : null,
+    sponsors_json: parseTeamSponsors(row.sponsors_json),
   };
 }
 

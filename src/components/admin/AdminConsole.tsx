@@ -331,9 +331,15 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
     const meta = {
       ...team.meta,
       ...buildTeamMeta(team.profile, { coach: team.coach }),
+      ...(team.captain_slug ? { captain_slug: team.captain_slug } : {}),
     };
     save("team", {
       ...team,
+      manager: team.manager ?? team.profile.manager ?? null,
+      captain_slug: team.captain_slug ?? null,
+      peak_rank: team.peak_rank ?? team.profile.peak_rank ?? null,
+      liquipedia_url: team.liquipedia_url ?? null,
+      sponsors_json: team.sponsors_json ?? [],
       achievements: team.achievements,
       social: team.social,
       profile: team.profile,

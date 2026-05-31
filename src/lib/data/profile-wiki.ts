@@ -188,6 +188,10 @@ export function buildTeamMeta(profile: TeamProfileMeta, extras?: { coach?: strin
   if (profile.wiki_sections?.length) out.wiki_sections = profile.wiki_sections;
   if (profile.fun_facts?.length) out.fun_facts = profile.fun_facts;
   if (profile.rivals?.length) out.rivals = profile.rivals;
+  if (profile.manager) out.manager = profile.manager;
+  if (profile.ceo) out.ceo = profile.ceo;
+  if (profile.peak_rank != null) out.peak_rank = profile.peak_rank;
+  if (profile.sponsors?.length) out.sponsors = profile.sponsors;
   if (extras?.coach) out.coach = extras.coach;
   return out;
 }

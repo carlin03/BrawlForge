@@ -17,10 +17,12 @@ import {
   type WikiAchievement,
   type WikiSection,
 } from "@/lib/data/profile-wiki";
+import { parseTeamSponsors } from "@/lib/data/team-page-stats";
 import {
   AdminTabBar,
   AdminSocialEditor,
   AdminAchievementsEditor,
+  AdminSponsorsEditor,
   AdminWikiSectionsEditor,
   AdminFunFactsEditor,
   AdminRosterPicker,
@@ -34,11 +36,24 @@ export type TeamWikiState = AdminTeamCatalogRow & {
 };
 
 export function teamRowToWikiState(row: AdminTeamCatalogRow & Record<string, unknown>): TeamWikiState {
+  const profile = parseTeamMeta(row.meta ?? {});
+  const sponsors = row.sponsors_json?.length
+    ? row.sponsors_json
+    : parseTeamSponsors(profile.sponsors);
   return {
     ...row,
+    manager: row.manager ?? profile.manager ?? null,
+    captain_slug: row.captain_slug ?? null,
+    peak_rank: row.peak_rank ?? profile.peak_rank ?? null,
     achievements: parseAchievements(row.achievements ?? []),
     social: parseSocial(row.social ?? {}),
-    profile: parseTeamMeta(row.meta ?? {}),
+    sponsors_json: sponsors,
+    profile: {
+      ...profile,
+      manager: row.manager ?? profile.manager,
+      peak_rank: row.peak_rank ?? profile.peak_rank,
+      sponsors: sponsors.length ? sponsors : profile.sponsors,
+    },
   };
 }
 
@@ -136,6 +151,15 @@ export function AdminTeamWikiForm({
                 }
               />
             </AdminField>
+            <AdminField label="Δ ranking" hint="Positivo sube, negativo baja">
+              <input
+                type="number"
+                value={team.rank_change ?? 0}
+                onChange={(e) => onChange({ ...team, rank_change: Number(e.target.value) })}
+              />
+            </AdminField>
+          </AdminFieldRow>
+          <AdminFieldRow>
             <AdminField label="Premios totales ($)">
               <input
                 type="number"
@@ -143,7 +167,36 @@ export function AdminTeamWikiForm({
                 onChange={(e) => onChange({ ...team, earnings: Number(e.target.value) })}
               />
             </AdminField>
+            <AdminField label="Mejor ranking histórico">
+              <input
+                type="number"
+                value={team.peak_rank ?? p.peak_rank ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value ? Number(e.target.value) : null;
+                  onChange({
+                    ...team,
+                    peak_rank: v,
+                    profile: { ...p, peak_rank: v ?? undefined },
+                  });
+                }}
+              />
+            </AdminField>
           </AdminFieldRow>
+          <AdminField label="Forma reciente" hint="Últimos resultados: W|L|W (máx. 5)">
+            <input
+              value={(team.form ?? []).join("|")}
+              onChange={(e) =>
+                onChange({
+                  ...team,
+                  form: e.target.value
+                    .split(/[|,]/)
+                    .map((s) => s.trim().toUpperCase())
+                    .filter((s) => s === "W" || s === "L" || s === "D"),
+                })
+              }
+              placeholder="W|W|L|W|W"
+            />
+          </AdminField>
           <AdminField label="Frase corta (tagline)" hint="Aparece bajo el nombre en la ficha">
             <input
               value={p.tagline ?? ""}
@@ -161,6 +214,23 @@ export function AdminTeamWikiForm({
           <AdminFieldRow>
             <AdminField label="Entrenador">
               <input value={team.coach ?? ""} onChange={(e) => onChange({ ...team, coach: e.target.value })} />
+            </AdminField>
+            <AdminField label="Manager">
+              <input
+                value={team.manager ?? p.manager ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  onChange({ ...team, manager: v, profile: { ...p, manager: v } });
+                }}
+              />
+            </AdminField>
+          </AdminFieldRow>
+          <AdminFieldRow>
+            <AdminField label="CEO">
+              <input
+                value={p.ceo ?? ""}
+                onChange={(e) => onChange({ ...team, profile: { ...p, ceo: e.target.value } })}
+              />
             </AdminField>
             <AdminField label="Año de fundación">
               <input
@@ -181,15 +251,35 @@ export function AdminTeamWikiForm({
               onChange={(e) => onChange({ ...team, headquarters: e.target.value })}
             />
           </AdminField>
-          <AdminField label="Estado en el circuito">
-            <select
-              value={team.circuit_status ?? "active"}
-              onChange={(e) => onChange({ ...team, circuit_status: e.target.value })}
-            >
-              <option value="active">Activo</option>
-              <option value="inactive">Inactivo</option>
-              <option value="disbanded">Disuelto</option>
-            </select>
+          <AdminFieldRow>
+            <AdminField label="Estado en el circuito">
+              <select
+                value={team.circuit_status ?? "active"}
+                onChange={(e) => onChange({ ...team, circuit_status: e.target.value })}
+              >
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+                <option value="disbanded">Disuelto</option>
+              </select>
+            </AdminField>
+            <AdminField label="BSC 2026">
+              <select
+                value={team.bsc_qualified_2026 === false ? "0" : "1"}
+                onChange={(e) =>
+                  onChange({ ...team, bsc_qualified_2026: e.target.value === "1" })
+                }
+              >
+                <option value="1">Clasificado / activo en circuito</option>
+                <option value="0">No clasificado</option>
+              </select>
+            </AdminField>
+          </AdminFieldRow>
+          <AdminField label="Liquipedia / wiki externa">
+            <input
+              value={team.liquipedia_url ?? ""}
+              onChange={(e) => onChange({ ...team, liquipedia_url: e.target.value })}
+              placeholder="https://liquipedia.net/brawlstars/…"
+            />
           </AdminField>
         </div>
       )}
@@ -241,6 +331,13 @@ export function AdminTeamWikiForm({
 
       {tab === "plantilla" && (
         <div className="bf-admin-tab-panel">
+          <AdminField label="Capitán (slug del jugador)" hint="Debe estar en la plantilla">
+            <input
+              value={team.captain_slug ?? ""}
+              onChange={(e) => onChange({ ...team, captain_slug: e.target.value.trim() || null })}
+              placeholder="ej: yoshi"
+            />
+          </AdminField>
           <AdminRosterPicker
             teamSlug={team.slug}
             allPlayers={players}
@@ -255,6 +352,16 @@ export function AdminTeamWikiForm({
           <AdminAchievementsEditor
             value={team.achievements}
             onChange={(achievements) => onChange({ ...team, achievements })}
+          />
+          <AdminSponsorsEditor
+            value={team.sponsors_json ?? parseTeamSponsors(p.sponsors) ?? []}
+            onChange={(sponsors_json) =>
+              onChange({
+                ...team,
+                sponsors_json,
+                profile: { ...p, sponsors: sponsors_json },
+              })
+            }
           />
         </div>
       )}
