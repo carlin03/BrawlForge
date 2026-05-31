@@ -2,18 +2,32 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Users, User, Trophy, Calendar, GitBranch, Image } from "lucide-react";
+import { Users, User, Trophy, Calendar, GitBranch, Image, FileSpreadsheet } from "lucide-react";
 import { AdminConsole } from "@/components/admin/AdminConsole";
+import { AdminImportPanel } from "@/components/admin/AdminImportPanel";
 import { AdminTournamentsPanel } from "@/components/admin/AdminTournamentsPanel";
 import { StudioMatchesPanel } from "@/components/admin/studio/StudioMatchesPanel";
 import { StudioBracketBuilderPanel } from "@/components/admin/studio/StudioBracketBuilderPanel";
 import { StudioPanel } from "./studio-ui";
 
-export type CompetitionTab = "teams" | "players" | "tournaments" | "matches" | "bracket" | "logos";
+export type CompetitionTab =
+  | "teams"
+  | "players"
+  | "import"
+  | "tournaments"
+  | "matches"
+  | "bracket"
+  | "logos";
 
 const TABS: { id: CompetitionTab; label: string; icon: typeof Users; hint: string }[] = [
   { id: "teams", label: "Equipos", icon: Users, hint: "Clubes, roster, wiki y colores" },
   { id: "players", label: "Jugadores", icon: User, hint: "Fichas, equipo y estadísticas" },
+  {
+    id: "import",
+    label: "Importar CSV",
+    icon: FileSpreadsheet,
+    hint: "Subir todos los equipos/jugadores o un CSV de un solo club",
+  },
   { id: "tournaments", label: "Torneos", icon: Trophy, hint: "Calendario, premios y participantes" },
   { id: "matches", label: "Partidos", icon: Calendar, hint: "Crear, en vivo, marcador y mapas" },
   { id: "bracket", label: "Bracket", icon: GitBranch, hint: "Playoffs y vista previa pública" },
@@ -80,6 +94,7 @@ export function StudioCompetitionHub() {
       </StudioPanel>
 
       <div className="bf-studio-competition-body" role="tabpanel">
+        {tab === "import" && <AdminImportPanel />}
         {(tab === "teams" || tab === "players" || tab === "logos") && (
           <AdminConsole embedded initialTab={tab} />
         )}

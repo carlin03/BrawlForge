@@ -11,6 +11,7 @@ import {
   Trophy,
   Target,
   Sparkles,
+  FileSpreadsheet,
   ExternalLink,
 } from "lucide-react";
 import { StudioCard, StudioPanel } from "./studio-ui";
@@ -29,6 +30,13 @@ const QUICK_LINKS = [
     label: "Jugadores",
     desc: "Fichas, equipo y estadísticas",
     icon: Users,
+  },
+  {
+    module: "competicion",
+    tab: "import",
+    label: "Importar CSV",
+    desc: "Todos los equipos o un club · jugadores",
+    icon: FileSpreadsheet,
   },
   {
     module: "competicion",

@@ -1529,3 +1529,81 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.bf-admin-tabs.is-embedded {
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.bf-csv-import-guide {
+  margin-bottom: 20px;
+  padding: 20px 22px;
+  border-radius: 14px;
+  border: 2px solid rgba(243, 188, 24, 0.45);
+  background: linear-gradient(135deg, rgba(243, 188, 24, 0.12), rgba(0, 0, 0, 0.35));
+}
+.bf-csv-import-guide.is-compact {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-width: 1px;
+}
+.bf-csv-import-guide.is-compact p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--bp-dim);
+}
+.bf-csv-import-guide.is-compact a {
+  color: var(--bp-gold);
+  font-weight: 700;
+}
+.bf-csv-import-guide-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--bp-gold);
+}
+.bf-csv-import-guide-lead {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--bp-dim);
+}
+.bf-csv-import-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.bf-csv-import-guide-card {
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bf-csv-import-guide-card h3 {
+  margin: 8px 0 6px;
+  font-size: 14px;
+}
+.bf-csv-import-guide-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--bp-dim);
+}
+.bf-csv-import-guide-card a {
+  color: var(--bp-gold);
+  font-weight: 600;
+}
+.bf-admin-csv-export-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(243, 188, 24, 0.08);
+  border: 1px solid rgba(243, 188, 24, 0.25);
+}

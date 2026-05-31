@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Upload, FileSpreadsheet } from "lucide-react";
 import { AdminCsvTemplates } from "@/components/admin/AdminCsvTemplates";
+import { AdminCsvImportGuide } from "@/components/admin/AdminCsvImportGuide";
 import { getCsvTemplate } from "@/lib/admin/catalog-csv-schema";
 
 export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
@@ -61,10 +62,14 @@ export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
 
       <AdminCsvTemplates />
 
-      <form onSubmit={(e) => void submit(e)} className="bf-admin-import-form">
+      <form onSubmit={(e) => void submit(e)} className="bf-admin-import-form" id="bf-csv-upload-form">
         <h3>
           <Upload size={18} /> Subir CSV a Supabase
         </h3>
+        <p className="bf-admin-field-hint" style={{ margin: "0 0 14px" }}>
+          Puedes subir <strong>solo uno</strong> de los archivos (p. ej. un <code>teams.csv</code> con una sola
+          fila para un equipo) o los tres a la vez.
+        </p>
         <AdminFileRow
           label="Equipos (teams.csv)"
           hint={getCsvTemplate("teams")?.fields.filter((f) => f.required).map((f) => f.key).join(", ") ?? ""}

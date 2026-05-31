@@ -25,7 +25,13 @@ import { AdminUsersPanel } from "@/components/admin/AdminUsersPanel";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { AdminLogoPanel } from "@/components/admin/AdminLogoPanel";
 import { AdminImportPanel } from "@/components/admin/AdminImportPanel";
+import { AdminCsvImportGuide } from "@/components/admin/AdminCsvImportGuide";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
+import {
+  buildPlayersCsv,
+  buildTeamsCsv,
+  downloadCsvText,
+} from "@/lib/admin/export-catalog-csv";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
 import { getLatestNews } from "@/lib/data";
@@ -76,6 +82,14 @@ const TAB_CONFIG: { id: Tab; label: string; icon: typeof Users }[] = [
   { id: "news", label: "Noticias", icon: Newspaper },
   { id: "import", label: "CSV → Supabase", icon: FileSpreadsheet },
   { id: "users", label: "Usuarios", icon: UserCircle },
+];
+
+/** Pestañas visibles dentro de Competición (Studio embebido). */
+const EMBEDDED_TAB_CONFIG: { id: Tab; label: string; icon: typeof Users }[] = [
+  { id: "teams", label: "Equipos", icon: Users },
+  { id: "players", label: "Jugadores", icon: User },
+  { id: "logos", label: "Logos", icon: Image },
+  { id: "import", label: "Importar CSV", icon: FileSpreadsheet },
 ];
 
 const TAB_IDS: Tab[] = ["teams", "players", "tournaments", "logos", "news", "import", "users"];
@@ -366,6 +380,21 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       </header>
       )}
 
+      {embedded && (
+        <nav className="bf-admin-tabs is-embedded" aria-label="Equipos y CSV">
+          {EMBEDDED_TAB_CONFIG.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              className={`bf-admin-tab ${tab === id ? "is-on" : ""}`}
+              onClick={() => setTab(id)}
+            >
+              <Icon size={18} /> {label}
+            </button>
+          ))}
+        </nav>
+      )}
+
       {!embedded && (
         <>
       <div className="bf-admin-tabs-brand">
@@ -410,7 +439,9 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       )}
 
       {tab === "teams" && (
-        <div className="bf-admin-split">
+        <>
+          <AdminCsvImportGuide compact />
+          <div className="bf-admin-split">
           <aside className="bf-admin-sidebar">
             <AdminEntityCreateDialog
               kind="team"
@@ -487,6 +518,35 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
           </aside>
 
           {selectedTeam ? (
+            <>
+            <div className="bf-admin-csv-export-bar">
+              <button
+                type="button"
+                className="bp-btn bp-btn-ghost"
+                onClick={() => {
+                  const row = teams.find((t) => t.slug === selectedTeam.slug);
+                  if (!row) return;
+                  downloadCsvText(`${row.slug}-equipo.csv`, buildTeamsCsv([row], row.slug));
+                }}
+              >
+                Descargar CSV de este equipo
+              </button>
+              <button
+                type="button"
+                className="bp-btn bp-btn-ghost"
+                onClick={() => {
+                  downloadCsvText(
+                    `${selectedTeam.slug}-jugadores.csv`,
+                    buildPlayersCsv(players, selectedTeam.slug),
+                  );
+                }}
+              >
+                Descargar jugadores de este equipo
+              </button>
+              <Link href="/admin?module=competicion&tab=import" className="bp-btn bp-btn-gold">
+                Subir CSV
+              </Link>
+            </div>
             <AdminTeamWikiForm
               key={selectedTeam.slug}
               team={selectedTeam}
@@ -505,14 +565,18 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
               }}
               onDelete={() => deleteCatalog("team", selectedTeam.slug)}
             />
+            </>
           ) : (
             <div className="bf-admin-empty-editor">Selecciona un equipo de la lista</div>
           )}
         </div>
+        </>
       )}
 
       {tab === "players" && (
-        <div className="bf-admin-split">
+        <>
+          <AdminCsvImportGuide compact />
+          <div className="bf-admin-split">
           <aside className="bf-admin-sidebar">
             <AdminEntityCreateDialog
               kind="player"
@@ -616,6 +680,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
             <div className="bf-admin-empty-editor">Selecciona un jugador de la lista</div>
           )}
         </div>
+        </>
       )}
 
       {tab === "news" && (
