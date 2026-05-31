@@ -60,6 +60,7 @@ function buildRecapText(
   if (ext.brawlerMvp) lines.push(`Mejor WR: ${ext.brawlerMvp}`);
   if (ext.brawlerMostUsed) lines.push(`Más usado: ${ext.brawlerMostUsed}`);
   if (ext.brawlerMostBanned) lines.push(`Más bloqueado: ${ext.brawlerMostBanned}`);
+  if (ext.brawlerLowestWr) lines.push(`Menor WR: ${ext.brawlerLowestWr}`);
   lines.push("", "brawlforges.com");
   return lines.join("\n");
 }

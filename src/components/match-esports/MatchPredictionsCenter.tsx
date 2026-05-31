@@ -10,8 +10,8 @@ import {
 } from "@/lib/data/match-meta";
 import { teamName } from "@/lib/data";
 import { ScoreStepperPicker } from "@/components/match-esports/ScoreStepperPicker";
-import { PlayerMvpPicker } from "@/components/match-esports/PlayerMvpPicker";
-import { MatchBrawlerOutcomePicker } from "@/components/match-esports/MatchBrawlerOutcomePicker";
+import { MatchMvpBrawlersRow } from "@/components/match-esports/MatchMvpBrawlersRow";
+import { MatchPointsBreakdown } from "@/components/match-esports/MatchPointsBreakdown";
 import { MatchPredictionSaveBar } from "@/components/match-esports/MatchPredictionSaveBar";
 import { MatchPredictionRecapCard } from "@/components/match-esports/MatchPredictionRecapCard";
 import { MatchCommunityPulse } from "@/components/match-esports/MatchCommunityPulse";
@@ -21,7 +21,6 @@ import { MatchMapAnalysisSection } from "@/components/match-esports/MatchMapAnal
 import { MatchPredictionPointsBar } from "@/components/match-esports/MatchPredictionPointsBar";
 import { mapCountFromExactScore, resolveMatchMapOrder } from "@/lib/data/series-map-utils";
 import { pruneMapPredictionsForExactScore } from "@/lib/match-predictions-prune";
-import { PredictionPointBadge } from "@/components/match-esports/PredictionPointBadge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
 import {
@@ -56,7 +55,8 @@ export function MatchPredictionsCenter({
     cfg.mvp ||
     cfg.brawler_mvp ||
     cfg.brawler_most_used ||
-    cfg.brawler_most_banned;
+    cfg.brawler_most_banned ||
+    cfg.brawler_lowest_wr;
   const mapOrder = useMemo(() => resolveMatchMapOrder(meta, match.format), [meta, match.format]);
   const hasPerMapPredictions =
     mapOrder.length > 0 && (cfg.map_winners || cfg.map_brawler_picks || cfg.advanced);
@@ -191,36 +191,30 @@ export function MatchPredictionsCenter({
           )}
 
           {(showUnlocked || closed) && hasMain && (
-            <div className="bf-match-predict-main-grid is-secondary">
-              {cfg.mvp && (
-                <div className="bf-match-predict-main-item">
-                  <h4 className="bf-match-predict-subh">
-                    MVP jugador
-                    <PredictionPointBadge points={points.mvp} />
-                  </h4>
-                  <PlayerMvpPicker
-                    teamASlug={match.teamASlug}
-                    teamBSlug={match.teamBSlug}
-                    value={ext.mvpPlayerSlug ?? null}
-                    onChange={(slug) => patch({ mvpPlayerSlug: slug })}
-                  />
-                </div>
-              )}
+            <MatchMvpBrawlersRow
+              match={match}
+              meta={meta}
+              ext={ext}
+              matchBans={matchBans}
+              points={points}
+              showMvp={!!cfg.mvp}
+              showWr={!!cfg.brawler_mvp}
+              showMostUsed={!!cfg.brawler_most_used}
+              showMostBanned={!!cfg.brawler_most_banned}
+              showLowestWr={!!cfg.brawler_lowest_wr}
+              onPatch={patch}
+              disabled={closed}
+            />
+          )}
 
-              {(cfg.brawler_mvp || cfg.brawler_most_used || cfg.brawler_most_banned) && (
-                <MatchBrawlerOutcomePicker
-                  match={match}
-                  meta={meta}
-                  ext={ext}
-                  matchBans={matchBans}
-                  points={points}
-                  showWr={!!cfg.brawler_mvp}
-                  showMostUsed={!!cfg.brawler_most_used}
-                  showMostBanned={!!cfg.brawler_most_banned}
-                  onPatch={patch}
-                />
-              )}
-            </div>
+          {(showUnlocked || closed) && winnerPick && (
+            <MatchPointsBreakdown
+              match={match}
+              meta={meta}
+              ext={extWithScore}
+              winnerPick={winnerPick}
+              exactScoreVote={exactForMaps ?? game?.exactScores?.[match.id]}
+            />
           )}
 
           {(showUnlocked || closed) && winnerPick && (

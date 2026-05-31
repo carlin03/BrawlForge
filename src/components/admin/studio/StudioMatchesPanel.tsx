@@ -157,6 +157,8 @@ export function StudioMatchesPanel() {
     pred_decisive_map: false,
     pred_brawler_used: false,
     pred_brawler_mvp: false,
+    pred_brawler_most_banned: false,
+    pred_brawler_lowest_wr: false,
     pred_map_winners: false,
     pred_map_picks: false,
     pred_advanced: false,
@@ -168,7 +170,15 @@ export function StudioMatchesPanel() {
     points_brawler_ban: 0,
     points_brawler_mvp: 0,
     points_brawler_used: 0,
+    points_brawler_most_banned: 0,
+    points_brawler_lowest_wr: 0,
+    points_participation: 0,
     points_perfect_bonus: 0,
+    result_mvp_player: "",
+    result_brawler_wr: "",
+    result_brawler_used: "",
+    result_brawler_banned: "",
+    result_brawler_low_wr: "",
     map_pool: [] as string[],
     map_order: [] as string[],
     map_current: "",
@@ -276,6 +286,8 @@ export function StudioMatchesPanel() {
       pred_decisive_map: false,
       pred_brawler_used: false,
       pred_brawler_mvp: false,
+      pred_brawler_most_banned: false,
+      pred_brawler_lowest_wr: false,
       pred_map_winners: false,
       pred_map_picks: false,
       pred_advanced: false,
@@ -287,7 +299,15 @@ export function StudioMatchesPanel() {
       points_brawler_ban: 0,
       points_brawler_mvp: 0,
       points_brawler_used: 0,
+      points_brawler_most_banned: 0,
+      points_brawler_lowest_wr: 0,
+      points_participation: 0,
       points_perfect_bonus: 0,
+      result_mvp_player: "",
+      result_brawler_wr: "",
+      result_brawler_used: "",
+      result_brawler_banned: "",
+      result_brawler_low_wr: "",
       map_pool: [],
       map_order: [],
       map_current: "",
@@ -945,7 +965,27 @@ export function StudioMatchesPanel() {
                         checked={form.pred_brawler_mvp}
                         onChange={(e) => setForm({ ...form, pred_brawler_mvp: e.target.checked })}
                       />
-                      Brawler MVP
+                      Brawler mayor WR
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={form.pred_brawler_most_banned}
+                        onChange={(e) =>
+                          setForm({ ...form, pred_brawler_most_banned: e.target.checked })
+                        }
+                      />
+                      Brawler más bloqueado
+                    </label>
+                    <label className="bf-studio-check">
+                      <input
+                        type="checkbox"
+                        checked={form.pred_brawler_lowest_wr}
+                        onChange={(e) =>
+                          setForm({ ...form, pred_brawler_lowest_wr: e.target.checked })
+                        }
+                      />
+                      Brawler menor WR
                     </label>
                     <label className="bf-studio-check">
                       <input
@@ -983,6 +1023,9 @@ export function StudioMatchesPanel() {
                           ["points_brawler_ban", "Ban brawler"],
                           ["points_brawler_mvp", "Brawler MVP"],
                           ["points_brawler_used", "Más usado"],
+                          ["points_brawler_most_banned", "Más bloqueado"],
+                          ["points_brawler_lowest_wr", "Menor WR"],
+                          ["points_participation", "Participar"],
                           ["points_perfect_bonus", "Bonus perfecto"],
                         ] as const
                       ).map(([key, label]) => (
@@ -994,6 +1037,29 @@ export function StudioMatchesPanel() {
                             onChange={(e) =>
                               setForm({ ...form, [key]: Number(e.target.value) || 0 })
                             }
+                          />
+                        </StudioField>
+                      ))}
+                    </div>
+                    <div className="bf-studio-results-block">
+                      <p className="bf-studio-hint">
+                        Resultados reales (al cerrar el partido). Con esto se recalculan los puntos
+                        de todos los predictores.
+                      </p>
+                      {(
+                        [
+                          ["result_mvp_player", "MVP jugador (slug)"],
+                          ["result_brawler_wr", "Brawler mayor WR"],
+                          ["result_brawler_used", "Brawler más usado"],
+                          ["result_brawler_banned", "Brawler más bloqueado"],
+                          ["result_brawler_low_wr", "Brawler menor WR"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <StudioField key={key} label={label}>
+                          <StudioInput
+                            value={form[key]}
+                            onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                            placeholder="Nombre del brawler o slug jugador"
                           />
                         </StudioField>
                       ))}

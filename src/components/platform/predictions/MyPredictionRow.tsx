@@ -25,7 +25,7 @@ export function MyPredictionRow({ event }: { event: EnrichedPrediction }) {
     ) : null;
 
   return (
-    <Link href={`/matches/${event.matchId}`} className="bf-my-predict-row">
+    <Link href={`/matches/${event.matchId}#match-predictions`} className="bf-my-predict-row">
       <div className="bf-my-predict-teams">
         <TeamLogo slug={event.teamASlug} name="" size={32} glow={false} />
         <span className="bf-my-predict-vs">vs</span>

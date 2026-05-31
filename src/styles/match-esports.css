@@ -792,6 +792,242 @@
   padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
+
+/* MVP izquierda · 4 brawlers compactos derecha */
+.bf-match-mvp-brawlers-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(200px, 0.65fr);
+  gap: 20px;
+  align-items: start;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bf-match-mvp-brawlers-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.bf-mvp-view-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.bf-mvp-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bp-dim);
+  background: transparent;
+  cursor: pointer;
+}
+.bf-mvp-view-btn.is-on {
+  color: #111;
+  background: var(--bp-gold);
+}
+.bf-mvp-picker.is-all-players .bf-mvp-picker-grid.is-flat {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+.bf-brawler-stat-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bf-brawler-stat-slot {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.28);
+}
+.bf-brawler-stat-slot.has-pick {
+  border-color: rgba(243, 188, 24, 0.45);
+}
+.bf-brawler-stat-slot-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.bf-brawler-stat-slot-label {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--bp-gold);
+}
+.bf-brawler-stat-slot-title {
+  margin: 2px 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bp-dim);
+}
+.bf-brawler-stat-slot-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.bf-brawler-stat-slot-icon {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+.bf-brawler-stat-slot-empty {
+  display: flex;
+  width: 52px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px dashed rgba(243, 188, 24, 0.5);
+  font-size: 22px;
+  color: var(--bp-gold);
+}
+.bf-brawler-stat-slot-name {
+  font-size: 12px;
+  font-weight: 800;
+  flex: 1;
+  min-width: 0;
+}
+.bf-brawler-stat-slot-cycle {
+  display: flex;
+  gap: 4px;
+}
+.bf-brawler-stat-cycle-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bf-brawler-stat-mini-chips {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.bf-brawler-stat-mini-chip {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.bf-brawler-stat-mini-chip:hover {
+  opacity: 1;
+}
+.bf-brawler-stat-search-toggle {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bp-gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.bf-brawler-stat-search-panel {
+  margin-top: 8px;
+}
+
+.bf-points-breakdown {
+  margin-top: 8px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(243, 188, 24, 0.22);
+  background: rgba(0, 0, 0, 0.32);
+}
+.bf-points-breakdown-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+.bf-points-breakdown-sub {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--bp-dim);
+}
+.bf-points-breakdown-sub strong {
+  color: var(--bp-gold);
+}
+.bf-points-breakdown-of {
+  opacity: 0.7;
+}
+.bf-points-breakdown-rules {
+  margin-top: 14px;
+}
+.bf-points-breakdown-rules-h {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-dim);
+}
+.bf-points-breakdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bf-points-breakdown-rule {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.bf-points-breakdown-rule.is-hit .bf-points-breakdown-pts {
+  color: #81c784;
+}
+.bf-points-breakdown-rule.is-miss .bf-points-breakdown-pts {
+  color: #ef9a9a;
+}
+.bf-points-breakdown-pts {
+  font-weight: 800;
+  color: var(--bp-gold);
+  flex-shrink: 0;
+}
+.bf-points-breakdown-detail {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--bp-dim);
+  font-weight: 500;
+}
+.bf-points-breakdown-hint {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--bp-dim);
+}
+@media (max-width: 960px) {
+  .bf-match-mvp-brawlers-row {
+    grid-template-columns: 1fr;
+  }
+}
 /* Lista: un bloque completo por mapa (Mapa 1, Mapa 2, Mapa 3…) */
 .bf-map-series-board.is-per-map-list {
   margin-top: 0;
@@ -838,8 +1074,18 @@
     grid-column: auto;
   }
 }
-.bf-map-analysis-card.is-grid-cell .bf-map-asset.is-lg .bf-map-asset-art img {
-  max-height: 140px;
+.bf-map-analysis-card.is-grid-cell .bf-map-analysis-map-wrap {
+  padding: 8px 10px 4px;
+  background: rgba(0, 0, 0, 0.45);
+}
+.bf-map-analysis-card.is-grid-cell .bf-map-asset.is-xl .bf-map-asset-art {
+  min-height: 100px;
+  max-height: none;
+}
+.bf-map-analysis-card.is-grid-cell .bf-map-asset.is-xl.is-contain .bf-map-asset-art img {
+  max-height: 200px;
+  width: 100%;
+  object-fit: contain;
 }
 .bf-map-brawler-info-panel.is-compact {
   padding: 10px 12px 12px;

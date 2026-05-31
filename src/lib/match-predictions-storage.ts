@@ -11,6 +11,8 @@ export type MatchExtendedPrediction = {
   brawlerMvp?: string;
   /** Brawler más bloqueado en el partido (predicción). */
   brawlerMostBanned?: string;
+  /** Brawler con menor WR en la serie (predicción). */
+  brawlerLowestWr?: string;
   brawlerPick?: string;
   /** Ganador por mapa (índice 0-based → A | B). */
   mapWinners?: Record<number, "A" | "B">;

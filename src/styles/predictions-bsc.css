@@ -2285,6 +2285,35 @@
   color: var(--bp-dim);
   white-space: nowrap;
 }
+.bf-predict-extra-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #111;
+  background: linear-gradient(180deg, #ffe082, var(--bp-gold));
+  border: 1px solid rgba(255, 220, 100, 0.9);
+  box-shadow: 0 0 12px rgba(243, 188, 24, 0.35);
+  flex-shrink: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.bf-predict-extra-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(243, 188, 24, 0.5);
+}
+.bf-predict-extra-btn.has-vote {
+  outline: 2px solid rgba(129, 199, 132, 0.55);
+}
+.bf-predict-extra-btn.is-compact {
+  padding: 3px 8px;
+  font-size: 9px;
+}
 .bf-predict-context-pts {
   flex-shrink: 0;
   font-family: var(--bp-head);

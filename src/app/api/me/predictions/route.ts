@@ -177,5 +177,6 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
+  await syncPredictorScores(supabase, user.id);
   return NextResponse.json({ ok: true, matchId, pick_meta });
 }

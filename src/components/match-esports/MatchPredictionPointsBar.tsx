@@ -11,6 +11,9 @@ const ROWS: { key: keyof MatchPredictionPoints; label: string }[] = [
   { key: "brawler_ban", label: "Ban correcto" },
   { key: "brawler_mvp", label: "Brawler MVP" },
   { key: "brawler_most_used", label: "Brawler más usado" },
+  { key: "brawler_most_banned", label: "Brawler más bloqueado" },
+  { key: "brawler_lowest_wr", label: "Brawler menor WR" },
+  { key: "participation", label: "Participar" },
   { key: "perfect_bonus", label: "Bonus perfecto" },
 ];
 

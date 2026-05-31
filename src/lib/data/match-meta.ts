@@ -1,6 +1,7 @@
 import type { BrawlerOverride, MapStrategicOverride } from "./game-assets-catalog";
 import type { EsportsMatch } from "./matches";
 import { getPlayer, teamName } from "./index";
+import { resolveMatchPoints } from "@/lib/predictions/default-points";
 
 /** Enriquecimiento visual para hub de partidos (demo / derivado). */
 export interface MatchEnrichment {
@@ -110,6 +111,7 @@ export type MatchPredictionsConfig = {
   brawler_most_used?: boolean;
   brawler_mvp?: boolean;
   brawler_most_banned?: boolean;
+  brawler_lowest_wr?: boolean;
   advanced?: boolean;
 };
 
@@ -123,15 +125,33 @@ export type MatchPredictionPoints = {
   brawler_ban?: number;
   brawler_mvp?: number;
   brawler_most_used?: number;
+  brawler_most_banned?: number;
+  brawler_lowest_wr?: number;
+  participation?: number;
   perfect_bonus?: number;
 };
 
-/** Reservado para predicciones avanzadas (MVP, primer mapa, etc.). */
+/** Resultado real de un mapa (admin al cerrar partido). */
+export type MatchMapResultMeta = {
+  winner?: "A" | "B";
+  picks_a?: string[];
+  picks_b?: string[];
+  central_bans?: string[];
+  team_bans_a?: string[];
+  team_bans_b?: string[];
+};
+
+/** Reservado para predicciones avanzadas y resultados reales (admin). */
 export type MatchAdvancedPredictionsMeta = {
   mvp_player_slug?: string;
   first_map_winner?: "A" | "B";
   most_used_brawler?: string;
   match_mvp_brawler?: string;
+  most_banned_brawler?: string;
+  lowest_wr_brawler?: string;
+  exact_score?: string;
+  /** Índice 0-based → resultado del mapa jugado. */
+  map_results?: Record<string, MatchMapResultMeta>;
 };
 
 export type MatchMeta = {
@@ -224,6 +244,8 @@ export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConf
       Boolean(meta.maps?.order?.length || meta.maps?.possible?.length),
     brawler_most_used: p.brawler_most_used === true || advanced,
     brawler_mvp: p.brawler_mvp === true || advanced,
+    brawler_most_banned: p.brawler_most_banned === true || advanced,
+    brawler_lowest_wr: p.brawler_lowest_wr === true || advanced,
     advanced,
   };
 }
@@ -238,12 +260,13 @@ export function hasAdvancedPredictionOptions(cfg: MatchPredictionsConfig): boole
       cfg.map_brawler_picks ||
       cfg.brawler_most_used ||
       cfg.brawler_mvp ||
-      cfg.brawler_most_banned,
+      cfg.brawler_most_banned ||
+      cfg.brawler_lowest_wr,
   );
 }
 
 export function getMatchPredictionPoints(meta: MatchMeta): MatchPredictionPoints {
-  return meta.prediction_points ?? {};
+  return resolveMatchPoints(meta.prediction_points ?? {});
 }
 
 export function exactScoresForFormat(format: string): readonly string[] {

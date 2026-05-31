@@ -7,8 +7,21 @@ import { buildPredictionEvents } from "@/lib/data/predictions-build";
 import type { PlayoffBracketsStore } from "@/lib/data/bracket-config";
 
 export function PredictionsPageClient() {
-  const { ready, aggregates, game } = useGame();
+  const { ready, aggregates, game, refresh } = useGame();
   const [brackets, setBrackets] = useState<PlayoffBracketsStore>({});
+
+  useEffect(() => {
+    const sync = () => void refresh();
+    const onVis = () => {
+      if (document.visibilityState === "visible") sync();
+    };
+    window.addEventListener("focus", sync);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.removeEventListener("focus", sync);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [refresh]);
 
   useEffect(() => {
     fetch("/api/brackets")

@@ -3,8 +3,15 @@ import type { EnrichedPrediction } from "@/lib/data/predictions-ui";
 import { formatPredictMatchTime } from "@/lib/data/predictions-ui";
 import { MatchStageBadge } from "@/components/platform/predictions/MatchStageBadge";
 import { MatchStatusPill } from "@/components/platform/predictions/MatchStatusPill";
+import { PredictExtraButton } from "@/components/platform/predictions/PredictExtraButton";
 
-export function MatchContextStrip({ event }: { event: EnrichedPrediction }) {
+export function MatchContextStrip({
+  event,
+  hasVote,
+}: {
+  event: EnrichedPrediction;
+  hasVote?: boolean;
+}) {
   const tour = event.tournamentShortName ?? event.tournamentSlug;
   const region = event.region;
 
@@ -27,6 +34,9 @@ export function MatchContextStrip({ event }: { event: EnrichedPrediction }) {
         <time className="bf-predict-context-time" dateTime={event.matchDate ?? event.deadline}>
           {formatPredictMatchTime(event.matchDate ?? event.deadline)}
         </time>
+        {event.status !== "closed" && (
+          <PredictExtraButton matchId={event.matchId} hasVote={hasVote} compact />
+        )}
       </div>
     </div>
   );

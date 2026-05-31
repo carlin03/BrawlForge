@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Calendar, Flame, Radio, Trophy } from "lucide-react";
 import type { EnrichedPrediction } from "@/lib/data/predictions-ui";
 import { formatPredictMatchTime } from "@/lib/data/predictions-ui";
+import { PredictExtraButton } from "@/components/platform/predictions/PredictExtraButton";
 import { getPredictionLabel } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
 import { getMatch } from "@/lib/data/matches";
@@ -21,8 +22,14 @@ import { MatchStatusPill } from "@/components/platform/predictions/MatchStatusPi
 export function FeaturedPredictionDuel({ event }: { event: EnrichedPrediction }) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
-  const { castVote } = useGame();
+  const { castVote, game } = useGame();
   const [pick, setPick] = useState<"A" | "B" | null>(event.userPick ?? null);
+
+  useEffect(() => {
+    const fromGame = game?.votes?.[event.matchId];
+    const next = fromGame ?? event.userPick ?? null;
+    setPick((prev) => (prev === next ? prev : next));
+  }, [game?.votes, event.userPick, event.matchId]);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
 
@@ -85,6 +92,9 @@ export function FeaturedPredictionDuel({ event }: { event: EnrichedPrediction })
               <Calendar size={12} aria-hidden />
               {formatPredictMatchTime(event.matchDate ?? event.deadline)}
             </span>
+            {event.status !== "closed" && (
+              <PredictExtraButton matchId={event.matchId} hasVote={Boolean(pick)} />
+            )}
             <span className="bf-predict-featured-pts">+{event.rewardPoints} pts</span>
           </div>
           {meta?.stakesLine && <p className="bf-predict-featured-stakes">{meta.stakesLine}</p>}

@@ -71,10 +71,10 @@ export function InteractiveVoteCard({
   const [err, setErr] = useState("");
 
   useEffect(() => {
-    if (event.userPick !== undefined && event.userPick !== pick) {
-      setPick(event.userPick ?? null);
-    }
-  }, [event.userPick, event.matchId]);
+    const fromGame = game?.votes?.[event.matchId];
+    const next = fromGame ?? event.userPick ?? initialPick ?? null;
+    setPick((prev) => (prev === next ? prev : next));
+  }, [event.userPick, event.matchId, game?.votes, initialPick]);
 
   const hasVotes = hasRealVotes(event);
   const closed = event.status === "closed";
@@ -192,7 +192,7 @@ export function InteractiveVoteCard({
 
       {stageMeta ? (
         <>
-          <MatchContextStrip event={contextEvent} />
+          <MatchContextStrip event={contextEvent} hasVote={Boolean(pick)} />
           {stageMeta.stakesLine && <p className="bf-vote-stakes-line">{stageMeta.stakesLine}</p>}
         </>
       ) : (

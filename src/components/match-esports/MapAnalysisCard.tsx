@@ -35,7 +35,7 @@ export function MapAnalysisCard({
           variant="order"
           index={mapIndex}
           meta={meta}
-          size={isGrid ? "lg" : "xl"}
+          size="xl"
           imageFit="contain"
         />
       </div>

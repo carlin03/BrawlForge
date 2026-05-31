@@ -34,6 +34,8 @@ export type AdminMatchFormState = {
   pred_decisive_map: boolean;
   pred_brawler_used: boolean;
   pred_brawler_mvp: boolean;
+  pred_brawler_most_banned: boolean;
+  pred_brawler_lowest_wr: boolean;
   pred_map_winners: boolean;
   pred_map_picks: boolean;
   pred_advanced: boolean;
@@ -45,7 +47,15 @@ export type AdminMatchFormState = {
   points_brawler_ban: number;
   points_brawler_mvp: number;
   points_brawler_used: number;
+  points_brawler_most_banned: number;
+  points_brawler_lowest_wr: number;
+  points_participation: number;
   points_perfect_bonus: number;
+  result_mvp_player: string;
+  result_brawler_wr: string;
+  result_brawler_used: string;
+  result_brawler_banned: string;
+  result_brawler_low_wr: string;
   map_pool: string[];
   map_order: string[];
   map_current: string;
@@ -67,6 +77,8 @@ export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
     decisive_map: form.pred_decisive_map,
     brawler_most_used: form.pred_brawler_used,
     brawler_mvp: form.pred_brawler_mvp,
+    brawler_most_banned: form.pred_brawler_most_banned,
+    brawler_lowest_wr: form.pred_brawler_lowest_wr,
     map_winners: form.pred_map_winners,
     map_brawler_picks: form.pred_map_picks,
     advanced: form.pred_advanced,
@@ -80,9 +92,22 @@ export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
     brawler_ban: form.points_brawler_ban || undefined,
     brawler_mvp: form.points_brawler_mvp || undefined,
     brawler_most_used: form.points_brawler_used || undefined,
+    brawler_most_banned: form.points_brawler_most_banned || undefined,
+    brawler_lowest_wr: form.points_brawler_lowest_wr || undefined,
+    participation: form.points_participation || undefined,
     perfect_bonus: form.points_perfect_bonus || undefined,
   };
   const hasPoints = Object.values(prediction_points).some((v) => v != null && v > 0);
+  const adv: MatchMeta["advanced_predictions"] = {};
+  if (form.result_mvp_player.trim()) adv.mvp_player_slug = form.result_mvp_player.trim();
+  if (form.result_brawler_wr.trim()) adv.match_mvp_brawler = form.result_brawler_wr.trim();
+  if (form.result_brawler_used.trim()) adv.most_used_brawler = form.result_brawler_used.trim();
+  if (form.result_brawler_banned.trim()) adv.most_banned_brawler = form.result_brawler_banned.trim();
+  if (form.result_brawler_low_wr.trim()) adv.lowest_wr_brawler = form.result_brawler_low_wr.trim();
+  if (form.score_a > 0 || form.score_b > 0) {
+    adv.exact_score = `${form.score_a}-${form.score_b}`;
+  }
+  const hasAdv = Object.keys(adv).length > 0;
   return {
     importance: form.importance,
     display_status: form.display_status,
@@ -90,6 +115,7 @@ export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
     featured_label: form.featured_label.trim() || undefined,
     predictions,
     prediction_points: hasPoints ? prediction_points : undefined,
+    advanced_predictions: hasAdv ? adv : undefined,
     maps: form.map_pool.length
       ? {
           possible: form.map_pool,
@@ -176,6 +202,8 @@ export function matchCatalogRowToForm(m: {
     pred_decisive_map: !!preds.decisive_map,
     pred_brawler_used: !!preds.brawler_most_used,
     pred_brawler_mvp: !!preds.brawler_mvp,
+    pred_brawler_most_banned: !!preds.brawler_most_banned,
+    pred_brawler_lowest_wr: !!preds.brawler_lowest_wr,
     pred_map_winners: !!preds.map_winners,
     pred_map_picks: !!preds.map_brawler_picks,
     pred_advanced: !!preds.advanced,
@@ -187,7 +215,15 @@ export function matchCatalogRowToForm(m: {
     points_brawler_ban: meta.prediction_points?.brawler_ban ?? 0,
     points_brawler_mvp: meta.prediction_points?.brawler_mvp ?? 0,
     points_brawler_used: meta.prediction_points?.brawler_most_used ?? 0,
+    points_brawler_most_banned: meta.prediction_points?.brawler_most_banned ?? 0,
+    points_brawler_lowest_wr: meta.prediction_points?.brawler_lowest_wr ?? 0,
+    points_participation: meta.prediction_points?.participation ?? 0,
     points_perfect_bonus: meta.prediction_points?.perfect_bonus ?? 0,
+    result_mvp_player: meta.advanced_predictions?.mvp_player_slug ?? "",
+    result_brawler_wr: meta.advanced_predictions?.match_mvp_brawler ?? "",
+    result_brawler_used: meta.advanced_predictions?.most_used_brawler ?? "",
+    result_brawler_banned: meta.advanced_predictions?.most_banned_brawler ?? "",
+    result_brawler_low_wr: meta.advanced_predictions?.lowest_wr_brawler ?? "",
     map_pool: meta.maps?.possible ?? [],
     map_order: meta.maps?.order ?? meta.maps?.possible ?? [],
     map_current: meta.maps?.current ?? "",
@@ -256,6 +292,8 @@ export function countEnabledPredictions(form: AdminMatchFormState): number {
   if (form.pred_decisive_map) n++;
   if (form.pred_brawler_used) n++;
   if (form.pred_brawler_mvp) n++;
+  if (form.pred_brawler_most_banned) n++;
+  if (form.pred_brawler_lowest_wr) n++;
   if (form.pred_map_winners) n++;
   if (form.pred_map_picks) n++;
   if (form.pred_advanced) n++;

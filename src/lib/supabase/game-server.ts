@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { getRecentMatches } from "@/lib/data/matches";
+import { getMatch, getRecentMatches } from "@/lib/data/matches";
+import { parseMatchMeta } from "@/lib/data/match-meta";
 import { pickMetaToExtended } from "@/lib/match-pick-meta";
+import { scoreMatchPrediction } from "@/lib/predictions/match-prediction-scoring";
 import type {
   FantasyEntryRow,
   FantasyLeaderboardRow,
@@ -161,11 +163,16 @@ export async function fetchUserGameState(
   };
 }
 
+function resolveClosedMatch(matchId: string) {
+  const closed = getRecentMatches(120).filter((m) => m.status === "finished");
+  return closed.find((m) => m.id === matchId) ?? getMatch(matchId);
+}
+
 /** Recalcula puntos de predicciones según partidos cerrados y persiste en profiles + votes */
 export async function syncPredictorScores(supabase: SupabaseClient, userId: string) {
   const { data: votes } = await supabase
     .from("prediction_votes")
-    .select("match_id, pick, reward_points, points_awarded")
+    .select("match_id, pick, reward_points, points_awarded, exact_score, pick_meta")
     .eq("user_id", userId);
 
   if (!votes?.length) {
@@ -176,9 +183,6 @@ export async function syncPredictorScores(supabase: SupabaseClient, userId: stri
     return;
   }
 
-  const closed = getRecentMatches(80).filter((m) => m.status === "finished");
-  const closedById = new Map(closed.map((m) => [m.id, m]));
-
   let points = 0;
   let correct = 0;
   let attempts = 0;
@@ -188,33 +192,39 @@ export async function syncPredictorScores(supabase: SupabaseClient, userId: stri
   const sorted = [...votes].sort((a, b) => a.match_id.localeCompare(b.match_id));
 
   for (const v of sorted) {
-    const m = closedById.get(v.match_id);
-    if (!m) continue;
-    const winner: "A" | "B" = m.scoreA > m.scoreB ? "A" : "B";
-    const reward = v.reward_points || (m.format.includes("5") ? 75 : m.format.includes("3") ? 50 : 35);
+    if (v.pick !== "A" && v.pick !== "B") continue;
+    const m = resolveClosedMatch(v.match_id);
+    if (!m || m.status !== "finished") continue;
+
     attempts += 1;
-    const won = v.pick === winner;
+    const ext = pickMetaToExtended(v.pick_meta);
+    const scored = scoreMatchPrediction(
+      { ...m, meta: m.meta ?? parseMatchMeta(undefined) },
+      v.pick,
+      ext,
+      typeof v.exact_score === "string" ? v.exact_score : null,
+    );
+
+    const award = scored.total;
+    const won = scored.winnerCorrect;
     if (won) {
       correct += 1;
-      points += reward;
       streak += 1;
       bestStreak = Math.max(bestStreak, streak);
-      if (v.points_awarded !== reward) {
-        await supabase
-          .from("prediction_votes")
-          .update({ points_awarded: reward, reward_points: reward })
-          .eq("user_id", userId)
-          .eq("match_id", v.match_id);
-      }
     } else {
       streak = 0;
-      if (v.points_awarded !== 0) {
-        await supabase
-          .from("prediction_votes")
-          .update({ points_awarded: 0 })
-          .eq("user_id", userId)
-          .eq("match_id", v.match_id);
-      }
+    }
+    points += award;
+
+    if (v.points_awarded !== award) {
+      await supabase
+        .from("prediction_votes")
+        .update({
+          points_awarded: award,
+          reward_points: award > 0 ? award : v.reward_points,
+        })
+        .eq("user_id", userId)
+        .eq("match_id", v.match_id);
     }
   }
 

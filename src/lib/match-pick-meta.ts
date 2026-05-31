@@ -13,6 +13,7 @@ export function pickMetaToExtended(raw: unknown): MatchExtendedPrediction {
   if (typeof o.brawlerMostUsed === "string") out.brawlerMostUsed = o.brawlerMostUsed;
   if (typeof o.brawlerMvp === "string") out.brawlerMvp = o.brawlerMvp;
   if (typeof o.brawlerMostBanned === "string") out.brawlerMostBanned = o.brawlerMostBanned;
+  if (typeof o.brawlerLowestWr === "string") out.brawlerLowestWr = o.brawlerLowestWr;
   if (typeof o.brawlerPick === "string") out.brawlerPick = o.brawlerPick;
   if (o.mapWinners && typeof o.mapWinners === "object") {
     out.mapWinners = o.mapWinners as MatchExtendedPrediction["mapWinners"];
@@ -38,6 +39,7 @@ export function extendedToPickMeta(ext: MatchExtendedPrediction): MatchPickMeta 
   if (ext.brawlerMostUsed) out.brawlerMostUsed = ext.brawlerMostUsed;
   if (ext.brawlerMvp) out.brawlerMvp = ext.brawlerMvp;
   if (ext.brawlerMostBanned) out.brawlerMostBanned = ext.brawlerMostBanned;
+  if (ext.brawlerLowestWr) out.brawlerLowestWr = ext.brawlerLowestWr;
   if (ext.brawlerPick) out.brawlerPick = ext.brawlerPick;
   if (ext.mapWinners && Object.keys(ext.mapWinners).length) out.mapWinners = ext.mapWinners;
   if (ext.mapBrawlerPicks && Object.keys(ext.mapBrawlerPicks).length) {
