@@ -4,18 +4,37 @@ import { useState } from "react";
 import { Upload, FileSpreadsheet } from "lucide-react";
 import { AdminCsvTemplates } from "@/components/admin/AdminCsvTemplates";
 import { AdminCsvImportGuide } from "@/components/admin/AdminCsvImportGuide";
-import { getCsvTemplate } from "@/lib/admin/catalog-csv-schema";
+import {
+  CSV_TEMPLATE_GROUPS,
+  getCsvTemplate,
+  type CsvTemplateId,
+} from "@/lib/admin/catalog-csv-schema";
+
+type ImportFileKey = CsvTemplateId;
+
+const UPLOAD_BY_GROUP: { group: (typeof CSV_TEMPLATE_GROUPS)[number]["id"]; files: ImportFileKey[] }[] = [
+  { group: "clubs", files: ["teams", "players"] },
+  { group: "competition", files: ["tournaments", "tournament_rosters", "matches"] },
+  { group: "content", files: ["news", "fantasy_market"] },
+];
 
 export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
-  const [teamsFile, setTeamsFile] = useState<File | null>(null);
-  const [playersFile, setPlayersFile] = useState<File | null>(null);
-  const [newsFile, setNewsFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<Partial<Record<ImportFileKey, File>>>({});
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
+  function setFile(key: ImportFileKey, file: File | null) {
+    setFiles((prev) => {
+      const next = { ...prev };
+      if (file) next[key] = file;
+      else delete next[key];
+      return next;
+    });
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!teamsFile && !playersFile && !newsFile) {
+    if (!Object.keys(files).length) {
       setMsg("Elige al menos un CSV.");
       return;
     }
@@ -23,9 +42,9 @@ export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
     setMsg("");
     try {
       const form = new FormData();
-      if (teamsFile) form.append("teams", teamsFile);
-      if (playersFile) form.append("players", playersFile);
-      if (newsFile) form.append("news", newsFile);
+      for (const [key, file] of Object.entries(files)) {
+        form.append(key, file);
+      }
       const res = await fetch("/api/admin/import-csv", { method: "POST", body: form });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al importar");
@@ -54,11 +73,19 @@ export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
           <code>.env.local</code>).
         </p>
         <p style={{ marginTop: 8, fontSize: 12, color: "var(--bp-dim)" }}>
-          Catálogo BSC enriquecido: <code>npm run supabase:seed:catalog</code> (50 equipos, ~142 jugadores por región).
-          Antes ejecuta en SQL Editor: <code>supabase/APPLY_CATALOG_ENRICHED.sql</code>. Tablas:{" "}
-          <code>teams_catalog</code>, <code>players_catalog</code>.
+          <strong>teams.csv ≠ players.csv</strong> — son archivos distintos. Puedes subir solo uno (una fila =
+          un registro) o varios a la vez.
+        </p>
+        <p style={{ marginTop: 8, fontSize: 12, color: "var(--bp-dim)" }}>
+          <strong>¿Se borra lo anterior?</strong> No: solo se actualizan las filas del CSV (por{" "}
+          <code>slug</code>). El resto del catálogo no se toca. Si el CSV trae columnas básicas sin{" "}
+          <code>meta_json</code> / <code>social_json</code>, se conservan la wiki, redes y logros que ya
+          guardaste en Admin. Para editar en bloque con todo el detalle, exporta desde Equipos/Jugadores →{" "}
+          <strong>Descargar CSV</strong> y vuelve a subir aquí.
         </p>
       </div>
+
+      <AdminCsvImportGuide />
 
       <AdminCsvTemplates />
 
@@ -67,24 +94,33 @@ export function AdminImportPanel({ onDone }: { onDone?: () => void }) {
           <Upload size={18} /> Subir CSV a Supabase
         </h3>
         <p className="bf-admin-field-hint" style={{ margin: "0 0 14px" }}>
-          Puedes subir <strong>solo uno</strong> de los archivos (p. ej. un <code>teams.csv</code> con una sola
-          fila para un equipo) o los tres a la vez.
+          Sube los archivos que necesites; no hace falta subirlos todos. Orden recomendado: equipos → jugadores →
+          torneos → partidos / plantillas torneo → noticias / fantasy.
         </p>
-        <AdminFileRow
-          label="Equipos (teams.csv)"
-          hint={getCsvTemplate("teams")?.fields.filter((f) => f.required).map((f) => f.key).join(", ") ?? ""}
-          onChange={setTeamsFile}
-        />
-        <AdminFileRow
-          label="Jugadores (players.csv)"
-          hint={getCsvTemplate("players")?.fields.filter((f) => f.required).map((f) => f.key).join(", ") ?? ""}
-          onChange={setPlayersFile}
-        />
-        <AdminFileRow
-          label="Noticias (news.csv)"
-          hint="title, excerpt, body (párrafos con |||), related_teams"
-          onChange={setNewsFile}
-        />
+
+        {UPLOAD_BY_GROUP.map(({ group, files: keys }) => {
+          const meta = CSV_TEMPLATE_GROUPS.find((g) => g.id === group);
+          return (
+            <fieldset key={group} className="bf-admin-import-group">
+              <legend>{meta?.title}</legend>
+              {meta?.note && <p className="bf-admin-field-hint">{meta.note}</p>}
+              {keys.map((key) => {
+                const tpl = getCsvTemplate(key);
+                if (!tpl) return null;
+                const required = tpl.fields.filter((f) => f.required).map((f) => f.key).join(", ");
+                return (
+                  <AdminFileRow
+                    key={key}
+                    label={`${tpl.title} (${tpl.filename})`}
+                    hint={required || tpl.subtitle}
+                    onChange={(f) => setFile(key, f)}
+                  />
+                );
+              })}
+            </fieldset>
+          );
+        })}
+
         {msg && <div className={`bf-admin-toast ${msg.includes("Error") ? "is-error" : ""}`}>{msg}</div>}
         <button type="submit" className="bp-btn bp-btn-gold" disabled={loading} style={{ width: "100%" }}>
           <FileSpreadsheet size={16} /> Importar a Supabase

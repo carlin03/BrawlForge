@@ -12,11 +12,15 @@ import { RegionBadge } from "@/components/ui/RegionBadge";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { Region } from "@/lib/types";
 import { getPlayersByTeam, getTeamPlatformMeta, teamName } from "@/lib/data";
+import { useMergedCircuitTeams, useCatalogTeamCount } from "@/hooks/useMergedCatalog";
+import { BSC_2026_CLUB_COUNT } from "@/lib/data/bsc-2026-circuit-teams";
 import { SHOW_DEMO_SOCIAL } from "@/lib/app-config";
 
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 
-export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
+export function TeamsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
+  const teams = useMergedCircuitTeams(staticTeams);
+  const teamCount = useCatalogTeamCount(BSC_2026_CLUB_COUNT);
   const [region, setRegion] = useState<Region | "all">("all");
   const [query, setQuery] = useState("");
   const sorted = useMemo(() => {
@@ -51,7 +55,7 @@ export function TeamsView({ teams }: { teams: EsportsTeam[] }) {
             Clubes <em>pro</em>
           </>
         }
-        lead={`${sorted.length} equipos verificados · busca por nombre, tag o región`}
+        lead={`${teamCount} equipos en circuito · ${sorted.length} en vista · busca por nombre, tag o región`}
         stats={
           <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
             <div className="fu-stat">

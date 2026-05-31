@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FileSpreadsheet, Download, Upload } from "lucide-react";
+import { CSV_TEMPLATES } from "@/lib/admin/catalog-csv-schema";
 
 /** Rutas directas al importador CSV (Competición u Operaciones). */
 export function AdminCsvImportGuide({ compact }: { compact?: boolean }) {
@@ -14,7 +15,7 @@ export function AdminCsvImportGuide({ compact }: { compact?: boolean }) {
         <div>
           <strong>Importar / exportar CSV</strong>
           <p>
-            Sube <code>teams.csv</code> (todos o 1 fila = 1 equipo) y <code>players.csv</code> en{" "}
+            <code>teams.csv</code> y <code>players.csv</code> son archivos distintos. Más plantillas en{" "}
             <Link href={importHref}>Importar CSV</Link>.
           </p>
         </div>
@@ -29,48 +30,63 @@ export function AdminCsvImportGuide({ compact }: { compact?: boolean }) {
         Importar datos con CSV
       </h2>
       <p className="bf-csv-import-guide-lead">
-        Estás en el lugar correcto. Aquí subes archivos a Supabase sin editar uno por uno en el formulario.
+        Cada tipo de dato tiene su propio archivo. <strong>No</strong> uses el mismo CSV para equipos y jugadores.
+        Puedes importar el catálogo completo o una sola fila (un equipo, una noticia, un partido).
+      </p>
+      <p className="bf-csv-import-guide-lead" style={{ fontSize: 13, opacity: 0.9 }}>
+        Subir <strong>uno a uno</strong> actualiza solo ese <code>slug</code>; no elimina otros equipos ni jugadores.
+        Las columnas <code>meta_json</code>, <code>social_json</code> y <code>achievements_json</code> (equipos) alinean
+        el CSV con la ficha rica del admin — si las dejas vacías, no se pierde lo que ya tenías guardado.
       </p>
 
       <div className="bf-csv-import-guide-grid">
         <article className="bf-csv-import-guide-card">
           <Upload size={20} aria-hidden />
-          <h3>Todos los equipos (global)</h3>
+          <h3>Equipos (global o uno)</h3>
           <p>
-            Descarga <a href="/plantillas/teams.csv" download>teams.csv</a>, rellena todas las filas y súbelo
-            abajo en <strong>Equipos (teams.csv)</strong>.
+            <a href="/plantillas/teams.csv" download>teams.csv</a> — todas las filas o exporta un club desde{" "}
+            <Link href="/admin?module=competicion&tab=teams">Equipos</Link> → <strong>Descargar CSV de este equipo</strong>.
           </p>
         </article>
         <article className="bf-csv-import-guide-card">
           <Upload size={20} aria-hidden />
-          <h3>Un solo equipo</h3>
+          <h3>Jugadores (archivo aparte)</h3>
           <p>
-            En la pestaña <Link href="/admin?module=competicion&tab=teams">Equipos</Link>, elige un club y pulsa{" "}
-            <strong>Descargar CSV de este equipo</strong>. Edita esa fila y vuelve a subir solo{" "}
-            <code>teams.csv</code> (una fila vale).
+            <a href="/plantillas/players.csv" download>players.csv</a> con columna <code>team_slug</code>. No va dentro de{" "}
+            <code>teams.csv</code>.
           </p>
         </article>
         <article className="bf-csv-import-guide-card">
           <Upload size={20} aria-hidden />
-          <h3>Jugadores (global o por club)</h3>
+          <h3>Torneos y partidos</h3>
           <p>
-            <a href="/plantillas/players.csv" download>players.csv</a> con columna <code>team_slug</code>. O exporta
-            la plantilla de un equipo desde la ficha del club.
+            <a href="/plantillas/tournaments.csv" download>tournaments.csv</a>,{" "}
+            <a href="/plantillas/matches.csv" download>matches.csv</a> y opcional{" "}
+            <a href="/plantillas/tournament_rosters.csv" download>tournament_rosters.csv</a>.
+          </p>
+        </article>
+        <article className="bf-csv-import-guide-card">
+          <Upload size={20} aria-hidden />
+          <h3>Noticias y fantasy</h3>
+          <p>
+            <a href="/plantillas/news.csv" download>news.csv</a> (cuerpo con <code>|||</code> entre párrafos) y{" "}
+            <a href="/plantillas/fantasy_market.csv" download>fantasy_market.csv</a>.
           </p>
         </article>
         <article className="bf-csv-import-guide-card is-dl">
           <Download size={20} aria-hidden />
-          <h3>Plantillas oficiales</h3>
-          <p>
-            <a href="/plantillas/teams.csv" download className="bp-btn bp-btn-ghost bp-btn-sm">
-              teams.csv
-            </a>{" "}
-            <a href="/plantillas/players.csv" download className="bp-btn bp-btn-ghost bp-btn-sm">
-              players.csv
-            </a>{" "}
-            <a href="/plantillas/news.csv" download className="bp-btn bp-btn-ghost bp-btn-sm">
-              news.csv
-            </a>
+          <h3>Todas las plantillas</h3>
+          <p className="bf-csv-import-guide-dl-row">
+            {CSV_TEMPLATES.map((t) => (
+              <a
+                key={t.id}
+                href={`/plantillas/${t.filename}`}
+                download
+                className="bp-btn bp-btn-ghost bp-btn-sm"
+              >
+                {t.filename}
+              </a>
+            ))}
           </p>
         </article>
       </div>

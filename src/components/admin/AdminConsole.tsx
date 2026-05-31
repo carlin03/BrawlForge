@@ -35,7 +35,7 @@ import {
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
 import { getLatestNews } from "@/lib/data";
-import { BSC_2026_ADMIN_TEAM_COUNT, mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
+import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 import type { AdminTeamCatalogRow, AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
 import {
@@ -358,7 +358,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
             </p>
             <div className="bf-admin-hero-stats">
               <span className="bf-admin-stat-pill">
-                <strong>{teams.length}</strong> / {BSC_2026_ADMIN_TEAM_COUNT} equipos BSC
+                <strong>{teams.length}</strong> equipos en catálogo
               </span>
               <span className="bf-admin-stat-pill">
                 <strong>{players.length}</strong> jugadores
@@ -420,7 +420,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
 
       {msg && <div className={`bf-admin-toast ${msgError ? "is-error" : ""}`}>{msg}</div>}
 
-      {tab === "logos" && <AdminLogoPanel />}
+      {tab === "logos" && <AdminLogoPanel catalogTeams={teams} />}
 
       {tab === "import" && <AdminImportPanel onDone={load} />}
 
@@ -452,6 +452,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                 const data = await res.json();
                 const merged = mergeAdminTeamRows(data.teams ?? null);
                 setTeams(merged);
+                notifyCatalogUpdated();
                 const row = merged.find((t) => t.slug === slug);
                 if (row) setSelectedTeam(teamRowToWikiState(row as AdminTeamCatalogRow & Record<string, unknown>));
               }}
@@ -588,6 +589,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                 const data = await res.json();
                 const merged = mergeAdminPlayerRows(data.players ?? null);
                 setPlayers(merged);
+                notifyCatalogUpdated();
                 const row = merged.find((p) => p.slug === slug);
                 if (row)
                   setSelectedPlayer(

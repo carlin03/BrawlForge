@@ -15,8 +15,6 @@ export type AdminTeamCatalogRow = {
   roster_slugs: string[];
   logo_url: string | null;
   description: string | null;
-  liquipedia_page?: string | null;
-  liquipedia_url?: string | null;
   coach?: string | null;
   founded_year?: number | null;
   headquarters?: string | null;
@@ -48,8 +46,6 @@ export type AdminPlayerCatalogRow = {
   primary_brawler?: string | null;
   secondary_brawler?: string | null;
   is_captain?: boolean;
-  liquipedia_page?: string | null;
-  liquipedia_url?: string | null;
   previous_teams?: string[];
   social: SocialLinks;
   meta: Record<string, unknown>;
@@ -57,8 +53,6 @@ export type AdminPlayerCatalogRow = {
 
 export function pickTeamFromDb(row: Record<string, unknown>): Partial<AdminTeamCatalogRow> {
   return {
-    liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
-    liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
     coach: row.coach ? String(row.coach) : null,
     founded_year: row.founded_year != null ? Number(row.founded_year) : null,
     headquarters: row.headquarters ? String(row.headquarters) : null,
@@ -78,8 +72,11 @@ export function pickPlayerFromDb(row: Record<string, unknown>): Partial<AdminPla
     primary_brawler: row.primary_brawler ? String(row.primary_brawler) : null,
     secondary_brawler: row.secondary_brawler ? String(row.secondary_brawler) : null,
     is_captain: Boolean(row.is_captain),
-    liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
-    liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
-    previous_teams: Array.isArray(prev) ? (prev as string[]) : [],
+    previous_teams: Array.isArray(prev)
+      ? (prev as string[])
+      : String(row.previous_teams ?? "")
+          .split(/[|,]/)
+          .map((s) => s.trim())
+          .filter(Boolean),
   };
 }

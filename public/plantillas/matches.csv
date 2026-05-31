@@ -1,0 +1,7 @@
+# Partidos (matches_catalog)
+# BrawlForge — edita en Excel o Google Sheets. Guarda como CSV UTF-8.
+# Las filas que empiezan por # y las filas _ayuda / _ejemplo NO se importan.
+# En listas usa el carácter | entre valores (ej. jugador1|jugador2).
+id,tournament_slug,team_a_slug,team_b_slug,scheduled_at,status,stage,region,format,score_a,score_b,published,map_order,meta_json
+_ayuda,slug torneo,equipo A,equipo B,ISO 8601 UTC,upcoming|live|finished,Grand Final,EMEA,Bo3|Bo5,0,0,true|false,mapa1|mapa2,"{""importance"":""featured""}"
+_ejemplo,bsc-2026-brawl-cup,hmble,sk-gaming,2026-05-29T18:00:00Z,upcoming,Grand Final,EMEA,Bo5,0,0,true,Hard Rock Mine|Double Swoosh,

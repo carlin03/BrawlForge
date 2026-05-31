@@ -299,13 +299,6 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
               />
             </AdminField>
 
-            <AdminField label="Liquipedia">
-              <input
-                value={selected.liquipedia_page ?? ""}
-                onChange={(e) => setSelected({ ...selected, liquipedia_page: e.target.value })}
-              />
-            </AdminField>
-
             <AdminField label="Descripción / notas" hint="Texto libre guardado en metadatos">
               <textarea
                 rows={3}

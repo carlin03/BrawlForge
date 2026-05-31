@@ -185,15 +185,15 @@ export const extraNewsArticles: NewsArticle[] = [
     slug: "brawlforge-fantasy-season-2026-launch",
     title: "BrawlForge Fantasy 2026: mercado por torneo, más equipos y plantillas reales",
     excerpt:
-      "La nueva temporada de fantasy enlaza cada evento BSC con jugadores verificados de Liquipedia y precios dinámicos.",
+      "La nueva temporada de fantasy enlaza cada evento BSC con jugadores verificados del circuito y precios dinámicos.",
     body: [
       "BrawlForge estrena la temporada fantasy 2026 con un cambio de paradigma: ya no hay un mercado global genérico, sino pools por torneo alineados con participantes reales.",
-      "Cada Monthly Final, Challengers y Brawl Cup tiene su lista de equipos y jugadores extraída de partidos y plantillas Liquipedia. Si un equipo compite, sus jugadores activos aparecen en el mercado.",
+      "Cada Monthly Final, Challengers y Brawl Cup tiene su lista de equipos y jugadores alineada con el calendario BSC. Si un equipo compite, sus jugadores activos aparecen en el mercado.",
       "El presupuesto sigue en 45M con 3 slots. Los precios se calculan por rating, región y demanda simulada del mercado.",
       "Próximamente: persistencia de alineaciones y rankings globales cuando se active la capa social.",
       "Mientras tanto, explora torneos en la pestaña Fantasy, filtra por club y construye tu stack para el próximo MF.",
     ],
-    highlights: ["Mercado por torneo", "Plantillas Liquipedia", "Presupuesto 45M / 3 jugadores"],
+    highlights: ["Mercado por torneo", "Plantillas reales BSC", "Presupuesto 45M / 3 jugadores"],
     category: "Fantasy",
     date: "2026-01-20",
     author: "Equipo BrawlForge",

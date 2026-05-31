@@ -7,7 +7,11 @@ import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { AdminField } from "@/components/admin/AdminField";
 import { getAdminBscTournaments } from "@/lib/data/bsc-tournaments";
-import { getAdminBscTeamsList } from "@/lib/data/admin-bsc-teams";
+import {
+  getAdminBscTeamsListFromRows,
+  mergeAdminTeamRows,
+  type AdminTeamCatalogRow,
+} from "@/lib/data/admin-bsc-teams";
 import { notifyLogosUpdated, useRefreshLogos } from "@/contexts/LogoConfigContext";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 import type { Region } from "@/lib/types";
@@ -22,7 +26,12 @@ const REGION_FILTERS: { id: "all" | Region; label: string }[] = [
 
 type LogoKind = "team" | "tournament";
 
-export function AdminLogoPanel() {
+type AdminLogoPanelProps = {
+  /** Si viene del AdminConsole, evita lista fija de 50 y muestra el catálogo fusionado. */
+  catalogTeams?: AdminTeamCatalogRow[];
+};
+
+export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
   const searchParams = useSearchParams();
   const teamFromQuery = searchParams.get("team")?.trim().toLowerCase() ?? "";
 
@@ -36,7 +45,46 @@ export function AdminLogoPanel() {
   const [previewKey, setPreviewKey] = useState(0);
   const refreshLogos = useRefreshLogos();
 
-  const teams = useMemo(() => getAdminBscTeamsList(), []);
+  const [fetchedTeams, setFetchedTeams] = useState<AdminTeamCatalogRow[] | null>(null);
+
+  useEffect(() => {
+    if (catalogTeams?.length) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/teams");
+        const data = await res.json();
+        if (!cancelled && res.ok) {
+          setFetchedTeams(mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null));
+        }
+      } catch {
+        /* fallback local */
+      }
+    })();
+    const onUpdate = () => {
+      void (async () => {
+        try {
+          const res = await fetch("/api/admin/teams");
+          const data = await res.json();
+          if (!cancelled && res.ok) {
+            setFetchedTeams(mergeAdminTeamRows(Array.isArray(data.teams) ? data.teams : null));
+          }
+        } catch {
+          /* ignore */
+        }
+      })();
+    };
+    window.addEventListener("bf-catalog-updated", onUpdate);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("bf-catalog-updated", onUpdate);
+    };
+  }, [catalogTeams?.length]);
+
+  const teams = useMemo(
+    () => getAdminBscTeamsListFromRows(catalogTeams ?? fetchedTeams ?? undefined),
+    [catalogTeams, fetchedTeams],
+  );
 
   useEffect(() => {
     if (!selected && teams[0]?.slug) setSelected(teams[0].slug);

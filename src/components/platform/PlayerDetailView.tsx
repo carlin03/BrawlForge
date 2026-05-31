@@ -7,7 +7,7 @@ import { PlayerCard } from "@/components/platform/PlayerCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { RegionBadge } from "@/components/ui/RegionBadge";
 import { CountryFlag } from "@/components/ui/CountryFlag";
-import { getPlayersByTeam } from "@/lib/data";
+import { getPlayersByTeam, getTeam } from "@/lib/data";
 import { getPlayerPrice, transferMarket, DEFAULT_FANTASY_TOURNAMENT } from "@/lib/data/fantasy";
 import { getFantasyRole } from "@/lib/data/fantasy-meta";
 import { getPlayerComputedStats, getRosterPlayerStats } from "@/lib/data/entity-stats";
@@ -135,7 +135,25 @@ export function PlayerDetailView({ slug }: { slug: string }) {
   if (player.previousTeams.length > 0) {
     infoboxRows.push({
       label: "Equipos anteriores",
-      value: player.previousTeams.join(" · "),
+      value: (
+        <>
+          {player.previousTeams.map((prevSlug, i) => {
+            const prev = getTeam(prevSlug);
+            return (
+              <span key={prevSlug}>
+                {i > 0 ? " · " : null}
+                {prev ? (
+                  <Link href={`/teams/${prevSlug}`} className="bf-ep-infobox-link">
+                    {prev.name}
+                  </Link>
+                ) : (
+                  prevSlug
+                )}
+              </span>
+            );
+          })}
+        </>
+      ),
     });
   }
   if (pStats.bestAchievement) {

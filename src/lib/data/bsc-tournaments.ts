@@ -1,11 +1,8 @@
 import type { Region } from "../types";
 import type { EsportsTournament } from "./matches";
-import { getBsc2026LiquipediaUrl } from "./bsc-2026-liquipedia-pages";
-
-const BSC26 = "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026";
 const BSC_LOGO = "https://taiyoro-prod-media.s3.amazonaws.com/game/mWB0X8mVG2.png";
 
-type TDef = Omit<EsportsTournament, "liquipediaUrl"> & { liquipediaUrl?: string };
+type TDef = EsportsTournament;
 
 function mf(
   month: string,
@@ -93,10 +90,7 @@ export const bsc2026LegacyPsiTournaments: EsportsTournament[] = (
       winnerSlug: "loud",
     },
   ] satisfies TDef[]
-).map((t) => ({
-  ...t,
-  liquipediaUrl: ("liquipediaUrl" in t && t.liquipediaUrl) ? t.liquipediaUrl : BSC26,
-})) as EsportsTournament[];
+) as EsportsTournament[];
 
 /** Calendario BSC 2026 — fuente: Liquipedia Brawl Stars Championship/2026 */
 export const bsc2026Tournaments: EsportsTournament[] = (
@@ -338,7 +332,6 @@ export const bsc2026Tournaments: EsportsTournament[] = (
       endDate: "2026-11-30",
       location: "Tokyo, Japan",
       stage: "Qualifiers ongoing",
-      liquipediaUrl: "https://liquipedia.net/brawlstars/Brawl_Stars_World_Finals/2026",
     },
 
     // Chinese Mainland Monthly Finals
@@ -359,10 +352,7 @@ export const bsc2026Tournaments: EsportsTournament[] = (
       }),
     ),
   ] satisfies TDef[]
-).map((t) => ({
-  ...t,
-  liquipediaUrl: getBsc2026LiquipediaUrl(t.slug) ?? t.liquipediaUrl ?? BSC26,
-}));
+);
 
 /** Alias slugs used elsewhere in the app */
 export const BSC_TOURNAMENT_ALIASES: Record<string, string> = {

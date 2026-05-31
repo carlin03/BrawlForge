@@ -20,6 +20,7 @@ import { formatTournamentDates, getTournamentStats } from "@/lib/data/tournament
 import { getFantasyPlayersForTournament, getFantasyTeamsForTournament } from "@/lib/data/fantasy-rosters";
 import { getPlayer, getPlayerPrice } from "@/lib/data";
 import { getBscTournamentEnrichment, getBscEnrichmentSyncedAt } from "@/lib/data/bsc-tournaments-enriched";
+import { isLiquipediaReference } from "@/lib/sanitize-liquipedia";
 import { PlayerCard } from "@/components/platform/PlayerCard";
 
 function clean(s: string) {
@@ -175,11 +176,11 @@ export function TournamentDetailView({ slug }: { slug: string }) {
             )}
             {wiki?.matchCount != null && wiki.matchCount > 0 && (
               <>
-                <dt>Partidos en wiki</dt>
+                <dt>Partidos registrados</dt>
                 <dd>{wiki.matchCount}</dd>
               </>
             )}
-            {tournament.website && (
+            {tournament.website && !isLiquipediaReference(tournament.website) && (
               <>
                 <dt>Web oficial</dt>
                 <dd>{tournament.website.replace(/^https?:\/\//, "")}</dd>

@@ -1,8 +1,9 @@
 /**
- * Importa CSV a Supabase (teams, players, news).
+ * Importa CSV a Supabase (catálogo completo).
  *
  * Coloca archivos en data/import/:
- *   teams.csv, players.csv, news.csv
+ *   teams.csv, players.csv, tournaments.csv, tournament_rosters.csv,
+ *   matches.csv, news.csv, fantasy_market.csv
  *
  * Uso:
  *   npm run supabase:export:csv     # genera plantillas desde el repo
@@ -12,7 +13,16 @@
 import { readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { csvToObjects, rowsToTeams, rowsToPlayers, rowsToNews } from "./lib/catalog-csv.mjs";
+import {
+  csvToObjects,
+  rowsToTeams,
+  rowsToPlayers,
+  rowsToNews,
+  rowsToTournaments,
+  rowsToTournamentRosters,
+  rowsToMatches,
+  rowsToFantasyMarket,
+} from "./lib/catalog-csv.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const importDir = resolve(root, "data", "import");
@@ -99,11 +109,37 @@ if (only === "all" || only === "players") {
   console.log(`Jugadores CSV → ${summary.players ?? 0} filas`);
 }
 
+if (only === "all" || only === "tournaments") {
+  const rows = rowsToTournaments(readCsv("tournaments.csv"), syncedAt);
+  console.log(`Torneos CSV → ${rows.length} filas`);
+  summary.tournaments = await upsert("tournaments_catalog", rows);
+}
+
+if (only === "all" || only === "tournament_rosters") {
+  const rows = rowsToTournamentRosters(readCsv("tournament_rosters.csv"));
+  console.log(`Plantillas torneo CSV → ${rows.length} filas`);
+  summary.tournament_rosters = await upsert("tournament_team_rosters", rows);
+}
+
+if (only === "all" || only === "matches") {
+  const rows = rowsToMatches(readCsv("matches.csv"), syncedAt);
+  console.log(`Partidos CSV → ${rows.length} filas`);
+  summary.matches = await upsert("matches_catalog", rows);
+}
+
 if (only === "all" || only === "news") {
   const newsRows = rowsToNews(readCsv("news.csv"), syncedAt);
   console.log(`Noticias CSV → ${newsRows.length} filas`);
   summary.news = await upsert("news_catalog", newsRows);
 }
 
+if (only === "all" || only === "fantasy_market") {
+  const rows = rowsToFantasyMarket(readCsv("fantasy_market.csv"));
+  console.log(`Fantasy CSV → ${rows.length} filas`);
+  summary.fantasy_market = await upsert("fantasy_market_catalog", rows);
+}
+
 console.log("\nImportación completada:", summary);
-console.log("Revisa en Supabase → Table Editor: teams_catalog, players_catalog, news_catalog");
+console.log(
+  "Revisa en Supabase → Table Editor: teams_catalog, players_catalog, tournaments_catalog, matches_catalog, news_catalog…",
+);

@@ -14,13 +14,14 @@ import {
   CATALOG_STATS,
   getActivePlayers,
   getPlayerPrice,
-  getPlayersWithTeam,
   getPlayersByTeam,
   players,
   resolvePlayerRegion,
   searchPlayers,
   teamName,
 } from "@/lib/data";
+import { usePublicPlayersList } from "@/hooks/useMergedCatalog";
+import { useCatalog } from "@/contexts/CatalogContext";
 import { BSC_2026_ACTIVE_TEAM_SLUGS, isBsc2026ActiveTeam } from "@/lib/data/bsc-2026-active-teams";
 import { getBsc2026TeamRegion } from "@/lib/data/bsc-2026-team-regions";
 import { getFantasyRole } from "@/lib/data/fantasy-meta";
@@ -39,6 +40,8 @@ function statusLabel(s: PlayerStatus) {
 }
 
 export function PlayersView() {
+  const publicPlayers = usePublicPlayersList();
+  const { teamsBySlug } = useCatalog();
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
   const [status, setStatus] = useState<StatusFilter>("active");
@@ -46,22 +49,27 @@ export function PlayersView() {
   const [sortBy, setSortBy] = useState<SortKey>("fantasy");
 
   const teamsForFilter = useMemo(() => {
-    const slugs =
+    const slugSet = new Set(
       region === "all"
-        ? [...BSC_2026_ACTIVE_TEAM_SLUGS]
-        : BSC_2026_ACTIVE_TEAM_SLUGS.filter((s) => getBsc2026TeamRegion(s) === region);
-    return slugs
+        ? BSC_2026_ACTIVE_TEAM_SLUGS
+        : BSC_2026_ACTIVE_TEAM_SLUGS.filter((s) => getBsc2026TeamRegion(s) === region),
+    );
+    for (const row of teamsBySlug.values()) {
+      if (region !== "all" && row.region !== region) continue;
+      slugSet.add(row.slug);
+    }
+    return [...slugSet]
       .map((slug) => ({
         slug,
         name: teamName(slug),
         count: getPlayersByTeam(slug).length,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [region]);
+  }, [region, teamsBySlug]);
 
   const list = useMemo(() => {
-    let base = query.trim() ? searchPlayers(query, 200) : getPlayersWithTeam();
-    base = base.filter((p) => isBsc2026ActiveTeam(p.teamSlug));
+    let base = query.trim() ? searchPlayers(query, 200) : publicPlayers;
+    base = base.filter((p) => !p.teamSlug || isBsc2026ActiveTeam(p.teamSlug));
     if (status !== "all") base = base.filter((p) => p.status === status);
     if (region !== "all") base = base.filter((p) => resolvePlayerRegion(p.teamSlug, p.region) === region);
     if (teamFilter !== "all") base = base.filter((p) => p.teamSlug === teamFilter);
@@ -72,15 +80,16 @@ export function PlayersView() {
       if (sortBy === "name") return a.ign.localeCompare(b.ign);
       return b.rating - a.rating;
     });
-  }, [query, region, status, teamFilter, sortBy]);
+  }, [query, region, status, teamFilter, sortBy, publicPlayers]);
 
   const stats = useMemo(
     () => ({
       total: players.length,
       active: getActivePlayers().length,
-      withTeam: getPlayersWithTeam().length,
+      withTeam: publicPlayers.filter((p) => p.teamSlug).length,
+      unassigned: publicPlayers.filter((p) => !p.teamSlug).length,
     }),
-    [],
+    [publicPlayers],
   );
 
   const topPros = list.slice(0, 3);
@@ -98,7 +107,7 @@ export function PlayersView() {
             Jugadores <em>elite</em>
           </>
         }
-        lead={`${stats.withTeam} con equipo · ${stats.active} activos · ${stats.total} en catálogo`}
+        lead={`${stats.withTeam} con equipo${stats.unassigned ? ` · ${stats.unassigned} sin club` : ""} · ${stats.active} activos`}
         stats={
           <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
             <div className="fu-stat">
@@ -244,7 +253,12 @@ export function PlayersView() {
           </thead>
           <tbody>
             {list.map((p, i) => (
-              <PlayerRow key={p.slug} player={p} index={i} />
+              <PlayerRow
+                key={p.slug}
+                player={p}
+                index={i}
+                muted={!p.teamSlug}
+              />
             ))}
           </tbody>
         </table>
@@ -257,12 +271,20 @@ export function PlayersView() {
   );
 }
 
-function PlayerRow({ player: p, index }: { player: EsportsPlayer; index: number }) {
+function PlayerRow({
+  player: p,
+  index,
+  muted,
+}: {
+  player: EsportsPlayer;
+  index: number;
+  muted?: boolean;
+}) {
   const price = getPlayerPrice(p.slug);
   const role = getFantasyRole(p.slug);
 
   return (
-    <tr className={p.status !== "active" ? "is-muted" : ""}>
+    <tr className={p.status !== "active" || muted ? "is-muted" : ""}>
       <td className="bf-players-rank">{index + 1}</td>
       <td>
         <Link href={`/players/${p.slug}`} className="bf-players-name-cell">

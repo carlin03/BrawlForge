@@ -1,5 +1,5 @@
 /**
- * CSV ↔ filas Supabase (teams_catalog, players_catalog, news_catalog)
+ * CSV ↔ filas Supabase (catálogo BrawlForge)
  */
 
 export function parseCsv(text) {
@@ -74,10 +74,12 @@ const SKIP_SLUGS = new Set([
 ]);
 
 export function shouldSkipCatalogCsvRow(obj) {
-  const slug = String(obj.slug ?? "").trim().toLowerCase();
-  if (!slug) return true;
-  if (slug.startsWith("#")) return true;
-  if (SKIP_SLUGS.has(slug) || slug.startsWith("_ejemplo")) return true;
+  const primary = String(obj.slug || obj.id || obj.tournament_slug || "")
+    .trim()
+    .toLowerCase();
+  if (!primary) return true;
+  if (primary.startsWith("#")) return true;
+  if (SKIP_SLUGS.has(primary) || primary.startsWith("_ejemplo")) return true;
   return false;
 }
 
@@ -129,68 +131,110 @@ function bool(raw) {
   return x === "1" || x === "true" || x === "sí" || x === "si" || x === "yes";
 }
 
+function parseMetaJsonOptional(raw) {
+  if (!raw?.trim()) return undefined;
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return undefined;
+    return Object.keys(parsed).length ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function parseSocialJson(raw) {
+  return parseMetaJsonOptional(raw);
+}
+
+function parseAchievementsJson(raw) {
+  if (!raw?.trim()) return undefined;
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function stripUndefined(row) {
+  const out = { ...row };
+  for (const key of Object.keys(out)) {
+    if (out[key] === undefined) delete out[key];
+  }
+  return out;
+}
+
 export function rowsToTeams(objects, syncedAt) {
   return objects
     .filter((o) => o.slug)
-    .map((o) => ({
-      slug: o.slug,
-      name: o.name || o.slug,
-      tag: o.tag || "",
-      region: o.region || "GLOBAL",
-      country: o.country || "",
-      earnings: Number(o.earnings || 0) || 0,
-      rank: o.rank ? Number(o.rank) : null,
-      rank_change: Number(o.rank_change || 0) || 0,
-      form: splitList(o.form),
-      liquipedia_page: o.liquipedia_page || null,
-      logo_file: o.logo_file || null,
-      logo_url: o.logo_url || null,
-      roster_slugs: splitList(o.roster_slugs),
-      achievements: [],
-      description: o.description || null,
-      coach: o.coach || null,
-      founded_year: o.founded_year ? Number(o.founded_year) : null,
-      headquarters: o.headquarters || null,
-      website: o.website || null,
-      liquipedia_url: o.liquipedia_url || null,
-      circuit_status: o.circuit_status || "active",
-      bsc_qualified_2026: o.bsc_qualified_2026 !== "0" && o.bsc_qualified_2026 !== "false",
-      circuit_summary: o.circuit_summary || null,
-      social: {},
-      meta: {},
-      synced_at: syncedAt,
-    }));
+    .map((o) =>
+      stripUndefined({
+        slug: o.slug,
+        name: o.name || o.slug,
+        tag: o.tag || "",
+        region: o.region || "GLOBAL",
+        country: o.country || undefined,
+        earnings: Number(o.earnings || 0) || 0,
+        rank: o.rank ? Number(o.rank) : undefined,
+        rank_change: o.rank_change ? Number(o.rank_change) : undefined,
+        form: o.form ? splitList(o.form) : undefined,
+        logo_file: o.logo_file || undefined,
+        logo_url: o.logo_url || undefined,
+        roster_slugs: o.roster_slugs ? splitList(o.roster_slugs) : undefined,
+        description: o.description || undefined,
+        coach: o.coach || undefined,
+        founded_year: o.founded_year ? Number(o.founded_year) : undefined,
+        headquarters: o.headquarters || undefined,
+        website: o.website || undefined,
+        circuit_summary: o.circuit_summary || undefined,
+        circuit_status: o.circuit_status || undefined,
+        bsc_qualified_2026: o.bsc_qualified_2026
+          ? o.bsc_qualified_2026 !== "0" && o.bsc_qualified_2026 !== "false"
+          : undefined,
+        achievements: parseAchievementsJson(o.achievements_json),
+        social: parseSocialJson(o.social_json),
+        meta: parseMetaJsonOptional(o.meta_json),
+        synced_at: syncedAt,
+      }),
+    );
+}
+
+function buildPlayerMetaFromCsv(o) {
+  const fromJson = parseMetaJsonOptional(o.meta_json);
+  if (fromJson) return fromJson;
+  if (o.photo_url) return { photo_url: o.photo_url };
+  return undefined;
 }
 
 export function rowsToPlayers(objects, syncedAt) {
   return objects
     .filter((o) => o.slug && o.ign)
-    .map((o) => ({
-      slug: o.slug,
-      ign: o.ign,
-      real_name: o.real_name || null,
-      team_slug: o.team_slug || null,
-      region: o.region || "GLOBAL",
-      role: o.role || "Player",
-      status: (o.status || "active").toLowerCase(),
-      liquipedia_page: o.liquipedia_page || null,
-      fantasy_points: Number(o.fantasy_points || 70) || 70,
-      fantasy_ownership: Number(o.fantasy_ownership || 20) || 20,
-      rating: Number(o.rating || 1) || 1,
-      country: o.country || null,
-      nationality: o.nationality || o.country || null,
-      join_date: o.join_date || null,
-      primary_brawler: o.primary_brawler || null,
-      secondary_brawler: o.secondary_brawler || null,
-      is_captain: bool(o.is_captain),
-      liquipedia_url: o.liquipedia_url || null,
-      previous_teams: splitList(o.previous_teams),
-      bio: o.bio || null,
-      photo_url: o.photo_url || null,
-      social: {},
-      meta: o.photo_url ? { photo_url: o.photo_url } : {},
-      synced_at: syncedAt,
-    }));
+    .map((o) =>
+      stripUndefined({
+        slug: o.slug,
+        ign: o.ign,
+        real_name: o.real_name || undefined,
+        team_slug: o.team_slug || undefined,
+        region: o.region || "GLOBAL",
+        role: o.role || "Player",
+        status: (o.status || "active").toLowerCase(),
+        fantasy_points: o.fantasy_points ? Number(o.fantasy_points) : undefined,
+        fantasy_ownership: o.fantasy_ownership ? Number(o.fantasy_ownership) : undefined,
+        rating: o.rating ? Number(o.rating) : undefined,
+        country: o.country || undefined,
+        nationality: o.nationality || o.country || undefined,
+        join_date: o.join_date || undefined,
+        primary_brawler: o.primary_brawler || undefined,
+        secondary_brawler: o.secondary_brawler || undefined,
+        is_captain: o.is_captain ? bool(o.is_captain) : undefined,
+        previous_teams: o.previous_teams ? splitList(o.previous_teams) : undefined,
+        bio: o.bio || undefined,
+        photo_url: o.photo_url || undefined,
+        social: parseSocialJson(o.social_json),
+        meta: buildPlayerMetaFromCsv(o),
+        synced_at: syncedAt,
+      }),
+    );
 }
 
 export function rowsToNews(objects, syncedAt) {
@@ -215,5 +259,92 @@ export function rowsToNews(objects, syncedAt) {
       related_tournament: o.related_tournament || null,
       hot: bool(o.hot),
       updated_at: syncedAt,
+    }));
+}
+
+export function rowsToTournaments(objects, syncedAt) {
+  return objects
+    .filter((o) => o.slug && o.name)
+    .map((o) => ({
+      slug: o.slug,
+      name: o.name || o.slug,
+      short_name: o.short_name || null,
+      region: o.region || "GLOBAL",
+      prize_pool: o.prize_pool || null,
+      teams_count: Number(o.teams_count || 0) || 0,
+      status: o.status || "upcoming",
+      start_date: o.start_date || null,
+      end_date: o.end_date || null,
+      location: o.location || null,
+      stage: o.stage || null,
+      tier: o.tier ? Number(o.tier) : null,
+      logo_file: o.logo_url || o.logo_file || null,
+      participant_slugs: splitList(o.participant_slugs),
+      meta: {},
+      synced_at: syncedAt,
+    }));
+}
+
+export function rowsToTournamentRosters(objects) {
+  return objects
+    .filter((o) => o.tournament_slug && o.team_slug)
+    .map((o) => ({
+      tournament_slug: o.tournament_slug,
+      team_slug: o.team_slug,
+      player_slugs: splitList(o.player_slugs),
+    }));
+}
+
+function parseMetaJson(raw) {
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function rowsToMatches(objects, syncedAt) {
+  return objects
+    .filter((o) => o.id && o.tournament_slug && o.team_a_slug && o.team_b_slug && o.scheduled_at)
+    .map((o) => {
+      const mapOrder = splitList(o.map_order);
+      const meta = parseMetaJson(o.meta_json);
+      if (mapOrder.length) {
+        meta.maps = { order: mapOrder, possible: mapOrder };
+      }
+      return {
+        id: o.id,
+        tournament_slug: o.tournament_slug,
+        team_a_slug: o.team_a_slug,
+        team_b_slug: o.team_b_slug,
+        scheduled_at: o.scheduled_at,
+        status: o.status || "upcoming",
+        stage: o.stage || null,
+        region: o.region || null,
+        format: o.format || "Bo3",
+        score_a: Number(o.score_a || 0) || 0,
+        score_b: Number(o.score_b || 0) || 0,
+        published: o.published === "" || o.published == null ? true : bool(o.published),
+        meta,
+        synced_at: syncedAt,
+        updated_at: syncedAt,
+      };
+    });
+}
+
+export function rowsToFantasyMarket(objects) {
+  return objects
+    .filter((o) => o.tournament_slug && o.player_slug && o.team_slug)
+    .map((o) => ({
+      tournament_slug: o.tournament_slug,
+      player_slug: o.player_slug,
+      team_slug: o.team_slug,
+      price: Number(o.price || 0) || 0,
+      price_change: Number(o.price_change || 0) || 0,
+      pick_rate: Number(o.pick_rate || 0) || 0,
+      form: splitList(o.form),
+      meta: {},
     }));
 }

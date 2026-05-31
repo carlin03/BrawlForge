@@ -1,6 +1,7 @@
 import type { Region } from "../types";
 import players2026Data from "./generated/players-2026.json";
-import { getGeneratedPlayers, toLiquipediaUrl, TEAM_ROSTER_ALIASES, isPlayerActive } from "./catalog";
+import { getGeneratedPlayers, TEAM_ROSTER_ALIASES, isPlayerActive } from "./catalog";
+import { sanitizePublicText } from "@/lib/sanitize-liquipedia";
 import { CURATED_PLAYERS } from "./teams-curated";
 import { teams, getTeam } from "./teams";
 import { getBsc2026PlayedTeamSlugs } from "./bsc-teams-played-2026";
@@ -24,7 +25,6 @@ export interface EsportsPlayer {
   role: string;
   status: PlayerStatus;
   joinDate?: string;
-  liquipediaUrl?: string;
   fantasyPoints: number;
   fantasyOwnership: number;
   rating: number;
@@ -110,13 +110,12 @@ function pushPlayer(
   const region = resolvePlayerRegion(teamSlug, raw.region);
   const base: EsportsPlayer = {
     slug,
-    ign: raw.ign.replace(/<!--[\s\S]*?-->/g, "").split("\n")[0].trim(),
+    ign: sanitizePublicText(raw.ign.replace(/<!--[\s\S]*?-->/g, "").split("\n")[0].trim()) ?? raw.ign,
     realName: raw.realName,
     teamSlug,
     region,
     role: raw.role || "Player",
     status,
-    liquipediaUrl: toLiquipediaUrl(raw.liquipediaPage),
     fantasyPoints: raw.fantasyPoints ?? 70,
     fantasyOwnership: raw.fantasyOwnership ?? 20,
     rating: raw.rating ?? 1.08,
@@ -126,7 +125,6 @@ function pushPlayer(
         ...base,
         ...curated,
         teamSlug: curated.teamSlug && KNOWN_TEAMS.has(curated.teamSlug) ? curated.teamSlug : base.teamSlug,
-        liquipediaUrl: base.liquipediaUrl,
         status: base.status,
       }
     : base;

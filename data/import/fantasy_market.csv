@@ -1,0 +1,7 @@
+# Mercado fantasy (fantasy_market_catalog)
+# BrawlForge — edita en Excel o Google Sheets. Guarda como CSV UTF-8.
+# Las filas que empiezan por # y las filas _ayuda / _ejemplo NO se importan.
+# En listas usa el carácter | entre valores (ej. jugador1|jugador2).
+tournament_slug,player_slug,team_slug,price,price_change,pick_rate,form
+_ayuda,slug jugador,slug equipo,9.5,0.2,34,W|W|L
+_ejemplo,yoshi,sk-gaming,9.5,0.2,28,W|W|L

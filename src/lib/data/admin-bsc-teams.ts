@@ -19,7 +19,9 @@ export type AdminBscTeamItem = {
 };
 
 export const BSC_2026_NEW_TEAM_SLUGS: readonly string[] = [...BSC_2026_REGISTRY_SLUGS].sort();
-export const BSC_2026_ADMIN_TEAM_COUNT = BSC_2026_ACTIVE_TEAM_SLUGS.length;
+/** Clubes del circuito curado en código (50); el total en admin incluye extras de Supabase. */
+export const BSC_2026_CORE_TEAM_COUNT = BSC_2026_ACTIVE_TEAM_SLUGS.length;
+export const BSC_2026_ADMIN_TEAM_COUNT = BSC_2026_CORE_TEAM_COUNT;
 
 export function isBsc2026NewTeam(slug: string): boolean {
   return BSC_2026_REGISTRY_SLUGS.has(slug.trim().toLowerCase());
@@ -53,9 +55,6 @@ export function adminBscTeamToCatalogRow(slug: string): AdminTeamCatalogRow {
     roster_slugs: full?.roster?.length ? full.roster : (BSC_2026_ROSTERS[key] ?? reg?.roster ?? []),
     logo_url: null,
     description: null,
-    liquipedia_url: reg?.liquipediaPage
-      ? `https://liquipedia.net/brawlstars/${encodeURIComponent(reg.liquipediaPage.replace(/ /g, "_"))}`
-      : null,
     circuit_status: "active",
     bsc_qualified_2026: true,
     circuit_summary: null,
@@ -66,7 +65,22 @@ export function adminBscTeamToCatalogRow(slug: string): AdminTeamCatalogRow {
   };
 }
 
-/** Los 50 clubes del circuito — orden oficial BSC */
+export function adminCatalogRowsToTeamItems(rows: AdminTeamCatalogRow[]): AdminBscTeamItem[] {
+  return rows.map((row) => ({
+    slug: row.slug,
+    name: row.name,
+    tag: row.tag,
+    region: row.region as Region,
+  }));
+}
+
+/** Lista mínima para logos — usa filas ya fusionadas (API admin / Supabase). */
+export function getAdminBscTeamsListFromRows(rows?: AdminTeamCatalogRow[]): AdminBscTeamItem[] {
+  if (rows?.length) return adminCatalogRowsToTeamItems(rows);
+  return getAdminBscTeamsList();
+}
+
+/** Clubes BSC curados en código — orden oficial */
 export function getAdminBscTeamsList(): AdminBscTeamItem[] {
   const order = new Map(BSC_2026_ACTIVE_TEAM_SLUGS.map((s, i) => [s, i]));
 

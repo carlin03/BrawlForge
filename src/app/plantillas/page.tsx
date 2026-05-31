@@ -5,7 +5,8 @@ import { BrandMark } from "@/components/ui/BrandMark";
 
 export const metadata = {
   title: "Plantillas CSV — BrawlForge",
-  description: "Guía de importación masiva: equipos, jugadores y noticias para Supabase.",
+  description:
+    "Guía de importación masiva: equipos, jugadores, torneos, partidos, noticias y fantasy para Supabase.",
 };
 
 export default function PlantillasPage() {
@@ -28,7 +29,7 @@ export default function PlantillasPage() {
             </p>
           </div>
         </div>
-        <Link href="/admin?tab=import" className="bp-btn bp-btn-gold">
+        <Link href="/admin?module=competicion&tab=import" className="bp-btn bp-btn-gold">
           Ir a importar (admin)
         </Link>
       </header>

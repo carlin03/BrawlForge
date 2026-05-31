@@ -1,5 +1,4 @@
 import type { Region } from "../types";
-import { toLiquipediaUrl } from "./catalog";
 import { getTeams2026 } from "./teams-2026";
 import { BSC_2026_ACTIVE_TEAM_SLUGS, isBsc2026ActiveTeam } from "./bsc-2026-active-teams";
 import { BSC_2026_ROSTERS } from "./bsc-2026-rosters";
@@ -17,7 +16,6 @@ export interface EsportsTeam {
   rank: number;
   rankChange: number;
   form: ("W" | "L")[];
-  liquipediaUrl: string;
   roster: string[];
   achievements: { place: string; tournament: string; prize: string; date: string }[];
 }
@@ -33,7 +31,6 @@ function buildTeamFromSlug(slug: string): EsportsTeam | null {
   if (!from2026 && !reg && !roster2026?.length) return null;
 
   const bscRegion = getBsc2026TeamRegion(slug);
-  const page = reg?.liquipediaPage ?? from2026?.liquipediaPage ?? slug.replace(/-/g, "_");
   const base: EsportsTeam = {
     slug,
     name: reg?.name ?? from2026?.name ?? slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
@@ -44,12 +41,11 @@ function buildTeamFromSlug(slug: string): EsportsTeam | null {
     rank: from2026?.rank ?? 99,
     rankChange: from2026?.rankChange ?? 0,
     form: (from2026?.form?.length ? from2026.form : ["W", "L", "W"]) as ("W" | "L")[],
-    liquipediaUrl: toLiquipediaUrl(page),
     roster: roster2026?.length ? roster2026 : (from2026?.roster ?? reg?.roster ?? []),
     achievements: from2026?.achievements ?? [],
   };
 
-  const merged = curated ? { ...base, ...curated, liquipediaUrl: base.liquipediaUrl } : base;
+  const merged = curated ? { ...base, ...curated } : base;
   if (roster2026?.length) {
     return { ...merged, region: bscRegion ?? reg?.region ?? merged.region, roster: roster2026 };
   }

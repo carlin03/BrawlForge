@@ -253,13 +253,6 @@ export function AdminTeamWikiForm({
       {tab === "redes" && (
         <div className="bf-admin-tab-panel">
           <AdminSocialEditor value={team.social} onChange={(social) => onChange({ ...team, social })} />
-          <AdminField label="Página Liquipedia">
-            <input
-              value={team.liquipedia_url ?? ""}
-              onChange={(e) => onChange({ ...team, liquipedia_url: e.target.value })}
-              placeholder="https://liquipedia.net/…"
-            />
-          </AdminField>
         </div>
       )}
 

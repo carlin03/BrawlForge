@@ -15,7 +15,6 @@ export type AdminTournamentRow = {
   location: string | null;
   stage: string | null;
   tier: number | null;
-  liquipedia_page: string | null;
   logo_url: string | null;
   participant_slugs: string[];
   meta: Record<string, unknown>;
@@ -35,7 +34,6 @@ function localToRow(t: EsportsTournament): AdminTournamentRow {
     location: t.location || null,
     stage: t.stage || null,
     tier: t.tier ?? null,
-    liquipedia_page: t.liquipediaPage ?? null,
     logo_url: null,
     participant_slugs: t.participantSlugs ?? [],
     meta: {},
@@ -62,7 +60,6 @@ export function adminTournamentToCatalogRow(slug: string): AdminTournamentRow {
     location: null,
     stage: null,
     tier: null,
-    liquipedia_page: null,
     logo_url: null,
     participant_slugs: [],
     meta: {},
@@ -95,7 +92,6 @@ export function mergeAdminTournamentRows(
       location: row.location ? String(row.location) : base.location,
       stage: row.stage ? String(row.stage) : base.stage,
       tier: row.tier != null ? Number(row.tier) : base.tier,
-      liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : base.liquipedia_page,
       logo_url: row.logo_url ? String(row.logo_url) : base.logo_url,
       participant_slugs: Array.isArray(participants)
         ? (participants as string[])
@@ -129,7 +125,6 @@ export function adminRowToEsportsPreview(row: AdminTournamentRow): EsportsTourna
     endDate: row.end_date?.trim() || row.start_date?.trim() || "",
     location: row.location?.trim() || "—",
     stage: row.stage?.trim() || "",
-    liquipediaUrl: "",
     tier: row.tier ?? undefined,
     participantSlugs: participants,
   };

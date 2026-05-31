@@ -4,14 +4,14 @@ import {
   BSC_TOURNAMENT_ALIASES,
   isBscCircuitSlug,
 } from "./bsc-tournaments";
-import { getBsc2026LiquipediaUrl } from "./bsc-2026-liquipedia-pages";
 import { getBscTournamentEnrichment, getBscEnrichedMatches } from "./bsc-tournaments-enriched";
 import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
 import { bscMatches } from "./bsc-matches";
 import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
-import { toLiquipediaUrl, normalizeParticipantList } from "./catalog";
+import { normalizeParticipantList } from "./catalog";
+import { sanitizePublicWebsite } from "@/lib/sanitize-liquipedia";
 import { getMatchPool } from "./match-pool";
 
 import type { MatchMeta } from "./match-meta";
@@ -28,7 +28,6 @@ export interface EsportsMatch {
   status: "live" | "upcoming" | "finished" | "cancelled";
   region: Region;
   format: string;
-  liquipediaUrl?: string;
   meta?: MatchMeta;
 }
 
@@ -44,19 +43,16 @@ export interface EsportsTournament {
   endDate: string;
   location: string;
   stage: string;
-  liquipediaUrl: string;
   winnerSlug?: string;
   tier?: number;
   featured?: boolean;
   participantSlugs?: string[];
   logoFile?: string | null;
-  /** Metadatos Liquipedia (sync bsc-tournaments-enriched.json) */
   organizer?: string;
   venue?: string;
   eventType?: string;
   series?: string;
   website?: string;
-  liquipediaPage?: string;
 }
 
 const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
@@ -72,7 +68,6 @@ const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
     endDate: "2026-11-30",
     location: "Tokyo, Japan",
     stage: "Qualifiers ongoing",
-    liquipediaUrl: "https://liquipedia.net/brawlstars/Brawl_Stars_World_Finals/2026",
     featured: true,
   },
   {
@@ -87,7 +82,6 @@ const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
     endDate: "2026-04-12",
     location: "Online",
     stage: "Completed",
-    liquipediaUrl: "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026",
     winnerSlug: "fut-esports",
   },
   {
@@ -102,7 +96,6 @@ const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
     endDate: "2026-04-11",
     location: "Online",
     stage: "Completed",
-    liquipediaUrl: "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026",
     winnerSlug: "crazy-raccoon",
   },
   {
@@ -117,7 +110,6 @@ const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
     endDate: "2026-04-19",
     location: "Online",
     stage: "Completed",
-    liquipediaUrl: "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026",
     winnerSlug: "tribe-gaming",
   },
 ];
@@ -137,12 +129,6 @@ function mergeBscTournamentDef(t: (typeof bsc2026Tournaments)[number]): EsportsT
   const wikiParticipants = (wiki?.participantSlugs ?? []).filter((s) => Boolean(getTeam(s)));
   const participants =
     wikiParticipants.length >= 2 ? wikiParticipants : getBscTournamentParticipantSlugs(t.slug);
-  const liquipediaUrl =
-    wiki?.liquipediaUrl ??
-    getBsc2026LiquipediaUrl(t.slug) ??
-    t.liquipediaUrl ??
-    toLiquipediaUrl("Brawl_Stars_Championship/2026");
-
   return {
     ...t,
     name: wiki?.name ?? t.name,
@@ -154,14 +140,12 @@ function mergeBscTournamentDef(t: (typeof bsc2026Tournaments)[number]): EsportsT
     status: wiki?.status ?? t.status,
     teams: wiki?.teamCount ?? (participants.length || t.teams),
     winnerSlug: wiki?.winnerSlug ?? t.winnerSlug,
-    liquipediaUrl,
-    liquipediaPage: wiki?.liquipediaPage,
     organizer: wiki?.organizer,
     venue: wiki?.venue,
     eventType: wiki?.type,
     series: wiki?.series,
-    website: wiki?.website,
-    tier: wiki?.liquipediaTier ?? 1,
+    website: sanitizePublicWebsite(wiki?.website),
+    tier: wiki?.tier ?? 1,
     featured: true,
     logoFile: t.logoFile,
     participantSlugs: participants.length ? participants : undefined,

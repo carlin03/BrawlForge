@@ -57,10 +57,9 @@ export function getTeamTournamentHistory(teamSlug: string, limit = 12): TeamTour
     .slice(0, limit);
 }
 
-export function getTeamLiquipediaUrl(slug: string): string | null {
-  const team = getTeam(slug);
-  if (!team?.liquipediaUrl) return null;
-  return team.liquipediaUrl;
+/** Enlaces externos desactivados — siempre null. */
+export function getTeamLiquipediaUrl(_slug: string): string | null {
+  return null;
 }
 
 export function getTeamRegisteredTournaments(teamSlug: string, limit = 8): EsportsTournament[] {

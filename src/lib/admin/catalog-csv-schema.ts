@@ -6,19 +6,61 @@ export type CsvFieldDef = {
   required?: boolean;
 };
 
+export type CsvTemplateId =
+  | "teams"
+  | "players"
+  | "news"
+  | "tournaments"
+  | "tournament_rosters"
+  | "matches"
+  | "fantasy_market";
+
+export type CsvTemplateIcon =
+  | "teams"
+  | "players"
+  | "news"
+  | "tournaments"
+  | "rosters"
+  | "matches"
+  | "fantasy";
+
 export type CsvTemplateDef = {
-  id: "teams" | "players" | "news";
+  id: CsvTemplateId;
+  group: "clubs" | "competition" | "content";
   title: string;
   subtitle: string;
   filename: string;
   table: string;
-  icon: "teams" | "players" | "news";
+  icon: CsvTemplateIcon;
   fields: CsvFieldDef[];
 };
+
+export const CSV_TEMPLATE_GROUPS: {
+  id: CsvTemplateDef["group"];
+  title: string;
+  note?: string;
+}[] = [
+  {
+    id: "clubs",
+    title: "Equipos y jugadores",
+    note: "Son archivos distintos: teams.csv no sustituye a players.csv. Puedes subir solo uno o ambos.",
+  },
+  {
+    id: "competition",
+    title: "Torneos y partidos",
+    note: "Importa primero torneos y equipos; luego partidos y plantillas por torneo.",
+  },
+  {
+    id: "content",
+    title: "Noticias y fantasy",
+    note: "Noticias para el blog; fantasy_market para precios por torneo.",
+  },
+];
 
 export const CSV_TEMPLATES: CsvTemplateDef[] = [
   {
     id: "teams",
+    group: "clubs",
     title: "Equipos",
     subtitle: "Fichas de club con descripción, región y plantilla",
     filename: "teams.csv",
@@ -96,15 +138,35 @@ export const CSV_TEMPLATES: CsvTemplateDef[] = [
         example: "yoshi|nowy297|ope",
         required: true,
       },
+      { key: "form", label: "Forma", description: "Últimos resultados (W/L), separados por |.", example: "W|W|L" },
       { key: "coach", label: "Entrenador", description: "Opcional.", example: "Coach Name" },
       { key: "founded_year", label: "Fundación", description: "Año (número).", example: "2020" },
       { key: "headquarters", label: "Sede", description: "Ciudad o país sede.", example: "Berlin" },
+      { key: "website", label: "Web", description: "URL del club.", example: "https://…" },
       { key: "circuit_summary", label: "Resumen BSC", description: "Frase corta del circuito regional.", example: "MF EMEA 2026" },
-      { key: "liquipedia_url", label: "Liquipedia", description: "URL completa de la página del club.", example: "https://liquipedia.net/…" },
+      {
+        key: "social_json",
+        label: "Redes (JSON)",
+        description: "Objeto JSON: twitter, youtube, twitch, instagram, discord… Igual que en Admin → Equipos.",
+        example: '{"twitter":"https://x.com/…"}',
+      },
+      {
+        key: "achievements_json",
+        label: "Logros (JSON)",
+        description: "Array JSON de trofeos (place, tournament, prize, date).",
+        example: '[{"place":"1st","tournament":"Brawl Cup"}]',
+      },
+      {
+        key: "meta_json",
+        label: "Meta (JSON)",
+        description: "Wiki, tagline, galería y secciones extra guardadas en el admin. Exporta desde «Descargar CSV» para round-trip.",
+        example: '{"tagline":"…","wiki_sections":[]}',
+      },
     ],
   },
   {
     id: "players",
+    group: "clubs",
     title: "Jugadores",
     subtitle: "Pros del circuito: fantasy, bio y foto",
     filename: "players.csv",
@@ -114,7 +176,7 @@ export const CSV_TEMPLATES: CsvTemplateDef[] = [
       {
         key: "slug",
         label: "Slug",
-        description: "ID único del jugador (mismo que en Liquipedia/local).",
+        description: "ID único del jugador en la URL.",
         example: "yoshi",
         required: true,
       },
@@ -191,11 +253,114 @@ export const CSV_TEMPLATES: CsvTemplateDef[] = [
       { key: "secondary_brawler", label: "Brawler 2", description: "Secundario.", example: "Gene" },
       { key: "is_captain", label: "Capitán", description: "true / false", example: "true" },
       { key: "join_date", label: "Ingreso", description: "AAAA-MM", example: "2026-01" },
-      { key: "liquipedia_url", label: "Liquipedia", description: "URL del perfil.", example: "https://liquipedia.net/…" },
+      {
+        key: "previous_teams",
+        label: "Equipos anteriores",
+        description: "Slugs de clubes previos, separados por | (pipe).",
+        example: "fut-esports|tribe-gaming",
+      },
+      {
+        key: "social_json",
+        label: "Redes (JSON)",
+        description: "Objeto JSON con enlaces sociales del jugador.",
+        example: '{"twitter":"https://x.com/…"}',
+      },
+      {
+        key: "meta_json",
+        label: "Meta (JSON)",
+        description: "Biografía larga, wiki_sections, career_highlights, gallery… lo mismo que Admin → Jugadores.",
+        example: '{"wiki_sections":[],"career_highlights":[]}',
+      },
+    ],
+  },
+  {
+    id: "tournaments",
+    group: "competition",
+    title: "Torneos",
+    subtitle: "Eventos BSC: fechas, premios y participantes",
+    filename: "tournaments.csv",
+    table: "tournaments_catalog",
+    icon: "tournaments",
+    fields: [
+      { key: "slug", label: "Slug", description: "ID del torneo en URL.", example: "bsc-2026-brawl-cup", required: true },
+      { key: "name", label: "Nombre", description: "Título público.", example: "Brawl Cup 2026", required: true },
+      { key: "short_name", label: "Nombre corto", description: "Para chips y calendario.", example: "Brawl Cup" },
+      { key: "region", label: "Región", description: "EMEA, GLOBAL, etc.", example: "EMEA", required: true },
+      { key: "prize_pool", label: "Premio", description: "Texto libre (ej. $100,000).", example: "$100,000" },
+      { key: "teams_count", label: "Equipos", description: "Número de clubes.", example: "16" },
+      { key: "status", label: "Estado", description: "upcoming, live, finished.", example: "upcoming" },
+      { key: "start_date", label: "Inicio", description: "AAAA-MM-DD", example: "2026-05-01" },
+      { key: "end_date", label: "Fin", description: "AAAA-MM-DD", example: "2026-05-03" },
+      { key: "location", label: "Sede", description: "Ciudad o online.", example: "Berlin" },
+      { key: "stage", label: "Fase", description: "Monthly Final, Brawl Cup…", example: "Brawl Cup" },
+      { key: "tier", label: "Tier", description: "1–3 (número).", example: "1" },
+      { key: "logo_url", label: "Logo", description: "URL imagen del evento.", example: "https://…" },
+      {
+        key: "participant_slugs",
+        label: "Participantes",
+        description: "Slugs de equipos separados por |.",
+        example: "hmble|sk-gaming|fut-esports",
+      },
+    ],
+  },
+  {
+    id: "tournament_rosters",
+    group: "competition",
+    title: "Plantillas por torneo",
+    subtitle: "Qué jugadores juega cada club en un evento concreto",
+    filename: "tournament_rosters.csv",
+    table: "tournament_team_rosters",
+    icon: "rosters",
+    fields: [
+      { key: "tournament_slug", label: "Torneo", description: "Slug del torneo.", example: "bsc-2026-brawl-cup", required: true },
+      { key: "team_slug", label: "Equipo", description: "Slug del club.", example: "sk-gaming", required: true },
+      {
+        key: "player_slugs",
+        label: "Jugadores",
+        description: "Slugs separados por | (deben existir en players.csv).",
+        example: "yoshi|nowy297|ope",
+        required: true,
+      },
+    ],
+  },
+  {
+    id: "matches",
+    group: "competition",
+    title: "Partidos",
+    subtitle: "Calendario y resultados enlazados a torneo y equipos",
+    filename: "matches.csv",
+    table: "matches_catalog",
+    icon: "matches",
+    fields: [
+      { key: "id", label: "ID", description: "Identificador único del partido.", example: "bsc-bc-2026-mf-emea-r1-m1", required: true },
+      { key: "tournament_slug", label: "Torneo", description: "Slug del torneo.", example: "bsc-2026-brawl-cup", required: true },
+      { key: "team_a_slug", label: "Equipo A", description: "Local o lado A.", example: "hmble", required: true },
+      { key: "team_b_slug", label: "Equipo B", description: "Visitante o lado B.", example: "sk-gaming", required: true },
+      { key: "scheduled_at", label: "Fecha", description: "ISO 8601 con zona (UTC recomendado).", example: "2026-05-29T18:00:00Z", required: true },
+      { key: "status", label: "Estado", description: "upcoming, live, finished, cancelled.", example: "upcoming" },
+      { key: "stage", label: "Ronda", description: "Grupos, semifinal, final…", example: "Grand Final" },
+      { key: "region", label: "Región", description: "Contexto regional.", example: "EMEA" },
+      { key: "format", label: "Formato", description: "Bo3, Bo5…", example: "Bo5" },
+      { key: "score_a", label: "Marcador A", description: "Sets o mapas ganados.", example: "0" },
+      { key: "score_b", label: "Marcador B", description: "Sets o mapas ganados.", example: "0" },
+      { key: "published", label: "Publicado", description: "true / false — visible en web.", example: "true" },
+      {
+        key: "map_order",
+        label: "Mapas",
+        description: "Orden de mapas en predicciones, separados por |.",
+        example: "Hard Rock Mine|Double Swoosh|Pinhole Punt",
+      },
+      {
+        key: "meta_json",
+        label: "Meta JSON",
+        description: "Opcional: objeto JSON para campos avanzados (predicciones, streams…).",
+        example: '{"importance":"featured"}',
+      },
     ],
   },
   {
     id: "news",
+    group: "content",
     title: "Noticias",
     subtitle: "Artículos con extracto, cuerpo multipárrafo y enlaces",
     filename: "news.csv",
@@ -280,8 +445,30 @@ export const CSV_TEMPLATES: CsvTemplateDef[] = [
       },
     ],
   },
+  {
+    id: "fantasy_market",
+    group: "content",
+    title: "Mercado fantasy",
+    subtitle: "Precios y forma por jugador en un torneo",
+    filename: "fantasy_market.csv",
+    table: "fantasy_market_catalog",
+    icon: "fantasy",
+    fields: [
+      { key: "tournament_slug", label: "Torneo", description: "Slug del evento.", example: "bsc-2026-brawl-cup", required: true },
+      { key: "player_slug", label: "Jugador", description: "Slug del pro.", example: "yoshi", required: true },
+      { key: "team_slug", label: "Equipo", description: "Club en ese torneo.", example: "sk-gaming", required: true },
+      { key: "price", label: "Precio", description: "Coste en el mercado (número).", example: "9.5" },
+      { key: "price_change", label: "Δ precio", description: "Cambio reciente (+/-).", example: "0.2" },
+      { key: "pick_rate", label: "% picks", description: "0–100.", example: "34" },
+      { key: "form", label: "Forma", description: "Últimos resultados W/L separados por |.", example: "W|W|L" },
+    ],
+  },
 ];
 
-export function getCsvTemplate(id: CsvTemplateDef["id"]): CsvTemplateDef | undefined {
+export function getCsvTemplate(id: CsvTemplateId): CsvTemplateDef | undefined {
   return CSV_TEMPLATES.find((t) => t.id === id);
+}
+
+export function getCsvTemplatesByGroup(group: CsvTemplateDef["group"]): CsvTemplateDef[] {
+  return CSV_TEMPLATES.filter((t) => t.group === group);
 }

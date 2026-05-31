@@ -1,0 +1,7 @@
+# Torneos (tournaments_catalog)
+# BrawlForge — edita en Excel o Google Sheets. Guarda como CSV UTF-8.
+# Las filas que empiezan por # y las filas _ayuda / _ejemplo NO se importan.
+# En listas usa el carácter | entre valores (ej. jugador1|jugador2).
+slug,name,short_name,region,prize_pool,teams_count,status,start_date,end_date,location,stage,tier,logo_url,participant_slugs
+_ayuda,Nombre del evento,Nombre corto,EMEA|GLOBAL,Texto premio,Nº equipos,upcoming|live|finished,AAAA-MM-DD,AAAA-MM-DD,Ciudad u online,Brawl Cup|Monthly Final,1-3,URL logo,equipo1|equipo2
+_ejemplo,Brawl Cup 2026,Brawl Cup,EMEA,"$100,000",16,upcoming,2026-05-29,2026-05-31,Berlin,Brawl Cup,1,,hmble|sk-gaming|fut-esports

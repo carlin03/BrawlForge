@@ -13,6 +13,18 @@ import {
   PLAYER_EXAMPLE,
   NEWS_HINTS,
   NEWS_EXAMPLE,
+  TOURNAMENT_HEADERS,
+  TOURNAMENT_HINTS,
+  TOURNAMENT_EXAMPLE,
+  ROSTER_HEADERS,
+  ROSTER_HINTS,
+  ROSTER_EXAMPLE,
+  MATCH_HEADERS,
+  MATCH_HINTS,
+  MATCH_EXAMPLE,
+  FANTASY_HEADERS,
+  FANTASY_HINTS,
+  FANTASY_EXAMPLE,
 } from "./lib/csv-template-builder.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -48,6 +60,7 @@ const PLAYER_HEADERS = [
   "rating",
   "bio",
   "photo_url",
+  "previous_teams",
 ];
 
 const NEWS_HEADERS = [
@@ -186,14 +199,60 @@ const newsCsv = buildCatalogTemplateCsv({
   rows: [],
 });
 
+const tournamentsCsv = buildCatalogTemplateCsv({
+  title: "Torneos (tournaments_catalog)",
+  headers: TOURNAMENT_HEADERS,
+  hints: TOURNAMENT_HINTS,
+  example: TOURNAMENT_EXAMPLE,
+  rows: [],
+});
+
+const rostersCsv = buildCatalogTemplateCsv({
+  title: "Plantillas por torneo (tournament_team_rosters)",
+  headers: ROSTER_HEADERS,
+  hints: ROSTER_HINTS,
+  example: ROSTER_EXAMPLE,
+  rows: [],
+});
+
+const matchesCsv = buildCatalogTemplateCsv({
+  title: "Partidos (matches_catalog)",
+  headers: MATCH_HEADERS,
+  hints: MATCH_HINTS,
+  example: MATCH_EXAMPLE,
+  rows: [],
+});
+
+const fantasyCsv = buildCatalogTemplateCsv({
+  title: "Mercado fantasy (fantasy_market_catalog)",
+  headers: FANTASY_HEADERS,
+  hints: FANTASY_HINTS,
+  example: FANTASY_EXAMPLE,
+  rows: [],
+});
+
+const files = {
+  "teams.csv": teamsCsv,
+  "players.csv": playersCsv,
+  "news.csv": newsCsv,
+  "tournaments.csv": tournamentsCsv,
+  "tournament_rosters.csv": rostersCsv,
+  "matches.csv": matchesCsv,
+  "fantasy_market.csv": fantasyCsv,
+};
+
 for (const dir of outDirs) {
-  writeFileSync(resolve(dir, "teams.csv"), teamsCsv);
-  writeFileSync(resolve(dir, "players.csv"), playersCsv);
-  writeFileSync(resolve(dir, "news.csv"), newsCsv);
+  for (const [name, content] of Object.entries(files)) {
+    writeFileSync(resolve(dir, name), content);
+  }
 }
 
 console.log(`Plantillas en ${outDirs.join(" y ")}`);
-console.log(`  teams.csv    → ${teamObjects.length} equipos BSC`);
-console.log(`  players.csv  → ${playerObjects.length} jugadores`);
-console.log(`  news.csv     → ejemplo + cabeceras`);
+console.log(`  teams.csv              → ${teamObjects.length} equipos BSC`);
+console.log(`  players.csv            → ${playerObjects.length} jugadores`);
+console.log(`  tournaments.csv        → cabeceras + ejemplo`);
+console.log(`  tournament_rosters.csv → cabeceras + ejemplo`);
+console.log(`  matches.csv            → cabeceras + ejemplo`);
+console.log(`  news.csv               → cabeceras + ejemplo`);
+console.log(`  fantasy_market.csv     → cabeceras + ejemplo`);
 console.log("\nEdita en Excel/Sheets → Guardar como CSV UTF-8 → npm run supabase:import:csv");

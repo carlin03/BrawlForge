@@ -199,10 +199,7 @@ export function ProfileAchievementsShowcase({
 }
 
 /** Enlaces externos desactivados en la web pública (solo contenido en BrawlForge). */
-export function ProfileSocialHub(_props: {
-  social: Record<string, string>;
-  liquipediaUrl?: string | null;
-}) {
+export function ProfileSocialHub(_props: { social: Record<string, string> }) {
   return null;
 }
 
@@ -292,7 +289,6 @@ export function ProfileHistoryTab({
   achievements,
   career,
   social,
-  liquipediaUrl,
   playstyle,
   brawlers,
   emptyHint,
@@ -304,7 +300,6 @@ export function ProfileHistoryTab({
   achievements?: WikiAchievement[];
   career?: CareerHighlight[];
   social: Record<string, string>;
-  liquipediaUrl?: string | null;
   playstyle?: string;
   brawlers?: string[];
   emptyHint: string;

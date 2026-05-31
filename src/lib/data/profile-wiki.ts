@@ -1,5 +1,7 @@
 /** Contenido enriquecido tipo Wikipedia — guardado en social / meta / achievements del catálogo. */
 
+import { isLiquipediaReference, sanitizePublicText } from "@/lib/sanitize-liquipedia";
+
 export type WikiAchievement = {
   place: string;
   tournament: string;
@@ -91,9 +93,14 @@ export function parseWikiSections(raw: unknown): WikiSection[] {
       if (!s || typeof s !== "object") return null;
       const o = s as Record<string, unknown>;
       const paragraphs = Array.isArray(o.paragraphs)
-        ? (o.paragraphs as string[]).map(String).filter(Boolean)
+        ? (o.paragraphs as string[])
+            .map((p) => sanitizePublicText(String(p)))
+            .filter((p): p is string => Boolean(p))
         : o.content
-          ? String(o.content).split("\n\n").filter(Boolean)
+          ? String(o.content)
+              .split("\n\n")
+              .map((p) => sanitizePublicText(p.trim()))
+              .filter((p): p is string => Boolean(p))
           : [""];
       return {
         id: String(o.id ?? newSectionId()),
@@ -109,7 +116,8 @@ export function parseSocial(raw: unknown): SocialLinks {
   const o = raw as Record<string, unknown>;
   const out: SocialLinks = {};
   for (const k of ["twitter", "youtube", "discord", "twitch", "instagram", "tiktok", "website"] as const) {
-    if (o[k]) out[k] = String(o[k]);
+    const v = sanitizePublicText(o[k] ? String(o[k]) : "");
+    if (v && !isLiquipediaReference(v)) out[k] = v;
   }
   return out;
 }
@@ -123,7 +131,11 @@ export function parseTeamMeta(raw: unknown): TeamProfileMeta {
     banner_url: o.banner_url ? String(o.banner_url) : undefined,
     gallery_urls: Array.isArray(o.gallery_urls) ? (o.gallery_urls as string[]).map(String) : [],
     wiki_sections: parseWikiSections(o.wiki_sections),
-    fun_facts: Array.isArray(o.fun_facts) ? (o.fun_facts as string[]).map(String).filter(Boolean) : [],
+    fun_facts: Array.isArray(o.fun_facts)
+      ? (o.fun_facts as string[])
+          .map((f) => sanitizePublicText(String(f)))
+          .filter((f): f is string => Boolean(f))
+      : [],
     rivals: Array.isArray(o.rivals) ? (o.rivals as string[]).map(String) : [],
     sponsors: Array.isArray(o.sponsors) ? (o.sponsors as TeamProfileMeta["sponsors"]) : [],
     manager: o.manager ? String(o.manager) : undefined,
@@ -144,7 +156,11 @@ export function parsePlayerMeta(raw: unknown): PlayerProfileMeta {
     banner_url: o.banner_url ? String(o.banner_url) : undefined,
     gallery_urls: Array.isArray(o.gallery_urls) ? (o.gallery_urls as string[]).map(String) : [],
     wiki_sections: parseWikiSections(o.wiki_sections),
-    fun_facts: Array.isArray(o.fun_facts) ? (o.fun_facts as string[]).map(String).filter(Boolean) : [],
+    fun_facts: Array.isArray(o.fun_facts)
+      ? (o.fun_facts as string[])
+          .map((f) => sanitizePublicText(String(f)))
+          .filter((f): f is string => Boolean(f))
+      : [],
     playstyle: o.playstyle ? String(o.playstyle) : undefined,
     peak_rating: typeof o.peak_rating === "number" ? o.peak_rating : undefined,
     main_brawlers: Array.isArray(o.main_brawlers) ? (o.main_brawlers as string[]).map(String) : [],
@@ -200,8 +216,8 @@ const SOCIAL_KEYS = ["twitter", "youtube", "discord", "twitch", "instagram", "ti
 export function pruneSocial(social: SocialLinks): Record<string, string> {
   const out: Record<string, string> = {};
   for (const k of SOCIAL_KEYS) {
-    const v = social[k]?.trim();
-    if (v) out[k] = v;
+    const v = sanitizePublicText(social[k]?.trim());
+    if (v && !isLiquipediaReference(v)) out[k] = v;
   }
   return out;
 }

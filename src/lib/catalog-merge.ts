@@ -5,6 +5,7 @@ import { getTeam } from "@/lib/data/teams";
 import type { CatalogPlayerRow, CatalogTeamRow, CatalogMarketRow } from "@/lib/supabase/catalog-types";
 import type { Region } from "@/lib/types";
 import { parseAchievements } from "@/lib/data/profile-wiki";
+import { sanitizePublicText, sanitizeSocialRecord } from "@/lib/sanitize-liquipedia";
 
 export type PlayerExtras = {
   bio: string | null;
@@ -12,7 +13,6 @@ export type PlayerExtras = {
   nationality: string | null;
   photoUrl: string | null;
   joinDate?: string;
-  liquipediaUrl?: string;
   isCaptain: boolean;
   previousTeams: string[];
   primaryBrawler: string | null;
@@ -55,7 +55,6 @@ export function mergeCatalogPlayer(
       nationality: null,
       photoUrl: null,
       joinDate: base.joinDate,
-      liquipediaUrl: base.liquipediaUrl,
       isCaptain: false,
       previousTeams: [],
       primaryBrawler: null,
@@ -64,7 +63,6 @@ export function mergeCatalogPlayer(
     };
   }
   const rowExtra = row as CatalogPlayerRow & {
-    liquipedia_url?: string | null;
     is_captain?: boolean;
     previous_teams?: string[];
     primary_brawler?: string | null;
@@ -76,7 +74,7 @@ export function mergeCatalogPlayer(
   const photoUrl = row.photo_url?.trim() || photoFromMeta || null;
   return {
     ...base,
-    ign: row.ign || base.ign,
+    ign: sanitizePublicText(row.ign) || base.ign,
     realName: row.real_name ?? base.realName,
     teamSlug: row.team_slug ?? base.teamSlug,
     region: (row.region as Region) || base.region,
@@ -85,21 +83,15 @@ export function mergeCatalogPlayer(
     fantasyPoints: row.fantasy_points ?? base.fantasyPoints,
     fantasyOwnership: row.fantasy_ownership ?? base.fantasyOwnership,
     rating: Number(row.rating ?? base.rating),
-    bio: row.bio,
+    bio: sanitizePublicText(row.bio),
     nationality: row.nationality?.trim() || row.country?.trim() || null,
     country: row.country?.trim() || row.nationality?.trim() || null,
     photoUrl,
     joinDate: row.join_date ?? base.joinDate,
-    liquipediaUrl:
-      rowExtra.liquipedia_url ??
-      (row.liquipedia_page
-        ? `https://liquipedia.net/brawlstars/${row.liquipedia_page.replace(/ /g, "_")}`
-        : undefined) ??
-      base.liquipediaUrl,
     isCaptain: Boolean(rowExtra.is_captain),
     previousTeams: Array.isArray(rowExtra.previous_teams) ? rowExtra.previous_teams : [],
     primaryBrawler: rowExtra.primary_brawler ?? null,
-    social: row.social ?? {},
+    social: sanitizeSocialRecord((row.social ?? {}) as Record<string, unknown>),
     meta: row.meta ?? {},
   };
 }
@@ -119,7 +111,6 @@ export function mergeCatalogTeam(
     rank: row!.rank ?? 0,
     rankChange: row!.rank_change ?? 0,
     form: (row!.form ?? []).filter((f): f is "W" | "L" => f === "W" || f === "L"),
-    liquipediaUrl: "",
     roster: row!.roster_slugs ?? [],
     achievements: [],
   };
@@ -149,11 +140,11 @@ export function mergeCatalogTeam(
     form: form.length ? form : base.form,
     roster: row.roster_slugs?.length ? row.roster_slugs : base.roster,
     achievements: dbAchievements.length ? dbAchievements : base.achievements,
-    description: row.description,
-    circuitSummary: row.circuit_summary ?? null,
+    description: sanitizePublicText(row.description),
+    circuitSummary: sanitizePublicText(row.circuit_summary),
     coach: row.coach ?? (typeof row.meta?.coach === "string" ? row.meta.coach : null),
     foundedYear: row.founded_year ?? null,
-    social: row.social ?? {},
+    social: sanitizeSocialRecord((row.social ?? {}) as Record<string, unknown>),
     meta: row.meta ?? {},
     logoUrl: row.logo_url,
   };

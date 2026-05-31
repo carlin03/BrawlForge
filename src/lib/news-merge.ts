@@ -1,5 +1,6 @@
 import type { NewsArticle } from "@/lib/data/news";
 import { getAllNews } from "@/lib/data/news";
+import { sanitizePublicText } from "@/lib/sanitize-liquipedia";
 
 export type NewsCatalogRow = {
   slug: string;
@@ -38,9 +39,14 @@ function normalizeCoverAccent(raw: string | null | undefined): NewsArticle["cove
 }
 
 function normalizeBody(body: NewsCatalogRow["body"]): string[] {
-  if (Array.isArray(body)) return body.map((p) => String(p)).filter(Boolean);
-  if (typeof body === "string") return body.split("\n").map((s) => s.trim()).filter(Boolean);
-  return [];
+  const parts = Array.isArray(body)
+    ? body.map((p) => String(p))
+    : typeof body === "string"
+      ? body.split("\n")
+      : [];
+  return parts
+    .map((s) => sanitizePublicText(s.trim()))
+    .filter((p): p is string => Boolean(p));
 }
 
 export function catalogRowToNewsArticle(row: NewsCatalogRow): NewsArticle {
@@ -49,8 +55,8 @@ export function catalogRowToNewsArticle(row: NewsCatalogRow): NewsArticle {
     new Date().toISOString().slice(0, 10);
   return {
     slug: row.slug,
-    title: row.title,
-    excerpt: String(row.excerpt ?? ""),
+    title: sanitizePublicText(row.title) ?? row.title,
+    excerpt: sanitizePublicText(String(row.excerpt ?? "")) ?? "",
     body: normalizeBody(row.body),
     category: normalizeCategory(row.category),
     date,

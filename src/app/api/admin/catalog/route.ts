@@ -193,7 +193,6 @@ export async function POST(request: Request) {
       location: row.location ? String(row.location) : null,
       stage: row.stage ? String(row.stage) : null,
       tier: row.tier != null && row.tier !== "" ? Number(row.tier) : null,
-      liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
       logo_url: row.logo_url ? String(row.logo_url) : null,
       participant_slugs: Array.isArray(participants)
         ? participants

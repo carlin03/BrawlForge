@@ -1,0 +1,7 @@
+# Plantillas por torneo (tournament_team_rosters)
+# BrawlForge — edita en Excel o Google Sheets. Guarda como CSV UTF-8.
+# Las filas que empiezan por # y las filas _ayuda / _ejemplo NO se importan.
+# En listas usa el carácter | entre valores (ej. jugador1|jugador2).
+tournament_slug,team_slug,player_slugs
+_ayuda,slug equipo,jugador1|jugador2|jugador3
+_ejemplo,sk-gaming,yoshi|nowy297|ope

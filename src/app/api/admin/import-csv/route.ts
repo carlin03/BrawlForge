@@ -1,9 +1,29 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/admin-auth";
-import { csvToObjects, rowsToTeams, rowsToPlayers, rowsToNews } from "@/lib/admin/catalog-csv";
+import {
+  csvToObjects,
+  rowsToTeams,
+  rowsToPlayers,
+  rowsToNews,
+  rowsToTournaments,
+  rowsToTournamentRosters,
+  rowsToMatches,
+  rowsToFantasyMarket,
+} from "@/lib/admin/catalog-csv";
+import { mergeTeamRowsWithCatalog, mergePlayerRowsWithCatalog } from "@/lib/admin/catalog-csv-import-merge";
 
 export const runtime = "nodejs";
+
+const IMPORT_KEYS = [
+  "teams",
+  "players",
+  "tournaments",
+  "tournament_rosters",
+  "matches",
+  "news",
+  "fantasy_market",
+] as const;
 
 async function upsertBatched(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -37,16 +57,16 @@ export async function POST(request: Request) {
 
   const teamsFile = form.get("teams");
   if (teamsFile && teamsFile instanceof File && teamsFile.size > 0) {
-    const text = await teamsFile.text();
-    const rows = rowsToTeams(csvToObjects(text), syncedAt);
+    let rows = rowsToTeams(csvToObjects(await teamsFile.text()), syncedAt);
+    rows = (await mergeTeamRowsWithCatalog(supabase, rows)) as typeof rows;
     const r = await upsertBatched(supabase, "teams_catalog", rows);
     summary.teams = { count: r.count, ...(r.error ? { error: r.error } : {}) };
   }
 
   const playersFile = form.get("players");
   if (playersFile && playersFile instanceof File && playersFile.size > 0) {
-    const text = await playersFile.text();
-    let rows = rowsToPlayers(csvToObjects(text), syncedAt);
+    let rows = rowsToPlayers(csvToObjects(await playersFile.text()), syncedAt);
+    rows = (await mergePlayerRowsWithCatalog(supabase, rows)) as typeof rows;
     let r = await upsertBatched(supabase, "players_catalog", rows);
     if (r.error?.includes("photo_url")) {
       rows = rows.map(({ photo_url, ...rest }) => ({
@@ -58,16 +78,48 @@ export async function POST(request: Request) {
     summary.players = { count: r.count, ...(r.error ? { error: r.error } : {}) };
   }
 
+  const tournamentsFile = form.get("tournaments");
+  if (tournamentsFile && tournamentsFile instanceof File && tournamentsFile.size > 0) {
+    const rows = rowsToTournaments(csvToObjects(await tournamentsFile.text()), syncedAt);
+    const r = await upsertBatched(supabase, "tournaments_catalog", rows);
+    summary.tournaments = { count: r.count, ...(r.error ? { error: r.error } : {}) };
+  }
+
+  const rostersFile = form.get("tournament_rosters");
+  if (rostersFile && rostersFile instanceof File && rostersFile.size > 0) {
+    const rows = rowsToTournamentRosters(csvToObjects(await rostersFile.text()));
+    const r = await upsertBatched(supabase, "tournament_team_rosters", rows);
+    summary.tournament_rosters = { count: r.count, ...(r.error ? { error: r.error } : {}) };
+  }
+
+  const matchesFile = form.get("matches");
+  if (matchesFile && matchesFile instanceof File && matchesFile.size > 0) {
+    const rows = rowsToMatches(csvToObjects(await matchesFile.text()), syncedAt);
+    const r = await upsertBatched(supabase, "matches_catalog", rows);
+    summary.matches = { count: r.count, ...(r.error ? { error: r.error } : {}) };
+  }
+
   const newsFile = form.get("news");
   if (newsFile && newsFile instanceof File && newsFile.size > 0) {
-    const text = await newsFile.text();
-    const rows = rowsToNews(csvToObjects(text), syncedAt);
+    const rows = rowsToNews(csvToObjects(await newsFile.text()), syncedAt);
     const r = await upsertBatched(supabase, "news_catalog", rows);
     summary.news = { count: r.count, ...(r.error ? { error: r.error } : {}) };
   }
 
+  const fantasyFile = form.get("fantasy_market");
+  if (fantasyFile && fantasyFile instanceof File && fantasyFile.size > 0) {
+    const rows = rowsToFantasyMarket(csvToObjects(await fantasyFile.text()));
+    const r = await upsertBatched(supabase, "fantasy_market_catalog", rows);
+    summary.fantasy_market = { count: r.count, ...(r.error ? { error: r.error } : {}) };
+  }
+
   if (!Object.keys(summary).length) {
-    return NextResponse.json({ error: "Sube al menos un archivo CSV (teams, players o news)" }, { status: 400 });
+    return NextResponse.json(
+      {
+        error: `Sube al menos un CSV (${IMPORT_KEYS.join(", ")})`,
+      },
+      { status: 400 },
+    );
   }
 
   const anyError = Object.values(summary).some((s) => s.error);

@@ -1,14 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { Download, ChevronDown, ChevronUp, Users, User, Newspaper, Table2 } from "lucide-react";
-import { CSV_TEMPLATES, type CsvTemplateDef } from "@/lib/admin/catalog-csv-schema";
+import {
+  Download,
+  ChevronDown,
+  ChevronUp,
+  Users,
+  User,
+  Newspaper,
+  Table2,
+  Trophy,
+  Calendar,
+  Swords,
+  TrendingUp,
+  ListChecks,
+} from "lucide-react";
+import {
+  CSV_TEMPLATES,
+  CSV_TEMPLATE_GROUPS,
+  type CsvTemplateDef,
+  type CsvTemplateIcon,
+} from "@/lib/admin/catalog-csv-schema";
 
-const ICONS = {
+const ICONS: Record<CsvTemplateIcon, typeof Users> = {
   teams: Users,
   players: User,
   news: Newspaper,
-} as const;
+  tournaments: Trophy,
+  rosters: ListChecks,
+  matches: Calendar,
+  fantasy: TrendingUp,
+};
 
 function TemplateCard({ template }: { template: CsvTemplateDef }) {
   const [open, setOpen] = useState(template.id === "teams");
@@ -74,6 +96,31 @@ function TemplateCard({ template }: { template: CsvTemplateDef }) {
                   <div className="bf-csv-preview-tag">SK Gaming · 92 pts</div>
                   <h4>Yoshi</h4>
                   <p>Jugador estrella de SK Gaming. Capitán habitual en Monthly Finals.</p>
+                  <div className="bf-csv-preview-chips">Antes: fut-esports · tribe-gaming</div>
+                </>
+              )}
+              {template.id === "tournaments" && (
+                <>
+                  <div className="bf-csv-preview-tag">EMEA · Tier 1</div>
+                  <h4>Brawl Cup 2026</h4>
+                  <p>16 equipos · $100,000 · Berlin</p>
+                  <div className="bf-csv-preview-chips">hmble · sk-gaming · fut-esports</div>
+                </>
+              )}
+              {template.id === "tournament_rosters" && (
+                <>
+                  <div className="bf-csv-preview-tag">bsc-2026-brawl-cup</div>
+                  <h4>SK Gaming</h4>
+                  <div className="bf-csv-preview-chips">yoshi · nowy297 · ope</div>
+                </>
+              )}
+              {template.id === "matches" && (
+                <>
+                  <div className="bf-csv-preview-tag">
+                    <Swords size={12} /> Bo5 · upcoming
+                  </div>
+                  <h4>HMBLE vs SK Gaming</h4>
+                  <p>Grand Final · 29 may 2026</p>
                 </>
               )}
               {template.id === "news" && (
@@ -82,6 +129,13 @@ function TemplateCard({ template }: { template: CsvTemplateDef }) {
                   <div className="bf-csv-preview-tag">Resultados · 4 min</div>
                   <h4>HMBLE conquista el Brawl Cup 2026</h4>
                   <p>La gran final dejó al campeón europeo en lo más alto del circuito.</p>
+                </>
+              )}
+              {template.id === "fantasy_market" && (
+                <>
+                  <div className="bf-csv-preview-tag">9.5 cr · +0.2</div>
+                  <h4>Yoshi</h4>
+                  <p>SK Gaming · 28% pick rate · W W L</p>
                 </>
               )}
             </div>
@@ -124,18 +178,24 @@ export function AdminCsvTemplates() {
       <header className="bf-csv-hub-head">
         <h2 className="bf-admin-section-title">Plantillas CSV</h2>
         <p className="bf-admin-meta">
-          Descarga, edita en Excel o Google Sheets y sube abajo. Cada plantilla documenta las columnas y trae datos
-          BSC de ejemplo — como una ficha web real con <strong>description</strong> y <strong>bio</strong>.
+          Siete archivos distintos: equipos, jugadores, torneos, plantillas por torneo, partidos, noticias y mercado
+          fantasy. Descarga, edita en Excel o Google Sheets y sube abajo solo los que necesites.
         </p>
         <a href="/plantillas" className="bf-home-link" target="_blank" rel="noopener noreferrer">
           Abrir guía pública →
         </a>
       </header>
-      <div className="bf-csv-cards">
-        {CSV_TEMPLATES.map((t) => (
-          <TemplateCard key={t.id} template={t} />
-        ))}
-      </div>
+      {CSV_TEMPLATE_GROUPS.map((group) => (
+        <div key={group.id} className="bf-csv-group">
+          <h3 className="bf-csv-group-title">{group.title}</h3>
+          {group.note && <p className="bf-admin-field-hint bf-csv-group-note">{group.note}</p>}
+          <div className="bf-csv-cards">
+            {CSV_TEMPLATES.filter((t) => t.group === group.id).map((t) => (
+              <TemplateCard key={t.id} template={t} />
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }

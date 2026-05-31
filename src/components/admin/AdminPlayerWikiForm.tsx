@@ -175,6 +175,24 @@ export function AdminPlayerWikiForm({
               onChange={(e) => onChange({ ...player, profile: { ...p, tagline: e.target.value } })}
             />
           </AdminField>
+          <AdminField
+            label="Equipos anteriores"
+            hint="Slugs de clubes donde jugó antes (separados por |). Ej: fut-esports|tribe-gaming"
+          >
+            <input
+              value={(player.previous_teams ?? []).join(" | ")}
+              onChange={(e) =>
+                onChange({
+                  ...player,
+                  previous_teams: e.target.value
+                    .split(/[|,]/)
+                    .map((s) => s.trim())
+                    .filter(Boolean),
+                })
+              }
+              placeholder="fut-esports | tribe-gaming"
+            />
+          </AdminField>
         </div>
       )}
 
@@ -219,27 +237,10 @@ export function AdminPlayerWikiForm({
               <option value="yes">Sí — es capitán</option>
             </select>
           </AdminField>
-          <AdminField label="Equipos anteriores" hint="Separados por coma">
-            <input
-              value={(player.previous_teams ?? []).join(", ")}
-              onChange={(e) =>
-                onChange({
-                  ...player,
-                  previous_teams: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                })
-              }
-            />
-          </AdminField>
           <AdminCareerHighlightsEditor
             value={p.career_highlights ?? []}
             onChange={(career_highlights) => onChange({ ...player, profile: { ...p, career_highlights } })}
           />
-          <AdminField label="Liquipedia">
-            <input
-              value={player.liquipedia_url ?? ""}
-              onChange={(e) => onChange({ ...player, liquipedia_url: e.target.value })}
-            />
-          </AdminField>
         </div>
       )}
 

@@ -11,6 +11,8 @@ import { RegionBadge } from "@/components/ui/RegionBadge";
 import { FormDots } from "@/components/platform/ui";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { Region } from "@/lib/types";
+import { useMergedCircuitTeams, useCatalogTeamCount } from "@/hooks/useMergedCatalog";
+import { BSC_2026_CLUB_COUNT } from "@/lib/data/bsc-2026-circuit-teams";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   getPlayersByTeam,
@@ -23,7 +25,9 @@ import { useGame } from "@/contexts/GameContext";
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 type RankTab = "teams" | "fantasy";
 
-export function RankingsView({ teams }: { teams: EsportsTeam[] }) {
+export function RankingsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
+  const teams = useMergedCircuitTeams(staticTeams);
+  const teamCount = useCatalogTeamCount(BSC_2026_CLUB_COUNT);
   const { isLoggedIn, profile } = useAuth();
   const { game } = useGame();
   const [tab, setTab] = useState<RankTab>("teams");
@@ -60,11 +64,13 @@ export function RankingsView({ teams }: { teams: EsportsTeam[] }) {
           <h1>
             Clasificación <em>elite</em>
           </h1>
-          <p>Power ranking de clubes y managers fantasy del circuito 2026.</p>
+          <p>
+            Power ranking de {teamCount} clubes y managers fantasy del circuito 2026.
+          </p>
         </div>
         <div className="bf-rankings-hub-stats">
           <div>
-            <b>{ranked.length}</b>
+            <b>{teamCount}</b>
             <span>Clubes</span>
           </div>
           <div>

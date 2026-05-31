@@ -95,30 +95,7 @@ export function mergeAdminPlayerRows(
     const slug = String(row.slug ?? "").trim().toLowerCase();
     if (!slug) continue;
     const base = bySlug.get(slug);
-    const teamSlug = String(row.team_slug ?? "");
-    if (!base && !isBscCircuitPlayer({ slug, teamSlug })) {
-      bySlug.set(slug, {
-        slug,
-        ign: String(row.ign ?? slug),
-        real_name: row.real_name ? String(row.real_name) : null,
-        team_slug: teamSlug || null,
-        region: String(row.region ?? "GLOBAL"),
-        role: String(row.role ?? "Player"),
-        status: String(row.status ?? "active"),
-        fantasy_points: Number(row.fantasy_points ?? 70),
-        fantasy_ownership: Number(row.fantasy_ownership ?? 20),
-        rating: Number(row.rating ?? 1),
-        bio: row.bio ? String(row.bio) : null,
-        photo_url: row.photo_url ? String(row.photo_url) : null,
-        social: parseSocial(row.social ?? {}),
-        meta:
-          row.meta && typeof row.meta === "object" && !Array.isArray(row.meta)
-            ? (row.meta as Record<string, unknown>)
-            : {},
-        ...pickPlayerFromDb(row),
-      });
-      continue;
-    }
+    const teamSlug = row.team_slug ? String(row.team_slug) : null;
     bySlug.set(slug, {
       ...(base ?? {
         slug,
@@ -155,7 +132,10 @@ export function mergeAdminPlayerRows(
       ...pickPlayerFromDb(row),
     });
   }
-  return [...bySlug.values()].sort(
-    (a, b) => b.fantasy_points - a.fantasy_points || a.ign.localeCompare(b.ign),
-  );
+  return [...bySlug.values()].sort((a, b) => {
+    const aTeam = a.team_slug ? 0 : 1;
+    const bTeam = b.team_slug ? 0 : 1;
+    if (aTeam !== bTeam) return aTeam - bTeam;
+    return b.fantasy_points - a.fantasy_points || a.ign.localeCompare(b.ign);
+  });
 }

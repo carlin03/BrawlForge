@@ -1,6 +1,6 @@
 import { logCmsAudit } from "@/lib/cms/audit";
 import {
-  BSC_2026_ADMIN_TEAM_COUNT,
+  BSC_2026_CORE_TEAM_COUNT,
   getAdminCatalogTeamRows,
   mergeAdminTeamRows,
   type AdminTeamCatalogRow,
@@ -45,8 +45,6 @@ export function adminTeamRowToDbPayload(row: AdminTeamCatalogRow, syncedAt: stri
     roster_slugs: row.roster_slugs,
     logo_url: row.logo_url,
     description: row.description,
-    liquipedia_page: row.liquipedia_page ?? null,
-    liquipedia_url: row.liquipedia_url ?? null,
     coach: row.coach ?? null,
     founded_year: row.founded_year ?? null,
     headquarters: row.headquarters ?? null,
@@ -98,8 +96,6 @@ export function buildTeamPayloadFromAdminRow(row: Record<string, unknown>, synce
           .filter(Boolean),
     logo_url: row.logo_url ? String(row.logo_url) : null,
     description: row.description ? String(row.description) : null,
-    liquipedia_page: row.liquipedia_page ? String(row.liquipedia_page) : null,
-    liquipedia_url: row.liquipedia_url ? String(row.liquipedia_url) : null,
     coach,
     founded_year: row.founded_year != null && row.founded_year !== "" ? Number(row.founded_year) : null,
     headquarters: row.headquarters ? String(row.headquarters) : null,
@@ -116,14 +112,15 @@ export function buildTeamPayloadFromAdminRow(row: Record<string, unknown>, synce
 
 export async function listMergedTeams(supabase: SupabaseServerClient | null) {
   if (!supabase) {
+    const teams = mergeAdminTeamRows(null);
     return {
       source: "local" as const,
-      teams: mergeAdminTeamRows(null),
-      teamCount: BSC_2026_ADMIN_TEAM_COUNT,
+      teams,
+      teamCount: teams.length,
       sync: {
-        localTotal: BSC_2026_ADMIN_TEAM_COUNT,
+        localTotal: BSC_2026_CORE_TEAM_COUNT,
         inCatalog: 0,
-        pendingImport: BSC_2026_ADMIN_TEAM_COUNT,
+        pendingImport: BSC_2026_CORE_TEAM_COUNT,
       },
     };
   }
@@ -138,10 +135,11 @@ export async function listMergedTeams(supabase: SupabaseServerClient | null) {
   const existingSlugs = new Set((data ?? []).map((r) => String(r.slug)));
   const { toImport, total } = getLocalTeamsSyncBatch(existingSlugs);
 
+  const teams = mergeAdminTeamRows(catalog);
   return {
     source: "supabase" as const,
-    teams: mergeAdminTeamRows(catalog),
-    teamCount: BSC_2026_ADMIN_TEAM_COUNT,
+    teams,
+    teamCount: teams.length,
     sync: {
       localTotal: total,
       inCatalog: existingSlugs.size,

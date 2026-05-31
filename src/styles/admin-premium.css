@@ -457,6 +457,41 @@
   gap: 24px;
   max-width: 960px;
 }
+.bf-admin-import-group {
+  border: 1px solid var(--bp-line);
+  border-radius: 14px;
+  padding: 14px 16px 8px;
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bf-admin-import-group legend {
+  font-family: var(--bp-head);
+  font-size: 0.95rem;
+  padding: 0 6px;
+  color: var(--bp-gold);
+}
+.bf-csv-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.bf-csv-group-title {
+  margin: 12px 0 0;
+  font-family: var(--bp-head);
+  font-size: 1rem;
+  color: var(--bp-text);
+}
+.bf-csv-group-note {
+  margin: 0 0 4px;
+}
+.bf-csv-import-guide-dl-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 
 /* Plantillas CSV — guía visual */
 .bf-csv-hub {
