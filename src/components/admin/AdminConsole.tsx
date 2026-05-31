@@ -16,7 +16,10 @@ import {
   FileSpreadsheet,
   UserCircle,
   Trophy,
+  Globe,
 } from "lucide-react";
+import { CountryFlag } from "@/components/ui/CountryFlag";
+import { countryDisplayLabel } from "@/lib/data/country-picker";
 import { AdminEntityCreateDialog } from "@/components/admin/AdminEntityCreateDialog";
 import { AdminTournamentsPanel } from "@/components/admin/AdminTournamentsPanel";
 import { buildPlayerMeta, buildTeamMeta } from "@/lib/data/profile-wiki";
@@ -188,6 +191,38 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
       setMsg(data.message || "Importación completada");
       notifyCatalogUpdated();
       await load();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error");
+      setMsgError(true);
+    }
+    setLoading(false);
+  }
+
+  async function fillPlayerCountriesEmeaEa(overwrite = false) {
+    setLoading(true);
+    setMsg("");
+    setMsgError(false);
+    try {
+      const res = await fetch("/api/admin/players/fill-countries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ regions: ["EMEA", "EA"], overwrite }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error al rellenar países");
+      const sample =
+        Array.isArray(data.samples) && data.samples.length
+          ? ` Ej.: ${data.samples.map((s: { slug: string; country: string }) => `${s.slug}→${s.country}`).join(", ")}.`
+          : "";
+      setMsg((data.message || "Países actualizados") + sample);
+      notifyCatalogUpdated();
+      const refreshed = await load();
+      if (refreshed && selectedPlayer) {
+        const row = refreshed.players.find((p) => p.slug === selectedPlayer.slug);
+        if (row) {
+          setSelectedPlayer(playerRowToWikiState(row as AdminPlayerCatalogRow & Record<string, unknown>));
+        }
+      }
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Error");
       setMsgError(true);
@@ -607,6 +642,28 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                 Importar {playersSyncPending} jugador(es) a Supabase
               </button>
             )}
+            <button
+              type="button"
+              className="bp-btn bf-admin-sync-btn"
+              disabled={loading}
+              title="Rellena país/nacionalidad desde Liquipedia (plantilla local). Solo jugadores EMEA y EA sin país, salvo que confirmes sobrescribir."
+              onClick={() => {
+                if (
+                  !window.confirm(
+                    "¿Rellenar país/nacionalidad de jugadores EMEA y EA desde Liquipedia?\n\nPor defecto solo los que no tienen país.",
+                  )
+                ) {
+                  return;
+                }
+                const overwrite = window.confirm(
+                  "¿Sobrescribir también los que ya tienen país?\n\nCancelar = solo rellenar vacíos.",
+                );
+                void fillPlayerCountriesEmeaEa(overwrite);
+              }}
+            >
+              <Globe size={16} aria-hidden />
+              Países EMEA + EA (Liquipedia)
+            </button>
             <div className="bf-admin-region-filters" role="group" aria-label="Filtrar jugadores">
               {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
                 <button
@@ -659,6 +716,13 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                         </span>
                         <span className="bf-admin-list-card-meta">
                           OVR {p.fantasy_points} · {p.role}
+                          {(p.nationality || p.country) && (
+                            <>
+                              {" · "}
+                              <CountryFlag country={p.nationality || p.country!} size={14} />
+                              {countryDisplayLabel(p.nationality || p.country)}
+                            </>
+                          )}
                         </span>
                       </span>
                     </button>

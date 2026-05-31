@@ -12,6 +12,7 @@ import {
 } from "@/lib/data/card-theme-meta";
 import { getPlayer } from "@/lib/data/players";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
+import { normalizePlayerCountryFields } from "./fill-player-countries";
 import {
   buildPlayerMeta,
   parsePlayerMeta,
@@ -80,6 +81,11 @@ export function buildPlayerPayloadFromAdminRow(row: Record<string, unknown>, syn
   if (rawMeta.card_watermark) {
     meta = mergeCardWatermarkIntoMeta(meta, parseCardWatermark(rawMeta.card_watermark));
   }
+  const countryFields = normalizePlayerCountryFields(
+    row.country ? String(row.country) : null,
+    row.nationality ? String(row.nationality) : null,
+  );
+
   return {
     slug: String(row.slug),
     ign: String(row.ign ?? p?.ign ?? row.slug),
@@ -93,8 +99,8 @@ export function buildPlayerPayloadFromAdminRow(row: Record<string, unknown>, syn
     rating: Number(row.rating ?? p?.rating ?? 1),
     bio: row.bio ? String(row.bio) : null,
     photo_url: photoUrl,
-    country: row.country ? String(row.country) : null,
-    nationality: row.nationality ? String(row.nationality) : null,
+    country: countryFields.country,
+    nationality: countryFields.nationality,
     join_date: row.join_date ? String(row.join_date) : null,
     primary_brawler: row.primary_brawler
       ? String(row.primary_brawler)

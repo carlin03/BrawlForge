@@ -62,7 +62,7 @@ export function buildTeamsCsv(teams: AdminTeamCatalogRow[], singleSlug?: string)
 }
 
 const PLAYER_HEADER =
-  "slug,ign,real_name,team_slug,region,role,status,fantasy_points,fantasy_ownership,rating,bio,photo_url,previous_teams,social_json,meta_json";
+  "slug,ign,real_name,team_slug,region,role,status,fantasy_points,fantasy_ownership,rating,bio,photo_url,country,nationality,previous_teams,social_json,meta_json";
 
 export function playerRowToCsvLine(p: AdminPlayerCatalogRow): string {
   const meta = { ...(p.meta as Record<string, unknown> | undefined) };
@@ -81,6 +81,8 @@ export function playerRowToCsvLine(p: AdminPlayerCatalogRow): string {
     p.rating ?? 0,
     p.bio ?? "",
     p.photo_url ?? "",
+    p.country ?? p.nationality ?? "",
+    p.nationality ?? p.country ?? "",
     (p.previous_teams ?? []).join("|"),
     jsonCell(social),
     jsonCell(Object.keys(meta).length ? meta : undefined),

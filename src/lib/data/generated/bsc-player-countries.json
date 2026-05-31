@@ -1,0 +1,308 @@
+{
+  "generatedAt": "2026-05-31T09:10:24.404Z",
+  "regions": [
+    "EMEA",
+    "EA"
+  ],
+  "counts": {
+    "players": 54,
+    "withCountry": 49,
+    "missing": 5
+  },
+  "countries": {
+    "nowy297": {
+      "country": "Poland",
+      "region": "EMEA",
+      "team_slug": "sk-gaming",
+      "source": "liquipedia"
+    },
+    "ope": {
+      "country": "France",
+      "region": "EMEA",
+      "team_slug": "sk-gaming",
+      "source": "liquipedia"
+    },
+    "yoshi": {
+      "country": "Spain",
+      "region": "EMEA",
+      "team_slug": "sk-gaming",
+      "source": "liquipedia"
+    },
+    "ikaoss": {
+      "country": "Spain",
+      "region": "EMEA",
+      "team_slug": "team-heretics",
+      "source": "liquipedia"
+    },
+    "marco": {
+      "country": "it",
+      "region": "EMEA",
+      "team_slug": "team-heretics",
+      "source": "liquipedia"
+    },
+    "subeme": {
+      "country": "it",
+      "region": "EMEA",
+      "team_slug": "team-heretics",
+      "source": "liquipedia"
+    },
+    "joker": {
+      "country": "Germany",
+      "region": "EMEA",
+      "team_slug": "totem-esports",
+      "source": "liquipedia"
+    },
+    "maru": {
+      "country": "Italy",
+      "region": "EMEA",
+      "team_slug": "totem-esports",
+      "source": "liquipedia"
+    },
+    "maury": {
+      "country": "Italy",
+      "region": "EMEA",
+      "team_slug": "totem-esports",
+      "source": "liquipedia"
+    },
+    "drage": {
+      "country": "United Kingdom",
+      "region": "EMEA",
+      "team_slug": "natus-vincere",
+      "source": "liquipedia"
+    },
+    "gero": {
+      "country": "Poland",
+      "region": "EMEA",
+      "team_slug": "natus-vincere",
+      "source": "liquipedia"
+    },
+    "lenain": {
+      "country": "Switzerland",
+      "region": "EMEA",
+      "team_slug": "natus-vincere",
+      "source": "liquipedia"
+    },
+    "angelboy": {
+      "country": "Ukraine",
+      "region": "EMEA",
+      "team_slug": "fut-esports",
+      "source": "liquipedia"
+    },
+    "guesti": {
+      "country": "Ukraine",
+      "region": "EMEA",
+      "team_slug": "fut-esports",
+      "source": "liquipedia"
+    },
+    "nob": {
+      "country": "Armenia",
+      "region": "EMEA",
+      "team_slug": "fut-esports",
+      "source": "liquipedia"
+    },
+    "dompe": {
+      "country": "es",
+      "region": "EMEA",
+      "team_slug": "big-talents",
+      "source": "liquipedia"
+    },
+    "mine": {
+      "country": "pl",
+      "region": "EMEA",
+      "team_slug": "big-talents",
+      "source": "liquipedia"
+    },
+    "nes": {
+      "country": "France",
+      "region": "EMEA",
+      "team_slug": "big-talents",
+      "source": "liquipedia"
+    },
+    "filippo": {
+      "country": "Italy",
+      "region": "EMEA",
+      "team_slug": "novo-esports",
+      "source": "liquipedia"
+    },
+    "meow": {
+      "country": "Taiwan",
+      "region": "EMEA",
+      "team_slug": "novo-esports",
+      "source": "liquipedia"
+    },
+    "terry": {
+      "country": "South Korea",
+      "region": "EMEA",
+      "team_slug": "novo-esports",
+      "source": "liquipedia"
+    },
+    "battoman": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "zeta-division",
+      "source": "liquipedia"
+    },
+    "sitetampo": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "zeta-division",
+      "source": "liquipedia"
+    },
+    "sizuku": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "zeta-division",
+      "source": "liquipedia"
+    },
+    "milkreo": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "crazy-raccoon",
+      "source": "liquipedia"
+    },
+    "moya": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "crazy-raccoon",
+      "source": "liquipedia"
+    },
+    "tensai": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "crazy-raccoon",
+      "source": "liquipedia"
+    },
+    "ghost-t": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "skcalalas-ea",
+      "source": "liquipedia"
+    },
+    "kuru": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "skcalalas-ea",
+      "source": "liquipedia"
+    },
+    "naipishu": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "skcalalas-ea",
+      "source": "liquipedia"
+    },
+    "ryohei": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "rival-esports",
+      "source": "liquipedia"
+    },
+    "totoron": {
+      "country": "jp",
+      "region": "EA",
+      "team_slug": "rival-esports",
+      "source": "liquipedia"
+    },
+    "yutapin": {
+      "country": "jp",
+      "region": "EA",
+      "team_slug": "rival-esports",
+      "source": "liquipedia"
+    },
+    "cookie": {
+      "country": "South Korea",
+      "region": "EA",
+      "team_slug": "wwl-esports",
+      "source": "liquipedia"
+    },
+    "minzzun": {
+      "country": "kr",
+      "region": "EA",
+      "team_slug": "wwl-esports",
+      "source": "liquipedia"
+    },
+    "nenne": {
+      "country": "kr",
+      "region": "EA",
+      "team_slug": "wwl-esports",
+      "source": "liquipedia"
+    },
+    "nyades": {
+      "country": "jp",
+      "region": "EA",
+      "team_slug": "feasible-gaming",
+      "source": "liquipedia"
+    },
+    "danshari": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "frenzy-esports",
+      "source": "liquipedia"
+    },
+    "mira": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "frenzy-esports",
+      "source": "liquipedia"
+    },
+    "toridesu": {
+      "country": "Japan",
+      "region": "EA",
+      "team_slug": "frenzy-esports",
+      "source": "liquipedia"
+    },
+    "david": {
+      "country": "China",
+      "region": "EA",
+      "team_slug": "ace-xero",
+      "source": "liquipedia"
+    },
+    "galaxy": {
+      "country": "China",
+      "region": "EA",
+      "team_slug": "ace-xero",
+      "source": "liquipedia"
+    },
+    "coldrink": {
+      "country": "China",
+      "region": "EA",
+      "team_slug": "ace-xero",
+      "source": "liquipedia"
+    },
+    "engine": {
+      "country": "China",
+      "region": "EA",
+      "team_slug": "toxic-lotus",
+      "source": "liquipedia"
+    },
+    "toc": {
+      "country": "China",
+      "region": "EA",
+      "team_slug": "toxic-lotus",
+      "source": "liquipedia"
+    },
+    "ou": {
+      "country": "China",
+      "region": "EA",
+      "team_slug": "toxic-lotus",
+      "source": "liquipedia"
+    },
+    "sergeant-clash": {
+      "country": "India",
+      "region": "EMEA",
+      "team_slug": "revenant-xspark",
+      "source": "liquipedia"
+    },
+    "hiroshii": {
+      "country": "Malaysia",
+      "region": "EMEA",
+      "team_slug": "revenant-xspark",
+      "source": "liquipedia"
+    },
+    "walkthrough": {
+      "country": "sg",
+      "region": "EMEA",
+      "team_slug": "revenant-xspark",
+      "source": "liquipedia"
+    }
+  }
+}

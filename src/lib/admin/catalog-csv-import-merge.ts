@@ -57,9 +57,17 @@ export async function mergePlayerRowsWithCatalog(
   return rows.map((row) => {
     const ex = bySlug.get(String(row.slug));
     if (!ex) return row;
+    const incomingCountry =
+      typeof row.country === "string" && row.country.trim()
+        ? row.country.trim()
+        : typeof row.nationality === "string" && row.nationality.trim()
+          ? row.nationality.trim()
+          : null;
     return {
       ...ex,
       ...row,
+      country: incomingCountry ?? ex.country,
+      nationality: incomingCountry ?? ex.nationality ?? ex.country,
       bio: "bio" in row ? row.bio : ex.bio,
       photo_url: "photo_url" in row ? row.photo_url : ex.photo_url,
       meta: mergeJsonField(ex.meta, row.meta, row.meta !== undefined),

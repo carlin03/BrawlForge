@@ -44,6 +44,7 @@
     "data:rebuild:bsc-players": "node scripts/rebuild-bsc-players-2026.mjs --write",
     "data:rebuild:bsc": "node scripts/rebuild-teams-2026-circuit.mjs --write && node scripts/rebuild-bsc-players-2026.mjs --write",
     "data:audit:bsc": "node scripts/audit-bsc-players.mjs",
+    "data:fetch:player-countries": "node scripts/fetch-bsc-player-countries.mjs --regions=EMEA,EA --write",
     "data:sync:logos": "node scripts/sync-liquipedia-full.mjs --logos-only",
     "bsc:sync": "node scripts/sync-supercell-bsc.mjs",
     "postinstall": "node scripts/postinstall.mjs"
