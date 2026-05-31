@@ -26,7 +26,7 @@ export const TEAM_ROSTER_ALIASES: Record<string, string> = {
   "f-a-kaioperro": "kaioperro",
   "reply-totem": "totem-esports",
   madrid: "madridmira",
-  "big-talents": "big",
+  /* big-talents: club BSC propio — no aliasar a big (ver resolveTeamLogoSlug) */
   navi: "natus-vincere",
   "zoos-esports": "f-a-homeless",
   "zurita-gang": "f-a-zurita-gaming",

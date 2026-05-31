@@ -44,7 +44,25 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refresh();
-    const onUpdate = () => refresh();
+    const onUpdate = (e: Event) => {
+      const detail = (e as CustomEvent<{ slug?: string; logoUrl?: string; cacheVersion?: string; kind?: string }>)
+        .detail;
+      if (detail?.slug && detail.logoUrl && detail.kind !== "tournament") {
+        const url = String(detail.logoUrl).split("?")[0];
+        const slug = detail.slug.trim().toLowerCase();
+        setConfig((prev) => ({
+          cacheVersion: String(detail.cacheVersion ?? prev.cacheVersion ?? LOGO_CACHE_VERSION),
+          overrides: {
+            teams: {
+              ...prev.overrides?.teams,
+              [slug]: { url, customOnly: true, treatment: "raw" },
+            },
+            tournaments: prev.overrides?.tournaments ?? {},
+          },
+        }));
+      }
+      void refresh();
+    };
     window.addEventListener("bf-logos-updated", onUpdate);
     return () => window.removeEventListener("bf-logos-updated", onUpdate);
   }, [refresh]);
@@ -63,6 +81,11 @@ export function useRefreshLogos() {
 }
 
 /** Llamar tras guardar un logo en admin */
-export function notifyLogosUpdated(detail?: { cacheVersion?: string; logoUrl?: string }) {
+export function notifyLogosUpdated(detail?: {
+  cacheVersion?: string;
+  logoUrl?: string;
+  slug?: string;
+  kind?: "team" | "tournament";
+}) {
   window.dispatchEvent(new CustomEvent("bf-logos-updated", { detail }));
 }

@@ -83,6 +83,10 @@ export function useLogoImage(sources: string[]) {
         currentSrc?.includes("supabase.in") ||
         currentSrc?.includes("mitiendanube.com") ||
         currentSrc?.includes("eternalesports.org") ||
+        currentSrc?.includes("cdn.escharts.com") ||
+        currentSrc?.includes("liquipedia.net") ||
+        currentSrc?.includes("cdn.bspro.gg") ||
+        currentSrc?.includes("tiermaker.com") ||
         currentSrc?.includes("mWB0X8mVG2.png");
       if (!trusted && hasWhiteBackground(img)) {
         advanceOrFail();

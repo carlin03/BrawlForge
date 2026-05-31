@@ -6,6 +6,9 @@ import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 
 export const MIN_CIRCUIT_ROSTER = 3;
 
+/** Equipos del circuito (Supabase/partidos) que no deben aliasarse a otro slug en logos. */
+export const EXTRA_CIRCUIT_TEAM_SLUGS = new Set<string>(["ninguem-segura"]);
+
 export const TEAM_INCOMPLETE_LABEL = "Sin integrantes suficientes";
 export const PLAYER_UNASSIGNED_LABEL = "Sin equipo";
 

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { isDistinctCatalogTeamSlug, resolveTeamLogoSlug } from "@/lib/data/png-logo-urls";
 import { isValidLogoSlug } from "@/lib/data/logo-slugs";
 import { defaultTeamLogoConfig, fetchFirstTeamLogo } from "@/lib/team-logo-server";
 import { createClient } from "@/lib/supabase/server";
-import { bundledLogoOverrides, shouldApplyDbLogoUrl } from "@/lib/logo-config-merge";
+import { bundledLogoOverrides, pickNewerTeamLogoUrl, shouldApplyDbLogoUrl } from "@/lib/logo-config-merge";
 import type { LogoOverridesFile } from "@/lib/data/logo-overrides";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 
@@ -16,22 +15,31 @@ async function loadRuntimeOverrides(): Promise<LogoOverridesFile> {
   if (!supabase) return overrides;
 
   const [catalogRes, teamsRes] = await Promise.all([
-    supabase.from("teams_catalog").select("slug, logo_url").not("logo_url", "is", null),
-    supabase.from("team_logo_overrides").select("slug, public_url, treatment"),
+    supabase.from("teams_catalog").select("slug, logo_url, synced_at").not("logo_url", "is", null),
+    supabase.from("team_logo_overrides").select("slug, public_url, treatment, updated_at"),
   ]);
 
-  for (const row of catalogRes.data ?? []) {
-    if (!row.slug || !row.logo_url) continue;
-    const url = String(row.logo_url).split("?")[0];
-    if (shouldApplyDbLogoUrl(overrides.teams[row.slug]?.url, url)) {
-      overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
-    }
-  }
-  for (const row of teamsRes.data ?? []) {
-    if (!row.slug || !row.public_url) continue;
-    const url = String(row.public_url).split("?")[0];
-    if (shouldApplyDbLogoUrl(overrides.teams[row.slug]?.url, url)) {
-      overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
+  const catalogBySlug = new Map((catalogRes.data ?? []).map((r) => [String(r.slug), r] as const));
+  const overrideBySlug = new Map((teamsRes.data ?? []).map((r) => [String(r.slug), r] as const));
+  const allSlugs = new Set([...catalogBySlug.keys(), ...overrideBySlug.keys()]);
+
+  for (const slug of allSlugs) {
+    const cat = catalogBySlug.get(slug);
+    const ov = overrideBySlug.get(slug);
+    const url = pickNewerTeamLogoUrl(
+      cat?.logo_url ? String(cat.logo_url) : null,
+      cat?.synced_at ? String(cat.synced_at) : null,
+      ov?.public_url ? String(ov.public_url) : null,
+      ov?.updated_at ? String(ov.updated_at) : null,
+    );
+    if (!url) continue;
+    const clean = url.split("?")[0];
+    if (shouldApplyDbLogoUrl(overrides.teams[slug]?.url, clean)) {
+      overrides.teams[slug] = {
+        url: clean,
+        customOnly: true,
+        treatment: (ov?.treatment as string) || "raw",
+      };
     }
   }
   return overrides;
@@ -50,18 +58,7 @@ export async function GET(
   const overrides = await loadRuntimeOverrides();
   const cfg = { cacheVersion: LOGO_CACHE_VERSION, overrides };
 
-  const supabase = await createClient();
-  let distinct = isDistinctCatalogTeamSlug(key);
-  if (!distinct && supabase) {
-    const { data } = await supabase.from("teams_catalog").select("slug").eq("slug", key).maybeSingle();
-    distinct = Boolean(data?.slug);
-  }
-
-  const slug = distinct ? key : resolveTeamLogoSlug(key);
-  let hit = await fetchFirstTeamLogo(key, cfg);
-  if (!hit && slug !== key) {
-    hit = await fetchFirstTeamLogo(slug, cfg);
-  }
+  const hit = await fetchFirstTeamLogo(key, cfg);
   if (!hit) {
     return NextResponse.json({ error: "logo_not_found" }, { status: 404 });
   }

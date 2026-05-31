@@ -7,6 +7,7 @@ import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 import {
   bundledLogoOverrides,
   mergeLogoOverridesFile,
+  pickNewerTeamLogoUrl,
   shouldApplyDbLogoUrl,
 } from "@/lib/logo-config-merge";
 
@@ -46,26 +47,37 @@ export async function GET() {
   const supabase = await createClient();
   if (supabase) {
     const [catalogTeamsRes, teamsRes, toursRes] = await Promise.all([
-      supabase.from("teams_catalog").select("slug, logo_url").not("logo_url", "is", null),
+      supabase.from("teams_catalog").select("slug, logo_url, synced_at").not("logo_url", "is", null),
       supabase.from("team_logo_overrides").select("slug, public_url, treatment, updated_at"),
       supabase.from("tournament_logo_overrides").select("slug, public_url, updated_at"),
     ]);
 
-    for (const row of catalogTeamsRes.data ?? []) {
-      if (!row.slug || !row.logo_url) continue;
-      const url = String(row.logo_url).split("?")[0];
-      const prev = overrides.teams[row.slug]?.url;
-      if (shouldApplyDbLogoUrl(prev, url)) {
-        overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
-      }
-    }
+    const catalogBySlug = new Map(
+      (catalogTeamsRes.data ?? []).map((r) => [String(r.slug), r] as const),
+    );
+    const overrideBySlug = new Map(
+      (teamsRes.data ?? []).map((r) => [String(r.slug), r] as const),
+    );
+    const allSlugs = new Set([...catalogBySlug.keys(), ...overrideBySlug.keys()]);
 
-    for (const row of teamsRes.data ?? []) {
-      if (!row.slug || !row.public_url) continue;
-      const url = String(row.public_url).split("?")[0];
-      const prev = overrides.teams[row.slug]?.url;
-      if (shouldApplyDbLogoUrl(prev, url)) {
-        overrides.teams[row.slug] = { url, customOnly: true, treatment: "raw" };
+    for (const slug of allSlugs) {
+      const cat = catalogBySlug.get(slug);
+      const ov = overrideBySlug.get(slug);
+      const url = pickNewerTeamLogoUrl(
+        cat?.logo_url ? String(cat.logo_url) : null,
+        (cat as { synced_at?: string })?.synced_at,
+        ov?.public_url ? String(ov.public_url) : null,
+        (ov as { updated_at?: string })?.updated_at,
+      );
+      if (!url) continue;
+      const clean = url.split("?")[0];
+      const prev = overrides.teams[slug]?.url;
+      if (shouldApplyDbLogoUrl(prev, clean)) {
+        overrides.teams[slug] = {
+          url: clean,
+          customOnly: true,
+          treatment: (ov?.treatment as string) || "raw",
+        };
       }
     }
 
@@ -86,10 +98,17 @@ export async function GET() {
     if (latest) cacheVersion = String(new Date(latest).getTime());
   }
 
-  return NextResponse.json({
-    cacheVersion,
-    overrides,
-    teamCount: Object.keys(overrides.teams).length,
-    at: Date.now(),
-  });
+  return NextResponse.json(
+    {
+      cacheVersion,
+      overrides,
+      teamCount: Object.keys(overrides.teams).length,
+      at: Date.now(),
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+      },
+    },
+  );
 }

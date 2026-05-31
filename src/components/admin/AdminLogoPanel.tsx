@@ -153,10 +153,15 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al guardar");
-      setPreviewKey((k) => k + 1);
+      setPreviewKey(Number(data.cacheVersion) || Date.now());
       if (data.logoUrl) setImageUrl(String(data.logoUrl).split("?")[0]);
       await refreshLogos();
-      notifyLogosUpdated({ cacheVersion: data.cacheVersion, logoUrl: data.logoUrl });
+      notifyLogosUpdated({
+        cacheVersion: data.cacheVersion,
+        logoUrl: data.logoUrl,
+        slug: selected,
+        kind,
+      });
       notifyCatalogUpdated();
       const warn = Array.isArray(data.warnings) && data.warnings.length ? ` Avisos: ${data.warnings.join("; ")}` : "";
       setMsg((data.message || "Logo guardado.") + warn);

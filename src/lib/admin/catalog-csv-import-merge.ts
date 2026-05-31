@@ -31,9 +31,12 @@ export async function mergeTeamRowsWithCatalog(
     const ex = bySlug.get(String(row.slug));
     if (!ex) return row;
     const hasAchievements = Array.isArray(row.achievements) && row.achievements.length > 0;
+    const incomingLogo =
+      typeof row.logo_url === "string" && row.logo_url.trim() ? row.logo_url.trim() : null;
     return {
       ...ex,
       ...row,
+      logo_url: incomingLogo ?? ex.logo_url,
       description: "description" in row ? row.description : ex.description,
       meta: mergeJsonField(ex.meta, row.meta, row.meta !== undefined),
       social: mergeJsonField(ex.social, row.social, row.social !== undefined),

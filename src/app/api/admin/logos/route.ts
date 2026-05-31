@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const slug = String(body.slug || "").trim();
+  const slug = String(body.slug || "").trim().toLowerCase();
   const imageUrl = String(body.imageUrl || "").trim();
   const kind = body.kind === "tournament" ? "tournament" : "team";
 
@@ -83,21 +83,43 @@ export async function POST(request: Request) {
           { status: 400 },
         );
       }
+      const savedAt = new Date().toISOString();
       const { error: logoErr } = await supabase.from("team_logo_overrides").upsert({
         slug,
         public_url: persistedUrl,
         treatment: "raw",
-        updated_at: new Date().toISOString(),
+        updated_at: savedAt,
       });
       if (logoErr) {
         return NextResponse.json({ error: `Supabase logos: ${logoErr.message}` }, { status: 500 });
       }
 
-      const { error: teamErr } = await supabase
+      const { data: catRows, error: teamErr } = await supabase
         .from("teams_catalog")
-        .update({ logo_url: persistedUrl, synced_at: new Date().toISOString() })
-        .eq("slug", slug);
+        .update({ logo_url: persistedUrl, synced_at: savedAt })
+        .eq("slug", slug)
+        .select("slug");
       if (teamErr) warnings.push(`Catálogo equipos: ${teamErr.message}`);
+      else if (!catRows?.length) {
+        warnings.push(
+          `No hay fila en teams_catalog para "${slug}"; el logo quedó en overrides. Crea el equipo en Admin o importa CSV.`,
+        );
+      }
+
+      const { data: verify } = await supabase
+        .from("team_logo_overrides")
+        .select("public_url")
+        .eq("slug", slug)
+        .maybeSingle();
+      const stored = verify?.public_url?.split("?")[0];
+      if (stored !== persistedUrl) {
+        return NextResponse.json(
+          {
+            error: `No se guardó el logo en Supabase (slug: ${slug}). Comprueba permisos admin.`,
+          },
+          { status: 500 },
+        );
+      }
 
       if (canWriteLocalProjectFiles()) {
         const overrides = readLocalOverrides(root);

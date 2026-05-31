@@ -18,7 +18,8 @@ const BSC_LOCAL_LOGO = "/images/bsc-2026.png";
 import { hasProcessedTeamLogo, LOGO_CACHE_VERSION } from "./logo-manifest";
 import { isTeam2026 } from "./teams-2026";
 import { getTeam } from "./teams";
-import { getCatalogOnlyTeam } from "./circuit-roster";
+import { EXTRA_CIRCUIT_TEAM_SLUGS, getCatalogOnlyTeam } from "./circuit-roster";
+import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 import { buildUiRemoteLogoChain } from "./team-logo-urls";
 import { toClientLogoSources } from "./logo-client-url";
 
@@ -44,10 +45,16 @@ function bust(url: string, cacheVersion: string): string {
 
 
 
+const DISTINCT_TEAM_SLUGS = new Set<string>([
+  ...BSC_2026_ACTIVE_TEAM_SLUGS,
+  ...EXTRA_CIRCUIT_TEAM_SLUGS,
+]);
+
 /** Slug propio en catálogo Supabase/local — no redirigir a alias Liquipedia. */
 export function isDistinctCatalogTeamSlug(slug: string): boolean {
   const key = slug.trim().toLowerCase();
   if (!key) return false;
+  if (DISTINCT_TEAM_SLUGS.has(key)) return true;
   return Boolean(getCatalogOnlyTeam(key) ?? getTeam(key));
 }
 
@@ -82,6 +89,7 @@ function getTeamOverride(slug: string, cfg?: LogoRuntimeConfig): string | undefi
 
 function teamSlugCandidates(slug: string): string[] {
   const key = slug.trim().toLowerCase();
+  if (isDistinctCatalogTeamSlug(key)) return [key];
   const canonical = resolveTeamLogoSlug(key);
   const out = [key];
   if (canonical !== key) out.push(canonical);
@@ -160,10 +168,12 @@ export function buildTeamLogoSources(slug: string, cfg?: LogoRuntimeConfig): str
   if (!isValidLogoSlug(slug)) return [];
 
   const cacheVersion = cfg?.cacheVersion ?? LOGO_CACHE_VERSION;
-  const candidates = teamSlugCandidates(slug);
-  const overrideOnly = collectOverrideUrls(candidates, (s) => getTeamOverride(s, cfg), cacheVersion);
+  const key = slug.trim().toLowerCase();
+  // Overrides admin/Supabase: solo el slug pedido (evita mezclar p. ej. big-talents con big).
+  const overrideOnly = collectOverrideUrls([key], (s) => getTeamOverride(s, cfg), cacheVersion);
   if (overrideOnly.length) return toClientLogoSources(overrideOnly);
 
+  const candidates = teamSlugCandidates(slug);
   const sources: string[] = [];
   for (const s of candidates) {
     for (const url of buildUiRemoteLogoChain(s)) {

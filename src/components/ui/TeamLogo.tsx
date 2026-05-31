@@ -1,13 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import {
-  buildTeamLogoSources,
-  prependTeamLogoSources,
-  resolveTeamLogoSlug,
-} from "@/lib/data/png-logo-urls";
+import { useMemo } from "react";
+import { buildTeamLogoSources, prependTeamLogoSources } from "@/lib/data/png-logo-urls";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
-import { teamLogoOverrideUrl } from "@/lib/data/logo-overrides";
 import { useLogoConfig } from "@/contexts/LogoConfigContext";
 import { useResolvedTeam } from "@/hooks/useResolvedEntity";
 import { resolveLogoTreatment } from "@/lib/data/logo-branding";
@@ -16,7 +11,6 @@ import { getTeam } from "@/lib/data/teams";
 import { LogoFrame } from "@/components/ui/LogoFrame";
 import { useLogoImage } from "@/components/ui/useLogoImage";
 import { usesRemoteLogoPipeline } from "@/lib/data/local-logos";
-import { toClientLogoUrl } from "@/lib/data/logo-client-url";
 import { teamLogoProxyUrl } from "@/lib/team-logo-server";
 
 export const LOGO_SIZES = {
@@ -40,98 +34,34 @@ interface TeamLogoProps {
   priority?: boolean;
 }
 
-function TeamLogoRemote({
-  slug,
-  name,
-  tag,
-  pixelSize,
-  className,
-  glow,
-  priority,
-  cacheVersion,
-  logoConfig,
-}: {
-  slug: string;
-  name?: string;
-  tag?: string;
-  pixelSize: number;
-  className: string;
-  glow: boolean;
-  priority: boolean;
-  cacheVersion: string;
-  logoConfig: ReturnType<typeof useLogoConfig>;
-}) {
-  const key = slug.trim().toLowerCase();
-  const resolvedSlug = resolveTeamLogoSlug(key);
-  const logoSlug = key;
-  const team = getTeam(key) ?? getTeam(resolvedSlug);
-  const displayName = name || team?.name || key;
-  const overrideEntry =
-    logoConfig.overrides?.teams[key] ??
-    logoConfig.overrides?.teams[resolvedSlug];
-  const treatment = resolveLogoTreatment(resolvedSlug, overrideEntry);
-  const overrideUrl =
-    overrideEntry?.url?.trim() ||
-    teamLogoOverrideUrl(key) ||
-    teamLogoOverrideUrl(resolvedSlug);
-  const directOverride = overrideUrl?.trim();
-  const [src, setSrc] = useState(() =>
-    directOverride ? directOverride.split("?")[0] + `?v=${encodeURIComponent(cacheVersion)}` : teamLogoProxyUrl(logoSlug, cacheVersion),
-  );
-  const [failed, setFailed] = useState(false);
+/** Fuentes de imagen: en producción el endpoint por slug es la fuente de verdad (Supabase). */
+function buildTeamLogoImageSources(
+  key: string,
+  logoConfig: ReturnType<typeof useLogoConfig>,
+  cacheVersion: string,
+  manualUrl?: string | null,
+): string[] {
+  const overrideUrl = logoConfig.overrides?.teams[key]?.url?.trim();
+  const manual = manualUrl?.trim();
+  const direct = prependTeamLogoSources([], [overrideUrl, manual], cacheVersion);
 
-  useEffect(() => {
-    setFailed(false);
-    const bust = encodeURIComponent(cacheVersion);
-    if (directOverride) {
-      const base = directOverride.split("?")[0];
-      setSrc(`${base}?v=${bust}`);
-      return;
+  if (usesRemoteLogoPipeline()) {
+    const api = teamLogoProxyUrl(key, cacheVersion);
+    const out = [api];
+    for (const u of direct) {
+      if (u && !out.includes(u)) out.push(u);
     }
-    setSrc(teamLogoProxyUrl(logoSlug, cacheVersion));
-  }, [key, logoSlug, resolvedSlug, cacheVersion, logoConfig.cacheVersion, directOverride]);
-
-  if (failed || !src) {
-    return (
-      <LogoFrame size={pixelSize} kind="team" glow={false} className={`logo-missing ${className}`.trim()} title={displayName}>
-        <span className="logo-missing-tag">{tag ?? team?.tag ?? displayName.slice(0, 2).toUpperCase()}</span>
-      </LogoFrame>
-    );
+    return out;
   }
 
-  return (
-    <LogoFrame
-      size={pixelSize}
-      kind="team"
-      glow={glow}
-      className={`${className} logo-treatment-${treatment} logo-remote is-loaded`.trim()}
-      title={displayName}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={displayName}
-        width={pixelSize - 6}
-        height={pixelSize - 6}
-        loading={priority ? "eager" : "lazy"}
-        fetchPriority={priority ? "high" : "auto"}
-        decoding="async"
-        className="logo-img"
-        onError={() => {
-          if (!overrideUrl) {
-            setFailed(true);
-            return;
-          }
-          const fallback = teamLogoProxyUrl(resolvedSlug, cacheVersion);
-          if (src !== fallback) {
-            setSrc(fallback);
-            return;
-          }
-          setFailed(true);
-        }}
-      />
-    </LogoFrame>
-  );
+  const base = buildTeamLogoSources(key, logoConfig);
+  const merged = prependTeamLogoSources(base, [overrideUrl, manual], cacheVersion);
+  const seen = new Set<string>();
+  return merged.filter((u) => {
+    if (!u || seen.has(u)) return false;
+    seen.add(u);
+    return true;
+  });
 }
 
 export function TeamLogo({
@@ -144,46 +74,26 @@ export function TeamLogo({
   priority = false,
 }: TeamLogoProps) {
   const pixelSize = typeof size === "number" ? size : LOGO_SIZES[size];
-  const valid = isValidLogoSlug(slug);
-  const remote = usesRemoteLogoPipeline();
+  const key = slug.trim().toLowerCase();
+  const valid = isValidLogoSlug(key);
   const logoConfig = useLogoConfig();
   const cacheVersion = logoConfig.cacheVersion ?? LOGO_CACHE_VERSION;
+  const catalogTeam = useResolvedTeam(key);
+  const team = valid ? getTeam(key) : undefined;
 
-  if (valid && remote) {
-    return (
-      <TeamLogoRemote
-        key={slug}
-        slug={slug}
-        name={name}
-        tag={tag}
-        pixelSize={pixelSize}
-        className={className}
-        glow={glow}
-        priority={priority}
-        cacheVersion={cacheVersion}
-        logoConfig={logoConfig}
-      />
-    );
-  }
+  const sources = useMemo(
+    () =>
+      valid
+        ? buildTeamLogoImageSources(key, logoConfig, cacheVersion, catalogTeam?.logoUrl)
+        : [],
+    [key, valid, cacheVersion, logoConfig.cacheVersion, logoConfig.overrides, catalogTeam?.logoUrl],
+  );
 
-  const resolvedSlug = valid ? resolveTeamLogoSlug(slug) : slug;
-  const team = valid ? (getTeam(slug) ?? getTeam(resolvedSlug)) : undefined;
-  const catalogTeam = useResolvedTeam(slug);
-  const sources = useMemo(() => {
-    if (!valid) return [];
-    const manual = catalogTeam?.logoUrl?.trim();
-    if (manual) {
-      return prependTeamLogoSources([], [manual], cacheVersion);
-    }
-    const base = buildTeamLogoSources(slug, logoConfig);
-    return prependTeamLogoSources(base, [], cacheVersion);
-  }, [slug, valid, cacheVersion, logoConfig.cacheVersion, logoConfig.overrides, catalogTeam?.logoUrl]);
   const { src, status, onLoad, onError, imgRef } = useLogoImage(sources);
-  const displayName = name || team?.name || (valid ? slug : "TBD");
+  const displayName = name || team?.name || (valid ? key : "TBD");
   const loaded = status === "ready" && !!src;
-  const overrideEntry =
-    logoConfig.overrides?.teams[resolvedSlug] ?? logoConfig.overrides?.teams[slug];
-  const treatment = valid ? resolveLogoTreatment(resolvedSlug, overrideEntry) : "border-only";
+  const overrideEntry = logoConfig.overrides?.teams[key];
+  const treatment = valid ? resolveLogoTreatment(key, overrideEntry) : "border-only";
 
   if (!valid || status === "failed" || !src) {
     return (
@@ -203,7 +113,7 @@ export function TeamLogo({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        key={`${resolvedSlug}-${src ?? "none"}`}
+        key={`${key}-${src}`}
         ref={imgRef}
         src={src}
         alt={displayName}
