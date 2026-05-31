@@ -31,8 +31,10 @@ import {
   getPlayerPrice,
 } from "@/lib/data/fantasy";
 import { useLatestNewsMerged } from "@/hooks/useMergedNews";
+import { useCatalogTeamCount } from "@/hooks/useMergedCatalog";
 
 export function DashboardHome() {
+  const teamCount = useCatalogTeamCount();
   const live = getLiveMatches();
   const upcoming = getUpcomingMatches();
   const recent = getRecentMatches(6);
@@ -205,7 +207,7 @@ export function DashboardHome() {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <Panel title="Equipos del circuito" href="/teams" linkLabel={`Ver ${CATALOG_STATS.teams} equipos →`}>
+        <Panel title="Equipos del circuito" href="/teams" linkLabel={`Ver ${teamCount} equipos →`}>
           <div className="es-panel-body-pad">
             <div className="es-grid-teams">
               {topTeams.map((t) => (

@@ -20,9 +20,14 @@ import {
   searchPlayers,
   teamName,
 } from "@/lib/data";
-import { usePublicPlayersList } from "@/hooks/useMergedCatalog";
+import {
+  usePublicPlayersList,
+  useMergedCircuitTeams,
+  PLAYER_UNASSIGNED_LABEL,
+} from "@/hooks/useMergedCatalog";
 import { useCatalog } from "@/contexts/CatalogContext";
-import { BSC_2026_ACTIVE_TEAM_SLUGS, isBsc2026ActiveTeam } from "@/lib/data/bsc-2026-active-teams";
+import { teams as staticTeams } from "@/lib/data";
+import { getTeam } from "@/lib/data";
 import { getBsc2026TeamRegion } from "@/lib/data/bsc-2026-team-regions";
 import { getFantasyRole } from "@/lib/data/fantasy-meta";
 import type { Region } from "@/lib/types";
@@ -41,6 +46,7 @@ function statusLabel(s: PlayerStatus) {
 
 export function PlayersView() {
   const publicPlayers = usePublicPlayersList();
+  const mergedTeams = useMergedCircuitTeams(staticTeams);
   const { teamsBySlug } = useCatalog();
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
@@ -49,14 +55,10 @@ export function PlayersView() {
   const [sortBy, setSortBy] = useState<SortKey>("fantasy");
 
   const teamsForFilter = useMemo(() => {
-    const slugSet = new Set(
-      region === "all"
-        ? BSC_2026_ACTIVE_TEAM_SLUGS
-        : BSC_2026_ACTIVE_TEAM_SLUGS.filter((s) => getBsc2026TeamRegion(s) === region),
-    );
-    for (const row of teamsBySlug.values()) {
-      if (region !== "all" && row.region !== region) continue;
-      slugSet.add(row.slug);
+    const slugSet = new Set<string>();
+    for (const t of mergedTeams) {
+      if (region !== "all" && t.region !== region) continue;
+      slugSet.add(t.slug);
     }
     return [...slugSet]
       .map((slug) => ({
@@ -65,11 +67,11 @@ export function PlayersView() {
         count: getPlayersByTeam(slug).length,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [region, teamsBySlug]);
+  }, [region, mergedTeams]);
 
   const list = useMemo(() => {
     let base = query.trim() ? searchPlayers(query, 200) : publicPlayers;
-    base = base.filter((p) => !p.teamSlug || isBsc2026ActiveTeam(p.teamSlug));
+    base = base.filter((p) => !p.teamSlug || !!getTeam(p.teamSlug));
     if (status !== "all") base = base.filter((p) => p.status === status);
     if (region !== "all") base = base.filter((p) => resolvePlayerRegion(p.teamSlug, p.region) === region);
     if (teamFilter !== "all") base = base.filter((p) => p.teamSlug === teamFilter);
@@ -299,7 +301,7 @@ function PlayerRow({
             <span>{teamName(p.teamSlug)}</span>
           </Link>
         ) : (
-          <span className="bf-players-free">Sin equipo</span>
+          <span className="bf-players-free">{PLAYER_UNASSIGNED_LABEL}</span>
         )}
       </td>
       <td>{role}</td>

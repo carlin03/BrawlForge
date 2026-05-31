@@ -12,7 +12,6 @@ import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
-  BSC_2026_CLUB_COUNT,
   CATALOG_STATS,
   catalogSyncedAt,
   getBsc2026CircuitTeamSlugs,
@@ -20,6 +19,8 @@ import {
   tierLabel,
   tournamentName,
 } from "@/lib/data";
+import { useCatalog } from "@/contexts/CatalogContext";
+import { useMergedCircuitTeams, useCatalogTeamCount, usePublicCircuitTeams } from "@/hooks/useMergedCatalog";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
@@ -74,6 +75,9 @@ function cleanName(raw: string): string {
 export function HomeView() {
   const logoConfig = useLogoConfig();
   const { aggregates, game } = useGame();
+  const mergedTeams = useMergedCircuitTeams(teams);
+  const circuitTeamCount = useCatalogTeamCount();
+  const { complete: completeClubs } = usePublicCircuitTeams(teams);
   const [matchTab, setMatchTab] = useState<MatchTab>("upcoming");
 
   const live = getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug));
@@ -88,9 +92,9 @@ export function HomeView() {
   }, []);
 
   const homeClubs = useMemo(() => {
-    const bySlug = new Map(teams.map((t) => [t.slug, t]));
+    const bySlug = new Map(completeClubs.map((t) => [t.slug, t]));
     const ordered: typeof teams = [];
-    const priority = [...BSC_CLUBS, ...getBsc2026CircuitTeamSlugs()];
+    const priority = [...BSC_CLUBS, ...getBsc2026CircuitTeamSlugs(), ...mergedTeams.map((t) => t.slug)];
     const seen = new Set<string>();
     for (const slug of priority) {
       if (seen.has(slug)) continue;
@@ -98,15 +102,14 @@ export function HomeView() {
       const t = bySlug.get(slug);
       if (t && hasTeamLogoSource(slug, logoConfig)) ordered.push(t);
     }
-    for (const t of teams) {
-      if (ordered.length >= BSC_2026_CLUB_COUNT) break;
+    for (const t of completeClubs) {
       if (!seen.has(t.slug) && hasTeamLogoSource(t.slug, logoConfig)) {
         seen.add(t.slug);
         ordered.push(t);
       }
     }
-    return ordered.slice(0, BSC_2026_CLUB_COUNT);
-  }, [logoConfig]);
+    return ordered;
+  }, [logoConfig, completeClubs, mergedTeams]);
 
   const marqueeClubs = useMemo(() => [...homeClubs, ...homeClubs], [homeClubs]);
   const homeTournaments = useMemo(() => getHomeTournaments(), []);
@@ -151,7 +154,7 @@ export function HomeView() {
               Brawl<em>Forge</em>
             </h1>
             <p className="fu-lead">
-              El hub del circuito BSC 2026: {BSC_2026_CLUB_COUNT} equipos, fantasy con plantilla real, predicciones
+              El hub del circuito BSC 2026: {circuitTeamCount} equipos, fantasy con plantilla real, predicciones
               en cada partido y perfiles de clubes y jugadores.
             </p>
             <div className="fu-cta-row">
@@ -167,7 +170,7 @@ export function HomeView() {
             </div>
             <div className="fu-stats">
               <div className="fu-stat">
-                <b>{BSC_2026_CLUB_COUNT}</b>
+                <b>{circuitTeamCount}</b>
                 <span>Equipos 2026</span>
               </div>
               <div className="fu-stat">
@@ -234,7 +237,7 @@ export function HomeView() {
 
       <section className="fu-marquee-wrap">
         <div className="fu-marquee-head">
-          <h2>{BSC_2026_CLUB_COUNT} clubes del circuito 2026</h2>
+          <h2>{circuitTeamCount} clubes del circuito 2026</h2>
         </div>
         <div className="fu-marquee-track">
           {marqueeClubs.map((t, i) => (

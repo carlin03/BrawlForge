@@ -11,11 +11,15 @@ import { RegionBadge } from "@/components/ui/RegionBadge";
 import { FormDots } from "@/components/platform/ui";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { Region } from "@/lib/types";
-import { useMergedCircuitTeams, useCatalogTeamCount } from "@/hooks/useMergedCatalog";
-import { BSC_2026_CLUB_COUNT } from "@/lib/data/bsc-2026-circuit-teams";
+import {
+  usePublicCircuitTeams,
+  useCatalogTeamCount,
+  countTeamRoster,
+  TEAM_INCOMPLETE_LABEL,
+} from "@/hooks/useMergedCatalog";
+import { useCatalog } from "@/contexts/CatalogContext";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
-  getPlayersByTeam,
   getTournamentFantasyProfile,
 } from "@/lib/data";
 import type { FantasyLeaderboardRow } from "@/lib/supabase/game-types";
@@ -26,8 +30,9 @@ const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 type RankTab = "teams" | "fantasy";
 
 export function RankingsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
-  const teams = useMergedCircuitTeams(staticTeams);
-  const teamCount = useCatalogTeamCount(BSC_2026_CLUB_COUNT);
+  const { teamsBySlug, playersBySlug } = useCatalog();
+  const { complete, incomplete } = usePublicCircuitTeams(staticTeams);
+  const teamCount = useCatalogTeamCount();
   const { isLoggedIn, profile } = useAuth();
   const { game } = useGame();
   const [tab, setTab] = useState<RankTab>("teams");
@@ -35,9 +40,14 @@ export function RankingsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
   const [fantasyBoard, setFantasyBoard] = useState<FantasyLeaderboardRow[]>([]);
 
   const ranked = useMemo(() => {
-    const filtered = region === "all" ? teams : teams.filter((t) => t.region === region);
+    const filtered = region === "all" ? complete : complete.filter((t) => t.region === region);
     return [...filtered].sort((a, b) => a.rank - b.rank);
-  }, [teams, region]);
+  }, [complete, region]);
+
+  const incompleteRanked = useMemo(() => {
+    const filtered = region === "all" ? incomplete : incomplete.filter((t) => t.region === region);
+    return [...filtered].sort((a, b) => a.rank - b.rank);
+  }, [incomplete, region]);
 
   const fantasyMeta = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
 
@@ -145,7 +155,7 @@ export function RankingsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
           <div className="bf-rankings-list">
             {rest.map((t, i) => {
               const pos = i + 4;
-              const roster = getPlayersByTeam(t.slug).length;
+              const roster = countTeamRoster(t.slug, teamsBySlug, playersBySlug);
               return (
                 <Link key={t.slug} href={`/teams/${t.slug}`} className="bf-rankings-row">
                   <span className="bf-rankings-row-pos">{pos}</span>
@@ -161,7 +171,39 @@ export function RankingsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
               );
             })}
           </div>
-          {ranked.length === 0 && <p className="bf-home-empty">No hay equipos en esta región.</p>}
+
+          {incompleteRanked.length > 0 && (
+            <>
+              <p className="bf-rankings-incomplete-heading">{TEAM_INCOMPLETE_LABEL}</p>
+              <div className="bf-rankings-list is-incomplete">
+                {incompleteRanked.map((t, i) => {
+                  const roster = countTeamRoster(t.slug, teamsBySlug, playersBySlug);
+                  return (
+                    <Link
+                      key={t.slug}
+                      href={`/teams/${t.slug}`}
+                      className="bf-rankings-row is-incomplete"
+                    >
+                      <span className="bf-rankings-row-pos">·</span>
+                      <TeamLogo slug={t.slug} name={t.name} size={44} glow={false} />
+                      <div className="bf-rankings-row-main">
+                        <strong>{t.tag}</strong>
+                        <span>{t.name}</span>
+                      </div>
+                      <RegionBadge region={t.region} />
+                      <span className="bf-rankings-row-meta bf-rankings-incomplete-label">
+                        {TEAM_INCOMPLETE_LABEL} · {roster}/{3} jugadores
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {ranked.length === 0 && incompleteRanked.length === 0 && (
+            <p className="bf-home-empty">No hay equipos en esta región.</p>
+          )}
         </>
       )}
 

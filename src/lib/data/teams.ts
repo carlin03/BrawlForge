@@ -5,6 +5,7 @@ import { BSC_2026_ROSTERS } from "./bsc-2026-rosters";
 import { BSC_2026_TEAM_REGISTRY, getBsc2026TeamEntry } from "./bsc-2026-team-registry";
 import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import { CURATED_TEAMS } from "./teams-curated";
+import { getCatalogOnlyTeam } from "./circuit-roster";
 
 export interface EsportsTeam {
   slug: string;
@@ -80,7 +81,8 @@ function buildTeams(): EsportsTeam[] {
 export const teams: EsportsTeam[] = buildTeams();
 
 export function getTeam(slug: string): EsportsTeam | undefined {
-  return teams.find((t) => t.slug === slug);
+  const key = slug.trim().toLowerCase();
+  return teams.find((t) => t.slug === key) ?? getCatalogOnlyTeam(key);
 }
 
 export function getTeamByTag(tag: string): EsportsTeam | undefined {

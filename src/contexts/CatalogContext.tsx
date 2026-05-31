@@ -16,11 +16,14 @@ import type {
   CatalogTeamRow,
 } from "@/lib/supabase/catalog-types";
 import { buildMarketMap } from "@/lib/catalog-merge";
+import { syncCatalogTeamsCache } from "@/lib/data/circuit-roster";
 
 type CatalogState = {
   ready: boolean;
   fromDb: boolean;
   syncedAt: string | null;
+  teamCount: number;
+  playerCount: number;
   teamsBySlug: Map<string, CatalogTeamRow>;
   playersBySlug: Map<string, CatalogPlayerRow>;
   marketByKey: Map<string, CatalogMarketRow>;
@@ -30,6 +33,8 @@ const CatalogContext = createContext<CatalogState>({
   ready: false,
   fromDb: false,
   syncedAt: null,
+  teamCount: 0,
+  playerCount: 0,
   teamsBySlug: new Map(),
   playersBySlug: new Map(),
   marketByKey: new Map(),
@@ -75,14 +80,19 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     const teamsBySlug = new Map<string, CatalogTeamRow>();
     const playersBySlug = new Map<string, CatalogPlayerRow>();
     if (snapshot) {
+      syncCatalogTeamsCache(snapshot.teams);
       for (const t of snapshot.teams) teamsBySlug.set(t.slug, t);
       for (const p of snapshot.players) playersBySlug.set(p.slug, p);
+    } else {
+      syncCatalogTeamsCache([]);
     }
     const marketByKey = snapshot?.market?.length ? buildMarketMap(snapshot.market) : new Map();
     return {
       ready,
       fromDb: !!snapshot?.teams.length,
       syncedAt: snapshot?.syncedAt ?? null,
+      teamCount: teamsBySlug.size,
+      playerCount: playersBySlug.size,
       teamsBySlug,
       playersBySlug,
       marketByKey,

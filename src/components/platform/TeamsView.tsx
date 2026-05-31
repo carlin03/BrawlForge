@@ -12,15 +12,17 @@ import { RegionBadge } from "@/components/ui/RegionBadge";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { Region } from "@/lib/types";
 import { getPlayersByTeam, getTeamPlatformMeta, teamName } from "@/lib/data";
-import { useMergedCircuitTeams, useCatalogTeamCount } from "@/hooks/useMergedCatalog";
-import { BSC_2026_CLUB_COUNT } from "@/lib/data/bsc-2026-circuit-teams";
+import { usePublicCircuitTeams, useCatalogTeamCount, countTeamRoster } from "@/hooks/useMergedCatalog";
+import { useCatalog } from "@/contexts/CatalogContext";
 import { SHOW_DEMO_SOCIAL } from "@/lib/app-config";
 
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 
 export function TeamsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
-  const teams = useMergedCircuitTeams(staticTeams);
-  const teamCount = useCatalogTeamCount(BSC_2026_CLUB_COUNT);
+  const { teamsBySlug, playersBySlug } = useCatalog();
+  const { complete } = usePublicCircuitTeams(staticTeams);
+  const teams = complete;
+  const teamCount = useCatalogTeamCount();
   const [region, setRegion] = useState<Region | "all">("all");
   const [query, setQuery] = useState("");
   const sorted = useMemo(() => {
@@ -157,7 +159,7 @@ export function TeamsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
       <div className="bf-teams-grid bf-stagger">
         {rest.map((t) => {
           const meta = getTeamPlatformMeta(t.slug);
-          const rosterCount = getPlayersByTeam(t.slug).length;
+          const rosterCount = countTeamRoster(t.slug, teamsBySlug, playersBySlug);
           return (
             <Link key={t.slug} href={`/teams/${t.slug}`} className="bf-team-card">
               <div className="bf-team-card-glow" aria-hidden />

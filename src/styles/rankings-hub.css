@@ -261,6 +261,26 @@
   color: var(--bp-dim);
 }
 
+.bf-rankings-incomplete-heading {
+  margin: 20px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+}
+
+.bf-rankings-list.is-incomplete .bf-rankings-row.is-incomplete {
+  opacity: 0.82;
+  border-style: dashed;
+}
+
+.bf-rankings-incomplete-label {
+  color: #e8b84a;
+}
+
 .bf-rankings-fantasy-banner {
   margin: 0 0 16px;
   padding: 12px 14px;

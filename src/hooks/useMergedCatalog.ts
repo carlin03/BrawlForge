@@ -5,18 +5,27 @@ import { useCatalog } from "@/contexts/CatalogContext";
 import { mergeCatalogTeam, mergeCatalogPlayer } from "@/lib/catalog-merge";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { EsportsPlayer } from "@/lib/data/players";
-import { BSC_2026_ACTIVE_TEAM_SLUGS } from "@/lib/data/bsc-2026-active-teams";
 import { getPlayersWithTeam } from "@/lib/data/players";
+import { BSC_2026_CLUB_COUNT } from "@/lib/data/bsc-2026-circuit-teams";
+import {
+  partitionCircuitTeams,
+  sortCircuitTeams,
+  countTeamRoster,
+  isTeamRosterComplete,
+  getTeamRosterTier,
+  TEAM_INCOMPLETE_LABEL,
+  PLAYER_UNASSIGNED_LABEL,
+  MIN_CIRCUIT_ROSTER,
+} from "@/lib/data/circuit-roster";
 
-const TEAM_ORDER = new Map(BSC_2026_ACTIVE_TEAM_SLUGS.map((s, i) => [s, i]));
-
-function sortTeams(list: EsportsTeam[]): EsportsTeam[] {
-  return [...list].sort(
-    (a, b) =>
-      (TEAM_ORDER.get(a.slug) ?? 999) - (TEAM_ORDER.get(b.slug) ?? 999) ||
-      a.name.localeCompare(b.name),
-  );
-}
+export {
+  TEAM_INCOMPLETE_LABEL,
+  PLAYER_UNASSIGNED_LABEL,
+  MIN_CIRCUIT_ROSTER,
+  countTeamRoster,
+  isTeamRosterComplete,
+  getTeamRosterTier,
+};
 
 /** Equipos del circuito + filas extra en Supabase (p. ej. el 51.º club). */
 export function useMergedCircuitTeams(staticTeams: EsportsTeam[]): EsportsTeam[] {
@@ -28,8 +37,22 @@ export function useMergedCircuitTeams(staticTeams: EsportsTeam[]): EsportsTeam[]
       if (merged) bySlug.set(row.slug, merged);
     }
     if (!ready && !teamsBySlug.size) return staticTeams;
-    return sortTeams([...bySlug.values()]);
+    return sortCircuitTeams([...bySlug.values()]);
   }, [staticTeams, teamsBySlug, ready]);
+}
+
+export function usePublicCircuitTeams(staticTeams: EsportsTeam[]) {
+  const merged = useMergedCircuitTeams(staticTeams);
+  const { teamsBySlug, playersBySlug } = useCatalog();
+  return useMemo(
+    () => partitionCircuitTeams(merged, teamsBySlug, playersBySlug),
+    [merged, teamsBySlug, playersBySlug],
+  );
+}
+
+export function useCatalogTeamCount(fallback = BSC_2026_CLUB_COUNT): number {
+  const { teamCount, fromDb } = useCatalog();
+  return fromDb && teamCount > 0 ? teamCount : fallback;
 }
 
 /** Pros con club primero; al final, jugadores solo en catálogo sin equipo (acceso a su ficha). */
@@ -56,12 +79,4 @@ export function usePublicPlayersList(): EsportsPlayer[] {
     if (!ready && !playersBySlug.size) return withTeam;
     return [...withTeam, ...unassigned];
   }, [playersBySlug, ready]);
-}
-
-export function useCatalogTeamCount(fallback: number): number {
-  const { teamsBySlug, ready } = useCatalog();
-  return useMemo(() => {
-    if (ready && teamsBySlug.size > 0) return teamsBySlug.size;
-    return fallback;
-  }, [teamsBySlug.size, ready, fallback]);
 }
