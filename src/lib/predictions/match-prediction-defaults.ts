@@ -37,14 +37,16 @@ export const DEFAULT_MATCH_PREDICTION_POINTS: Required<
     | "perfect_bonus"
   >
 > = {
-  winner: 45,
-  exact_score: 40,
+  /** Ganador: más fácil — menos puntos que el marcador exacto */
+  winner: 40,
+  /** Resultado exacto: mucho más difícil — recompensa clara vs solo ganador */
+  exact_score: 72,
   mvp: 28,
   map_winner: 16,
   map_pick: 8,
   brawler_ban: 10,
   brawler_mvp: 14,
-  brawler_most_used: 10,
+  brawler_most_used: 12,
   brawler_most_banned: 10,
   brawler_lowest_wr: 8,
   participation: 5,
@@ -66,7 +68,12 @@ export const PREDICTION_POINTS_BAR_ROWS: {
   { key: "map_pick", label: "Pick correcto", tier: "mapas", tierLabel: "Mapas" },
   { key: "brawler_ban", label: "Ban correcto", tier: "mapas", tierLabel: "Mapas" },
   { key: "brawler_mvp", label: "Brawler MVP", tier: "brawlers", tierLabel: "Meta brawlers" },
-  { key: "brawler_most_used", label: "Brawler más usado", tier: "brawlers", tierLabel: "Meta brawlers" },
+  {
+    key: "brawler_most_used",
+    label: "Brawler más usado (repetido)",
+    tier: "brawlers",
+    tierLabel: "Meta brawlers",
+  },
   {
     key: "brawler_most_banned",
     label: "Brawler más bloqueado",

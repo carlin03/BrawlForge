@@ -15,7 +15,11 @@ const RULE_ROWS: { key: string; label: string; getPts: (p: ReturnType<typeof get
   { key: "exact_score", label: "Resultado exacto", getPts: (p) => p.exact_score ?? 0 },
   { key: "mvp", label: "MVP jugador", getPts: (p) => p.mvp ?? 0 },
   { key: "brawler_mvp", label: "Brawler mayor WR", getPts: (p) => p.brawler_mvp ?? 0 },
-  { key: "brawler_most_used", label: "Brawler más usado", getPts: (p) => p.brawler_most_used ?? 0 },
+  {
+    key: "brawler_most_used",
+    label: "Brawler más usado (repetido)",
+    getPts: (p) => p.brawler_most_used ?? 0,
+  },
   { key: "brawler_most_banned", label: "Brawler más bloqueado", getPts: (p) => p.brawler_most_banned ?? p.brawler_ban ?? 0 },
   { key: "brawler_lowest_wr", label: "Brawler menor WR", getPts: (p) => p.brawler_lowest_wr ?? 0 },
   { key: "map_winner", label: "Ganador por mapa", getPts: (p) => p.map_winner ?? 0 },

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { auditWrite, getSupabaseAdmin, requireCmsAdmin } from "@/lib/cms/admin-api";
 import { applyDefaultPredictionsToMeta, isPendingTeamSlug, parseMatchMeta } from "@/lib/data/match-meta";
+import {
+  DEFAULT_MATCH_PREDICTIONS_CONFIG,
+  DEFAULT_MATCH_PREDICTION_POINTS,
+} from "@/lib/predictions/match-prediction-defaults";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +37,11 @@ export async function POST() {
       continue;
     }
 
-    const meta = applyDefaultPredictionsToMeta(parseMatchMeta(row.meta));
+    const meta = applyDefaultPredictionsToMeta({
+      ...parseMatchMeta(row.meta),
+      predictions: DEFAULT_MATCH_PREDICTIONS_CONFIG,
+      prediction_points: { ...DEFAULT_MATCH_PREDICTION_POINTS },
+    });
     const { error: upErr } = await supabase!
       .from("matches_catalog")
       .update({ meta, updated_at: new Date().toISOString() })

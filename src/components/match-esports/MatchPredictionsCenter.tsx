@@ -134,7 +134,7 @@ export function MatchPredictionsCenter({
               pick={winnerPick}
               onPickChange={setOptimisticPick}
               disabled={closed}
-              rewardPoints={points.winner ?? 55}
+              rewardPoints={points.winner ?? 40}
             />
           )}
 
@@ -147,6 +147,10 @@ export function MatchPredictionsCenter({
           {(showUnlocked || closed) && cfg.exact_score && (
             <div className="bf-match-predict-exact-card">
               <h4 className="bf-match-predict-subh">Resultado exacto</h4>
+              <p className="bf-match-predict-hint" style={{ margin: "0 0 10px" }}>
+                Más difícil que el ganador: hasta <strong>+{points.exact_score ?? 0} pts</strong> (ganador
+                +{points.winner ?? 0}). Si aciertas el marcador, también sumas el ganador.
+              </p>
               <ScoreStepperPicker
                 matchId={match.id}
                 format={match.format}

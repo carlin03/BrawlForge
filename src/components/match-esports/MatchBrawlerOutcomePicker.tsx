@@ -168,8 +168,8 @@ export function MatchBrawlerOutcomePicker({
       )}
       {showMostUsed && (
         <OutcomeRow
-          title="Más usado"
-          hint="Popularidad en competición"
+          title="Más usado / repetido"
+          hint="El brawler que más veces salió en la serie"
           points={points.brawler_most_used}
           value={ext.brawlerMostUsed}
           suggestions={suggestions.mostUsed}

@@ -131,7 +131,7 @@ export function scoreMatchPrediction(
     addLine(
       lines,
       "brawler_most_used",
-      "Brawler más usado",
+      "Brawler más usado (repetido)",
       pts.brawler_most_used ?? 0,
       brawlerHit(ext.brawlerMostUsed, actualUsed),
       actualUsed,

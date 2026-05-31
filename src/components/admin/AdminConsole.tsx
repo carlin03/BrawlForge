@@ -46,6 +46,7 @@ import {
   teamRowToWikiState,
   type TeamWikiState,
 } from "@/components/admin/AdminTeamWikiForm";
+import { AdminTeamsMasterCsv } from "@/components/admin/AdminTeamsMasterCsv";
 import {
   AdminPlayerWikiForm,
   playerRowToWikiState,
@@ -491,6 +492,11 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                 const row = merged.find((t) => t.slug === slug);
                 if (row) setSelectedTeam(teamRowToWikiState(row as AdminTeamCatalogRow & Record<string, unknown>));
               }}
+            />
+            <AdminTeamsMasterCsv
+              teams={teams}
+              disabled={loading}
+              onImported={() => void load()}
             />
             {teamsSyncPending > 0 && (
               <button

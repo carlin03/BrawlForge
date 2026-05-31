@@ -176,7 +176,7 @@ export function MatchBrawlerStatSidebar({
       )}
       {showMostUsed && (
         <StatSlot
-          title="Más usado"
+          title="Más usado / repetido"
           shortLabel="USO"
           points={points.brawler_most_used}
           value={ext.brawlerMostUsed}

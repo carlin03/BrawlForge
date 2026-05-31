@@ -1801,7 +1801,8 @@
 .bf-admin-editor > .bf-admin-csv-export-bar {
   margin: 0 0 20px;
 }
-.bf-admin-csv-export-bar {
+.bf-admin-csv-export-bar,
+.bf-admin-master-csv {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -1810,4 +1811,15 @@
   border-radius: 10px;
   background: rgba(243, 188, 24, 0.08);
   border: 1px solid rgba(243, 188, 24, 0.25);
+}
+.bf-admin-master-csv {
+  flex-direction: column;
+  align-items: stretch;
+}
+.bf-admin-master-csv > .bp-btn {
+  width: 100%;
+  justify-content: center;
+}
+.bf-admin-master-csv > .bp-btn + .bp-btn {
+  margin-top: 0;
 }

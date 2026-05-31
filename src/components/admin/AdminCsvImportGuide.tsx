@@ -15,7 +15,8 @@ export function AdminCsvImportGuide({ compact }: { compact?: boolean }) {
         <div>
           <strong>Importar / exportar CSV</strong>
           <p>
-            <code>teams.csv</code> y <code>players.csv</code> son archivos distintos. Más plantillas en{" "}
+            <code>teams-master.csv</code> (editor completo), <code>teams.csv</code> y <code>players.csv</code> son
+            distintos. Más plantillas en{" "}
             <Link href={importHref}>Importar CSV</Link>.
           </p>
         </div>
@@ -44,7 +45,9 @@ export function AdminCsvImportGuide({ compact }: { compact?: boolean }) {
           <Upload size={20} aria-hidden />
           <h3>Equipos (global o uno)</h3>
           <p>
-            <a href="/plantillas/teams.csv" download>teams.csv</a> — todas las filas o exporta un club desde{" "}
+            <a href="/plantillas/teams-master.csv" download>teams-master.csv</a> — todas las pestañas del editor
+            (Equipos → Exportar CSV). También{" "}
+            <a href="/plantillas/teams.csv" download>teams.csv</a> — catálogo básico o exporta un club desde{" "}
             <Link href="/admin?module=competicion&tab=teams">Equipos</Link> → <strong>Descargar CSV de este equipo</strong>.
           </p>
         </article>

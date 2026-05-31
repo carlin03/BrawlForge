@@ -962,7 +962,7 @@ export function StudioMatchesPanel() {
                         checked={form.pred_brawler_used}
                         onChange={(e) => setForm({ ...form, pred_brawler_used: e.target.checked })}
                       />
-                      Brawler más usado
+                      Brawler más usado (repetido)
                     </label>
                     <label className="bf-studio-check">
                       <input
@@ -1027,7 +1027,7 @@ export function StudioMatchesPanel() {
                           ["points_map_pick", "Pick brawler"],
                           ["points_brawler_ban", "Ban brawler"],
                           ["points_brawler_mvp", "Brawler MVP"],
-                          ["points_brawler_used", "Más usado"],
+                          ["points_brawler_used", "Más usado (repetido)"],
                           ["points_brawler_most_banned", "Más bloqueado"],
                           ["points_brawler_lowest_wr", "Menor WR"],
                           ["points_participation", "Participar"],
@@ -1055,7 +1055,7 @@ export function StudioMatchesPanel() {
                         [
                           ["result_mvp_player", "MVP jugador (slug)"],
                           ["result_brawler_wr", "Brawler mayor WR"],
-                          ["result_brawler_used", "Brawler más usado"],
+                          ["result_brawler_used", "Brawler más usado (repetido)"],
                           ["result_brawler_banned", "Brawler más bloqueado"],
                           ["result_brawler_low_wr", "Brawler menor WR"],
                         ] as const

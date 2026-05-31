@@ -14,7 +14,10 @@ const DEMO_MVP_IGN: Record<string, string> = {
   levi: "Levi",
 };
 import { resolveMatchPoints } from "@/lib/predictions/default-points";
-import { buildDefaultPredictionsConfig } from "@/lib/predictions/match-prediction-defaults";
+import {
+  buildDefaultPredictionsConfig,
+  DEFAULT_MATCH_PREDICTION_POINTS,
+} from "@/lib/predictions/match-prediction-defaults";
 
 /** Enriquecimiento visual para hub de partidos (demo / derivado). */
 export interface MatchEnrichment {
@@ -238,15 +241,31 @@ export function parseMatchMeta(raw: unknown): MatchMeta {
 }
 
 export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConfig {
-  return buildDefaultPredictionsConfig(meta.predictions);
+  const cfg = buildDefaultPredictionsConfig(meta.predictions);
+  const pts = resolveMatchPoints(meta.prediction_points ?? {});
+  if (cfg.brawler_most_used === false && (pts.brawler_most_used ?? 0) > 0) {
+    return { ...cfg, brawler_most_used: true };
+  }
+  return cfg;
+}
+
+function hasStoredPredictionPoints(meta: MatchMeta): boolean {
+  const p = meta.prediction_points;
+  if (!p || typeof p !== "object") return false;
+  return Object.values(p).some((v) => typeof v === "number" && v > 0);
 }
 
 /** Fusiona meta con predicciones completas (para guardar/importar partidos predecibles). */
 export function applyDefaultPredictionsToMeta(meta: MatchMeta): MatchMeta {
+  const predictions = buildDefaultPredictionsConfig(meta.predictions);
+  const prediction_points = hasStoredPredictionPoints(meta)
+    ? resolveMatchPoints(meta.prediction_points ?? {})
+    : { ...DEFAULT_MATCH_PREDICTION_POINTS };
   return {
     ...meta,
     allow_exact_score: meta.allow_exact_score !== false,
-    predictions: buildDefaultPredictionsConfig(meta.predictions),
+    predictions,
+    prediction_points,
   };
 }
 
