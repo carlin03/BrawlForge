@@ -12,6 +12,7 @@ import {
 } from "@/lib/data/match-meta";
 import {
   buildMatchMetaFromForm,
+  defaultAdminMatchPredictionFields,
   matchCatalogRowToForm,
   type AdminMatchFormState,
 } from "@/lib/data/admin-match-form";
@@ -150,18 +151,7 @@ export function StudioMatchesPanel() {
     importance: "normal" as MatchImportance,
     display_status: "upcoming" as MatchDisplayStatus,
     featured_label: "",
-    pred_winner: true,
-    pred_exact: false,
-    pred_mvp: false,
-    pred_first_map: false,
-    pred_decisive_map: false,
-    pred_brawler_used: false,
-    pred_brawler_mvp: false,
-    pred_brawler_most_banned: false,
-    pred_brawler_lowest_wr: false,
-    pred_map_winners: false,
-    pred_map_picks: false,
-    pred_advanced: false,
+    ...defaultAdminMatchPredictionFields(),
     points_winner: 0,
     points_exact: 0,
     points_mvp: 0,
@@ -209,9 +199,7 @@ export function StudioMatchesPanel() {
       map_pool: applied.map_pool,
       map_order: applied.map_order,
       map_decisive: applied.map_decisive,
-      pred_map_winners: true,
-      pred_map_picks: true,
-      pred_exact: true,
+      ...defaultAdminMatchPredictionFields(),
     }));
     setMsg(`Plantilla aplicada: ${t.label}`);
     setError(false);
@@ -279,18 +267,7 @@ export function StudioMatchesPanel() {
       importance: "normal",
       display_status: "upcoming",
       featured_label: "",
-      pred_winner: true,
-      pred_exact: false,
-      pred_mvp: false,
-      pred_first_map: false,
-      pred_decisive_map: false,
-      pred_brawler_used: false,
-      pred_brawler_mvp: false,
-      pred_brawler_most_banned: false,
-      pred_brawler_lowest_wr: false,
-      pred_map_winners: false,
-      pred_map_picks: false,
-      pred_advanced: false,
+      ...defaultAdminMatchPredictionFields(),
       points_winner: 0,
       points_exact: 0,
       points_mvp: 0,
@@ -425,6 +402,26 @@ export function StudioMatchesPanel() {
       reload();
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Error al importar");
+      setError(true);
+    }
+    setSyncing(false);
+  }
+
+  async function applyPredictionDefaultsToAll(reload: () => void) {
+    setSyncing(true);
+    setMsg("");
+    setError(false);
+    try {
+      const res = await fetch("/api/cms/admin/matches/apply-prediction-defaults", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se pudo aplicar");
+      setMsg(data.message || `Actualizados ${data.updated ?? 0} partidos.`);
+      setError(false);
+      reload();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error");
       setError(true);
     }
     setSyncing(false);
@@ -907,10 +904,18 @@ export function StudioMatchesPanel() {
                 {formTab === "predict" && (
                   <div className="bf-studio-check-col">
                     <p className="bf-studio-hint">
-                      Usa una <strong>plantilla</strong> en General para el pool. En la web: predicciones
-                      principales arriba, ganadores por mapa en avanzadas, draft 3+2+3 en{" "}
-                      <strong>Análisis de mapas</strong>.
+                      Por defecto <strong>todas</strong> las categorías están activas en la web (ganador,
+                      marcador, mapas, brawlers). Los puntos globales son por dificultad: serie &gt; mapas &gt;
+                      meta brawlers. Deja 0 en un campo para usar el valor global.
                     </p>
+                    <button
+                      type="button"
+                      className="bp-btn bp-btn-ghost"
+                      disabled={syncing}
+                      onClick={() => void applyPredictionDefaultsToAll(reload)}
+                    >
+                      Activar predicciones completas en todos los partidos
+                    </button>
                     <label className="bf-studio-check">
                       <input
                         type="checkbox"

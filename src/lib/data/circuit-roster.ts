@@ -1,6 +1,5 @@
 import type { CatalogPlayerRow, CatalogTeamRow } from "@/lib/supabase/catalog-types";
-import { mergeCatalogTeam } from "@/lib/catalog-merge";
-import { getPlayersByTeam } from "./players";
+import { isHiddenTeam } from "@/lib/data/blocked-team-slugs";
 import type { EsportsTeam } from "./teams";
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 
@@ -18,8 +17,10 @@ const catalogTeamsBySlug = new Map<string, EsportsTeam>();
 
 /** Sincroniza equipos solo en Supabase para getTeam / isKnownTeamSlug. */
 export function syncCatalogTeamsCache(rows: CatalogTeamRow[]): void {
+  const { mergeCatalogTeam } = require("@/lib/catalog-merge") as typeof import("@/lib/catalog-merge");
   catalogTeamsBySlug.clear();
   for (const row of rows) {
+    if (isHiddenTeam(row)) continue;
     const merged = mergeCatalogTeam(undefined, row);
     if (merged) catalogTeamsBySlug.set(merged.slug, merged);
   }
@@ -44,7 +45,14 @@ export function countTeamRoster(
   const fromPlayers = playersBySlug
     ? [...playersBySlug.values()].filter((p) => p.team_slug?.trim().toLowerCase() === key).length
     : 0;
-  const fromLocal = getPlayersByTeam(key).length;
+  let fromLocal = 0;
+  try {
+    // Evita ciclo teams → circuit-roster → players → teams en init del bundle
+    const { getPlayersByTeam } = require("./players") as typeof import("./players");
+    fromLocal = getPlayersByTeam(key).length;
+  } catch {
+    fromLocal = 0;
+  }
   const cached = catalogTeamsBySlug.get(key)?.roster?.length ?? 0;
   return Math.max(fromRow, fromPlayers, fromLocal, cached);
 }

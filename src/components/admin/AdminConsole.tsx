@@ -554,35 +554,6 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
           </aside>
 
           {selectedTeam ? (
-            <>
-            <div className="bf-admin-csv-export-bar">
-              <button
-                type="button"
-                className="bp-btn bp-btn-ghost"
-                onClick={() => {
-                  const row = teams.find((t) => t.slug === selectedTeam.slug);
-                  if (!row) return;
-                  downloadCsvText(`${row.slug}-equipo.csv`, buildTeamsCsv([row], row.slug));
-                }}
-              >
-                Descargar CSV de este equipo
-              </button>
-              <button
-                type="button"
-                className="bp-btn bp-btn-ghost"
-                onClick={() => {
-                  downloadCsvText(
-                    `${selectedTeam.slug}-jugadores.csv`,
-                    buildPlayersCsv(players, selectedTeam.slug),
-                  );
-                }}
-              >
-                Descargar jugadores de este equipo
-              </button>
-              <Link href="/admin?module=competicion&tab=import" className="bp-btn bp-btn-gold">
-                Subir CSV
-              </Link>
-            </div>
             <AdminTeamWikiForm
               key={selectedTeam.slug}
               team={selectedTeam}
@@ -600,8 +571,37 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                 }
               }}
               onDelete={() => deleteCatalog("team", selectedTeam.slug)}
+              toolbar={
+                <div className="bf-admin-csv-export-bar">
+                  <button
+                    type="button"
+                    className="bp-btn bp-btn-ghost"
+                    onClick={() => {
+                      const row = teams.find((t) => t.slug === selectedTeam.slug);
+                      if (!row) return;
+                      downloadCsvText(`${row.slug}-equipo.csv`, buildTeamsCsv([row], row.slug));
+                    }}
+                  >
+                    Descargar CSV de este equipo
+                  </button>
+                  <button
+                    type="button"
+                    className="bp-btn bp-btn-ghost"
+                    onClick={() => {
+                      downloadCsvText(
+                        `${selectedTeam.slug}-jugadores.csv`,
+                        buildPlayersCsv(players, selectedTeam.slug),
+                      );
+                    }}
+                  >
+                    Descargar jugadores de este equipo
+                  </button>
+                  <Link href="/admin?module=competicion&tab=import" className="bp-btn bp-btn-gold">
+                    Subir CSV
+                  </Link>
+                </div>
+              }
             />
-            </>
           ) : (
             <div className="bf-admin-empty-editor">Selecciona un equipo de la lista</div>
           )}

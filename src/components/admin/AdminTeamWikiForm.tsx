@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Image, Save, Trash2 } from "lucide-react";
 import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminField";
@@ -63,6 +63,7 @@ export function AdminTeamWikiForm({
   onSave,
   onOpenLogos,
   onDelete,
+  toolbar,
 }: {
   team: TeamWikiState;
   players: { slug: string; ign: string; team_slug: string | null }[];
@@ -71,6 +72,8 @@ export function AdminTeamWikiForm({
   onSave: () => void;
   onOpenLogos: () => void;
   onDelete?: () => void;
+  /** Barra superior (p. ej. exportar CSV) — mismo panel que el editor, como en Jugadores */
+  toolbar?: ReactNode;
 }) {
   const [tab, setTab] = useState<Tab>("basico");
   const p = team.profile;
@@ -83,6 +86,7 @@ export function AdminTeamWikiForm({
         onSave();
       }}
     >
+      {toolbar}
       <div className="bf-admin-editor-head">
         <TeamLogo key={team.slug} slug={team.slug} name={team.name} size={72} />
         <div>

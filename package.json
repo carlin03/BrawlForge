@@ -10,6 +10,8 @@
     "mobile:tunnel": "node scripts/mobile-link.mjs --tunnel",
     "supabase:check": "node scripts/check-supabase.mjs",
     "supabase:apply:storage": "node scripts/apply-logo-storage-migration.mjs",
+    "logos:mirror:circuit": "node scripts/mirror-circuit-logos.mjs",
+    "catalog:purge:phantom": "node scripts/purge-phantom-team.mjs",
     "deploy:check": "npm run supabase:check && npm run build",
     "supabase:build:catalog": "node scripts/build-bsc-catalog-enriched.mjs --write",
     "supabase:seed:catalog": "node scripts/build-bsc-catalog-enriched.mjs --write && node scripts/seed-supabase-catalog.mjs",

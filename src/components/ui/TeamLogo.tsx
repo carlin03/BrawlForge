@@ -46,12 +46,14 @@ function buildTeamLogoImageSources(
   const direct = prependTeamLogoSources([], [overrideUrl, manual], cacheVersion);
 
   if (usesRemoteLogoPipeline()) {
-    const api = teamLogoProxyUrl(key, cacheVersion);
-    const out = [api];
-    for (const u of direct) {
-      if (u && !out.includes(u)) out.push(u);
+    // URL de admin primero (proxy /api/image); el binario /api/logos/team queda de respaldo.
+    if (direct.length) {
+      const api = teamLogoProxyUrl(key, cacheVersion);
+      const out = [...direct];
+      if (!out.includes(api)) out.push(api);
+      return out;
     }
-    return out;
+    return [teamLogoProxyUrl(key, cacheVersion)];
   }
 
   const base = buildTeamLogoSources(key, logoConfig);

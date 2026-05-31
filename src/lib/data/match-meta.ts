@@ -1,7 +1,20 @@
 import type { BrawlerOverride, MapStrategicOverride } from "./game-assets-catalog";
 import type { EsportsMatch } from "./matches";
-import { getPlayer, teamName } from "./index";
+import { getTeam } from "./teams";
+
+function teamDisplayName(slug: string): string {
+  return getTeam(slug)?.name ?? slug;
+}
+
+const DEMO_MVP_IGN: Record<string, string> = {
+  moya: "Moya",
+  yoshi: "Yoshi",
+  lukii: "Lukii",
+  boss: "Boss",
+  levi: "Levi",
+};
 import { resolveMatchPoints } from "@/lib/predictions/default-points";
+import { buildDefaultPredictionsConfig } from "@/lib/predictions/match-prediction-defaults";
 
 /** Enriquecimiento visual para hub de partidos (demo / derivado). */
 export interface MatchEnrichment {
@@ -43,10 +56,9 @@ export function getMatchEnrichment(match: EsportsMatch): MatchEnrichment {
   const mvpCandidates = ["moya", "yoshi", "lukii", "boss", "levi"];
   const mvpSlug = match.status !== "upcoming" ? mvpCandidates[h % mvpCandidates.length] : null;
 
-  let quickStat = `${communityPickA}% vota ${teamName(match.teamASlug)}`;
+  let quickStat = `${communityPickA}% vota ${teamDisplayName(match.teamASlug)}`;
   if (match.status === "finished" && mvpSlug) {
-    const mvp = getPlayer(mvpSlug);
-    quickStat = `MVP · ${mvp?.ign ?? mvpSlug}`;
+    quickStat = `MVP · ${DEMO_MVP_IGN[mvpSlug] ?? mvpSlug}`;
   } else if (match.status === "live") {
     quickStat = `Set ${1 + (h % 3)} · ${map}`;
   }
@@ -226,27 +238,15 @@ export function parseMatchMeta(raw: unknown): MatchMeta {
 }
 
 export function getMatchPredictionsConfig(meta: MatchMeta): MatchPredictionsConfig {
-  const p = meta.predictions ?? {};
-  const advanced = p.advanced === true;
+  return buildDefaultPredictionsConfig(meta.predictions);
+}
+
+/** Fusiona meta con predicciones completas (para guardar/importar partidos predecibles). */
+export function applyDefaultPredictionsToMeta(meta: MatchMeta): MatchMeta {
   return {
-    winner: p.winner !== false,
-    exact_score: p.exact_score === true || meta.allow_exact_score === true || advanced,
-    mvp: p.mvp === true || advanced,
-    first_map: p.first_map === true || advanced,
-    decisive_map: p.decisive_map === true || advanced,
-    map_winners:
-      p.map_winners === true ||
-      advanced ||
-      Boolean(meta.maps?.order?.length || meta.maps?.possible?.length),
-    map_brawler_picks:
-      p.map_brawler_picks === true ||
-      advanced ||
-      Boolean(meta.maps?.order?.length || meta.maps?.possible?.length),
-    brawler_most_used: p.brawler_most_used === true || advanced,
-    brawler_mvp: p.brawler_mvp === true || advanced,
-    brawler_most_banned: p.brawler_most_banned === true || advanced,
-    brawler_lowest_wr: p.brawler_lowest_wr === true || advanced,
-    advanced,
+    ...meta,
+    allow_exact_score: meta.allow_exact_score !== false,
+    predictions: buildDefaultPredictionsConfig(meta.predictions),
   };
 }
 

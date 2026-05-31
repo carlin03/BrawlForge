@@ -2813,9 +2813,26 @@
 }
 .bf-predict-points-bar {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+.bf-predict-points-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bf-predict-points-tier-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bp-muted);
+}
+.bf-predict-points-tier-chips {
+  display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
 }
 .bf-predict-points-chip {
   display: flex;

@@ -130,15 +130,58 @@
   color: var(--bp-red-bright);
 }
 
+/* Lista + editor en fila (flex evita que el formulario empuje el editor a otra fila del grid) */
 .bf-admin-split {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
-@media (min-width: 960px) {
+.bf-admin-split > .bf-admin-sidebar {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 100%;
+}
+.bf-admin-split > .bf-admin-editor,
+.bf-admin-split > .bf-admin-split-main,
+.bf-admin-split > .bf-admin-empty-editor {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+@media (min-width: 640px) {
   .bf-admin-split {
-    grid-template-columns: minmax(300px, 360px) 1fr;
+    flex-direction: row;
+    align-items: flex-start;
   }
+  .bf-admin-split > .bf-admin-sidebar {
+    flex: 0 0 min(320px, 34vw);
+    width: min(320px, 34vw);
+    max-width: 360px;
+  }
+}
+@container studio-competition (min-width: 600px) {
+  .bf-admin-split {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .bf-admin-split > .bf-admin-sidebar {
+    flex: 0 0 280px;
+    width: 280px;
+    max-width: 300px;
+  }
+}
+
+.bf-admin-split-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.bf-admin-split .bf-admin-editor {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .bf-admin-sidebar {
@@ -1443,6 +1486,22 @@
   color: var(--bp-gold);
   background: rgba(255, 200, 46, 0.12);
 }
+.bf-admin-wiki-section-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.bf-admin-field-grow {
+  flex: 1;
+  min-width: 0;
+}
+.bf-admin-wiki-moves {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+  padding-top: 22px;
+}
 .bf-admin-wiki-section textarea {
   min-height: 72px;
 }
@@ -1738,6 +1797,9 @@
 .bf-csv-import-guide-card a {
   color: var(--bp-gold);
   font-weight: 600;
+}
+.bf-admin-editor > .bf-admin-csv-export-bar {
+  margin: 0 0 20px;
 }
 .bf-admin-csv-export-bar {
   display: flex;

@@ -7,6 +7,7 @@ import type { EsportsTeam } from "@/lib/data/teams";
 import type { EsportsPlayer } from "@/lib/data/players";
 import { getPlayersWithTeam } from "@/lib/data/players";
 import { BSC_2026_CLUB_COUNT } from "@/lib/data/bsc-2026-circuit-teams";
+import { isHiddenTeam } from "@/lib/data/blocked-team-slugs";
 import {
   partitionCircuitTeams,
   sortCircuitTeams,
@@ -33,6 +34,7 @@ export function useMergedCircuitTeams(staticTeams: EsportsTeam[]): EsportsTeam[]
   return useMemo(() => {
     const bySlug = new Map(staticTeams.map((t) => [t.slug, t]));
     for (const row of teamsBySlug.values()) {
+      if (isHiddenTeam(row)) continue;
       const merged = mergeCatalogTeam(bySlug.get(row.slug), row);
       if (merged) bySlug.set(row.slug, merged);
     }

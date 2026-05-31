@@ -12,21 +12,20 @@ export function bundledLogoOverrides(): LogoOverridesFile {
   return { teams: {}, tournaments: {} };
 }
 
-/** Elige la URL de logo de equipo más reciente entre catálogo y overrides. */
+/**
+ * URL activa para un equipo: `team_logo_overrides` (Admin → Logos) gana siempre
+ * sobre `teams_catalog`, para que un sync del catálogo no revierta el logo guardado.
+ */
 export function pickNewerTeamLogoUrl(
   catalogUrl: string | null | undefined,
-  catalogAt: string | null | undefined,
+  _catalogAt: string | null | undefined,
   overrideUrl: string | null | undefined,
-  overrideAt: string | null | undefined,
+  _overrideAt: string | null | undefined,
 ): string | null {
-  const cUrl = catalogUrl?.trim() || null;
   const oUrl = overrideUrl?.trim() || null;
-  if (!cUrl && !oUrl) return null;
-  if (!cUrl) return oUrl;
-  if (!oUrl) return cUrl;
-  const cTs = catalogAt ? new Date(catalogAt).getTime() : 0;
-  const oTs = overrideAt ? new Date(overrideAt).getTime() : 0;
-  return oTs >= cTs ? oUrl : cUrl;
+  if (oUrl) return oUrl;
+  const cUrl = catalogUrl?.trim() || null;
+  return cUrl;
 }
 
 export function mergeLogoOverridesFile(base: LogoOverridesFile, extra: LogoOverridesFile): LogoOverridesFile {

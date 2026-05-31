@@ -4,6 +4,7 @@ import path from "node:path";
 import { createClient } from "@/lib/supabase/server";
 import type { LogoOverridesFile } from "@/lib/data/logo-overrides";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
+import { isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import {
   bundledLogoOverrides,
   mergeLogoOverridesFile,
@@ -61,6 +62,7 @@ export async function GET() {
     const allSlugs = new Set([...catalogBySlug.keys(), ...overrideBySlug.keys()]);
 
     for (const slug of allSlugs) {
+      if (isHiddenTeamSlug(slug)) continue;
       const cat = catalogBySlug.get(slug);
       const ov = overrideBySlug.get(slug);
       const url = pickNewerTeamLogoUrl(
@@ -96,6 +98,10 @@ export async function GET() {
       .sort()
       .pop();
     if (latest) cacheVersion = String(new Date(latest).getTime());
+  }
+
+  for (const slug of Object.keys(overrides.teams)) {
+    if (isHiddenTeamSlug(slug)) delete overrides.teams[slug];
   }
 
   return NextResponse.json(

@@ -16,6 +16,7 @@ import type {
   CatalogTeamRow,
 } from "@/lib/supabase/catalog-types";
 import { buildMarketMap } from "@/lib/catalog-merge";
+import { isHiddenTeam } from "@/lib/data/blocked-team-slugs";
 import { syncCatalogTeamsCache } from "@/lib/data/circuit-roster";
 
 type CatalogState = {
@@ -81,7 +82,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     const playersBySlug = new Map<string, CatalogPlayerRow>();
     if (snapshot) {
       syncCatalogTeamsCache(snapshot.teams);
-      for (const t of snapshot.teams) teamsBySlug.set(t.slug, t);
+      for (const t of snapshot.teams) {
+        if (isHiddenTeam(t)) continue;
+        teamsBySlug.set(t.slug, t);
+      }
       for (const p of snapshot.players) playersBySlug.set(p.slug, p);
     } else {
       syncCatalogTeamsCache([]);

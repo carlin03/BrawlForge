@@ -2,11 +2,8 @@ import { buildTeamLogoSources } from "@/lib/data/png-logo-urls";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 import { bundledLogoOverrides } from "@/lib/logo-config-merge";
 import type { LogoRuntimeConfig } from "@/lib/data/png-logo-urls";
+import { buildImageFetchHeaders } from "@/lib/image-fetch-headers";
 import { isPublicImageFetchUrl } from "@/lib/image-fetch-url";
-const UA = {
-  "User-Agent": "BrawlForge/1.0 (team logo CDN)",
-  Accept: "image/png,image/webp,image/jpeg,image/*,*/*",
-};
 
 function decodeClientProxyUrl(url: string): string {
   if (!url.startsWith("/api/image?")) return url;
@@ -37,15 +34,24 @@ export function defaultTeamLogoConfig(): LogoRuntimeConfig {
   };
 }
 
+function teamOverrideUpstream(slug: string, cfg?: LogoRuntimeConfig): string | undefined {
+  const key = slug.trim().toLowerCase();
+  const url = cfg?.overrides?.teams[key]?.url?.trim();
+  return url && isPublicImageFetchUrl(url) ? url : undefined;
+}
+
 export async function fetchFirstTeamLogo(
   slug: string,
   cfg?: LogoRuntimeConfig,
 ): Promise<{ body: ArrayBuffer; contentType: string } | null> {
-  const sources = teamLogoUpstreamSources(slug, cfg);
+  const overrideFirst = teamOverrideUpstream(slug, cfg);
+  const sources = overrideFirst
+    ? [overrideFirst, ...teamLogoUpstreamSources(slug, cfg).filter((u) => u !== overrideFirst)]
+    : teamLogoUpstreamSources(slug, cfg);
   for (const url of sources) {
     if (!isPublicImageFetchUrl(url)) continue;
     try {
-      const res = await fetch(url, { headers: UA, next: { revalidate: 86400 } });
+      const res = await fetch(url, { headers: buildImageFetchHeaders(url), next: { revalidate: 86400 } });
       if (!res.ok) continue;
       const ct = res.headers.get("content-type") ?? "image/png";
       if (!ct.includes("image")) continue;

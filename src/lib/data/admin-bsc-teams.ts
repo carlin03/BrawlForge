@@ -8,6 +8,7 @@ import {
   type AdminTeamCatalogRow,
   pickTeamFromDb,
 } from "./admin-catalog-fields";
+import { isHiddenTeam, isHiddenTeamSlug } from "./blocked-team-slugs";
 import { parseAchievements, parseSocial } from "./profile-wiki";
 
 export type { AdminTeamCatalogRow };
@@ -109,7 +110,7 @@ export function mergeAdminTeamRows(
   }
   for (const row of catalogRows ?? []) {
     const slug = String(row.slug ?? "").trim().toLowerCase();
-    if (!slug) continue;
+    if (!slug || isHiddenTeam({ slug, name: String(row.name ?? "") })) continue;
     const base = bySlug.get(slug) ?? adminBscTeamToCatalogRow(slug);
     const roster = row.roster_slugs;
     bySlug.set(slug, {
@@ -142,7 +143,7 @@ export function mergeAdminTeamRows(
     });
   }
   const orderIdx = new Map(BSC_2026_ACTIVE_TEAM_SLUGS.map((s, i) => [s, i]));
-  return [...bySlug.values()].sort(
-    (a, b) => (orderIdx.get(a.slug) ?? 999) - (orderIdx.get(b.slug) ?? 999),
-  );
+  return [...bySlug.values()]
+    .filter((t) => !isHiddenTeam(t))
+    .sort((a, b) => (orderIdx.get(a.slug) ?? 999) - (orderIdx.get(b.slug) ?? 999));
 }

@@ -2673,13 +2673,7 @@
   background: rgba(255, 200, 46, 0.1);
 }
 .bf-admin-head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.bf-admin-split {
-  display: grid;
-  gap: 16px;
-}
-@media (min-width: 900px) {
-  .bf-admin-split { grid-template-columns: minmax(240px, 320px) 1fr; }
-}
+/* .bf-admin-split — ver admin-premium.css (flex lista | editor) */
 .bf-admin-list-ul {
   list-style: none;
   padding: 0;

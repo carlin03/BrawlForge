@@ -9,6 +9,8 @@ import {
   mergeCardThemeIntoMeta,
   parseCardThemeMeta,
 } from "@/lib/data/card-theme-meta";
+import { isHiddenTeam, isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
+import { purgePhantomTeamsFromDb } from "@/lib/admin/purge-phantom-teams";
 import { getTeam } from "@/lib/data/teams";
 import {
   buildTeamMeta,
@@ -125,6 +127,8 @@ export async function listMergedTeams(supabase: SupabaseServerClient | null) {
     };
   }
 
+  await purgePhantomTeamsFromDb(supabase);
+
   const { data, error } = await supabase
     .from("teams_catalog")
     .select("*")
@@ -160,6 +164,10 @@ export async function getTeamsSyncStatus(supabase: SupabaseServerClient): Promis
 }
 
 export async function upsertTeam(supabase: SupabaseServerClient, row: Record<string, unknown>) {
+  const slug = String(row.slug ?? "").trim().toLowerCase();
+  if (isHiddenTeamSlug(slug)) {
+    throw new Error("Este equipo está oculto permanentemente (slug inválido).");
+  }
   const syncedAt = new Date().toISOString();
   const payload = buildTeamPayloadFromAdminRow(row, syncedAt);
   const { error } = await supabase.from("teams_catalog").upsert(payload);
@@ -174,6 +182,12 @@ export async function upsertTeam(supabase: SupabaseServerClient, row: Record<str
 }
 
 export async function deleteTeam(supabase: SupabaseServerClient, slug: string) {
+  if (isHiddenTeamSlug(slug)) {
+    const purged = await purgePhantomTeamsFromDb(supabase);
+    return {
+      message: `Equipo fantasma eliminado de la base de datos (${purged.removedTeams.join(", ") || slug}).`,
+    };
+  }
   const { error } = await supabase.from("teams_catalog").delete().eq("slug", slug);
   if (error) throw new Error(error.message);
   await logCmsAudit({

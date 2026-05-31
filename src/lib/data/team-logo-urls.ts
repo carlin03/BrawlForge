@@ -1,4 +1,5 @@
 /** Remote logo CDN fallbacks — Liquipedia solo vía proxy en UI */
+import { isHiddenTeamSlug } from "./blocked-team-slugs";
 import teamSlugs from "./generated/team-slugs-all.json";
 import allTeams from "./generated/teams.json";
 import teams2026 from "./generated/teams-2026.json";
@@ -126,6 +127,14 @@ export const FAVICON_LOGOS: Record<string, string> = {
   "bc-gaming-sa": "https://icons.duckduckgo.com/ip3/berlincityclub.com.ico",
 };
 
+/** Clubes BSC fuera del sync Liquipedia (51.º equipo, Big Talents vs BIG). */
+export const CIRCUIT_TEAM_LOGO_FALLBACKS: Record<string, string> = {
+  "ninguem-segura":
+    "https://cdn.escharts.com/uploads/public/67b/b3c/0d6/67bb3c0d612ea264136572.png",
+  "big-talents":
+    "https://liquipedia.net/commons/images/thumb/6/6c/Big_Talents_allmode.png/600px-Big_Talents_allmode.png",
+};
+
 export const ALL_TEAM_SLUGS: readonly string[] = teamSlugs as string[];
 
 /** Cadena para scripts de descarga (incluye Liquipedia directo). */
@@ -144,7 +153,9 @@ export function buildRemoteLogoChain(slug: string): string[] {
 
 /** Fuentes para <img>: sin hotlinking de Liquipedia; alternativas primero. */
 export function buildUiRemoteLogoChain(slug: string): string[] {
+  if (isHiddenTeamSlug(slug)) return [];
   const chain: string[] = [];
+  if (CIRCUIT_TEAM_LOGO_FALLBACKS[slug]) chain.push(CIRCUIT_TEAM_LOGO_FALLBACKS[slug]);
   if (TAIYORO_LOGOS[slug]) chain.push(TAIYORO_LOGOS[slug]);
   if (ORG_OFFICIAL_LOGOS[slug]) chain.push(ORG_OFFICIAL_LOGOS[slug]);
   if (ROYALEAPI_LOGOS[slug]) chain.push(ROYALEAPI_LOGOS[slug]);

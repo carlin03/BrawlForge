@@ -1,23 +1,9 @@
 import { getMatchPool } from "@/lib/data/match-pool";
 import type { EsportsMatch } from "@/lib/data/matches";
-import { parseMatchMeta } from "@/lib/data/match-meta";
-
-const DEFAULT_PREDICTIONS_META = {
-  predictions: {
-    winner: true,
-    exact_score: true,
-    mvp: true,
-    first_map: false,
-    decisive_map: false,
-    brawler_most_used: false,
-    brawler_mvp: false,
-    advanced: false,
-  },
-};
+import { applyDefaultPredictionsToMeta, parseMatchMeta } from "@/lib/data/match-meta";
 
 export function matchToCatalogRow(m: EsportsMatch) {
-  const meta = parseMatchMeta(m.meta);
-  const predictions = meta.predictions ?? DEFAULT_PREDICTIONS_META.predictions;
+  const meta = applyDefaultPredictionsToMeta(parseMatchMeta(m.meta));
   return {
     id: m.id,
     tournament_slug: m.tournamentSlug,
@@ -33,7 +19,6 @@ export function matchToCatalogRow(m: EsportsMatch) {
     published: true,
     meta: {
       ...meta,
-      predictions,
       display_status: meta.display_status ?? m.status,
     },
     updated_at: new Date().toISOString(),

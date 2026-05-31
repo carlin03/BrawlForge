@@ -5,6 +5,7 @@ import { BSC_2026_ROSTERS } from "./bsc-2026-rosters";
 import { BSC_2026_TEAM_REGISTRY, getBsc2026TeamEntry } from "./bsc-2026-team-registry";
 import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import { CURATED_TEAMS } from "./teams-curated";
+import { isHiddenTeamSlug } from "./blocked-team-slugs";
 import { getCatalogOnlyTeam } from "./circuit-roster";
 
 export interface EsportsTeam {
@@ -82,6 +83,7 @@ export const teams: EsportsTeam[] = buildTeams();
 
 export function getTeam(slug: string): EsportsTeam | undefined {
   const key = slug.trim().toLowerCase();
+  if (isHiddenTeamSlug(key)) return undefined;
   return teams.find((t) => t.slug === key) ?? getCatalogOnlyTeam(key);
 }
 

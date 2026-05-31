@@ -4,8 +4,12 @@ import path from "node:path";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/admin-auth";
 import { canWriteLocalProjectFiles, tryWriteFile } from "@/lib/admin/project-fs";
+import { ensureCatalogTeamRow } from "@/lib/admin/ensure-catalog-team-row";
+import { mirrorTeamLogoToStorage } from "@/lib/admin/mirror-team-logo-url";
 import { writeLogoOverrides } from "@/lib/admin/save-team-logo";
+import { isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
+import { createServiceClient } from "@/lib/supabase/service";
 import { BSC_TOURNAMENT_ALIASES } from "@/lib/data/bsc-tournaments";
 import { TOURNAMENT_SLUG_ALIASES } from "@/lib/data/catalog";
 
@@ -55,6 +59,9 @@ export async function POST(request: Request) {
   const kind = body.kind === "tournament" ? "tournament" : "team";
 
   if (!slug) return NextResponse.json({ error: "Slug requerido" }, { status: 400 });
+  if (isHiddenTeamSlug(slug)) {
+    return NextResponse.json({ error: "Este equipo está oculto del sistema (slug inválido)." }, { status: 400 });
+  }
 
   const root = process.cwd();
   const warnings: string[] = [];
@@ -76,13 +83,31 @@ export async function POST(request: Request) {
           { status: 400 },
         );
       }
-      const persistedUrl = normalizeAdminMediaUrl(imageUrl);
-      if (!persistedUrl) {
+      const sourceUrl = normalizeAdminMediaUrl(imageUrl);
+      if (!sourceUrl) {
         return NextResponse.json(
           { error: "URL no válida. Usa https://… o pega el enlace directo (también vale sin https://)." },
           { status: 400 },
         );
       }
+
+      let persistedUrl = sourceUrl.split("?")[0];
+      const service = createServiceClient();
+      if (service) {
+        const mirrored = await mirrorTeamLogoToStorage(service, slug, sourceUrl);
+        if ("publicUrl" in mirrored) {
+          persistedUrl = mirrored.publicUrl;
+        } else {
+          warnings.push(
+            `No se copió a Storage (${mirrored.error}). Se guardó la URL externa; la web puede fallar al cargarla.`,
+          );
+        }
+      } else {
+        warnings.push(
+          "Falta SUPABASE_SERVICE_ROLE_KEY en Vercel: no se pudo copiar el logo a Storage (suelen llegar errores por Gmail).",
+        );
+      }
+
       const savedAt = new Date().toISOString();
       const { error: logoErr } = await supabase.from("team_logo_overrides").upsert({
         slug,
@@ -94,16 +119,17 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: `Supabase logos: ${logoErr.message}` }, { status: 500 });
       }
 
+      const ensureErr = await ensureCatalogTeamRow(supabase, slug, persistedUrl, savedAt);
+      if (ensureErr) warnings.push(`Catálogo equipos (crear): ${ensureErr}`);
+
       const { data: catRows, error: teamErr } = await supabase
         .from("teams_catalog")
         .update({ logo_url: persistedUrl, synced_at: savedAt })
         .eq("slug", slug)
         .select("slug");
       if (teamErr) warnings.push(`Catálogo equipos: ${teamErr.message}`);
-      else if (!catRows?.length) {
-        warnings.push(
-          `No hay fila en teams_catalog para "${slug}"; el logo quedó en overrides. Crea el equipo en Admin o importa CSV.`,
-        );
+      else if (!catRows?.length && !ensureErr) {
+        warnings.push(`No se actualizó teams_catalog para "${slug}" (el override sí se guardó).`);
       }
 
       const { data: verify } = await supabase
@@ -128,13 +154,15 @@ export async function POST(request: Request) {
       }
 
       const logoUrl = `${persistedUrl}?v=${cacheVersion}`;
+      const hosted = persistedUrl.includes("supabase.co/storage/");
       return NextResponse.json({
-        message: `Logo guardado: ${slug}.${warnings.length ? ` (${warnings.join("; ")})` : ""}`,
+        message: `Logo guardado: ${slug}${hosted ? " (copiado a Supabase Storage)" : ""}.${warnings.length ? ` (${warnings.join("; ")})` : ""}`,
         logoUrl,
         cacheVersion,
         warnings,
         ok: true,
         persistedInCloud: true,
+        hostedOnSupabase: hosted,
       });
     }
 

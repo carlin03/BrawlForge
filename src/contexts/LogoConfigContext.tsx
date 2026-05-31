@@ -10,7 +10,8 @@ import {
   type ReactNode,
 } from "react";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
-import type { LogoOverridesFile } from "@/lib/data/logo-overrides";
+import type { LogoOverrideEntry, LogoOverridesFile } from "@/lib/data/logo-overrides";
+import { isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import type { LogoRuntimeConfig } from "@/lib/data/png-logo-urls";
 
 const DEFAULT: LogoRuntimeConfig = {
@@ -33,9 +34,14 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
       const res = await fetch("/api/logos/config", { cache: "no-store" });
       if (!res.ok) return;
       const data = await res.json();
+      const raw = data.overrides ?? { teams: {}, tournaments: {} };
+      const teams: LogoOverridesFile["teams"] = {};
+      for (const [slug, entry] of Object.entries(raw.teams ?? {})) {
+        if (!isHiddenTeamSlug(slug)) teams[slug] = entry as LogoOverrideEntry;
+      }
       setConfig({
         cacheVersion: String(data.cacheVersion ?? LOGO_CACHE_VERSION),
-        overrides: data.overrides ?? { teams: {}, tournaments: {} },
+        overrides: { teams, tournaments: raw.tournaments ?? {} },
       });
     } catch {
       /* mantener último config */

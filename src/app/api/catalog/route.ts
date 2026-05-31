@@ -7,6 +7,8 @@ import type {
   CatalogTournamentRow,
 } from "@/lib/supabase/catalog-types";
 import { isBscCircuitSlug } from "@/lib/data/bsc-tournaments";
+import { purgePhantomTeamsFromDb } from "@/lib/admin/purge-phantom-teams";
+import { filterVisibleTeams, isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import { stripLiquipediaFields } from "@/lib/sanitize-liquipedia";
 
 export const dynamic = "force-dynamic";
@@ -41,6 +43,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
   }
 
+  await purgePhantomTeamsFromDb(supabase);
+
   const syncedAt =
     teamsRes.data?.[0]?.synced_at ??
     playersRes.data?.[0]?.synced_at ??
@@ -48,12 +52,16 @@ export async function GET(request: Request) {
 
   const body: CatalogSnapshot & { ok: true } = {
     ok: true,
-    teams: (teamsRes.data ?? []).map((r) =>
-      stripLiquipediaFields(r as Record<string, unknown>),
-    ) as unknown as CatalogTeamRow[],
-    players: (playersRes.data ?? []).map((r) =>
-      stripLiquipediaFields(r as Record<string, unknown>),
-    ) as unknown as CatalogPlayerRow[],
+    teams: filterVisibleTeams(
+      (teamsRes.data ?? []).map((r) =>
+        stripLiquipediaFields(r as Record<string, unknown>),
+      ) as unknown as CatalogTeamRow[],
+    ),
+    players: (playersRes.data ?? [])
+      .map((r) => stripLiquipediaFields(r as Record<string, unknown>) as unknown as CatalogPlayerRow)
+      .map((p) =>
+        p.team_slug && isHiddenTeamSlug(p.team_slug) ? { ...p, team_slug: null } : p,
+      ),
     tournaments: (toursRes.data ?? [])
       .filter((t) => isBscCircuitSlug(t.slug))
       .map((r) => stripLiquipediaFields(r as Record<string, unknown>)) as unknown as CatalogTournamentRow[],

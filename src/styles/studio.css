@@ -835,6 +835,8 @@
 
 .bf-studio-competition-body {
   margin-top: 8px;
+  container-type: inline-size;
+  container-name: studio-competition;
 }
 
 .bf-studio-match-mode-tabs {

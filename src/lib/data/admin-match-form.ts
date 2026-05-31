@@ -5,6 +5,8 @@ import { getTournament } from "./matches";
 import { getMatchStageMeta, getPredictDisplayStatus } from "./match-stage-meta";
 import type { EnrichedPrediction } from "./predictions-ui";
 import {
+  getMatchPredictionsConfig,
+  applyDefaultPredictionsToMeta,
   parseMatchMeta,
   type MatchDisplayStatus,
   type MatchImportance,
@@ -68,6 +70,39 @@ export type AdminMatchFormState = {
   brawlers_banned_b: string[];
 };
 
+/** Valores por defecto del formulario de predicciones (todo activado). */
+export function defaultAdminMatchPredictionFields(): Pick<
+  AdminMatchFormState,
+  | "pred_winner"
+  | "pred_exact"
+  | "pred_mvp"
+  | "pred_first_map"
+  | "pred_decisive_map"
+  | "pred_brawler_used"
+  | "pred_brawler_mvp"
+  | "pred_brawler_most_banned"
+  | "pred_brawler_lowest_wr"
+  | "pred_map_winners"
+  | "pred_map_picks"
+  | "pred_advanced"
+> {
+  const cfg = getMatchPredictionsConfig({});
+  return {
+    pred_winner: Boolean(cfg.winner),
+    pred_exact: Boolean(cfg.exact_score),
+    pred_mvp: Boolean(cfg.mvp),
+    pred_first_map: Boolean(cfg.first_map),
+    pred_decisive_map: Boolean(cfg.decisive_map),
+    pred_brawler_used: Boolean(cfg.brawler_most_used),
+    pred_brawler_mvp: Boolean(cfg.brawler_mvp),
+    pred_brawler_most_banned: Boolean(cfg.brawler_most_banned),
+    pred_brawler_lowest_wr: Boolean(cfg.brawler_lowest_wr),
+    pred_map_winners: Boolean(cfg.map_winners),
+    pred_map_picks: Boolean(cfg.map_brawler_picks),
+    pred_advanced: Boolean(cfg.advanced),
+  };
+}
+
 export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
   const predictions: MatchPredictionsConfig = {
     winner: form.pred_winner,
@@ -108,7 +143,7 @@ export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
     adv.exact_score = `${form.score_a}-${form.score_b}`;
   }
   const hasAdv = Object.keys(adv).length > 0;
-  return {
+  return applyDefaultPredictionsToMeta({
     importance: form.importance,
     display_status: form.display_status,
     allow_exact_score: form.pred_exact,
@@ -134,7 +169,7 @@ export function buildMatchMetaFromForm(form: AdminMatchFormState): MatchMeta {
       meta: form.brawlers_meta.length ? form.brawlers_meta : undefined,
       recommended: form.brawlers_recommended.length ? form.brawlers_recommended : undefined,
     },
-  };
+  });
 }
 
 const MATCH_STATUSES = new Set(["live", "upcoming", "finished", "cancelled"]);
@@ -180,7 +215,7 @@ export function matchCatalogRowToForm(m: {
   meta?: Record<string, unknown>;
 }): AdminMatchFormState & { id: string } {
   const meta = parseMatchMeta(m.meta);
-  const preds = meta.predictions ?? {};
+  const cfg = getMatchPredictionsConfig(meta);
   return {
     id: m.id,
     team_a_slug: m.team_a_slug,
@@ -195,18 +230,18 @@ export function matchCatalogRowToForm(m: {
     importance: meta.importance ?? "normal",
     display_status: meta.display_status ?? "upcoming",
     featured_label: meta.featured_label ?? "",
-    pred_winner: preds.winner !== false,
-    pred_exact: !!preds.exact_score,
-    pred_mvp: !!preds.mvp,
-    pred_first_map: !!preds.first_map,
-    pred_decisive_map: !!preds.decisive_map,
-    pred_brawler_used: !!preds.brawler_most_used,
-    pred_brawler_mvp: !!preds.brawler_mvp,
-    pred_brawler_most_banned: !!preds.brawler_most_banned,
-    pred_brawler_lowest_wr: !!preds.brawler_lowest_wr,
-    pred_map_winners: !!preds.map_winners,
-    pred_map_picks: !!preds.map_brawler_picks,
-    pred_advanced: !!preds.advanced,
+    pred_winner: Boolean(cfg.winner),
+    pred_exact: Boolean(cfg.exact_score),
+    pred_mvp: Boolean(cfg.mvp),
+    pred_first_map: Boolean(cfg.first_map),
+    pred_decisive_map: Boolean(cfg.decisive_map),
+    pred_brawler_used: Boolean(cfg.brawler_most_used),
+    pred_brawler_mvp: Boolean(cfg.brawler_mvp),
+    pred_brawler_most_banned: Boolean(cfg.brawler_most_banned),
+    pred_brawler_lowest_wr: Boolean(cfg.brawler_lowest_wr),
+    pred_map_winners: Boolean(cfg.map_winners),
+    pred_map_picks: Boolean(cfg.map_brawler_picks),
+    pred_advanced: Boolean(cfg.advanced),
     points_winner: meta.prediction_points?.winner ?? 0,
     points_exact: meta.prediction_points?.exact_score ?? 0,
     points_mvp: meta.prediction_points?.mvp ?? 0,

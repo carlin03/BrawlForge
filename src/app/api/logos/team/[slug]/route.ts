@@ -4,6 +4,7 @@ import { defaultTeamLogoConfig, fetchFirstTeamLogo } from "@/lib/team-logo-serve
 import { createClient } from "@/lib/supabase/server";
 import { bundledLogoOverrides, pickNewerTeamLogoUrl, shouldApplyDbLogoUrl } from "@/lib/logo-config-merge";
 import type { LogoOverridesFile } from "@/lib/data/logo-overrides";
+import { isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 
 export const runtime = "nodejs";
@@ -24,6 +25,7 @@ async function loadRuntimeOverrides(): Promise<LogoOverridesFile> {
   const allSlugs = new Set([...catalogBySlug.keys(), ...overrideBySlug.keys()]);
 
   for (const slug of allSlugs) {
+    if (isHiddenTeamSlug(slug)) continue;
     const cat = catalogBySlug.get(slug);
     const ov = overrideBySlug.get(slug);
     const url = pickNewerTeamLogoUrl(
@@ -51,22 +53,27 @@ export async function GET(
 ) {
   const { slug: rawSlug } = await context.params;
   const key = String(rawSlug).trim().toLowerCase();
-  if (!isValidLogoSlug(key)) {
+  if (isHiddenTeamSlug(key) || !isValidLogoSlug(key)) {
     return NextResponse.json({ error: "invalid_slug" }, { status: 404 });
   }
 
-  const overrides = await loadRuntimeOverrides();
-  const cfg = { cacheVersion: LOGO_CACHE_VERSION, overrides };
+  try {
+    const overrides = await loadRuntimeOverrides();
+    const cfg = { cacheVersion: LOGO_CACHE_VERSION, overrides };
 
-  const hit = await fetchFirstTeamLogo(key, cfg);
-  if (!hit) {
-    return NextResponse.json({ error: "logo_not_found" }, { status: 404 });
+    const hit = await fetchFirstTeamLogo(key, cfg);
+    if (!hit) {
+      return NextResponse.json({ error: "logo_not_found" }, { status: 404 });
+    }
+
+    return new NextResponse(hit.body, {
+      headers: {
+        "Content-Type": hit.contentType,
+        "Cache-Control": "private, no-store, must-revalidate",
+      },
+    });
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : "logo_fetch_failed";
+    return NextResponse.json({ error: detail }, { status: 500 });
   }
-
-  return new NextResponse(hit.body, {
-    headers: {
-      "Content-Type": hit.contentType,
-      "Cache-Control": "public, max-age=604800, stale-while-revalidate=86400",
-    },
-  });
 }

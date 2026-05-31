@@ -12,6 +12,7 @@ import { isTeam2026, TEAMS_2026_SLUGS } from "./teams-2026";
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 import { BSC_2026_CLUB_COUNT } from "./bsc-2026-circuit-teams";
 import { BSC_PUBLIC_TOURNAMENT_COUNT } from "./bsc-tournaments";
+import { isHiddenTeamSlug } from "./blocked-team-slugs";
 
 export type { GeneratedTeam, GeneratedPlayer, GeneratedTournament };
 
@@ -33,12 +34,13 @@ export const TEAM_ROSTER_ALIASES: Record<string, string> = {
 };
 
 const KNOWN_TEAM_SLUGS = new Set((allTeams as GeneratedTeam[]).map((t) => t.slug));
+
 const INVALID_PARTICIPANT = new Set(["tbd", "team", ""]);
 
 /** Normaliza slugs rotos del enrich (teamfoo → foo) */
 export function normalizeParticipantSlug(raw: string): string | null {
   const s = raw.trim().toLowerCase();
-  if (!s || INVALID_PARTICIPANT.has(s)) return null;
+  if (!s || INVALID_PARTICIPANT.has(s) || isHiddenTeamSlug(s)) return null;
   if (KNOWN_TEAM_SLUGS.has(s)) return s;
 
   const stripped = s.replace(/^team/, "");

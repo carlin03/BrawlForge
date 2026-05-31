@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { buildImageFetchHeaders } from "@/lib/image-fetch-headers";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
 
 export const dynamic = "force-dynamic";
@@ -17,10 +18,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const upstream = await fetch(fetchUrl, {
-      headers: {
-        "User-Agent": "BrawlForge/1.0 (image proxy)",
-        Accept: "image/png,image/webp,image/jpeg,image/gif,image/svg+xml,image/*,*/*",
-      },
+      headers: buildImageFetchHeaders(fetchUrl),
       next: { revalidate: 60 * 60 * 24 * 7 },
     });
 

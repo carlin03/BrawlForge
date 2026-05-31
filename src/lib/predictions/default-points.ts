@@ -1,36 +1,7 @@
 import type { MatchPredictionPoints } from "@/lib/data/match-meta";
+import { DEFAULT_MATCH_PREDICTION_POINTS } from "./match-prediction-defaults";
 
-/** Puntos por defecto si el admin no configura el partido. */
-export const DEFAULT_MATCH_PREDICTION_POINTS: Required<
-  Pick<
-    MatchPredictionPoints,
-    | "winner"
-    | "exact_score"
-    | "mvp"
-    | "map_winner"
-    | "map_pick"
-    | "brawler_ban"
-    | "brawler_mvp"
-    | "brawler_most_used"
-    | "brawler_most_banned"
-    | "brawler_lowest_wr"
-    | "participation"
-    | "perfect_bonus"
-  >
-> = {
-  winner: 55,
-  exact_score: 50,
-  mvp: 40,
-  map_winner: 25,
-  map_pick: 15,
-  brawler_ban: 30,
-  brawler_mvp: 35,
-  brawler_most_used: 30,
-  brawler_most_banned: 30,
-  brawler_lowest_wr: 25,
-  participation: 10,
-  perfect_bonus: 50,
-};
+export { DEFAULT_MATCH_PREDICTION_POINTS };
 
 export function resolveMatchPoints(metaPoints: MatchPredictionPoints): MatchPredictionPoints {
   const d = DEFAULT_MATCH_PREDICTION_POINTS;

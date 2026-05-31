@@ -13,8 +13,9 @@ import {
   type AdminTeamCatalogRow,
 } from "@/lib/data/admin-bsc-teams";
 import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
-import { notifyLogosUpdated, useRefreshLogos } from "@/contexts/LogoConfigContext";
+import { notifyLogosUpdated, useLogoConfig, useRefreshLogos } from "@/contexts/LogoConfigContext";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
+import { CIRCUIT_TEAM_LOGO_FALLBACKS } from "@/lib/data/team-logo-urls";
 import type { Region } from "@/lib/types";
 
 const REGION_FILTERS: { id: "all" | Region; label: string }[] = [
@@ -45,6 +46,8 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
   const [loading, setLoading] = useState(false);
   const [previewKey, setPreviewKey] = useState(0);
   const refreshLogos = useRefreshLogos();
+  const logoConfig = useLogoConfig();
+  const logoCacheKey = logoConfig.cacheVersion ?? "0";
 
   const [fetchedTeams, setFetchedTeams] = useState<AdminTeamCatalogRow[] | null>(null);
 
@@ -135,11 +138,13 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
     setImageUrl(row?.logo_url ?? "");
   }, [kind, selected, catalogRows]);
 
-  async function saveOverride(e?: React.FormEvent) {
+  async function saveOverride(e?: React.FormEvent, forcedUrl?: string) {
     e?.preventDefault();
     setLoading(true);
     setMsg("");
-    const normalized = normalizeAdminMediaUrl(imageUrl);
+    const raw = (forcedUrl ?? imageUrl).trim();
+    if (forcedUrl) setImageUrl(forcedUrl);
+    const normalized = normalizeAdminMediaUrl(raw);
     if (!normalized) {
       setMsg("URL no válida. Pega un enlace https://… (también vale sin https:// al inicio).");
       setLoading(false);
@@ -164,7 +169,25 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
       });
       notifyCatalogUpdated();
       const warn = Array.isArray(data.warnings) && data.warnings.length ? ` Avisos: ${data.warnings.join("; ")}` : "";
-      setMsg((data.message || "Logo guardado.") + warn);
+      let activeNote = "";
+      if (kind === "team") {
+        try {
+          const cfgRes = await fetch("/api/logos/config", { cache: "no-store" });
+          const cfg = await cfgRes.json();
+          const active = cfg?.overrides?.teams?.[selected]?.url;
+          if (active) {
+            const onStorage = String(active).includes("supabase.co/storage/");
+            activeNote = ` URL activa: ${String(active).split("?")[0]}${onStorage ? " (Storage OK)" : " (externa — puede dar error en Vercel)"}`;
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+      const hosted = data.hostedOnSupabase ? " Copiado a Supabase Storage." : "";
+      setMsg((data.message || "Logo guardado.") + hosted + activeNote + warn);
+      if (Array.isArray(data.warnings) && data.warnings.some((w: string) => w.includes("SERVICE_ROLE") || w.includes("Storage"))) {
+        setMsg((prev) => `${prev} Revisa Vercel: SUPABASE_SERVICE_ROLE_KEY y bucket logos (npm run supabase:apply:storage).`);
+      }
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "Error");
     }
@@ -257,7 +280,7 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
                   title={title}
                 >
                   {kind === "team" ? (
-                    <TeamLogo key={slug} slug={slug} name={title} size={56} />
+                    <TeamLogo key={`${slug}-${logoCacheKey}`} slug={slug} name={title} size={56} />
                   ) : (
                     <TournamentLogo slug={slug} name={title} size={56} />
                   )}
@@ -318,6 +341,17 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
             <button type="submit" className="bp-btn bp-btn-gold" disabled={loading} style={{ width: "100%" }}>
               <Image size={16} /> Guardar URL del logo
             </button>
+            {kind === "team" && CIRCUIT_TEAM_LOGO_FALLBACKS[selected] && (
+              <button
+                type="button"
+                className="bp-btn"
+                disabled={loading}
+                style={{ width: "100%", marginTop: 8 }}
+                onClick={() => void saveOverride(undefined, CIRCUIT_TEAM_LOGO_FALLBACKS[selected])}
+              >
+                Usar logo recomendado (Ninguém / Big Talents)
+              </button>
+            )}
           </form>
           <div className="bf-admin-editor-footer">
             <button
