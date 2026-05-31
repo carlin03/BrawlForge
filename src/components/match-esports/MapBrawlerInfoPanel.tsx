@@ -19,6 +19,7 @@ function CategoryGrid({
   map,
   meta,
   accent,
+  chipSize,
 }: {
   title: string;
   icon: typeof Trophy;
@@ -26,6 +27,7 @@ function CategoryGrid({
   map: MapCatalogEntry;
   meta?: MatchMeta;
   accent: string;
+  chipSize: number;
 }) {
   const rows = names.length ? chunkBrawlerDisplay(names) : [];
   return (
@@ -39,7 +41,7 @@ function CategoryGrid({
           <div key={ri} className={`bf-map-meta-row is-cols-${row.length}`}>
             {row.map((n) => (
               <div key={n} className="bf-map-brawler-chip">
-                <BrawlerAssetIcon name={n} size={48} hideName meta={meta} variant="meta" />
+                <BrawlerAssetIcon name={n} size={chipSize} hideName meta={meta} variant="meta" />
                 <span className="bf-map-brawler-chip-name">{n}</span>
                 {rateForBrawler(map, n) && (
                   <span className="bf-map-brawler-chip-rate">{rateForBrawler(map, n)}</span>
@@ -59,9 +61,11 @@ function CategoryGrid({
 export function MapBrawlerInfoPanel({
   map,
   meta,
+  compact,
 }: {
   map: MapCatalogEntry;
   meta?: MatchMeta;
+  compact?: boolean;
 }) {
   const topWr =
     map.win_rates
@@ -74,8 +78,11 @@ export function MapBrawlerInfoPanel({
       ? topWr.map((w) => w.brawler)
       : (map.best_picks ?? []).slice(0, 5);
 
+  const iconSize = compact ? 40 : 56;
+  const chipIcon = compact ? 40 : 48;
+
   return (
-    <div className="bf-map-brawler-info-panel">
+    <div className={`bf-map-brawler-info-panel ${compact ? "is-compact" : ""}`}>
       <h4 className="bf-map-brawler-info-title">Brawlers en este mapa</h4>
 
       {topWr.length > 0 && (
@@ -85,9 +92,9 @@ export function MapBrawlerInfoPanel({
             Top win rate
           </span>
           <div className="bf-map-brawler-info-topwr-row">
-            {topWr.map((w) => (
+            {topWr.slice(0, compact ? 3 : 3).map((w) => (
               <div key={w.brawler} className="bf-map-brawler-chip is-highlight">
-                <BrawlerAssetIcon name={w.brawler} size={56} hideName meta={meta} variant="meta" />
+                <BrawlerAssetIcon name={w.brawler} size={iconSize} hideName meta={meta} variant="meta" />
                 <span className="bf-map-brawler-chip-name">{w.brawler}</span>
                 <span className="bf-map-brawler-chip-rate">{w.rate}</span>
               </div>
@@ -96,7 +103,7 @@ export function MapBrawlerInfoPanel({
         </div>
       )}
 
-      <div className="bf-map-brawler-info-grid">
+      <div className={`bf-map-brawler-info-grid ${compact ? "is-compact" : ""}`}>
         <CategoryGrid
           title="Mejores picks"
           icon={Trophy}
@@ -104,6 +111,7 @@ export function MapBrawlerInfoPanel({
           map={map}
           meta={meta}
           accent="gold"
+          chipSize={chipIcon}
         />
         <CategoryGrid
           title="Ganadores"
@@ -112,6 +120,7 @@ export function MapBrawlerInfoPanel({
           map={map}
           meta={meta}
           accent="green"
+          chipSize={chipIcon}
         />
         <CategoryGrid
           title="Más usados"
@@ -120,6 +129,7 @@ export function MapBrawlerInfoPanel({
           map={map}
           meta={meta}
           accent="blue"
+          chipSize={chipIcon}
         />
         <CategoryGrid
           title="Más bloqueados"
@@ -128,6 +138,7 @@ export function MapBrawlerInfoPanel({
           map={map}
           meta={meta}
           accent="red"
+          chipSize={chipIcon}
         />
       </div>
     </div>

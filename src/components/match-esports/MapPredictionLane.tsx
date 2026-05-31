@@ -14,7 +14,9 @@ import type { MatchPredictionPoints } from "@/lib/data/match-meta";
 import type { MatchExtendedPrediction } from "@/lib/match-predictions-storage";
 import { PredictionPointBadge } from "@/components/match-esports/PredictionPointBadge";
 
-/** Un mapa = una unidad visible: MAPA N · nombre → ganador → picks A → bloqueos → picks B */
+/**
+ * Predicción por mapa (lista 1,1,1): cabecera + ganador + draft completo (3+2+3 / bans equipo).
+ */
 export function MapPredictionLane({
   slot,
   match,
@@ -60,12 +62,12 @@ export function MapPredictionLane({
 
   return (
     <article
-      className={`bf-map-pred-lane ${slot.decisive ? "is-decisive" : ""} ${mapCurrent === slot.name ? "is-live" : ""}`}
+      className={`bf-map-pred-lane is-full ${slot.decisive ? "is-decisive" : ""} ${mapCurrent === slot.name ? "is-live" : ""}`}
       id={`map-pred-${slot.index}`}
       aria-labelledby={`map-pred-title-${slot.index}`}
     >
-      <div className="bf-map-pred-lane-top" id={`map-pred-title-${slot.index}`}>
-        <div className="bf-map-pred-lane-top-text">
+      <header className="bf-map-pred-lane-banner" id={`map-pred-title-${slot.index}`}>
+        <div className="bf-map-pred-lane-banner-text">
           <span className="bf-map-pred-lane-num">MAPA {slot.index + 1}</span>
           <h3 className="bf-map-pred-lane-name">{slot.name}</h3>
           {mapEntry.mode && (
@@ -75,15 +77,18 @@ export function MapPredictionLane({
             <span className="bf-map-pred-decisive-tag">Mapa decisivo</span>
           )}
         </div>
-        <MapAssetCard
-          name={slot.name}
-          variant="order"
-          index={slot.index}
-          isDecisive={slot.decisive}
-          isCurrent={mapCurrent === slot.name}
-          meta={meta}
-        />
-      </div>
+        <div className="bf-map-pred-lane-banner-art">
+          <MapAssetCard
+            name={slot.name}
+            variant="order"
+            index={slot.index}
+            isDecisive={slot.decisive}
+            isCurrent={mapCurrent === slot.name}
+            size="lg"
+            meta={meta}
+          />
+        </div>
+      </header>
 
       {showWinner && (
         <section className="bf-map-pred-section is-winner is-side-by-side">
@@ -116,11 +121,14 @@ export function MapPredictionLane({
       )}
 
       {showDraft && (
-        <section className="bf-map-pred-section is-draft is-horizontal">
-          <div className="bf-map-pred-draft-points">
-            <PredictionPointBadge label="Pick acertado" points={points.map_pick} />
-            <PredictionPointBadge label="Ban acertado" points={points.brawler_ban} />
-          </div>
+        <section className="bf-map-pred-section is-draft">
+          <header className="bf-map-pred-draft-head">
+            <h4 className="bf-map-pred-section-label">Picks y bloqueos</h4>
+            <div className="bf-map-pred-draft-points">
+              <PredictionPointBadge label="Pick acertado" points={points.map_pick} />
+              <PredictionPointBadge label="Ban acertado" points={points.brawler_ban} />
+            </div>
+          </header>
           <MapBrawlerDraftRow
             mapIndex={slot.index}
             ext={ext}
@@ -138,7 +146,6 @@ export function MapPredictionLane({
             onTeamBansA={onTeamBansA}
             onTeamBansB={onTeamBansB}
             interactive={interactive}
-            compact
           />
         </section>
       )}

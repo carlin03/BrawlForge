@@ -798,15 +798,91 @@
   padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+/* Predicciones: siempre columna 1, 1, 1 */
 .bf-map-pred-lanes,
-.bf-map-pred-lanes.is-vertical,
-.bf-map-analysis-lanes.is-vertical {
+.bf-map-pred-lanes.is-vertical {
   display: flex;
   flex-direction: column;
   gap: 28px;
 }
-.bf-map-analysis-lanes.is-vertical {
-  gap: 32px;
+.bf-map-pred-lane.is-full {
+  width: 100%;
+}
+/* Análisis abajo: rejilla 3 + 2 (BO5) */
+.bf-map-analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+}
+.bf-map-analysis-grid > * {
+  grid-column: span 2;
+  min-width: 0;
+}
+.bf-map-analysis-grid.is-maps-4 > :nth-child(4):last-child {
+  grid-column: 3 / span 2;
+}
+.bf-map-analysis-grid.is-maps-5 > :nth-child(4) {
+  grid-column: 2 / span 2;
+}
+.bf-map-analysis-grid.is-maps-5 > :nth-child(5) {
+  grid-column: 4 / span 2;
+}
+@media (max-width: 900px) {
+  .bf-map-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+  .bf-map-analysis-grid > *,
+  .bf-map-analysis-grid.is-maps-4 > :nth-child(4),
+  .bf-map-analysis-grid.is-maps-5 > :nth-child(4),
+  .bf-map-analysis-grid.is-maps-5 > :nth-child(5) {
+    grid-column: auto;
+  }
+}
+.bf-map-analysis-card.is-grid-cell .bf-map-asset.is-lg .bf-map-asset-art img {
+  max-height: 140px;
+}
+.bf-map-brawler-info-panel.is-compact {
+  padding: 10px 12px 12px;
+}
+.bf-map-brawler-info-panel.is-compact .bf-map-brawler-info-title {
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+.bf-map-brawler-info-grid.is-compact {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.bf-map-pred-lane-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 2px solid rgba(243, 188, 24, 0.35);
+  background: linear-gradient(90deg, rgba(243, 188, 24, 0.12), rgba(0, 0, 0, 0.35));
+}
+.bf-map-pred-lane-banner-art {
+  flex-shrink: 0;
+  width: min(220px, 38vw);
+}
+.bf-map-pred-lane-banner-art .bf-map-asset {
+  width: 100%;
+}
+.bf-map-pred-lane-banner-text {
+  flex: 1;
+  min-width: 160px;
+}
+.bf-map-pred-draft-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.bf-map-pred-section.is-draft {
+  padding: 16px 20px 20px;
 }
 .bf-map-pred-lane {
   border-radius: 16px;
@@ -882,7 +958,7 @@
 }
 .bf-map-pred-lane-name {
   margin: 4px 0 0;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 900;
   line-height: 1.15;
   color: #fff;
