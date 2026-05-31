@@ -11,7 +11,9 @@ import {
 import { teamName } from "@/lib/data";
 import { ScoreStepperPicker } from "@/components/match-esports/ScoreStepperPicker";
 import { PlayerMvpPicker } from "@/components/match-esports/PlayerMvpPicker";
-import { BrawlerSearchPicker } from "@/components/match-esports/BrawlerSearchPicker";
+import { MatchBrawlerOutcomePicker } from "@/components/match-esports/MatchBrawlerOutcomePicker";
+import { MatchPredictionSaveBar } from "@/components/match-esports/MatchPredictionSaveBar";
+import { MatchPredictionRecapCard } from "@/components/match-esports/MatchPredictionRecapCard";
 import { MatchCommunityPulse } from "@/components/match-esports/MatchCommunityPulse";
 import { MatchWinnerDuel } from "@/components/match-esports/MatchWinnerDuel";
 import { MatchMapSeriesBoard } from "@/components/match-esports/MatchMapSeriesBoard";
@@ -53,7 +55,8 @@ export function MatchPredictionsCenter({
     cfg.exact_score ||
     cfg.mvp ||
     cfg.brawler_mvp ||
-    cfg.brawler_most_used;
+    cfg.brawler_most_used ||
+    cfg.brawler_most_banned;
   const mapOrder = useMemo(() => resolveMatchMapOrder(meta, match.format), [meta, match.format]);
   const hasPerMapPredictions =
     mapOrder.length > 0 && (cfg.map_winners || cfg.map_brawler_picks || cfg.advanced);
@@ -189,16 +192,10 @@ export function MatchPredictionsCenter({
 
           {(showUnlocked || closed) && hasMain && (
             <div className="bf-match-predict-main-grid is-secondary">
-              {!closed && !isLoggedIn && (
-                <p className="bf-match-predict-hint is-full">
-                  <Link href={`/login?next=/matches/${match.id}`}>Inicia sesión</Link> para guardar.
-                </p>
-              )}
-
               {cfg.mvp && (
                 <div className="bf-match-predict-main-item">
                   <h4 className="bf-match-predict-subh">
-                    MVP
+                    MVP jugador
                     <PredictionPointBadge points={points.mvp} />
                   </h4>
                   <PlayerMvpPicker
@@ -210,36 +207,29 @@ export function MatchPredictionsCenter({
                 </div>
               )}
 
-              {cfg.brawler_mvp && (
-                <div className="bf-match-predict-main-item">
-                  <h4 className="bf-match-predict-subh">
-                    Brawler MVP
-                    <PredictionPointBadge points={points.brawler_mvp} />
-                  </h4>
-                  <BrawlerSearchPicker
-                    selected={ext.brawlerMvp ? [ext.brawlerMvp] : []}
-                    onChange={(list) => patch({ brawlerMvp: list[0] })}
-                    banned={matchBans}
-                    max={1}
-                  />
-                </div>
-              )}
-
-              {cfg.brawler_most_used && (
-                <div className="bf-match-predict-main-item">
-                  <h4 className="bf-match-predict-subh">
-                    Brawler más usado
-                    <PredictionPointBadge points={points.brawler_most_used} />
-                  </h4>
-                  <BrawlerSearchPicker
-                    selected={ext.brawlerMostUsed ? [ext.brawlerMostUsed] : []}
-                    onChange={(list) => patch({ brawlerMostUsed: list[0] })}
-                    banned={matchBans}
-                    max={1}
-                  />
-                </div>
+              {(cfg.brawler_mvp || cfg.brawler_most_used || cfg.brawler_most_banned) && (
+                <MatchBrawlerOutcomePicker
+                  match={match}
+                  meta={meta}
+                  ext={ext}
+                  matchBans={matchBans}
+                  points={points}
+                  showWr={!!cfg.brawler_mvp}
+                  showMostUsed={!!cfg.brawler_most_used}
+                  showMostBanned={!!cfg.brawler_most_banned}
+                  onPatch={patch}
+                />
               )}
             </div>
+          )}
+
+          {(showUnlocked || closed) && winnerPick && (
+            <MatchPredictionSaveBar
+              matchId={match.id}
+              winnerPick={winnerPick}
+              ext={extWithScore}
+              disabled={closed}
+            />
           )}
 
         </div>
@@ -256,6 +246,15 @@ export function MatchPredictionsCenter({
 
       {hasMapAnalysis && (showUnlocked || closed) && (
         <MatchMapAnalysisSection match={match} meta={meta} ext={extWithScore} />
+      )}
+
+      {(showUnlocked || closed) && winnerPick && (
+        <MatchPredictionRecapCard
+          match={match}
+          meta={meta}
+          ext={extWithScore}
+          winnerPick={winnerPick}
+        />
       )}
     </>
   );

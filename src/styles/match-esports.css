@@ -1435,6 +1435,239 @@
 .bf-map-asset.is-lg .bf-map-asset-meta strong {
   font-size: 14px;
 }
+.bf-map-asset.is-xl .bf-map-asset-art {
+  aspect-ratio: auto;
+  min-height: 140px;
+  max-height: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+.bf-map-asset.is-xl.is-contain .bf-map-asset-art img {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+  object-position: center;
+}
+.bf-map-asset.is-xl .bf-map-asset-meta strong {
+  font-size: 15px;
+}
+.bf-map-analysis-card.is-large .bf-map-asset {
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+.bf-map-analysis-card.is-large .bf-map-asset-meta {
+  padding: 10px 14px 12px;
+}
+.bf-map-analysis-top3-block,
+.bf-map-analysis-brawler-block {
+  padding: 10px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bf-map-analysis-block-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bp-dim);
+}
+.bf-map-analysis-top3-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.bf-map-top-brawler.is-hero {
+  flex-direction: column;
+  text-align: center;
+  padding: 10px;
+}
+.bf-map-analysis-brawler-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.bf-brawler-outcome-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  grid-column: 1 / -1;
+}
+.bf-brawler-outcome-row {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+}
+.bf-brawler-outcome-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.bf-brawler-outcome-hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--bp-dim);
+}
+.bf-brawler-outcome-current {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bf-brawler-outcome-cycle {
+  display: flex;
+  gap: 4px;
+}
+.bf-brawler-outcome-cycle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bf-brawler-outcome-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.bf-brawler-outcome-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  color: inherit;
+}
+.bf-brawler-outcome-chip.is-on {
+  border-color: var(--bp-gold);
+  box-shadow: 0 0 12px rgba(243, 188, 24, 0.2);
+}
+.bf-brawler-outcome-toggle {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bp-gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.bf-prediction-save-bar {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+.bf-prediction-save-btn {
+  width: 100%;
+  max-width: 320px;
+  justify-content: center;
+}
+.bf-prediction-save-msg {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+.bf-prediction-save-msg.is-ok {
+  color: #81c784;
+}
+.bf-prediction-save-msg.is-err {
+  color: #ef5350;
+}
+.bf-prediction-recap-card {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 2px solid rgba(243, 188, 24, 0.35);
+  background: linear-gradient(165deg, rgba(20, 24, 40, 0.95), rgba(8, 10, 18, 0.98));
+}
+.bf-prediction-recap-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.bf-prediction-recap-brand strong {
+  display: block;
+  font-size: 16px;
+  color: var(--bp-gold);
+}
+.bf-prediction-recap-brand span {
+  font-size: 11px;
+  color: var(--bp-muted);
+}
+.bf-prediction-recap-match {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.bf-prediction-recap-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.bf-prediction-recap-vs {
+  font-weight: 900;
+  color: var(--bp-dim);
+}
+.bf-prediction-recap-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.bf-prediction-recap-facts dt {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--bp-dim);
+}
+.bf-prediction-recap-facts dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.bf-prediction-recap-full {
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--bp-muted);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  margin: 0 0 12px;
+}
+.bf-prediction-recap-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
 .bf-map-asset-grid.is-pool-large {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;

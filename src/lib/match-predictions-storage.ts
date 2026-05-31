@@ -9,6 +9,8 @@ export type MatchExtendedPrediction = {
   decisiveMapWinner?: "A" | "B";
   brawlerMostUsed?: string;
   brawlerMvp?: string;
+  /** Brawler más bloqueado en el partido (predicción). */
+  brawlerMostBanned?: string;
   brawlerPick?: string;
   /** Ganador por mapa (índice 0-based → A | B). */
   mapWinners?: Record<number, "A" | "B">;

@@ -109,6 +109,7 @@ export type MatchPredictionsConfig = {
   map_brawler_picks?: boolean;
   brawler_most_used?: boolean;
   brawler_mvp?: boolean;
+  brawler_most_banned?: boolean;
   advanced?: boolean;
 };
 
@@ -236,7 +237,8 @@ export function hasAdvancedPredictionOptions(cfg: MatchPredictionsConfig): boole
       cfg.map_winners ||
       cfg.map_brawler_picks ||
       cfg.brawler_most_used ||
-      cfg.brawler_mvp,
+      cfg.brawler_mvp ||
+      cfg.brawler_most_banned,
   );
 }
 

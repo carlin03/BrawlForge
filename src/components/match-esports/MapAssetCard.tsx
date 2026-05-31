@@ -14,6 +14,7 @@ export function MapAssetCard({
   isCurrent,
   isDecisive,
   size,
+  imageFit = "cover",
   meta,
 }: {
   name: string;
@@ -21,8 +22,9 @@ export function MapAssetCard({
   index?: number;
   isCurrent?: boolean;
   isDecisive?: boolean;
-  size?: "md" | "lg";
-  /** Si se pasa, aplica overrides opcionales del partido sobre la biblioteca. */
+  size?: "md" | "lg" | "xl";
+  /** contain = mapa completo sin recorte (análisis). */
+  imageFit?: "cover" | "contain";
   meta?: MatchMeta;
 }) {
   const { maps } = useGameAssetsCatalog();
@@ -32,7 +34,7 @@ export function MapAssetCard({
 
   return (
     <article
-      className={`bf-map-asset ${variant === "ban" ? "is-banned" : ""} ${isCurrent ? "is-current" : ""} ${isDecisive ? "is-decisive" : ""} ${size === "lg" ? "is-lg" : ""}`}
+      className={`bf-map-asset ${variant === "ban" ? "is-banned" : ""} ${isCurrent ? "is-current" : ""} ${isDecisive ? "is-decisive" : ""} ${size === "lg" ? "is-lg" : ""} ${size === "xl" ? "is-xl" : ""} ${imageFit === "contain" ? "is-contain" : ""}`}
     >
       <div className="bf-map-asset-art">
         {src ? (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
 import type { EsportsMatch } from "@/lib/data/matches";
 import type { MatchMeta } from "@/lib/data/match-meta";
 import { getMatchPredictionsConfig, parseMatchMeta } from "@/lib/data/match-meta";
@@ -37,9 +36,6 @@ export function MatchMapSeriesBoard({ match, meta, ext, points, onPatch, interac
   );
   const manualDecisive = parsed.maps?.decisive;
   const mapCurrent = parsed.maps?.current;
-  const series = getSeriesRules(match.format);
-  const usingDefaultMaps = !parsed.maps?.order?.length && !parsed.maps?.possible?.length;
-
   const slots = useMemo(
     () =>
       visiblePredictionMapSlots(mapOrder, ext.exactScore, manualDecisive, match.format),
@@ -90,24 +86,7 @@ export function MatchMapSeriesBoard({ match, meta, ext, points, onPatch, interac
 
   return (
     <div className="bf-map-series-board is-per-map-list">
-      {usingDefaultMaps && (
-        <p className="bf-match-predict-hint">
-          Mapas por defecto para {series.label}. Configura el orden real en{" "}
-          <Link href="/admin?module=competicion">Admin → Partidos → Mapas</Link>.
-        </p>
-      )}
-
-      {mapCount != null && (
-        <p className="bf-match-predict-hint is-series-maps">
-          Marcador <strong>{ext.exactScore}</strong> → predices{" "}
-          <strong>
-            {mapCount} mapa{mapCount !== 1 ? "s" : ""}
-          </strong>{" "}
-          en esta serie ({series.label}). Orden configurado en Admin.
-        </p>
-      )}
-
-      <div className="bf-map-pred-lanes">
+      <div className={`bf-map-pred-lanes bf-map-series-grid ${gridClass}`}>
         {slots.map((slot) => (
           <MapPredictionLane
             key={`${slot.name}-${slot.index}`}
