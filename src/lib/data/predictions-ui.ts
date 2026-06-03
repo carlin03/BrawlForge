@@ -300,14 +300,20 @@ export function buildPlayoffBracket(
     quarters.length > 0 || semis.length > 0 || Boolean(final);
   if (!hasBracket) return null;
 
+  const fullBracket = quarters.length >= 4;
+  const bracketSemis = fullBracket ? semis : quarters.length === 0 ? semis : [];
+  const bracketFinal = fullBracket ? final : quarters.length === 0 ? final : undefined;
+
+  if (!quarters.length && !bracketSemis.length && !bracketFinal) return null;
+
   return {
     layout,
     tournamentSlug,
     tournamentName: tour?.shortName ?? tour?.name ?? tournamentSlug,
     region: tour?.region,
     quarters,
-    semis,
-    final,
+    semis: bracketSemis,
+    final: bracketFinal,
   };
 }
 

@@ -1,3 +1,4 @@
+import { sanitizePlayoffBracketPool } from "@/lib/data/bracket-playoff-sanitize";
 import type { EsportsMatch } from "@/lib/data/matches";
 import { matches as legacyMatches } from "@/lib/data/matches";
 import { parseMatchMeta } from "@/lib/data/match-meta";
@@ -58,7 +59,9 @@ export function mergeMatchPools(db: EsportsMatch[], legacy: EsportsMatch[]): Esp
   const byId = new Map<string, EsportsMatch>();
   for (const m of legacy) byId.set(m.id, m);
   for (const m of db) byId.set(m.id, m);
-  return [...byId.values()].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  return sanitizePlayoffBracketPool([...byId.values()]).sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
 }
 
 export async function resolveMatchList(): Promise<{

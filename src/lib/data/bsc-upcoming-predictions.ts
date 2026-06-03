@@ -47,8 +47,8 @@ export const BSC_UPCOMING_PREDICTION_MATCHES: EsportsMatch[] = [
   },
   {
     id: "chal-es-sf",
-    teamASlug: "sk-gaming",
-    teamBSlug: "team-heretics",
+    teamASlug: "tbd",
+    teamBSlug: "tbd",
     scoreA: 0,
     scoreB: 0,
     tournamentSlug: "bsc-2026-challengers-spain",

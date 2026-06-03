@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { EsportsMatch } from "@/lib/data/matches";
+import { getEffectiveMatchStatus } from "@/lib/data/match-effective-status";
 import type { MatchMeta } from "@/lib/data/match-meta";
 import {
   getMatchPredictionsConfig,
@@ -44,7 +45,7 @@ export function MatchPredictionsCenter({
   const votes = game?.votes ?? {};
   const cfg = getMatchPredictionsConfig(meta);
   const points = getMatchPredictionPoints(meta);
-  const closed = match.status === "finished";
+  const closed = getEffectiveMatchStatus(match) === "finished";
   const savedPick = votes[match.id] ?? null;
   const [optimisticPick, setOptimisticPick] = useState<"A" | "B" | null>(savedPick);
   const winnerPick = savedPick ?? optimisticPick;

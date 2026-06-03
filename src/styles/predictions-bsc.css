@@ -2358,6 +2358,22 @@
 }
 
 /* Cuartos: 2 por fila (rejilla) o 1 por fila (stack) */
+.bf-predict-bracket-intro {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--bp-dim, rgba(255, 255, 255, 0.55));
+  line-height: 1.5;
+}
+
+.bf-predict-bracket-tour-title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .bf-predict-bracket-board {
   display: flex;
   flex-direction: column;

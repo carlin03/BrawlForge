@@ -40,5 +40,12 @@ export function withEffectiveMatchStatus(m: EsportsMatch): EsportsMatch {
 
 export function isPickemMatchOpen(m: EsportsMatch): boolean {
   const status = getEffectiveMatchStatus(m);
+  if (status === "finished" || status === "cancelled") return false;
+
+  const scheduled = new Date(m.date).getTime();
+  if (!Number.isNaN(scheduled) && Date.now() > scheduled + FINISH_GRACE_MS && status !== "live") {
+    return false;
+  }
+
   return status === "upcoming" || status === "live";
 }

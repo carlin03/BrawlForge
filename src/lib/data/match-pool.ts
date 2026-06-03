@@ -1,4 +1,5 @@
 import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
+import { sanitizePlayoffBracketPool } from "./bracket-playoff-sanitize";
 import { withEffectiveMatchStatus } from "./match-effective-status";
 import type { EsportsMatch } from "./matches";
 import { isPickemMatchEligible, matches as legacyMatches } from "./matches";
@@ -11,9 +12,9 @@ export function setRuntimeMatchPool(pool: EsportsMatch[] | null): void {
 }
 
 function mergeCuratedPickem(base: EsportsMatch[]): EsportsMatch[] {
-  const byId = new Map(base.map((m) => [m.id, m]));
-  for (const m of BSC_UPCOMING_PREDICTION_MATCHES) {
-    if (!byId.has(m.id) && isPickemMatchEligible(m)) byId.set(m.id, m);
+  const byId = new Map(sanitizePlayoffBracketPool(base).map((m) => [m.id, m]));
+  for (const m of sanitizePlayoffBracketPool(BSC_UPCOMING_PREDICTION_MATCHES)) {
+    if (isPickemMatchEligible(m)) byId.set(m.id, m);
   }
   return [...byId.values()]
     .map(withEffectiveMatchStatus)

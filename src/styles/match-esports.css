@@ -1,5 +1,30 @@
 /* Experiencia esports — ficha de partido */
 
+.bf-match-bracket-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 18px;
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: var(--bp-radius, 12px);
+  border: 1px solid rgba(255, 200, 60, 0.25);
+  background: linear-gradient(135deg, rgba(255, 200, 60, 0.08), rgba(0, 0, 0, 0.35));
+}
+
+.bf-match-bracket-banner p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--bp-dim, rgba(255, 255, 255, 0.55));
+  line-height: 1.45;
+  max-width: 52ch;
+}
+
+.bf-match-bracket-banner .fu-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .bf-match-esports {
   display: flex;
   flex-direction: column;

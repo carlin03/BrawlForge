@@ -1,3 +1,4 @@
+import { isPendingTeamSlug } from "./match-meta";
 import type { EnrichedPrediction } from "./predictions-ui";
 import { getBracketPickWinner, type PlayoffBracketSlot } from "./predictions-ui";
 
@@ -42,6 +43,14 @@ export function resolveSemiReveal(
 
   if (!qfA || !qfB) {
     if (quarters.length === 0) {
+      const pendingA = isPendingTeamSlug(semi.teamASlug);
+      const pendingB = isPendingTeamSlug(semi.teamBSlug);
+      if (pendingA || pendingB) {
+        return {
+          sideA: { revealed: !pendingA, teamSlug: pendingA ? null : semi.teamASlug },
+          sideB: { revealed: !pendingB, teamSlug: pendingB ? null : semi.teamBSlug },
+        };
+      }
       return {
         sideA: { revealed: true, teamSlug: semi.teamASlug },
         sideB: { revealed: true, teamSlug: semi.teamBSlug },

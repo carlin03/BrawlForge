@@ -124,15 +124,23 @@ export function PredictionsView({
     setSelectedRound("all");
   }, [selectedTournament]);
 
-  const playoffBrackets = useMemo(
-    () => sortBracketsByDate(buildAllPlayoffBrackets(filteredOpen, bracketStore)),
-    [filteredOpen, bracketStore],
-  );
+  const playoffBrackets = useMemo(() => {
+    const all = sortBracketsByDate(buildAllPlayoffBrackets(openEnriched, bracketStore));
+    if (!selectedTournament) return all.filter((b) => b.quarters.length >= 4 || b.semis.length > 0);
+    const slugs = new Set(expandTournamentSlugFilter(selectedTournament));
+    return all.filter((b) => slugs.has(b.tournamentSlug));
+  }, [openEnriched, bracketStore, selectedTournament]);
 
   const bracketMatchIds = useMemo(
     () => getAllPlayoffBracketMatchIds(playoffBrackets),
     [playoffBrackets],
   );
+
+  const bracketEvents = useMemo(() => {
+    if (!selectedTournament) return openEnriched;
+    const slugs = new Set(expandTournamentSlugFilter(selectedTournament));
+    return openEnriched.filter((e) => slugs.has(e.tournamentSlug));
+  }, [openEnriched, selectedTournament]);
 
   const featuredEvent = useMemo(() => {
     const pool = filteredOpen.filter((e) => !bracketMatchIds.has(e.matchId));
@@ -201,16 +209,26 @@ export function PredictionsView({
         resultCount={filteredOpen.length}
       />
 
+      {playoffBrackets.length > 0 && (
+        <p className="bf-predict-bracket-intro">
+          Bracket eliminatorio — cuartos en cuadrícula 2×2; semifinales y final se rellenan con tus votos.
+        </p>
+      )}
+
       {playoffBrackets.map((bracket) => (
         <div
           key={bracket.tournamentSlug}
           id={`pickem-${bracket.tournamentSlug}`}
           className="bf-predict-bracket-board"
         >
+          <h2 className="bf-predict-bracket-tour-title">
+            {bracket.tournamentName}
+            <span className="bf-predict-pickem-count">{bracket.quarters.length} QF</span>
+          </h2>
           <PredictionsRoundSections
             bracket={bracket}
             votes={votes}
-            events={filteredOpen.concat(closedEnriched)}
+            events={bracketEvents.concat(closedEnriched)}
             roundFilter={selectedRound}
           />
         </div>

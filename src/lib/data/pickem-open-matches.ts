@@ -1,4 +1,5 @@
 import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
+import { shouldHideIncompletePlayoffRound } from "./bracket-playoff-sanitize";
 import { isPickemMatchOpen } from "./match-effective-status";
 import type { EsportsMatch } from "./matches";
 import { isPickemMatchEligible } from "./matches";
@@ -7,20 +8,19 @@ import { getMatchStageMeta } from "./match-stage-meta";
 
 const CURATED_IDS = new Set(BSC_UPCOMING_PREDICTION_MATCHES.map((m) => m.id));
 
+function pickemVisible(m: EsportsMatch, pool: EsportsMatch[]): boolean {
+  if (!isPickemMatchEligible(m) || !isPickemMatchOpen(m)) return false;
+  if (shouldHideIncompletePlayoffRound(pool, m)) return false;
+  return true;
+}
+
 /** Partidos abiertos para Pick'em: calendario curado + CMS + brackets guardados. */
 export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[] {
   const pool = getMatchPool();
   const byId = new Map<string, EsportsMatch>();
 
-  for (const m of BSC_UPCOMING_PREDICTION_MATCHES) {
-    if (isPickemMatchEligible(m) && isPickemMatchOpen(m)) {
-      byId.set(m.id, m);
-    }
-  }
-
   for (const m of pool) {
-    if (!isPickemMatchOpen(m)) continue;
-    if (!isPickemMatchEligible(m)) continue;
+    if (!pickemVisible(m, pool)) continue;
 
     const meta = getMatchStageMeta(m.stage || "");
     const fromAdmin = Boolean(m.stage?.trim());
@@ -31,17 +31,14 @@ export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[]
     }
   }
 
-  // Calendario curado gana siempre (evita perder semis/final en CMS incompleto)
-  for (const m of BSC_UPCOMING_PREDICTION_MATCHES) {
-    if (isPickemMatchOpen(m) && isPickemMatchEligible(m)) {
+  for (const m of pool) {
+    if (pickemVisible(m, pool) && CURATED_IDS.has(m.id)) {
       byId.set(m.id, m);
     }
   }
 
   for (const m of extra) {
-    if (isPickemMatchOpen(m) && isPickemMatchEligible(m)) {
-      if (!byId.has(m.id)) byId.set(m.id, m);
-    }
+    if (pickemVisible(m, pool) && !byId.has(m.id)) byId.set(m.id, m);
   }
 
   return [...byId.values()].sort(
