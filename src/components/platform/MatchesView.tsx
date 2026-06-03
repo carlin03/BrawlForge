@@ -202,7 +202,7 @@ export function MatchesView() {
                 votes={game?.votes ?? {}}
                 brackets={quickVoteBrackets}
                 title="Predicción rápida"
-                hint="Todos los partidos abiertos de este filtro — ideal junto al bracket en Predicciones."
+                hint="Todos los abiertos — cuartos 2×2; semis y final se desbloquean al votar."
                 compact
               />
               <p className="bf-matches-hub-vote-foot">

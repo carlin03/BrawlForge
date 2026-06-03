@@ -59,14 +59,16 @@ function winnerFromEvent(event: EnrichedPrediction, votes: Record<string, "A" | 
   );
 }
 
-function GranFinalRound({
+export function GranFinalRound({
   bracket,
   votes,
   events,
+  compact = false,
 }: {
   bracket: PlayoffBracketView;
   votes: Record<string, "A" | "B">;
   events: EnrichedPrediction[];
+  compact?: boolean;
 }) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
@@ -95,7 +97,6 @@ function GranFinalRound({
         ? winnerFromEvent(bracket.semis[1], votes)
         : null;
   const finalReveal = resolveFinalReveal(bracket.semis, bracket.quarters, votes);
-  const waitingSemis = needTwoSemis && !isBracketReadyToVote(finalReveal);
 
   const officialFinal = useMemo(() => {
     if (needTwoSemis) {
@@ -160,7 +161,7 @@ function GranFinalRound({
   }, [bracket]);
 
   const finalEvent = useMemo((): EnrichedPrediction | null => {
-    if (waitingSemis || !displayWinners) return finalCardEvent;
+    if (!displayWinners) return finalCardEvent;
 
     const pts = getPickemRewardPoints("Grand Final", "Bo5", DEFAULT_PICKEM_STAGE_POINTS);
     const base = officialFinal ?? bracket.final;
@@ -203,7 +204,7 @@ function GranFinalRound({
       outcome: userPick ? "pending" : "none",
       pointsEarned: 0,
     };
-  }, [waitingSemis, displayWinners, officialFinal, bracket, votes, draftFinal, finalCardEvent]);
+  }, [displayWinners, officialFinal, bracket, votes, draftFinal, finalCardEvent]);
 
   const voteFinalOverride = useCallback(
     async (side: "A" | "B") => {
@@ -237,35 +238,38 @@ function GranFinalRound({
     [displayWinners, saving, isLoggedIn, router, officialFinal, castVote, bracket.tournamentSlug],
   );
 
+  const finalReady = isBracketReadyToVote(finalReveal);
+
   return (
-    <section className="bf-predict-key-matches bf-predict-round-final" aria-labelledby="predict-final-title">
-      <h2 id="predict-final-title" className="bf-predict-pickem-section-title">
-        Gran final
-        <span className="bf-predict-pickem-count">1</span>
-      </h2>
-      <p className="bf-predict-section-lead">
-        {bracket.tournamentName}
-        {bracket.region ? ` · ${bracket.region}` : ""}
-        {waitingSemis
-          ? " — Los equipos se desbloquean al votar las semifinales."
-          : " — Tu bracket personal; más puntos si aciertas."}
-      </p>
+    <section
+      className={`bf-predict-key-matches bf-predict-round-final ${compact ? "is-compact-round" : ""}`}
+      aria-labelledby={compact ? undefined : "predict-final-title"}
+    >
+      {compact ? (
+        <h4 className="bf-predict-bracket-round-sub">Gran final</h4>
+      ) : (
+        <>
+          <h2 id="predict-final-title" className="bf-predict-pickem-section-title">
+            Gran final
+            <span className="bf-predict-pickem-count">1</span>
+          </h2>
+          <p className="bf-predict-section-lead">
+            {bracket.tournamentName}
+            {bracket.region ? ` · ${bracket.region}` : ""}
+            {!finalReady
+              ? " — Los equipos se desbloquean al votar las semifinales."
+              : " — Tu bracket personal; más puntos si aciertas."}
+          </p>
+        </>
+      )}
       <div className="bf-predict-bracket-grand-final">
-        {waitingSemis ? (
-          <BracketPendingDuel
-            featured
-            title="Pendiente de clasificación"
-            subtitle="Por determinar — elige ganador en las dos semifinales para armar la gran final."
-          />
-        ) : (
-          <BracketMatchCard
-            event={finalEvent ?? finalCardEvent}
-            votes={votes}
-            bracketReveal={finalReveal}
-            featured
-            voteOverride={officialFinal ? undefined : voteFinalOverride}
-          />
-        )}
+        <BracketMatchCard
+          event={finalEvent ?? finalCardEvent}
+          votes={votes}
+          bracketReveal={finalReveal}
+          featured
+          voteOverride={officialFinal ? undefined : voteFinalOverride}
+        />
       </div>
       {err && (
         <p className="bf-predict-round-error" role="alert">

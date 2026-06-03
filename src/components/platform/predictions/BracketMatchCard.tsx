@@ -45,16 +45,12 @@ export function BracketMatchCard({
     ? `${event.matchId}-${revealKey(bracketReveal)}`
     : event.matchId;
 
-  const fullyPending =
-    bracketReveal &&
-    !isBracketReadyToVote(bracketReveal) &&
-    !bracketReveal.sideA.revealed &&
-    !bracketReveal.sideB.revealed;
-
   const tbdPending =
-    isPendingTeamSlug(event.teamASlug) && isPendingTeamSlug(event.teamBSlug);
+    !bracketReveal &&
+    isPendingTeamSlug(event.teamASlug) &&
+    isPendingTeamSlug(event.teamBSlug);
 
-  if (fullyPending || tbdPending) {
+  if (tbdPending) {
     return (
       <BracketPendingDuel
         featured={featured}

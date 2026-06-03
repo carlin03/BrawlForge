@@ -3443,6 +3443,84 @@
   margin-bottom: 24px;
 }
 
+.bf-predict-quick-vote-section.is-bracket-layout {
+  width: 100%;
+}
+
+.bf-predict-quick-bracket-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.bf-predict-quick-bracket-board {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bf-predict-bracket-round {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bf-predict-bracket-round-sub {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bp-dim, rgba(255, 255, 255, 0.5));
+}
+
+.bf-predict-quick-bracket-board .bf-predict-bracket-qf-grid,
+.bf-predict-quick-bracket-board .bf-predict-bracket-sf {
+  max-width: 100%;
+}
+
+.bf-predict-quick-bracket-board .bf-bsc-vote-card {
+  font-size: 0.92em;
+}
+
+.bf-predict-quick-bracket-board .bf-vote-side {
+  min-height: 140px;
+}
+
+.bf-predict-quick-bracket-board .bf-predict-round-final.is-compact-round {
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.bf-predict-quick-bracket-board .bf-predict-round-final.is-compact-round .bf-predict-bracket-grand-final {
+  max-width: 100%;
+}
+
+.bf-predict-quick-other {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bf-predict-quick-other-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.bf-predict-quick-vote-grid.is-flat {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
 .bf-predict-quick-vote-head {
   margin-bottom: 14px;
 }
@@ -3455,17 +3533,21 @@
   max-width: 62ch;
 }
 
-.bf-predict-quick-vote-grid {
+.bf-predict-quick-vote-grid:not(.is-flat) {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   align-items: stretch;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-.bf-predict-quick-vote-section.is-compact .bf-predict-quick-vote-grid {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
-  max-height: min(72vh, 920px);
+.bf-predict-quick-vote-section.is-compact .bf-predict-quick-bracket-stack {
+  max-height: none;
+}
+
+.bf-predict-quick-vote-section.is-compact .bf-predict-quick-other-grid {
+  max-height: min(50vh, 480px);
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -3496,7 +3578,9 @@
 }
 
 @media (max-width: 640px) {
-  .bf-predict-quick-vote-grid {
+  .bf-predict-quick-vote-grid,
+  .bf-predict-quick-other-grid,
+  .bf-predict-quick-vote-grid.is-flat {
     grid-template-columns: 1fr;
   }
 }

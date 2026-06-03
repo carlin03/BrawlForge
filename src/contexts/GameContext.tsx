@@ -146,13 +146,25 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const castVote = useCallback(
     async (matchId: string, pick: "A" | "B", rewardPoints: number) => {
+      let previousVotes: UserGameState["votes"] | undefined;
+      setGame((prev) => {
+        if (!prev) return prev;
+        previousVotes = prev.votes;
+        return { ...prev, votes: { ...prev.votes, [matchId]: pick } };
+      });
+
       const res = await fetch("/api/me/predictions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ matchId, pick, rewardPoints }),
       });
       const json = await res.json();
-      if (!res.ok) return { error: json.error ?? "No se pudo votar" };
+      if (!res.ok) {
+        if (previousVotes !== undefined) {
+          setGame((prev) => (prev ? { ...prev, votes: previousVotes! } : prev));
+        }
+        return { error: json.error ?? "No se pudo votar" };
+      }
       await refresh();
       return {};
     },

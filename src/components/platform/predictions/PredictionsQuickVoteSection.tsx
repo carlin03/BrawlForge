@@ -2,32 +2,83 @@
 
 import Link from "next/link";
 import { Zap } from "lucide-react";
-import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { BracketMatchCard } from "@/components/platform/predictions/BracketMatchCard";
+import { GranFinalRound } from "@/components/platform/predictions/PredictionsRoundSections";
 import type { EnrichedPrediction, PlayoffBracketView } from "@/lib/data/predictions-ui";
-import {
-  resolveFinalReveal,
-  resolveSemiReveal,
-  type BracketRevealState,
-} from "@/lib/data/bracket-reveal";
-import { getMatchStageMeta } from "@/lib/data/match-stage-meta";
+import { getAllPlayoffBracketMatchIds } from "@/lib/data/predictions-ui";
+import { resolveSemiReveal } from "@/lib/data/bracket-reveal";
+import { resolveBracketLayout } from "@/lib/data/bracket-config";
 
-function bracketRevealForEvent(
-  event: EnrichedPrediction,
-  brackets: PlayoffBracketView[],
-  votes: Record<string, "A" | "B">,
-): BracketRevealState | undefined {
-  for (const b of brackets) {
-    const qf = b.quarters;
-    const semiIdx = b.semis.findIndex((s) => s.matchId === event.matchId);
-    if (semiIdx >= 0) {
-      return resolveSemiReveal(semiIdx, event, qf, votes);
-    }
-    if (b.final?.matchId === event.matchId) {
-      return resolveFinalReveal(b.semis, qf, votes);
-    }
-  }
-  return undefined;
+function sortByDate(list: EnrichedPrediction[]): EnrichedPrediction[] {
+  return [...list].sort((a, b) =>
+    (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline),
+  );
+}
+
+function BracketQuickBoard({
+  bracket,
+  votes,
+  events,
+}: {
+  bracket: PlayoffBracketView;
+  votes: Record<string, "A" | "B">;
+  events: EnrichedPrediction[];
+}) {
+  const qf = bracket.quarters;
+  const sf = bracket.semis;
+  const qfLayout = resolveBracketLayout(bracket.layout, qf.length);
+  const sfLayout = resolveBracketLayout(bracket.layout, sf.length);
+
+  return (
+    <div className="bf-predict-quick-bracket-board" id={`pickem-${bracket.tournamentSlug}`}>
+      <h3 className="bf-predict-bracket-round-title">{bracket.tournamentName}</h3>
+
+      {qf.length > 0 && (
+        <section className="bf-predict-bracket-round">
+          <h4 className="bf-predict-bracket-round-sub">Cuartos</h4>
+          <div
+            className={
+              qf.length === 1 || qfLayout === "1"
+                ? "bf-predict-bracket-qf bf-predict-bracket-stack is-solo-round"
+                : "bf-predict-bracket-qf-grid"
+            }
+            data-layout={qf.length >= 4 || qfLayout === "2" ? "2" : "1"}
+          >
+            {qf.map((e) => (
+              <BracketMatchCard key={`${e.id}-${votes[e.matchId] ?? ""}`} event={e} votes={votes} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {sf.length > 0 && (
+        <section className="bf-predict-bracket-round">
+          <h4 className="bf-predict-bracket-round-sub">Semifinales</h4>
+          <div
+            className={`bf-predict-bracket-sf ${sf.length === 1 || sfLayout === "1" ? "is-solo-round bf-predict-bracket-stack" : "is-layout-2"}`}
+            data-layout={sfLayout}
+          >
+            {sf.map((e, i) => (
+              <BracketMatchCard
+                key={`${e.id}-${votes[e.matchId] ?? ""}-${revealKey(resolveSemiReveal(i, e, qf, votes))}`}
+                event={e}
+                votes={votes}
+                bracketReveal={resolveSemiReveal(i, e, qf, votes)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(sf.length > 0 || bracket.final || qf.length >= 4) && (
+        <GranFinalRound bracket={bracket} votes={votes} events={events} compact />
+      )}
+    </div>
+  );
+}
+
+function revealKey(r: { sideA: { teamSlug: string | null }; sideB: { teamSlug: string | null } }): string {
+  return `${r.sideA.teamSlug ?? "-"}-${r.sideB.teamSlug ?? "-"}`;
 }
 
 export function PredictionsQuickVoteSection({
@@ -35,7 +86,7 @@ export function PredictionsQuickVoteSection({
   votes,
   brackets = [],
   title = "Predicción rápida",
-  hint = "Vota en segundos — todos los partidos abiertos. Los mismos duelos del bracket de abajo.",
+  hint,
   compact = false,
   maxItems,
 }: {
@@ -47,12 +98,20 @@ export function PredictionsQuickVoteSection({
   compact?: boolean;
   maxItems?: number;
 }) {
-  const list = maxItems ? events.slice(0, maxItems) : events;
-  if (!list.length) return null;
+  const bracketIds = getAllPlayoffBracketMatchIds(brackets);
+  const bracketBoards = brackets.filter(
+    (b) => b.quarters.length >= 4 || b.semis.length >= 2 || Boolean(b.final),
+  );
+  const useBracketLayout = bracketBoards.length > 0;
+
+  const otherEvents = sortByDate(events.filter((e) => !bracketIds.has(e.matchId)));
+  const otherList = maxItems ? otherEvents.slice(0, maxItems) : otherEvents;
+
+  if (!useBracketLayout && events.length === 0) return null;
 
   return (
     <section
-      className={`bf-predict-quick-vote-section ${compact ? "is-compact" : ""}`}
+      className={`bf-predict-quick-vote-section ${useBracketLayout ? "is-bracket-layout" : ""} ${compact ? "is-compact" : ""}`}
       aria-labelledby="predict-quick-vote-title"
     >
       <div className="bf-predict-quick-vote-head">
@@ -61,34 +120,47 @@ export function PredictionsQuickVoteSection({
           {title}
           <span className="bf-predict-pickem-count">{events.length}</span>
         </h2>
-        {hint && <p className="bf-predict-quick-vote-hint">{hint}</p>}
+        <p className="bf-predict-quick-vote-hint">
+          {hint ??
+            (useBracketLayout
+              ? "Cuartos en 2×2 — al votar, semifinales y final se actualizan al instante."
+              : "Vota en segundos en cada partido abierto.")}
+        </p>
       </div>
-      <div className="bf-predict-quick-vote-grid">
-        {list.map((e) => {
-          const rk = e.stageMeta?.roundKey ?? getMatchStageMeta(e.stage).roundKey;
-          const reveal = bracketRevealForEvent(e, brackets, votes);
-          const useBracketCard =
-            reveal &&
-            (rk === "semi" || rk === "grand_final" || rk === "final");
 
-          return (
+      {useBracketLayout ? (
+        <div className="bf-predict-quick-bracket-stack">
+          {bracketBoards.map((b) => (
+            <BracketQuickBoard key={b.tournamentSlug} bracket={b} votes={votes} events={events} />
+          ))}
+        </div>
+      ) : (
+        <div className="bf-predict-quick-vote-grid is-flat">
+          {(maxItems ? events.slice(0, maxItems) : events).map((e) => (
             <div key={e.id} id={`pick-${e.matchId}`} className="bf-predict-quick-vote-cell">
-              {useBracketCard ? (
-                <BracketMatchCard event={e} votes={votes} bracketReveal={reveal} />
-              ) : (
-                <InteractiveVoteCard
-                  event={e}
-                  featured={!compact && (e.importance !== "normal" || rk === "quarter")}
-                />
-              )}
+              <BracketMatchCard event={e} votes={votes} />
             </div>
-          );
-        })}
-      </div>
-      {maxItems && events.length > maxItems && (
+          ))}
+        </div>
+      )}
+
+      {otherList.length > 0 && (
+        <section className="bf-predict-quick-other">
+          <h3 className="bf-predict-bracket-round-sub">Jornada y grupos</h3>
+          <div className="bf-predict-quick-other-grid">
+            {otherList.map((e) => (
+              <div key={e.id} id={`pick-${e.matchId}`} className="bf-predict-quick-vote-cell">
+                <BracketMatchCard event={e} votes={votes} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {maxItems && otherEvents.length > maxItems && (
         <p className="bf-predict-quick-vote-more">
-          +{events.length - maxItems} más en el{" "}
-          <Link href="/predictions">centro de predicciones</Link>
+          +{otherEvents.length - maxItems} más en{" "}
+          <Link href="/predictions">Predicciones</Link>
         </p>
       )}
     </section>

@@ -707,7 +707,15 @@
   color: var(--bp-muted);
 }
 
-/* Vote block */
+/* Vote block — bracket 2×2 en hub */
+.bf-matches-hub-vote .bf-predict-quick-vote-section {
+  width: 100%;
+}
+
+.bf-matches-hub-vote .bf-predict-quick-bracket-stack {
+  max-width: 100%;
+}
+
 .bf-matches-hub-vote-head {
   display: flex;
   justify-content: space-between;

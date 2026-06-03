@@ -371,8 +371,7 @@ export function HomeView() {
                 votes={game?.votes ?? {}}
                 brackets={homeVoteBrackets}
                 title="Predicción rápida"
-                hint="Todos los partidos abiertos — cuartos, grupos y bracket."
-                maxItems={12}
+                hint="Todos los partidos abiertos — bracket 2×2 y grupos."
               />
             </div>
           </section>

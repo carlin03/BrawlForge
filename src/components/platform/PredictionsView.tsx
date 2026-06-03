@@ -9,7 +9,6 @@ import { MyPredictionsMini } from "@/components/platform/predictions/MyPredictio
 import { PredictionsPopularRails } from "@/components/platform/predictions/PredictionsPopularRails";
 import { PredictionsHistorySection } from "@/components/platform/predictions/PredictionsHistorySection";
 import { PredictionsQuickVoteSection } from "@/components/platform/predictions/PredictionsQuickVoteSection";
-import { PredictionsRoundSections } from "@/components/platform/predictions/PredictionsRoundSections";
 import { PredictionsClosingSoon } from "@/components/platform/predictions/PredictionsClosingSoon";
 import { PredictionsPickemToolbar } from "@/components/platform/predictions/PredictionsPickemToolbar";
 import type { PlayoffBracketsStore } from "@/lib/data/bracket-config";
@@ -127,7 +126,7 @@ export function PredictionsView({
 
   const playoffBrackets = useMemo(() => {
     const all = sortBracketsByDate(buildAllPlayoffBrackets(openEnriched, bracketStore));
-    if (!selectedTournament) return all.filter((b) => b.quarters.length >= 4 || b.semis.length > 0);
+    if (!selectedTournament) return all;
     const slugs = new Set(expandTournamentSlugFilter(selectedTournament));
     return all.filter((b) => slugs.has(b.tournamentSlug));
   }, [openEnriched, bracketStore, selectedTournament]);
@@ -214,33 +213,8 @@ export function PredictionsView({
         events={filteredOpen}
         votes={votes}
         brackets={playoffBrackets}
-        hint="Incluye cuartos, semis y final del bracket — vota aquí o en la cuadrícula de abajo."
+        hint="Cuartos en 2×2 — al elegir ganador, semifinales y final se actualizan solas."
       />
-
-      {playoffBrackets.length > 0 && (
-        <p className="bf-predict-bracket-intro">
-          Bracket eliminatorio — cuartos en cuadrícula 2×2; semifinales y final se rellenan con tus votos.
-        </p>
-      )}
-
-      {playoffBrackets.map((bracket) => (
-        <div
-          key={bracket.tournamentSlug}
-          id={`pickem-${bracket.tournamentSlug}`}
-          className="bf-predict-bracket-board"
-        >
-          <h2 className="bf-predict-bracket-tour-title">
-            {bracket.tournamentName}
-            <span className="bf-predict-pickem-count">{bracket.quarters.length} QF</span>
-          </h2>
-          <PredictionsRoundSections
-            bracket={bracket}
-            votes={votes}
-            events={bracketEvents.concat(closedEnriched)}
-            roundFilter={selectedRound}
-          />
-        </div>
-      ))}
 
       {showFeatured && <FeaturedPredictionDuel event={featuredEvent!} />}
 
