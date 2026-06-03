@@ -3439,6 +3439,68 @@
   line-height: 1.45;
   color: var(--bp-dim);
 }
+.bf-predict-quick-vote-section {
+  margin-bottom: 24px;
+}
+
+.bf-predict-quick-vote-head {
+  margin-bottom: 14px;
+}
+
+.bf-predict-quick-vote-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--bp-dim, rgba(255, 255, 255, 0.55));
+  line-height: 1.45;
+  max-width: 62ch;
+}
+
+.bf-predict-quick-vote-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.bf-predict-quick-vote-section.is-compact .bf-predict-quick-vote-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  max-height: min(72vh, 920px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.bf-predict-quick-vote-cell {
+  min-width: 0;
+}
+
+.bf-predict-quick-vote-cell .bf-bsc-vote-card {
+  height: 100%;
+}
+
+.bf-predict-quick-vote-more {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--bp-dim, rgba(255, 255, 255, 0.5));
+}
+
+.bf-matches-hub-vote-foot {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 13px;
+}
+
+.bf-matches-hub-vote-foot a {
+  color: var(--bp-gold, #f5c842);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .bf-predict-quick-vote-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .bf-predict-quick-list {
   display: flex;
   flex-direction: column;

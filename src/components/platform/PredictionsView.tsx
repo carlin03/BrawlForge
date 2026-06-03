@@ -8,6 +8,7 @@ import { PredictionsCompactHero } from "@/components/platform/predictions/Predic
 import { MyPredictionsMini } from "@/components/platform/predictions/MyPredictionsMini";
 import { PredictionsPopularRails } from "@/components/platform/predictions/PredictionsPopularRails";
 import { PredictionsHistorySection } from "@/components/platform/predictions/PredictionsHistorySection";
+import { PredictionsQuickVoteSection } from "@/components/platform/predictions/PredictionsQuickVoteSection";
 import { PredictionsRoundSections } from "@/components/platform/predictions/PredictionsRoundSections";
 import { PredictionsClosingSoon } from "@/components/platform/predictions/PredictionsClosingSoon";
 import { PredictionsPickemToolbar } from "@/components/platform/predictions/PredictionsPickemToolbar";
@@ -207,6 +208,13 @@ export function PredictionsView({
         search={search}
         onSearchChange={setSearch}
         resultCount={filteredOpen.length}
+      />
+
+      <PredictionsQuickVoteSection
+        events={filteredOpen}
+        votes={votes}
+        brackets={playoffBrackets}
+        hint="Incluye cuartos, semis y final del bracket — vota aquí o en la cuadrícula de abajo."
       />
 
       {playoffBrackets.length > 0 && (

@@ -3,12 +3,14 @@
 import { useMemo, useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { buildPredictionEvents } from "@/lib/data/predictions-build";
+import { predictChronologySort } from "@/lib/data/predictions-filters";
+import { buildAllPlayoffBrackets, enrichPrediction } from "@/lib/data/predictions-ui";
 import Link from "next/link";
 import { FeaturedMatch } from "@/components/platform/ui";
 import { MatchCountdown } from "@/components/platform/MatchCountdown";
 import { PlayerCardMini } from "@/components/platform/PlayerCard";
 import { PlayerCard } from "@/components/platform/PlayerCard";
-import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
+import { PredictionsQuickVoteSection } from "@/components/platform/predictions/PredictionsQuickVoteSection";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
@@ -34,6 +36,7 @@ import {
   getPlayer,
   getTopActivePlayers,
   isKnownTeamSlug,
+  isPickemMatchEligible,
   teamName,
   teams,
 } from "@/lib/data";
@@ -117,17 +120,28 @@ export function HomeView() {
   const topNews = useLatestNewsMerged(3);
   const voteEvents = useMemo(() => {
     const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
-    const seen = new Set<string>();
+    const votes = game?.votes ?? {};
     return open
-      .filter((e) => isKnownTeamSlug(e.teamASlug) && isKnownTeamSlug(e.teamBSlug))
-      .filter((e) => {
-        const key = e.matchId || e.id;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      })
-      .slice(0, 3);
+      .filter((e) =>
+        isPickemMatchEligible({
+          id: e.matchId,
+          teamASlug: e.teamASlug,
+          teamBSlug: e.teamBSlug,
+          stage: e.stage,
+          scoreA: 0,
+          scoreB: 0,
+          tournamentSlug: e.tournamentSlug,
+          date: e.deadline,
+          status: "upcoming",
+          region: "GLOBAL",
+          format: "Bo3",
+        }),
+      )
+      .map((e) => enrichPrediction(e, votes))
+      .sort(predictChronologySort);
   }, [aggregates, game?.votes]);
+
+  const homeVoteBrackets = useMemo(() => buildAllPlayoffBrackets(voteEvents), [voteEvents]);
 
   const spotlight =
     live[0] ?? getUpcomingMatches().find((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)) ?? null;
@@ -352,11 +366,14 @@ export function HomeView() {
               <Link href="/predictions">Todas las predicciones</Link>
             </div>
             <div className="bf-predict-bsc bf-predict-bsc-home">
-              <div className="bf-predict-grid bf-predict-grid-home bf-bsc-predict-grid">
-                {voteEvents.map((e, i) => (
-                  <InteractiveVoteCard key={e.id} event={e} featured={i === 0} />
-                ))}
-              </div>
+              <PredictionsQuickVoteSection
+                events={voteEvents}
+                votes={game?.votes ?? {}}
+                brackets={homeVoteBrackets}
+                title="Predicción rápida"
+                hint="Todos los partidos abiertos — cuartos, grupos y bracket."
+                maxItems={12}
+              />
             </div>
           </section>
         )}

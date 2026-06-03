@@ -6,7 +6,9 @@ import { CalendarDays, Radio, Target, Trophy } from "lucide-react";
 import type { Region } from "@/lib/types";
 import { useGame } from "@/contexts/GameContext";
 import { buildPredictionEvents } from "@/lib/data/predictions-build";
-import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
+import { predictChronologySort } from "@/lib/data/predictions-filters";
+import { buildAllPlayoffBrackets, enrichPrediction } from "@/lib/data/predictions-ui";
+import { PredictionsQuickVoteSection } from "@/components/platform/predictions/PredictionsQuickVoteSection";
 import { MatchesControls } from "@/components/platform/MatchesControls";
 import { MatchSpotlightCard } from "@/components/platform/MatchSpotlightCard";
 import { MatchHubRow } from "@/components/platform/MatchHubRow";
@@ -24,6 +26,7 @@ import {
 } from "@/lib/data/matches-hub";
 import {
   isKnownTeamSlug,
+  isPickemMatchEligible,
   isPublicScheduleMatch,
   getRecentMatches,
   getTierBPlusTournaments,
@@ -66,10 +69,37 @@ export function MatchesView() {
   const [tourQuery, setTourQuery] = useState("");
   const tierTours = useMemo(() => getTierBPlusTournaments(48), []);
 
-  const hotVote = useMemo(() => {
+  const quickVoteEvents = useMemo(() => {
+    if (tab === "results") return [];
     const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
-    return open.find((e) => isKnownTeamSlug(e.teamASlug) && isKnownTeamSlug(e.teamBSlug));
-  }, [aggregates, game?.votes]);
+    const poolIds = new Set(
+      filterHubMatches(displayable, { tab, region, tournamentSlug, query }).map((m) => m.id),
+    );
+    return open
+      .filter((e) => poolIds.has(e.matchId))
+      .filter((e) =>
+        isPickemMatchEligible({
+          id: e.matchId,
+          teamASlug: e.teamASlug,
+          teamBSlug: e.teamBSlug,
+          stage: e.stage,
+          scoreA: 0,
+          scoreB: 0,
+          tournamentSlug: e.tournamentSlug,
+          date: e.deadline,
+          status: "upcoming",
+          region: "GLOBAL",
+          format: "Bo3",
+        }),
+      )
+      .map((e) => enrichPrediction(e, game?.votes ?? {}))
+      .sort(predictChronologySort);
+  }, [aggregates, game?.votes, displayable, tab, region, tournamentSlug, query]);
+
+  const quickVoteBrackets = useMemo(
+    () => buildAllPlayoffBrackets(quickVoteEvents),
+    [quickVoteEvents],
+  );
 
   const upsets = useMemo(
     () =>
@@ -165,14 +195,20 @@ export function MatchesView() {
             </section>
           )}
 
-          {hotVote && tab !== "results" && (
-            <section className="bf-matches-hub-vote bf-predict-bsc">
-              <div className="bf-matches-hub-vote-head">
-                <h2>Predicción rápida</h2>
-                <Link href="/predictions">Ver todas</Link>
-              </div>
-              <InteractiveVoteCard event={hotVote} featured />
-            </section>
+          {quickVoteEvents.length > 0 && (
+            <div className="bf-matches-hub-vote bf-predict-bsc">
+              <PredictionsQuickVoteSection
+                events={quickVoteEvents}
+                votes={game?.votes ?? {}}
+                brackets={quickVoteBrackets}
+                title="Predicción rápida"
+                hint="Todos los partidos abiertos de este filtro — ideal junto al bracket en Predicciones."
+                compact
+              />
+              <p className="bf-matches-hub-vote-foot">
+                <Link href="/predictions">Centro de predicciones y bracket</Link>
+              </p>
+            </div>
           )}
 
           <section className="bf-matches-hub-list" aria-labelledby="matches-list-title">
