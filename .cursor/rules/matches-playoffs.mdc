@@ -31,3 +31,10 @@ alwaysApply: false
 ## Calendario upcoming manual
 
 - Los MF/Challengers futuros viven en **`bsc-upcoming-predictions.ts`**; sin ellos la pestaña Próximos solo muestra histórico `finished`.
+
+## Pick'em bracket (2×2 + semis + final)
+
+- UI: **`PredictionsRoundSections`** — cuartos en grid 2×2, semis en fila, final grande.
+- Semis/final EMEA con 4 cuartos: slugs **`winner-qf-0`…`winner-qf-3`** y **`winner-sf-0` / `winner-sf-1`** (no equipos fijos).
+- Revelado progresivo: **`bracket-reveal.ts`** + `bracketReveal` en **`InteractiveVoteCard`**.
+- Estado real del partido: **`getEffectiveMatchStatus`** en `match-effective-status.ts` (marcador + hora + `meta.sync.completed`).

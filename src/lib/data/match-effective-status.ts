@@ -1,0 +1,44 @@
+import { parseMatchMeta } from "./match-meta";
+import type { EsportsMatch } from "./matches";
+
+const FINISH_GRACE_MS = 3 * 60 * 60 * 1000;
+
+function metaSaysFinished(meta: ReturnType<typeof parseMatchMeta>): boolean {
+  const sync = (meta as { sync?: { completed?: boolean } }).sync;
+  if (sync?.completed === true) return true;
+  if (meta.display_status === "finished" || meta.display_status === "cancelled") return true;
+  return false;
+}
+
+function hasDecisiveScore(m: EsportsMatch): boolean {
+  if (m.scoreA === m.scoreB) return false;
+  if (m.status === "finished") return true;
+  return m.scoreA > 0 || m.scoreB > 0;
+}
+
+/** Estado real para listados y pick'em (respeta DB + marcador + hora + sync). */
+export function getEffectiveMatchStatus(m: EsportsMatch): EsportsMatch["status"] {
+  if (m.status === "cancelled") return "cancelled";
+  if (m.status === "finished") return "finished";
+  if (m.status === "live") return "live";
+
+  const meta = parseMatchMeta(m.meta);
+  if (metaSaysFinished(meta)) return "finished";
+
+  const scheduled = new Date(m.date).getTime();
+  const pastGrace = !Number.isNaN(scheduled) && Date.now() > scheduled + FINISH_GRACE_MS;
+
+  if (pastGrace && hasDecisiveScore(m)) return "finished";
+
+  return m.status;
+}
+
+export function withEffectiveMatchStatus(m: EsportsMatch): EsportsMatch {
+  const status = getEffectiveMatchStatus(m);
+  return status === m.status ? m : { ...m, status };
+}
+
+export function isPickemMatchOpen(m: EsportsMatch): boolean {
+  const status = getEffectiveMatchStatus(m);
+  return status === "upcoming" || status === "live";
+}

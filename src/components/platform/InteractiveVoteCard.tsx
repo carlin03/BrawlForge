@@ -21,6 +21,7 @@ import {
   type BracketRevealState,
   isBracketReadyToVote,
   mapBracketSlugToApiSide,
+  mapBracketRevealToApiSide,
 } from "@/lib/data/bracket-reveal";
 import { teamName } from "@/lib/data";
 import { bracketSlotDisplayLabel, isBracketPlaceholderSlug } from "@/lib/data/bracket-slot-display";
@@ -80,8 +81,14 @@ export function InteractiveVoteCard({
   const closed = event.status === "closed";
   const revealA = bracketReveal?.sideA.revealed ?? true;
   const revealB = bracketReveal?.sideB.revealed ?? true;
-  const slugA = revealA ? (bracketReveal?.sideA.teamSlug ?? event.teamASlug) : null;
-  const slugB = revealB ? (bracketReveal?.sideB.teamSlug ?? event.teamBSlug) : null;
+  const slugA = revealA
+    ? (bracketReveal?.sideA.teamSlug ??
+      (bracketReveal ? null : event.teamASlug))
+    : null;
+  const slugB = revealB
+    ? (bracketReveal?.sideB.teamSlug ??
+      (bracketReveal ? null : event.teamBSlug))
+    : null;
   const bracketReady = bracketReveal ? isBracketReadyToVote(bracketReveal) : true;
   const labelA = slugA
     ? isBracketPlaceholderSlug(slugA)
@@ -151,7 +158,9 @@ export function InteractiveVoteCard({
     let apiSide: "A" | "B" = side;
     if (bracketReveal && slugA && slugB) {
       const pickedSlug = side === "A" ? slugA : slugB;
-      const mapped = mapBracketSlugToApiSide(event, pickedSlug);
+      const mapped =
+        mapBracketRevealToApiSide(bracketReveal, pickedSlug) ??
+        mapBracketSlugToApiSide(event, pickedSlug);
       if (!mapped) {
         setSaving(false);
         setErr("Tu bracket no coincide con este emparejamiento oficial.");

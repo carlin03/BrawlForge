@@ -1,6 +1,6 @@
 import type { Region } from "../types";
 import type { EsportsMatch } from "./matches";
-import { expandTournamentSlugFilter, getTournament, isDisplayableMatch } from "./matches";
+import { expandTournamentSlugFilter, getTournament, isPublicScheduleMatch } from "./matches";
 import { getTeam } from "./teams";
 import { getMatchStageMeta, type StageRoundKey } from "./match-stage-meta";
 
@@ -93,7 +93,7 @@ export function sortHubMatchList(list: EsportsMatch[], tab: MatchTab = "upcoming
 
 export function filterHubMatches(all: EsportsMatch[], filters: MatchHubFilters): EsportsMatch[] {
   const q = filters.query.trim().toLowerCase();
-  let pool = tabPool(filters.tab, all).filter(isDisplayableMatch);
+  let pool = tabPool(filters.tab, all).filter(isPublicScheduleMatch);
 
   if (filters.region !== "all") {
     pool = pool.filter((m) => m.region === filters.region);
@@ -179,7 +179,7 @@ export function groupMatchesByTournament(list: EsportsMatch[], tab: MatchTab = "
 }
 
 export function countHubMatches(all: EsportsMatch[]) {
-  const display = all.filter(isDisplayableMatch);
+  const display = all.filter(isPublicScheduleMatch);
   return {
     live: display.filter((m) => m.status === "live").length,
     upcoming: display.filter((m) => m.status === "upcoming").length,

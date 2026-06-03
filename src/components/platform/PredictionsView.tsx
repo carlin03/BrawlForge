@@ -13,7 +13,8 @@ import { PredictionsClosingSoon } from "@/components/platform/predictions/Predic
 import { PredictionsPickemToolbar } from "@/components/platform/predictions/PredictionsPickemToolbar";
 import type { PlayoffBracketsStore } from "@/lib/data/bracket-config";
 import type { PredictionEvent } from "@/lib/data/predictions";
-import { isKnownTeamSlug } from "@/lib/data";
+import { isKnownTeamSlug, isPickemMatchEligible } from "@/lib/data";
+import { expandTournamentSlugFilter } from "@/lib/data/matches";
 import type { UserGameState } from "@/lib/supabase/game-types";
 import {
   getAvailableRoundFilters,
@@ -54,7 +55,23 @@ export function PredictionsView({
   const [search, setSearch] = useState("");
 
   const displayOpen = useMemo(
-    () => open.filter((e) => isKnownTeamSlug(e.teamASlug) && isKnownTeamSlug(e.teamBSlug)),
+    () =>
+      open.filter((e) => {
+        const m = {
+          id: e.matchId,
+          teamASlug: e.teamASlug,
+          teamBSlug: e.teamBSlug,
+          stage: e.stage,
+          scoreA: 0,
+          scoreB: 0,
+          tournamentSlug: e.tournamentSlug,
+          date: e.deadline,
+          status: "upcoming" as const,
+          region: "GLOBAL" as const,
+          format: "Bo3",
+        };
+        return isPickemMatchEligible(m);
+      }),
     [open],
   );
   const displayClosed = useMemo(
@@ -80,7 +97,8 @@ export function PredictionsView({
   const filteredOpen = useMemo(() => {
     let list = openEnriched;
     if (selectedTournament) {
-      list = list.filter((e) => e.tournamentSlug === selectedTournament);
+      const slugs = new Set(expandTournamentSlugFilter(selectedTournament));
+      list = list.filter((e) => slugs.has(e.tournamentSlug));
     }
     if (search.trim()) {
       list = list.filter((e) => predictionMatchesSearch(e, search));
@@ -183,6 +201,21 @@ export function PredictionsView({
         resultCount={filteredOpen.length}
       />
 
+      {playoffBrackets.map((bracket) => (
+        <div
+          key={bracket.tournamentSlug}
+          id={`pickem-${bracket.tournamentSlug}`}
+          className="bf-predict-bracket-board"
+        >
+          <PredictionsRoundSections
+            bracket={bracket}
+            votes={votes}
+            events={filteredOpen.concat(closedEnriched)}
+            roundFilter={selectedRound}
+          />
+        </div>
+      ))}
+
       {showFeatured && <FeaturedPredictionDuel event={featuredEvent!} />}
 
       {playoffBrackets.length === 0 && filteredOpen.length > 0 && !search.trim() && (
@@ -192,17 +225,6 @@ export function PredictionsView({
             : "No hay cuartos/semis/final con fase configurada. En admin → Partidos elige la ronda correcta."}
         </p>
       )}
-
-      {playoffBrackets.map((bracket) => (
-        <div key={bracket.tournamentSlug} id={`pickem-${bracket.tournamentSlug}`}>
-          <PredictionsRoundSections
-            bracket={bracket}
-            votes={votes}
-            events={filteredOpen.concat(closedEnriched)}
-            roundFilter={selectedRound}
-          />
-        </div>
-      ))}
 
       {syncing && <p className="bf-predict-sync-banner" aria-live="polite">Actualizando votos…</p>}
 

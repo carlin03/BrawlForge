@@ -1,5 +1,6 @@
 import type { BracketLayoutMode, PlayoffBracketsStore } from "@/lib/data/bracket-config";
 import type { PredictionEvent } from "@/lib/data/predictions";
+import { getEffectiveMatchStatus } from "@/lib/data/match-effective-status";
 import { expandTournamentSlugFilter, getMatch, getTournament } from "@/lib/data/matches";
 import { getPredictionLabel, getPredictionTournament } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
@@ -352,6 +353,7 @@ export function enrichPrediction(
   pointsByMatch?: Record<string, number>,
 ): EnrichedPrediction {
   const match = getMatch(event.matchId);
+  const effectiveStatus = match ? getEffectiveMatchStatus(match) : undefined;
   const userPick = event.userPick ?? votes[event.matchId] ?? null;
   let outcome: EnrichedPrediction["outcome"] = "none";
   if (userPick && event.status === "closed" && event.correctPick) {
@@ -364,8 +366,9 @@ export function enrichPrediction(
 
   const stageMeta = getMatchStageMeta(event.stage);
   const displayStatus = getPredictDisplayStatus({
-    eventStatus: event.status,
-    matchStatus: match?.status,
+    eventStatus:
+      event.status === "open" && effectiveStatus === "finished" ? "closed" : event.status,
+    matchStatus: effectiveStatus ?? match?.status,
   });
   const tour = getTournament(event.tournamentSlug);
 
@@ -375,7 +378,7 @@ export function enrichPrediction(
     outcome,
     pointsEarned,
     matchDate: match?.date ?? event.deadline,
-    matchStatus: match?.status,
+    matchStatus: effectiveStatus ?? match?.status,
     region: match?.region ?? tour?.region,
     tournamentShortName: tour?.shortName ?? getPredictionTournament(event),
     stageMeta,

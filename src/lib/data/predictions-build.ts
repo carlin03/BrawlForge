@@ -1,10 +1,14 @@
 import { mergePickemAggregates } from "./pickem-demo-aggregates";
-import { getMatch, getRecentMatches } from "./matches";
+import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
+import { isPickemMatchOpen } from "./match-effective-status";
+import { getMatch, getRecentMatches, isPickemMatchEligible } from "./matches";
 import { parseMatchMeta } from "./match-meta";
 import type { PlayoffBracketsStore } from "./bracket-config";
 import { matchesFromBracketStore } from "./bracket-to-matches";
 import { getPickemOpenMatches } from "./pickem-open-matches";
+import { getMatchPool } from "./match-pool";
 import { DEFAULT_PICKEM_STAGE_POINTS, getPickemRewardPoints } from "./pickem-reward-points";
+import type { EsportsMatch } from "./matches";
 import type { PredictionEvent } from "./predictions";
 import type { VoteAggregate } from "@/lib/supabase/game-types";
 
@@ -55,7 +59,17 @@ export function buildPredictionEvents(
   });
 
   const recent = getRecentMatches(24);
-  const closed: PredictionEvent[] = recent.map((m) => {
+  const openIds = new Set(upcoming.map((m) => m.id));
+  const pool = getMatchPool();
+  const finishedPickem = [...BSC_UPCOMING_PREDICTION_MATCHES, ...pool]
+    .filter((m) => isPickemMatchEligible(m) && !isPickemMatchOpen(m) && !openIds.has(m.id));
+
+  const closedById = new Map<string, EsportsMatch>();
+  for (const m of [...finishedPickem, ...recent]) {
+    closedById.set(m.id, m);
+  }
+
+  const closed: PredictionEvent[] = [...closedById.values()].map((m) => {
     const correct: "A" | "B" = m.scoreA > m.scoreB ? "A" : "B";
     const agg = merged[m.id];
     const total = agg?.total_votes ?? 0;

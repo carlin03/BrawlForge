@@ -41,9 +41,15 @@ export function resolveSemiReveal(
   const qfB = quarters[semiIndex * 2 + 1];
 
   if (!qfA || !qfB) {
+    if (quarters.length === 0) {
+      return {
+        sideA: { revealed: true, teamSlug: semi.teamASlug },
+        sideB: { revealed: true, teamSlug: semi.teamBSlug },
+      };
+    }
     return {
-      sideA: { revealed: true, teamSlug: semi.teamASlug },
-      sideB: { revealed: true, teamSlug: semi.teamBSlug },
+      sideA: { revealed: false, teamSlug: null },
+      sideB: { revealed: false, teamSlug: null },
     };
   }
 
@@ -90,8 +96,8 @@ export function resolveFinalReveal(
       };
     }
     return {
-      sideA: { revealed: true, teamSlug: only.teamASlug },
-      sideB: { revealed: true, teamSlug: only.teamBSlug },
+      sideA: { revealed: false, teamSlug: null },
+      sideB: { revealed: false, teamSlug: null },
     };
   }
 
@@ -113,6 +119,16 @@ export function mapBracketSlugToApiSide(
 ): "A" | "B" | null {
   if (event.teamASlug === pickedSlug) return "A";
   if (event.teamBSlug === pickedSlug) return "B";
+  return null;
+}
+
+/** Voto en semi/final dinámica: el slug mostrado es el ganador real, el partido guarda winner-qf-* / winner-sf-*. */
+export function mapBracketRevealToApiSide(
+  reveal: BracketRevealState,
+  pickedSlug: string,
+): "A" | "B" | null {
+  if (reveal.sideA.revealed && reveal.sideA.teamSlug === pickedSlug) return "A";
+  if (reveal.sideB.revealed && reveal.sideB.teamSlug === pickedSlug) return "B";
   return null;
 }
 

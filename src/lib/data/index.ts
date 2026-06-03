@@ -33,7 +33,10 @@ export {
   getTierBPlusTournaments,
   isKnownTeamSlug,
   isDisplayableMatch,
+  isPickemMatchEligible,
+  isPublicScheduleMatch,
   getTournamentParticipantSlugs,
+  expandTournamentSlugFilter,
 } from "./matches";
 export type { EsportsMatch, EsportsTournament } from "./matches";
 export { news, getNews, getLatestNews } from "./news";

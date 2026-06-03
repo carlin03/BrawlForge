@@ -2358,6 +2358,13 @@
 }
 
 /* Cuartos: 2 por fila (rejilla) o 1 por fila (stack) */
+.bf-predict-bracket-board {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-bottom: 8px;
+}
+
 .bf-predict-bracket-qf-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

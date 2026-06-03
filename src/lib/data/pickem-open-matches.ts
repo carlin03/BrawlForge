@@ -1,6 +1,7 @@
 import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
+import { isPickemMatchOpen } from "./match-effective-status";
 import type { EsportsMatch } from "./matches";
-import { isDisplayableMatch } from "./matches";
+import { isPickemMatchEligible } from "./matches";
 import { getMatchPool } from "./match-pool";
 import { getMatchStageMeta } from "./match-stage-meta";
 
@@ -12,14 +13,14 @@ export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[]
   const byId = new Map<string, EsportsMatch>();
 
   for (const m of BSC_UPCOMING_PREDICTION_MATCHES) {
-    if (isDisplayableMatch(m) && (m.status === "upcoming" || m.status === "live")) {
+    if (isPickemMatchEligible(m) && isPickemMatchOpen(m)) {
       byId.set(m.id, m);
     }
   }
 
   for (const m of pool) {
-    if (m.status !== "upcoming" && m.status !== "live") continue;
-    if (!isDisplayableMatch(m)) continue;
+    if (!isPickemMatchOpen(m)) continue;
+    if (!isPickemMatchEligible(m)) continue;
 
     const meta = getMatchStageMeta(m.stage || "");
     const fromAdmin = Boolean(m.stage?.trim());
@@ -32,13 +33,13 @@ export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[]
 
   // Calendario curado gana siempre (evita perder semis/final en CMS incompleto)
   for (const m of BSC_UPCOMING_PREDICTION_MATCHES) {
-    if ((m.status === "upcoming" || m.status === "live") && isDisplayableMatch(m)) {
+    if (isPickemMatchOpen(m) && isPickemMatchEligible(m)) {
       byId.set(m.id, m);
     }
   }
 
   for (const m of extra) {
-    if ((m.status === "upcoming" || m.status === "live") && isDisplayableMatch(m)) {
+    if (isPickemMatchOpen(m) && isPickemMatchEligible(m)) {
       if (!byId.has(m.id)) byId.set(m.id, m);
     }
   }

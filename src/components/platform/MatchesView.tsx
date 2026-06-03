@@ -24,7 +24,7 @@ import {
 } from "@/lib/data/matches-hub";
 import {
   isKnownTeamSlug,
-  isDisplayableMatch,
+  isPublicScheduleMatch,
   getRecentMatches,
   getTierBPlusTournaments,
   teamName,
@@ -38,7 +38,7 @@ export function MatchesView() {
   const cms = useOptionalCmsRuntime();
   const displayable = useMemo(() => {
     const pool = cms?.matchPool ?? getMatchPool();
-    return pool.filter(isDisplayableMatch);
+    return pool.filter(isPublicScheduleMatch);
   }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 

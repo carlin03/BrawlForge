@@ -13,6 +13,8 @@ import { isValidLogoSlug } from "./logo-slugs";
 import { normalizeParticipantList } from "./catalog";
 import { sanitizePublicWebsite } from "@/lib/sanitize-liquipedia";
 import { getMatchPool } from "./match-pool";
+import { isPendingTeamSlug } from "./match-meta";
+import { getMatchStageMeta } from "./match-stage-meta";
 
 import type { MatchMeta } from "./match-meta";
 
@@ -316,6 +318,27 @@ export function isKnownTeamSlug(slug: string): boolean {
 
 export function isDisplayableMatch(m: EsportsMatch): boolean {
   return isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug);
+}
+
+function slugOkForPickem(slug: string): boolean {
+  return isKnownTeamSlug(slug) || isPendingTeamSlug(slug);
+}
+
+/** Pick'em / predicciones: cuartos con equipos reales; semis/final pueden usar winner-qf-* / winner-sf-*. */
+export function isPickemMatchEligible(m: EsportsMatch): boolean {
+  const round = getMatchStageMeta(m.stage).roundKey;
+  if (round === "quarter") {
+    return isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug);
+  }
+  if (round === "semi" || round === "final" || round === "grand_final") {
+    return slugOkForPickem(m.teamASlug) && slugOkForPickem(m.teamBSlug);
+  }
+  return isDisplayableMatch(m);
+}
+
+/** Calendario público: incluye cruces TBD del bracket. */
+export function isPublicScheduleMatch(m: EsportsMatch): boolean {
+  return isPickemMatchEligible(m);
 }
 
 function homeMatchScore(m: EsportsMatch): number {
