@@ -32,6 +32,7 @@ export {
   getFeaturedTournaments,
   getTierBPlusTournaments,
   isKnownTeamSlug,
+  isDisplayableMatch,
   getTournamentParticipantSlugs,
 } from "./matches";
 export type { EsportsMatch, EsportsTournament } from "./matches";

@@ -18,21 +18,28 @@ import {
   countHubMatches,
   filterHubMatches,
   groupMatchesByTournament,
+  playoffSectionsForMatches,
   tournamentsInMatches,
   type MatchTab,
 } from "@/lib/data/matches-hub";
 import {
-  matches,
   isKnownTeamSlug,
+  isDisplayableMatch,
   getRecentMatches,
   getTierBPlusTournaments,
   teamName,
 } from "@/lib/data";
+import { getMatchPool } from "@/lib/data/match-pool";
+import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 import { getMatchEnrichment } from "@/lib/data/match-meta";
 
 export function MatchesView() {
   const { aggregates, game } = useGame();
-  const displayable = useMemo(() => matches.filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)), []);
+  const cms = useOptionalCmsRuntime();
+  const displayable = useMemo(() => {
+    const pool = cms?.matchPool ?? getMatchPool();
+    return pool.filter(isDisplayableMatch);
+  }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
   const [tab, setTab] = useState<MatchTab>(counts.live > 0 ? "live" : "upcoming");
@@ -54,7 +61,7 @@ export function MatchesView() {
 
   const spotlight = filtered[0] ?? null;
   const listRest = spotlight ? filtered.slice(1) : filtered;
-  const groups = useMemo(() => groupMatchesByTournament(listRest), [listRest]);
+  const groups = useMemo(() => groupMatchesByTournament(listRest, tab), [listRest, tab]);
 
   const [tourQuery, setTourQuery] = useState("");
   const tierTours = useMemo(() => getTierBPlusTournaments(48), []);
@@ -208,9 +215,23 @@ export function MatchesView() {
                     <Trophy size={16} className="bf-matches-hub-group-icon" aria-hidden />
                   </Link>
                   <div className="bf-matches-hub-rows">
-                    {g.matches.map((m) => (
-                      <MatchHubRow key={m.id} match={m} />
-                    ))}
+                    {(() => {
+                      const sections = playoffSectionsForMatches(g.matches, tab);
+                      const useSections = sections.some((s) =>
+                        ["quarter", "semi", "final", "grand_final"].includes(s.roundKey),
+                      );
+                      if (!useSections) {
+                        return g.matches.map((m) => <MatchHubRow key={m.id} match={m} />);
+                      }
+                      return sections.map((section) => (
+                        <div key={`${g.tournamentSlug}-${section.roundKey}`} className="bf-matches-hub-round">
+                          <h3 className="bf-matches-hub-round-title">{section.label}</h3>
+                          {section.matches.map((m) => (
+                            <MatchHubRow key={m.id} match={m} />
+                          ))}
+                        </div>
+                      ));
+                    })()}
                   </div>
                 </div>
               ))

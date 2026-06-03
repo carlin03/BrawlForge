@@ -1,0 +1,33 @@
+---
+description: Partidos BSC, pool CMS y rondas playoff (cuartos, semis, final)
+globs: src/**/match*.ts,src/**/match*.tsx,src/**/matches*.ts,src/**/matches*.tsx,src/**/predictions*.ts,src/**/predictions*.tsx
+alwaysApply: false
+---
+
+# Partidos y playoffs BrawlForge
+
+## Pool de datos (obligatorio en UI pública)
+
+- Listados y fichas deben usar **`getMatchPool()`** o **`useOptionalCmsRuntime()?.matchPool`**, nunca el export estático `matches` solo.
+- El pool fusiona: JSON Liquipedia + `bsc-matches.ts` + `bsc-upcoming-predictions.ts` + `matches_catalog` (si `cms.matches.enabled`).
+- Resolver servidor: `resolveMatchList()` / `resolveMatchById()`.
+
+## Visibilidad
+
+- Solo partidos con **`isDisplayableMatch`**: ambos equipos en catálogo BSC 2026 y logo válido (`isKnownTeamSlug`).
+- Filtro torneo: **`expandTournamentSlugFilter(slug)`** (alias `bsc-2026-s3-*` ↔ `bsc-2026-april-*`).
+
+## Rondas playoff
+
+- Etiquetas y orden: **`getMatchStageMeta(stage)`** (`quarter` → `semi` → `final` / `grand_final`).
+- Hub `/matches`: **`playoffSectionsForMatches`** agrupa cuartos, semis y final bajo cada torneo.
+- Predicciones bracket: **`buildPlayoffBracket`** usa el mismo filtro de slug expandido.
+
+## Estados
+
+- `status` en fila (`live` / `upcoming` / `finished`) manda en listas; `meta.display_status` solo en ficha si difiere.
+- No inferir estado por fecha en listados salvo que se implemente explícitamente.
+
+## Calendario upcoming manual
+
+- Los MF/Challengers futuros viven en **`bsc-upcoming-predictions.ts`**; sin ellos la pestaña Próximos solo muestra histórico `finished`.

@@ -255,9 +255,19 @@ export function getMatch(id: string): EsportsMatch | undefined {
   return getMatchPool().find((m) => m.id === id);
 }
 
-export function getMatchesByTournament(tournamentSlug: string): EsportsMatch[] {
+/** Slugs equivalentes (alias BSC S3 ↔ april, etc.) para filtros y listados. */
+export function expandTournamentSlugFilter(tournamentSlug: string): string[] {
+  const set = new Set<string>([tournamentSlug]);
   const alias = BSC_TOURNAMENT_ALIASES[tournamentSlug];
-  const slugs = alias ? [tournamentSlug, alias] : [tournamentSlug];
+  if (alias) set.add(alias);
+  for (const [a, canonical] of Object.entries(BSC_TOURNAMENT_ALIASES)) {
+    if (canonical === tournamentSlug) set.add(a);
+  }
+  return [...set];
+}
+
+export function getMatchesByTournament(tournamentSlug: string): EsportsMatch[] {
+  const slugs = expandTournamentSlugFilter(tournamentSlug);
   return getMatchPool().filter((m) => slugs.includes(m.tournamentSlug));
 }
 

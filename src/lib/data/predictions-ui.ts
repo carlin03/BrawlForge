@@ -1,6 +1,6 @@
 import type { BracketLayoutMode, PlayoffBracketsStore } from "@/lib/data/bracket-config";
 import type { PredictionEvent } from "@/lib/data/predictions";
-import { getMatch, getTournament } from "@/lib/data/matches";
+import { expandTournamentSlugFilter, getMatch, getTournament } from "@/lib/data/matches";
 import { getPredictionLabel, getPredictionTournament } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
 import {
@@ -272,7 +272,8 @@ export function buildPlayoffBracket(
   layout: BracketLayoutMode = "auto",
 ): PlayoffBracketView | null {
   const tour = getTournament(tournamentSlug);
-  const tourEvents = events.filter((e) => e.tournamentSlug === tournamentSlug && e.stageMeta?.isPlayoff);
+  const slugSet = new Set(expandTournamentSlugFilter(tournamentSlug));
+  const tourEvents = events.filter((e) => slugSet.has(e.tournamentSlug) && e.stageMeta?.isPlayoff);
   if (tourEvents.length < 1) return null;
 
   const byDate = (list: EnrichedPrediction[]) =>

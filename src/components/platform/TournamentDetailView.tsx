@@ -16,6 +16,7 @@ import {
   isKnownTeamSlug,
   getMatchesByTournament,
 } from "@/lib/data";
+import { sortHubMatchList } from "@/lib/data/matches-hub";
 import { formatTournamentDates, getTournamentStats } from "@/lib/data/tournament-stats";
 import { getFantasyPlayersForTournament, getFantasyTeamsForTournament } from "@/lib/data/fantasy-rosters";
 import { getPlayer, getPlayerPrice } from "@/lib/data";
@@ -53,8 +54,14 @@ export function TournamentDetailView({ slug }: { slug: string }) {
   const wikiSynced = getBscEnrichmentSyncedAt();
 
   const liveMatches = matches.filter((m) => m.status === "live");
-  const upcoming = matches.filter((m) => m.status === "upcoming");
-  const finished = matches.filter((m) => m.status === "finished").slice(0, 10);
+  const upcoming = sortHubMatchList(
+    matches.filter((m) => m.status === "upcoming"),
+    "upcoming",
+  );
+  const finished = sortHubMatchList(
+    matches.filter((m) => m.status === "finished"),
+    "results",
+  ).slice(0, 10);
   const spotlight = liveMatches[0] ?? upcoming[0] ?? finished[0];
 
   return (
