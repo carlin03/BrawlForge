@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Radio, Target, Trophy } from "lucide-react";
 import type { Region } from "@/lib/types";
@@ -18,6 +18,7 @@ import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import {
   countHubMatches,
+  defaultMatchHubTab,
   filterHubMatches,
   groupMatchesByTournament,
   playoffSectionsForMatches,
@@ -47,7 +48,13 @@ export function MatchesView() {
   }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
-  const [tab, setTab] = useState<MatchTab>(counts.live > 0 ? "live" : "upcoming");
+  const [tab, setTab] = useState<MatchTab>("upcoming");
+  const autoTabDone = useRef(false);
+  useEffect(() => {
+    if (autoTabDone.current) return;
+    autoTabDone.current = true;
+    setTab(defaultMatchHubTab(counts));
+  }, [counts]);
   const [region, setRegion] = useState<Region | "all">("all");
   const [tournamentSlug, setTournamentSlug] = useState("all");
   const [query, setQuery] = useState("");
@@ -123,7 +130,9 @@ export function MatchesView() {
     tab === "live"
       ? "No hay partidos en directo ahora. Revisa Próximos o Resultados."
       : tab === "upcoming"
-        ? "Sin partidos programados con estos filtros."
+        ? counts.results > 0
+          ? `No hay partidos próximos ahora. Pulsa Resultados arriba (${counts.results} partidos).`
+          : "Sin partidos programados con estos filtros."
         : "Sin resultados con estos filtros.";
 
   return (

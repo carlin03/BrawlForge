@@ -196,6 +196,18 @@ export function countHubMatches(all: EsportsMatch[]) {
   };
 }
 
+/** Pestaña inicial: si no hay directo ni próximos, abrir Resultados (evita calendario vacío). */
+export function defaultMatchHubTab(counts: {
+  live: number;
+  upcoming: number;
+  results: number;
+}): MatchTab {
+  if (counts.live > 0) return "live";
+  if (counts.upcoming > 0) return "upcoming";
+  if (counts.results > 0) return "results";
+  return "upcoming";
+}
+
 export function tournamentsInMatches(list: EsportsMatch[]): { slug: string; label: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const m of list) {
