@@ -2,6 +2,7 @@ import { sanitizePlayoffBracketPool } from "@/lib/data/bracket-playoff-sanitize"
 import type { EsportsMatch } from "@/lib/data/matches";
 import { matches as legacyMatches } from "@/lib/data/matches";
 import { parseMatchMeta } from "@/lib/data/match-meta";
+import { matchDedupeKey, pickBetterMatch } from "@/lib/data/playoff-pool-normalize";
 import { createClient } from "@/lib/supabase/server";
 import { isCmsResolverActive, isFlagEnabled, mergeFlags } from "../flags";
 import { loadFlagsFromDb } from "../db";
@@ -54,12 +55,32 @@ export async function loadMatchesFromDb(): Promise<EsportsMatch[] | null> {
   return data.map(rowToMatch);
 }
 
-/** Fusiona DB + legacy sin duplicar por id. */
+/** Fusiona DB + legacy: una fila por cruce (torneo+ronda+equipos+día); gana CMS sobre seed. */
 export function mergeMatchPools(db: EsportsMatch[], legacy: EsportsMatch[]): EsportsMatch[] {
-  const byId = new Map<string, EsportsMatch>();
-  for (const m of legacy) byId.set(m.id, m);
-  for (const m of db) byId.set(m.id, m);
-  return sanitizePlayoffBracketPool([...byId.values()]).sort(
+  const dbIds = new Set(db.map((m) => m.id));
+  const byKey = new Map<string, EsportsMatch>();
+
+  function upsert(incoming: EsportsMatch) {
+    const key = matchDedupeKey(incoming);
+    const prev = byKey.get(key);
+    if (!prev) {
+      byKey.set(key, incoming);
+      return;
+    }
+    const prevDb = dbIds.has(prev.id);
+    const nextDb = dbIds.has(incoming.id);
+    if (prevDb && !nextDb) return;
+    if (!prevDb && nextDb) {
+      byKey.set(key, incoming);
+      return;
+    }
+    byKey.set(key, pickBetterMatch(prev, incoming));
+  }
+
+  for (const m of legacy) upsert(m);
+  for (const m of db) upsert(m);
+
+  return sanitizePlayoffBracketPool([...byKey.values()]).sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );
 }

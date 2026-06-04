@@ -1,4 +1,4 @@
-import type { EsportsMatch } from "./matches";
+import type { EsportsMatch } from "./esports-match-types";
 
 /**
  * Pick'em abiertos — calendario BSC 2026 alineado con Liquipedia.

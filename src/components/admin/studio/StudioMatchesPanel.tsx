@@ -59,6 +59,23 @@ type MatchRow = {
   meta?: Record<string, unknown>;
 };
 
+type AuditIssue = {
+  code: string;
+  severity: "error" | "warn" | "info";
+  matchId: string;
+  message: string;
+  tournamentSlug?: string;
+  relatedIds?: string[];
+};
+
+type AuditReport = {
+  poolSize: number;
+  publicScheduleSize: number;
+  issues: AuditIssue[];
+  summary: Record<string, number>;
+  recommendations: string[];
+};
+
 type MatchFilter = "all" | "upcoming" | "live" | "finished";
 type MatchListLayout = "auto" | "1" | "2" | "3";
 
@@ -136,6 +153,9 @@ export function StudioMatchesPanel() {
   const [listLayout, setListLayout] = useState<MatchListLayout>("auto");
   const [panelView, setPanelView] = useState<"list" | "form">("list");
   const [syncing, setSyncing] = useState(false);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [auditReport, setAuditReport] = useState<AuditReport | null>(null);
+  const [auditView, setAuditView] = useState<"catalog" | "merged">("catalog");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formTab, setFormTab] = useState<"general" | "predict" | "maps" | "brawlers">("general");
   const [form, setForm] = useState<AdminMatchFormState>({
@@ -445,6 +465,29 @@ export function StudioMatchesPanel() {
     setSyncing(false);
   }
 
+  async function runScheduleAudit() {
+    setAuditLoading(true);
+    setMsg("");
+    setError(false);
+    try {
+      const res = await fetch(`/api/cms/admin/matches/audit?view=${auditView}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se pudo auditar");
+      setAuditReport(data.report as AuditReport);
+      const errors = data.report?.summary?.duplicate_crux ?? 0;
+      const unknown = data.report?.summary?.unknown_team ?? 0;
+      setMsg(
+        `Auditoría (${auditView}): ${data.report?.issues?.length ?? 0} avisos · ${data.report?.publicScheduleSize ?? 0}/${data.report?.poolSize ?? 0} visibles en web` +
+          (errors || unknown ? ` · ${errors} duplicados · ${unknown} equipos rotos` : ""),
+      );
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Error en auditoría");
+      setError(true);
+      setAuditReport(null);
+    }
+    setAuditLoading(false);
+  }
+
   return (
     <StudioModulePanel
       title="Partidos"
@@ -515,7 +558,58 @@ export function StudioMatchesPanel() {
                       Importar {pendingImport} de la web (código)
                     </button>
                   )}
+                  <button
+                    type="button"
+                    className="bp-btn bp-btn-ghost"
+                    disabled={auditLoading || syncing}
+                    onClick={() => runScheduleAudit()}
+                  >
+                    {auditLoading ? "Auditando…" : "Auditar calendario"}
+                  </button>
+                  <select
+                    className="bf-studio-select-inline"
+                    value={auditView}
+                    aria-label="Vista de auditoría"
+                    onChange={(e) => setAuditView(e.target.value as "catalog" | "merged")}
+                  >
+                    <option value="catalog">Solo Supabase</option>
+                    <option value="merged">Fusionado (CMS + legacy)</option>
+                  </select>
                 </div>
+                {auditReport && (
+                  <div className="bf-studio-audit-panel" role="region" aria-label="Informe de calendario">
+                    <p className="bf-studio-hint" style={{ marginTop: "0.5rem" }}>
+                      <strong>{auditReport.publicScheduleSize}</strong> partidos válidos para /matches de{" "}
+                      <strong>{auditReport.poolSize}</strong> en pool.
+                    </p>
+                    {auditReport.recommendations.length > 0 && (
+                      <ul className="bf-studio-audit-recs">
+                        {auditReport.recommendations.map((r) => (
+                          <li key={r}>{r}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <ul className="bf-studio-audit-issues">
+                      {auditReport.issues
+                        .filter((i) => i.severity !== "info")
+                        .slice(0, 24)
+                        .map((i) => (
+                          <li
+                            key={`${i.code}-${i.matchId}`}
+                            className={`bf-studio-audit-issue bf-studio-audit-issue--${i.severity}`}
+                          >
+                            <code>{i.matchId}</code> — {i.message}
+                            {i.relatedIds?.length ? (
+                              <span className="bf-studio-muted"> (dup: {i.relatedIds.join(", ")})</span>
+                            ) : null}
+                          </li>
+                        ))}
+                    </ul>
+                    {auditReport.issues.filter((i) => i.severity !== "info").length > 24 && (
+                      <p className="bf-studio-muted">…y más. Revisa duplicados y equipos en la lista.</p>
+                    )}
+                  </div>
+                )}
                 <div className="bf-studio-match-list-toolbar">
                   <div>
                     <span className="bf-studio-match-toolbar-label">Estado</span>

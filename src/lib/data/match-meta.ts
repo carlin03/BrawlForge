@@ -170,6 +170,10 @@ export type MatchAdvancedPredictionsMeta = {
 };
 
 export type MatchMeta = {
+  /** confirmed = calendario real; template = seed pick'em BSC; generated = bracket admin. */
+  schedule_trust?: "confirmed" | "template" | "generated";
+  /** Si true, no aparece en /matches ni home. */
+  pickem_only?: boolean;
   importance?: MatchImportance;
   display_status?: MatchDisplayStatus;
   allow_exact_score?: boolean;

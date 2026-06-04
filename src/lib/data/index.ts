@@ -27,17 +27,17 @@ export {
   getLiveMatches,
   getUpcomingMatches,
   getRecentMatches,
-  getCuratedHomeMatches,
   getBscCircuitTournaments,
   getFeaturedTournaments,
   getTierBPlusTournaments,
   isKnownTeamSlug,
   isDisplayableMatch,
   isPickemMatchEligible,
-  isPublicScheduleMatch,
   getTournamentParticipantSlugs,
   expandTournamentSlugFilter,
 } from "./matches";
+export { getCuratedHomeMatches } from "./home-matches";
+export { isPublicScheduleMatch, isPickemTemplateMatch } from "./match-schedule-trust";
 export type { EsportsMatch, EsportsTournament } from "./matches";
 export { news, getNews, getLatestNews } from "./news";
 export type { NewsArticle } from "./news";

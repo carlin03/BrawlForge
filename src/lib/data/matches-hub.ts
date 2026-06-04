@@ -1,7 +1,8 @@
 import type { Region } from "../types";
 import type { EsportsMatch } from "./matches";
 import { getEffectiveMatchStatus } from "./match-effective-status";
-import { expandTournamentSlugFilter, getTournament, isPublicScheduleMatch } from "./matches";
+import { expandTournamentSlugFilter, getTournament } from "./matches";
+import { isPublicScheduleMatch } from "./match-schedule-trust";
 import { getTeam } from "./teams";
 import { getMatchStageMeta, type StageRoundKey } from "./match-stage-meta";
 

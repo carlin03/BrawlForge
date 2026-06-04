@@ -1,4 +1,9 @@
-import { getPlayer, teamName, getPlayersByTeam } from "./index";
+import { getPlayer, getPlayersByTeam } from "./players";
+import { getTeam } from "./teams";
+
+function teamName(slug: string): string {
+  return getTeam(slug)?.name ?? slug;
+}
 import { transferMarket, getTournamentFantasyProfile, DEFAULT_FANTASY_TOURNAMENT, getTournamentLeaderboard } from "./fantasy";
 import { getFeaturedTournaments, getLiveMatches, getRecentMatches } from "./matches";
 import { getPickRate, getFantasyRole } from "./fantasy-meta";

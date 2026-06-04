@@ -7,31 +7,19 @@ import {
 import { getBscTournamentEnrichment, getBscEnrichedMatches } from "./bsc-tournaments-enriched";
 import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
 import { bscMatches } from "./bsc-matches";
-import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
 import { normalizeParticipantList } from "./catalog";
 import { sanitizePublicWebsite } from "@/lib/sanitize-liquipedia";
 import { getMatchPool } from "./match-pool";
+import { isPublicScheduleMatch } from "./match-schedule-trust";
 import { isPendingTeamSlug } from "./match-meta";
 import { getMatchStageMeta } from "./match-stage-meta";
 
 import type { MatchMeta } from "./match-meta";
+import type { EsportsMatch } from "./esports-match-types";
 
-export interface EsportsMatch {
-  id: string;
-  teamASlug: string;
-  teamBSlug: string;
-  scoreA: number;
-  scoreB: number;
-  tournamentSlug: string;
-  stage: string;
-  date: string;
-  status: "live" | "upcoming" | "finished" | "cancelled";
-  region: Region;
-  format: string;
-  meta?: MatchMeta;
-}
+export type { EsportsMatch } from "./esports-match-types";
 
 export interface EsportsTournament {
   slug: string;
@@ -183,23 +171,8 @@ function buildTournaments(): EsportsTournament[] {
 
 export const tournaments: EsportsTournament[] = buildTournaments();
 
-import { matchDedupeKey } from "./playoff-pool-normalize";
-
+export { matches } from "./legacy-matches";
 export { matchDedupeKey } from "./playoff-pool-normalize";
-
-function buildMatches(): EsportsMatch[] {
-  const wikiMatches = getBscEnrichedMatches().filter(
-    (m) => isBscCircuitSlug(m.tournamentSlug) && isDisplayableMatch(m),
-  );
-  const keys = new Set(wikiMatches.map(matchDedupeKey));
-  const manualFallback = [...bscMatches, ...BSC_UPCOMING_PREDICTION_MATCHES].filter(
-    (m) => isBscCircuitSlug(m.tournamentSlug) && isDisplayableMatch(m) && !keys.has(matchDedupeKey(m)),
-  );
-  const extra = [...wikiMatches, ...manualFallback];
-  return extra.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-}
-
-export const matches: EsportsMatch[] = buildMatches();
 
 export function getTournament(slug: string): EsportsTournament | undefined {
   if (!isBscCircuitSlug(slug)) return undefined;
@@ -271,12 +244,12 @@ export function getMatchesByTournament(tournamentSlug: string): EsportsMatch[] {
 }
 
 export function getLiveMatches(): EsportsMatch[] {
-  return getMatchPool().filter((m) => m.status === "live");
+  return getMatchPool().filter((m) => isPublicScheduleMatch(m) && m.status === "live");
 }
 
 export function getUpcomingMatches(): EsportsMatch[] {
   return [...getMatchPool()]
-    .filter((m) => m.status === "upcoming" || m.status === "live")
+    .filter((m) => isPublicScheduleMatch(m) && (m.status === "upcoming" || m.status === "live"))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 
@@ -303,72 +276,15 @@ export function getTournamentParticipantSlugs(slug: string): string[] {
 
 export function getRecentMatches(limit = 8): EsportsMatch[] {
   return [...getMatchPool()]
-    .filter((m) => m.status === "finished")
+    .filter((m) => isPublicScheduleMatch(m) && m.status === "finished")
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit);
 }
 
-export function isKnownTeamSlug(slug: string): boolean {
-  if (!isValidLogoSlug(slug)) return false;
-  return !!getTeam(slug);
-}
+export {
+  isKnownTeamSlug,
+  isDisplayableMatch,
+  isPickemMatchEligible,
+} from "./pickem-eligibility";
 
-export function isDisplayableMatch(m: EsportsMatch): boolean {
-  return isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug);
-}
-
-function slugOkForPickem(slug: string): boolean {
-  return isKnownTeamSlug(slug) || isPendingTeamSlug(slug);
-}
-
-/** Pick'em / predicciones: cuartos con equipos reales; semis/final pueden usar winner-qf-* / winner-sf-*. */
-export function isPickemMatchEligible(m: EsportsMatch): boolean {
-  const round = getMatchStageMeta(m.stage).roundKey;
-  if (round === "quarter") {
-    return isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug);
-  }
-  if (round === "semi" || round === "final" || round === "grand_final") {
-    return slugOkForPickem(m.teamASlug) && slugOkForPickem(m.teamBSlug);
-  }
-  return isDisplayableMatch(m);
-}
-
-/** Calendario público: incluye cruces TBD del bracket. */
-export function isPublicScheduleMatch(m: EsportsMatch): boolean {
-  return isPickemMatchEligible(m);
-}
-
-function homeMatchScore(m: EsportsMatch): number {
-  let score = 0;
-  if (m.status === "live") score += 100;
-  if (m.tournamentSlug.includes("bsc") || m.tournamentSlug.includes("world-finals")) score += 50;
-  if (m.format.includes("5")) score += 10;
-  return score;
-}
-
-/** Partidos con equipos reales — para home y widgets (sin TBD) */
-export function getCuratedHomeMatches(
-  tab: "live" | "upcoming" | "results",
-  limit = 8,
-): EsportsMatch[] {
-  let pool: EsportsMatch[];
-  const all = getMatchPool();
-  if (tab === "live") {
-    pool = all.filter((m) => m.status === "live");
-  } else if (tab === "upcoming") {
-    pool = all.filter((m) => m.status === "upcoming");
-  } else {
-    pool = all.filter((m) => m.status === "finished");
-  }
-
-  return pool
-    .filter(isDisplayableMatch)
-    .sort((a, b) => {
-      const pri = homeMatchScore(b) - homeMatchScore(a);
-      if (pri !== 0) return pri;
-      const ta = new Date(a.date).getTime();
-      const tb = new Date(b.date).getTime();
-      return tab === "results" ? tb - ta : ta - tb;
-    })
-    .slice(0, limit);
-}
+export { getCuratedHomeMatches } from "./home-matches";

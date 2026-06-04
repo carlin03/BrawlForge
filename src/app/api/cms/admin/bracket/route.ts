@@ -94,7 +94,11 @@ export async function POST(request: NextRequest) {
       score_a: 0,
       score_b: 0,
       published: true,
-      meta: { importance: "featured", predictions: { winner: true, exact_score: true } },
+      meta: {
+        importance: "featured",
+        schedule_trust: "generated",
+        predictions: { winner: true, exact_score: true },
+      },
       updated_at: new Date().toISOString(),
     };
     const { error: insErr } = await supabase!.from("matches_catalog").upsert(payload);

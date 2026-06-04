@@ -95,8 +95,37 @@ function buildClosedPredictions(): PredictionEvent[] {
   });
 }
 
-export const openPredictions = buildOpenPredictions();
-export const closedPredictions = buildClosedPredictions();
+let openPredictionsCache: PredictionEvent[] | null = null;
+let closedPredictionsCache: PredictionEvent[] | null = null;
+
+/** Lista abierta (demo/widgets); se calcula al primer uso para evitar ciclos de import. */
+export function getOpenPredictions(): PredictionEvent[] {
+  if (!openPredictionsCache) openPredictionsCache = buildOpenPredictions();
+  return openPredictionsCache;
+}
+
+export function getClosedPredictions(): PredictionEvent[] {
+  if (!closedPredictionsCache) closedPredictionsCache = buildClosedPredictions();
+  return closedPredictionsCache;
+}
+
+/** @deprecated Usa getOpenPredictions() — alias lazy para imports legacy. */
+export const openPredictions: PredictionEvent[] = new Proxy([] as PredictionEvent[], {
+  get(_t, prop) {
+    const list = getOpenPredictions();
+    const v = Reflect.get(list, prop, list);
+    return typeof v === "function" ? (v as (...args: unknown[]) => unknown).bind(list) : v;
+  },
+});
+
+/** @deprecated Usa getClosedPredictions(). */
+export const closedPredictions: PredictionEvent[] = new Proxy([] as PredictionEvent[], {
+  get(_t, prop) {
+    const list = getClosedPredictions();
+    const val = Reflect.get(list, prop, list);
+    return typeof val === "function" ? (val as (...args: unknown[]) => unknown).bind(list) : val;
+  },
+});
 
 export function getPredictionLabel(event: PredictionEvent, side?: "A" | "B"): string {
   if (side === "A") return teamName(event.teamASlug);

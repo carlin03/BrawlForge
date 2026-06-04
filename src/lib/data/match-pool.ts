@@ -1,9 +1,9 @@
-import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { sanitizePlayoffBracketPool } from "./bracket-playoff-sanitize";
 import { isPickemMatchOpen, withEffectiveMatchStatus } from "./match-effective-status";
 import { matchDedupeKey, normalizePlayoffPool, pickBetterMatch } from "./playoff-pool-normalize";
-import type { EsportsMatch } from "./matches";
-import { isPickemMatchEligible, matches as legacyMatches } from "./matches";
+import type { EsportsMatch } from "./esports-match-types";
+import { matches as legacyMatches } from "./legacy-matches";
+import { isPickemMatchEligible } from "./pickem-eligibility";
 
 let runtimePool: EsportsMatch[] | null = null;
 
@@ -36,11 +36,6 @@ function mergeCuratedPickem(base: EsportsMatch[]): EsportsMatch[] {
   const byId = new Map<string, EsportsMatch>();
   for (const m of merged) {
     if (isPickemMatchEligible(m)) mergeByDedupeKey(byId, m);
-  }
-  for (const m of sanitizePlayoffBracketPool(BSC_UPCOMING_PREDICTION_MATCHES)) {
-    const effective = withEffectiveMatchStatus(m);
-    if (!isPickemMatchEligible(effective) || !isPickemMatchOpen(effective)) continue;
-    mergeByDedupeKey(byId, effective);
   }
   return [...byId.values()]
     .map(withEffectiveMatchStatus)

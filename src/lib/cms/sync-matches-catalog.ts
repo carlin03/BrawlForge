@@ -1,6 +1,7 @@
 import { getMatchPool } from "@/lib/data/match-pool";
 import type { EsportsMatch } from "@/lib/data/matches";
 import { applyDefaultPredictionsToMeta, parseMatchMeta } from "@/lib/data/match-meta";
+import { isPublicScheduleMatch } from "@/lib/data/match-schedule-trust";
 
 export function matchToCatalogRow(m: EsportsMatch) {
   const meta = applyDefaultPredictionsToMeta(parseMatchMeta(m.meta));
@@ -25,9 +26,9 @@ export function matchToCatalogRow(m: EsportsMatch) {
   };
 }
 
-/** Partidos visibles en la web (legacy + pick'em) que aún no están en matches_catalog. */
+/** Partidos del calendario público confirmado que aún no están en matches_catalog. */
 export function getWebMatchesForCatalog(existingIds: Set<string>) {
-  const pool = getMatchPool();
+  const pool = getMatchPool().filter(isPublicScheduleMatch);
   const toImport = pool.filter((m) => !existingIds.has(m.id));
   return { pool, toImport, total: pool.length };
 }

@@ -1,5 +1,5 @@
 import { parseMatchMeta } from "./match-meta";
-import type { EsportsMatch } from "./matches";
+import type { EsportsMatch } from "./esports-match-types";
 
 const FINISH_GRACE_MS = 3 * 60 * 60 * 1000;
 /** Pick'em cerrado tras la hora del partido + margen (evita partidos “abiertos” de hace días). */

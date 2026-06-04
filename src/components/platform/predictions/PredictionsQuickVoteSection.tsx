@@ -125,7 +125,7 @@ export function PredictionsQuickVoteSection({
         <p className="bf-predict-quick-vote-hint">
           {hint ??
             (useBracketLayout
-              ? "Cuartos en 2×2 — al votar, semifinales y final se actualizan al instante."
+              ? "Cuartos en 2×2 — al votar, semifinales y final se actualizan al instante. Plantillas BSC solo en predicciones hasta confirmar en admin."
               : "Vota en segundos en cada partido abierto.")}
         </p>
       </div>

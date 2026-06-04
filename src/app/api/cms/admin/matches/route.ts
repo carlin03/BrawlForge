@@ -125,7 +125,10 @@ export async function POST(request: Request) {
     score_a: Number(row.score_a ?? 0),
     score_b: Number(row.score_b ?? 0),
     published: row.published !== false,
-    meta: row.meta ?? {},
+    meta: {
+      ...(typeof row.meta === "object" && row.meta !== null ? row.meta : {}),
+      schedule_trust: "confirmed",
+    },
     updated_at: new Date().toISOString(),
   };
 

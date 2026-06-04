@@ -27,13 +27,34 @@ function buildConfig(slug: string): FantasyTournamentConfig {
   };
 }
 
+let fantasyTournamentsCache: FantasyTournamentConfig[] | null = null;
+
+function loadFantasyTournaments(): FantasyTournamentConfig[] {
+  return getFantasyTournamentSlugs()
+    .map(buildConfig)
+    .filter((c) => c.teamSlugs.length > 0);
+}
+
 /** Torneos fantasy — BSC 2026 curado, equipos alineados con partidos/participantes */
-export const FANTASY_TOURNAMENTS: FantasyTournamentConfig[] = getFantasyTournamentSlugs()
-  .map(buildConfig)
-  .filter((c) => c.teamSlugs.length > 0);
+export function getFantasyTournamentConfigs(): FantasyTournamentConfig[] {
+  if (!fantasyTournamentsCache) fantasyTournamentsCache = loadFantasyTournaments();
+  return fantasyTournamentsCache;
+}
+
+/** @deprecated Usa getFantasyTournamentConfigs(). */
+export const FANTASY_TOURNAMENTS: FantasyTournamentConfig[] = new Proxy(
+  [] as FantasyTournamentConfig[],
+  {
+    get(_t, prop) {
+      const list = getFantasyTournamentConfigs();
+      const val = Reflect.get(list, prop, list);
+      return typeof val === "function" ? (val as (...args: unknown[]) => unknown).bind(list) : val;
+    },
+  },
+);
 
 export function getFantasyTournaments(activeOnly = false) {
-  const list = FANTASY_TOURNAMENTS.map((cfg) => ({
+  const list = getFantasyTournamentConfigs().map((cfg) => ({
     ...cfg,
     tournament: tournaments.find((t) => t.slug === cfg.slug)!,
   }))
@@ -53,7 +74,7 @@ export function getFantasyTournaments(activeOnly = false) {
 }
 
 export function getFantasyTournamentBySlug(slug: string) {
-  return FANTASY_TOURNAMENTS.find((c) => c.slug === slug);
+  return getFantasyTournamentConfigs().find((c) => c.slug === slug);
 }
 
 export { hasFantasyForTournament, getFantasyTournamentStats } from "./fantasy-rosters";
