@@ -8,7 +8,7 @@ import {
 } from "./match-schedule-trust";
 import type { EsportsMatch } from "./esports-match-types";
 import { isPickemMatchEligible } from "./pickem-eligibility";
-import { getMatchPool } from "./match-pool";
+import { getMatchPool, getPickemBracketPool } from "./match-pool";
 import { getMatchStageMeta } from "./match-stage-meta";
 import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { matchDedupeKey, pickBetterMatch } from "./playoff-pool-normalize";
@@ -42,7 +42,7 @@ function upsertPickem(
 
 /** Partidos abiertos para Pick'em: calendario curado + CMS + brackets guardados. */
 export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[] {
-  const pool = getMatchPool();
+  const pool = getPickemBracketPool();
   const byId = new Map<string, EsportsMatch>();
 
   for (const m of pool) {

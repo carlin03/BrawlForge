@@ -3,7 +3,6 @@ import { isPickemMatchOpen, withEffectiveMatchStatus } from "./match-effective-s
 import { matchDedupeKey, normalizePlayoffPool, pickBetterMatch } from "./playoff-pool-normalize";
 import type { EsportsMatch } from "./esports-match-types";
 import { matches as legacyMatches } from "./legacy-matches";
-import { isPickemMatchEligible } from "./pickem-eligibility";
 
 let runtimePool: EsportsMatch[] | null = null;
 
@@ -31,11 +30,12 @@ function mergeByDedupeKey(byId: Map<string, EsportsMatch>, incoming: EsportsMatc
   byId.set(effective.id, effective);
 }
 
-function mergeCuratedPickem(base: EsportsMatch[]): EsportsMatch[] {
-  const merged = sanitizePlayoffBracketPool(normalizePlayoffPool(base));
+/** Calendario completo (Partidos, torneos, home): todos los cruces, sin slots winner-* inventados. */
+function buildPublicMatchPool(base: EsportsMatch[]): EsportsMatch[] {
+  const normalized = normalizePlayoffPool(base);
   const byId = new Map<string, EsportsMatch>();
-  for (const m of merged) {
-    if (isPickemMatchEligible(m)) mergeByDedupeKey(byId, m);
+  for (const m of normalized) {
+    mergeByDedupeKey(byId, m);
   }
   return [...byId.values()]
     .map(withEffectiveMatchStatus)
@@ -44,5 +44,10 @@ function mergeCuratedPickem(base: EsportsMatch[]): EsportsMatch[] {
 
 export function getMatchPool(): EsportsMatch[] {
   const base = runtimePool ?? legacyMatches;
-  return mergeCuratedPickem(base);
+  return buildPublicMatchPool(base);
+}
+
+/** Pool con slots winner-qf/sf para bracket pick'em (solo predicciones). */
+export function getPickemBracketPool(): EsportsMatch[] {
+  return sanitizePlayoffBracketPool(getMatchPool());
 }

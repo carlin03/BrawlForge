@@ -1,5 +1,5 @@
-import { sanitizePlayoffBracketPool } from "@/lib/data/bracket-playoff-sanitize";
 import type { EsportsMatch } from "@/lib/data/matches";
+import { normalizePlayoffPool } from "@/lib/data/playoff-pool-normalize";
 import { matches as legacyMatches } from "@/lib/data/matches";
 import { parseMatchMeta } from "@/lib/data/match-meta";
 import { matchDedupeKey, pickBetterMatch } from "@/lib/data/playoff-pool-normalize";
@@ -80,7 +80,7 @@ export function mergeMatchPools(db: EsportsMatch[], legacy: EsportsMatch[]): Esp
   for (const m of legacy) upsert(m);
   for (const m of db) upsert(m);
 
-  return sanitizePlayoffBracketPool([...byKey.values()]).sort(
+  return normalizePlayoffPool([...byKey.values()]).sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );
 }
