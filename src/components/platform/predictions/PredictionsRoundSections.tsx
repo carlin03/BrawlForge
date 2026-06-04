@@ -19,6 +19,7 @@ import {
   semiWinner,
 } from "@/lib/data/bracket-reveal";
 import { DEFAULT_PICKEM_STAGE_POINTS, getPickemRewardPoints } from "@/lib/data/pickem-reward-points";
+import { isPendingTeamSlug } from "@/lib/data/match-meta";
 import { getMatchStageMeta } from "@/lib/data/match-stage-meta";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGame } from "@/contexts/GameContext";
@@ -97,6 +98,11 @@ export function GranFinalRound({
         ? winnerFromEvent(bracket.semis[1], votes)
         : null;
   const finalReveal = resolveFinalReveal(bracket.semis, bracket.quarters, votes);
+  const progressiveFinal =
+    needTwoSemis || bracket.quarters.length >= 4 || Boolean(
+      bracket.final &&
+        (isPendingTeamSlug(bracket.final.teamASlug) || isPendingTeamSlug(bracket.final.teamBSlug)),
+    );
 
   const officialFinal = useMemo(() => {
     if (needTwoSemis) {
@@ -266,7 +272,7 @@ export function GranFinalRound({
         <BracketMatchCard
           event={finalEvent ?? finalCardEvent}
           votes={votes}
-          bracketReveal={finalReveal}
+          bracketReveal={progressiveFinal ? finalReveal : undefined}
           featured
           voteOverride={officialFinal ? undefined : voteFinalOverride}
         />
@@ -383,9 +389,14 @@ export function PredictionsRoundSections({
               ? "Dos semifinales — los equipos en gris hasta votar los cuartos de arriba."
               : "Semifinales del torneo — elige ganador en cada duelo."}
           </p>
-          {qf.length >= 4 && sf.length < 2 && (
+          {qf.length >= 4 && sf.length === 1 && (
             <p className="bf-predict-round-hint">
-              Falta configurar la 2ª semifinal en admin (fase Semifinal).
+              Este torneo tiene una sola semifinal en el calendario — la gran final puede estar fijada aparte (p. ej. EA/NA/SA MF).
+            </p>
+          )}
+          {qf.length >= 4 && sf.length === 0 && (
+            <p className="bf-predict-round-hint">
+              Falta configurar semifinales en admin (fase Semifinal).
             </p>
           )}
           <BracketSemiGrid matches={sf} quarters={qf} votes={votes} layout={sfLayout} />

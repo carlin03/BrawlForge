@@ -13,7 +13,8 @@ import { PredictionsClosingSoon } from "@/components/platform/predictions/Predic
 import { PredictionsPickemToolbar } from "@/components/platform/predictions/PredictionsPickemToolbar";
 import type { PlayoffBracketsStore } from "@/lib/data/bracket-config";
 import type { PredictionEvent } from "@/lib/data/predictions";
-import { isKnownTeamSlug, isPickemMatchEligible } from "@/lib/data";
+import { getMatch, isKnownTeamSlug, isPickemMatchEligible } from "@/lib/data";
+import { isPickemMatchOpen } from "@/lib/data/match-effective-status";
 import { expandTournamentSlugFilter } from "@/lib/data/matches";
 import type { UserGameState } from "@/lib/supabase/game-types";
 import {
@@ -57,7 +58,9 @@ export function PredictionsView({
   const displayOpen = useMemo(
     () =>
       open.filter((e) => {
-        const m = {
+        const m = getMatch(e.matchId);
+        if (m) return isPickemMatchEligible(m) && isPickemMatchOpen(m);
+        return isPickemMatchEligible({
           id: e.matchId,
           teamASlug: e.teamASlug,
           teamBSlug: e.teamBSlug,
@@ -66,11 +69,10 @@ export function PredictionsView({
           scoreB: 0,
           tournamentSlug: e.tournamentSlug,
           date: e.deadline,
-          status: "upcoming" as const,
-          region: "GLOBAL" as const,
+          status: "upcoming",
+          region: "GLOBAL",
           format: "Bo3",
-        };
-        return isPickemMatchEligible(m);
+        });
       }),
     [open],
   );

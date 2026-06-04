@@ -100,7 +100,7 @@ export function PredictionsQuickVoteSection({
 }) {
   const bracketIds = getAllPlayoffBracketMatchIds(brackets);
   const bracketBoards = brackets.filter(
-    (b) => b.quarters.length >= 4 || b.semis.length >= 2 || Boolean(b.final),
+    (b) => b.quarters.length >= 4 || b.semis.length >= 1 || Boolean(b.final),
   );
   const useBracketLayout = bracketBoards.length > 0;
 

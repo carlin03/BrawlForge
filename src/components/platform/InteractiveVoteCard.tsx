@@ -61,7 +61,7 @@ export function InteractiveVoteCard({
   voteOverride,
   bracketReveal,
   onPickChange,
-  hideEmbeddedExactScore = false,
+  hideEmbeddedExactScore = true,
   loginNextPath,
 }: InteractiveVoteCardProps) {
   const router = useRouter();

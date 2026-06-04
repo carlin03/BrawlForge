@@ -30,6 +30,7 @@ import {
   getLiveMatches,
   getSquadValue,
   getUserSquadDisplay,
+  getMatch,
   getUpcomingMatches,
   getTournamentFantasyProfile,
   getTournamentPlayerPool,
@@ -40,6 +41,7 @@ import {
   teamName,
   teams,
 } from "@/lib/data";
+import { isPickemMatchOpen } from "@/lib/data/match-effective-status";
 import { NewsCover } from "@/components/news/NewsCover";
 import { getHomeTournaments } from "@/lib/data/home-tournaments";
 import { hasTeamLogoSource } from "@/lib/data/png-logo-urls";
@@ -122,8 +124,10 @@ export function HomeView() {
     const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
     const votes = game?.votes ?? {};
     return open
-      .filter((e) =>
-        isPickemMatchEligible({
+      .filter((e) => {
+        const m = getMatch(e.matchId);
+        if (m) return isPickemMatchEligible(m) && isPickemMatchOpen(m);
+        return isPickemMatchEligible({
           id: e.matchId,
           teamASlug: e.teamASlug,
           teamBSlug: e.teamBSlug,
@@ -135,8 +139,8 @@ export function HomeView() {
           status: "upcoming",
           region: "GLOBAL",
           format: "Bo3",
-        }),
-      )
+        });
+      })
       .map((e) => enrichPrediction(e, votes))
       .sort(predictChronologySort);
   }, [aggregates, game?.votes]);

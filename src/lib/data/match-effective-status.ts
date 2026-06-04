@@ -2,6 +2,8 @@ import { parseMatchMeta } from "./match-meta";
 import type { EsportsMatch } from "./matches";
 
 const FINISH_GRACE_MS = 3 * 60 * 60 * 1000;
+/** Pick'em cerrado tras la hora del partido + margen (evita partidos “abiertos” de hace días). */
+const PICKEM_CLOSE_MS = 8 * 60 * 60 * 1000;
 
 function metaSaysFinished(meta: ReturnType<typeof parseMatchMeta>): boolean {
   const sync = (meta as { sync?: { completed?: boolean } }).sync;
@@ -20,15 +22,20 @@ function hasDecisiveScore(m: EsportsMatch): boolean {
 export function getEffectiveMatchStatus(m: EsportsMatch): EsportsMatch["status"] {
   if (m.status === "cancelled") return "cancelled";
   if (m.status === "finished") return "finished";
-  if (m.status === "live") return "live";
 
   const meta = parseMatchMeta(m.meta);
   if (metaSaysFinished(meta)) return "finished";
+
+  if (hasDecisiveScore(m) && m.status !== "live") return "finished";
+
+  if (m.status === "live") return "live";
 
   const scheduled = new Date(m.date).getTime();
   const pastGrace = !Number.isNaN(scheduled) && Date.now() > scheduled + FINISH_GRACE_MS;
 
   if (pastGrace && hasDecisiveScore(m)) return "finished";
+
+  if (pastGrace && m.status === "upcoming") return "finished";
 
   return m.status;
 }
@@ -43,7 +50,7 @@ export function isPickemMatchOpen(m: EsportsMatch): boolean {
   if (status === "finished" || status === "cancelled") return false;
 
   const scheduled = new Date(m.date).getTime();
-  if (!Number.isNaN(scheduled) && Date.now() > scheduled + FINISH_GRACE_MS && status !== "live") {
+  if (!Number.isNaN(scheduled) && Date.now() > scheduled + PICKEM_CLOSE_MS && status !== "live") {
     return false;
   }
 

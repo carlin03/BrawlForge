@@ -1,5 +1,6 @@
 import type { Region } from "../types";
 import type { EsportsMatch } from "./matches";
+import { getEffectiveMatchStatus } from "./match-effective-status";
 import { expandTournamentSlugFilter, getTournament, isPublicScheduleMatch } from "./matches";
 import { getTeam } from "./teams";
 import { getMatchStageMeta, type StageRoundKey } from "./match-stage-meta";
@@ -53,9 +54,12 @@ function compareHubMatches(a: EsportsMatch, b: EsportsMatch, tab: MatchTab): num
 }
 
 function tabPool(tab: MatchTab, all: EsportsMatch[]): EsportsMatch[] {
-  if (tab === "live") return all.filter((m) => m.status === "live");
-  if (tab === "upcoming") return all.filter((m) => m.status === "upcoming");
-  return all.filter((m) => m.status === "finished");
+  if (tab === "live") return all.filter((m) => getEffectiveMatchStatus(m) === "live");
+  if (tab === "upcoming") return all.filter((m) => getEffectiveMatchStatus(m) === "upcoming");
+  return all.filter((m) => {
+    const s = getEffectiveMatchStatus(m);
+    return s === "finished" || s === "cancelled";
+  });
 }
 
 function matchSearchHaystack(m: EsportsMatch): string {
@@ -77,7 +81,7 @@ function matchSearchHaystack(m: EsportsMatch): string {
 
 function matchSortScore(m: EsportsMatch): number {
   let s = 0;
-  if (m.status === "live") s += 100;
+  if (getEffectiveMatchStatus(m) === "live") s += 100;
   if (m.tournamentSlug.includes("bsc") || m.tournamentSlug.includes("world-finals")) s += 40;
   const rk = getMatchStageMeta(m.stage).roundKey;
   if (rk === "grand_final") s += 30;
@@ -181,9 +185,12 @@ export function groupMatchesByTournament(list: EsportsMatch[], tab: MatchTab = "
 export function countHubMatches(all: EsportsMatch[]) {
   const display = all.filter(isPublicScheduleMatch);
   return {
-    live: display.filter((m) => m.status === "live").length,
-    upcoming: display.filter((m) => m.status === "upcoming").length,
-    results: display.filter((m) => m.status === "finished").length,
+    live: display.filter((m) => getEffectiveMatchStatus(m) === "live").length,
+    upcoming: display.filter((m) => getEffectiveMatchStatus(m) === "upcoming").length,
+    results: display.filter((m) => {
+      const s = getEffectiveMatchStatus(m);
+      return s === "finished" || s === "cancelled";
+    }).length,
     total: display.length,
   };
 }

@@ -25,6 +25,7 @@ import {
   type MatchTab,
 } from "@/lib/data/matches-hub";
 import {
+  getMatch,
   isKnownTeamSlug,
   isPickemMatchEligible,
   isPublicScheduleMatch,
@@ -32,6 +33,7 @@ import {
   getTierBPlusTournaments,
   teamName,
 } from "@/lib/data";
+import { isPickemMatchOpen } from "@/lib/data/match-effective-status";
 import { getMatchPool } from "@/lib/data/match-pool";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 import { getMatchEnrichment } from "@/lib/data/match-meta";
@@ -77,8 +79,10 @@ export function MatchesView() {
     );
     return open
       .filter((e) => poolIds.has(e.matchId))
-      .filter((e) =>
-        isPickemMatchEligible({
+      .filter((e) => {
+        const m = getMatch(e.matchId);
+        if (m) return isPickemMatchEligible(m) && isPickemMatchOpen(m);
+        return isPickemMatchEligible({
           id: e.matchId,
           teamASlug: e.teamASlug,
           teamBSlug: e.teamBSlug,
@@ -90,8 +94,8 @@ export function MatchesView() {
           status: "upcoming",
           region: "GLOBAL",
           format: "Bo3",
-        }),
-      )
+        });
+      })
       .map((e) => enrichPrediction(e, game?.votes ?? {}))
       .sort(predictChronologySort);
   }, [aggregates, game?.votes, displayable, tab, region, tournamentSlug, query]);

@@ -71,6 +71,7 @@ export function BracketMatchCard({
       bracketReveal={bracketReveal}
       initialPick={initialPick}
       voteOverride={voteOverride}
+      hideEmbeddedExactScore
     />
   );
 }

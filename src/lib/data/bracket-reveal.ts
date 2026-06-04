@@ -98,14 +98,20 @@ export function resolveFinalReveal(
     }
     const r = resolveSemiReveal(0, only, quarters, votes);
     const w = semiWinner(only, r, votes);
-    if (quarters.length >= 2) {
+    if (quarters.length >= 4) {
+      return {
+        sideA: { revealed: !!w, teamSlug: w },
+        sideB: { revealed: false, teamSlug: null },
+      };
+    }
+    if (quarters.length === 0) {
       return {
         sideA: { revealed: !!w, teamSlug: w },
         sideB: { revealed: false, teamSlug: null },
       };
     }
     return {
-      sideA: { revealed: false, teamSlug: null },
+      sideA: { revealed: !!w, teamSlug: w },
       sideB: { revealed: false, teamSlug: null },
     };
   }
