@@ -99,9 +99,11 @@ export function PredictionsQuickVoteSection({
   maxItems?: number;
 }) {
   const bracketIds = getAllPlayoffBracketMatchIds(brackets);
-  const bracketBoards = brackets.filter(
-    (b) => b.quarters.length >= 4 || b.semis.length >= 1 || Boolean(b.final),
-  );
+  const bracketBoards = brackets.filter((b) => {
+    if (b.quarters.length === 4) return true;
+    if (b.quarters.length === 0 && (b.semis.length > 0 || b.final)) return true;
+    return false;
+  });
   const useBracketLayout = bracketBoards.length > 0;
 
   const otherEvents = sortByDate(events.filter((e) => !bracketIds.has(e.matchId)));

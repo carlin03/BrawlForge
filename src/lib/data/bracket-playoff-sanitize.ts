@@ -1,4 +1,5 @@
 import type { EsportsMatch } from "./matches";
+import { normalizePlayoffPool } from "./playoff-pool-normalize";
 import { getMatchStageMeta } from "./match-stage-meta";
 
 const SEMI_SLOTS: [string, string][] = [
@@ -17,7 +18,7 @@ function sortByDate(list: EsportsMatch[]): EsportsMatch[] {
 /** Torneo con 4+ cuartos: semis/final solo slots winner-* (nunca spoilers de CMS). */
 export function sanitizePlayoffBracketPool(pool: EsportsMatch[]): EsportsMatch[] {
   const byTour = new Map<string, EsportsMatch[]>();
-  for (const m of pool) {
+  for (const m of normalizePlayoffPool(pool)) {
     const arr = byTour.get(m.tournamentSlug) ?? [];
     arr.push(m);
     byTour.set(m.tournamentSlug, arr);

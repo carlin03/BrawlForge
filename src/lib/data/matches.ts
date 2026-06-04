@@ -183,12 +183,9 @@ function buildTournaments(): EsportsTournament[] {
 
 export const tournaments: EsportsTournament[] = buildTournaments();
 
-function matchDedupeKey(m: EsportsMatch): string {
-  const a = m.teamASlug;
-  const b = m.teamBSlug;
-  const pair = a < b ? `${a}|${b}` : `${b}|${a}`;
-  return `${m.tournamentSlug}|${pair}|${m.date.slice(0, 10)}`;
-}
+import { matchDedupeKey } from "./playoff-pool-normalize";
+
+export { matchDedupeKey } from "./playoff-pool-normalize";
 
 function buildMatches(): EsportsMatch[] {
   const wikiMatches = getBscEnrichedMatches().filter(

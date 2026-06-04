@@ -2,6 +2,7 @@ import type { BracketLayoutMode, PlayoffBracketsStore } from "@/lib/data/bracket
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { getEffectiveMatchStatus } from "@/lib/data/match-effective-status";
 import { expandTournamentSlugFilter, getMatch, getTournament } from "@/lib/data/matches";
+import { canonicalTournamentSlug } from "@/lib/data/playoff-pool-normalize";
 import { getPredictionLabel, getPredictionTournament } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
 import {
@@ -280,8 +281,8 @@ export function buildPlayoffBracket(
   const byDate = (list: EnrichedPrediction[]) =>
     [...list].sort((a, b) => (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline));
 
-  const quarters = byDate(tourEvents.filter((e) => e.stageMeta?.roundKey === "quarter"));
-  const semis = byDate(
+  const quarters = byDate(tourEvents.filter((e) => e.stageMeta?.roundKey === "quarter")).slice(0, 4);
+  const semisAll = byDate(
     tourEvents.filter(
       (e) =>
         e.stageMeta?.roundKey === "semi" ||
@@ -297,17 +298,20 @@ export function buildPlayoffBracket(
     );
 
   const hasBracket =
-    quarters.length > 0 || semis.length > 0 || Boolean(final);
+    quarters.length > 0 || semisAll.length > 0 || Boolean(final);
   if (!hasBracket) return null;
 
-  const bracketSemis = semis;
+  const bracketSemis =
+    quarters.length > 0 && quarters.length < 4 ? [] : semisAll.slice(0, 2);
   const bracketFinal = final;
 
   if (!quarters.length && !bracketSemis.length && !bracketFinal) return null;
 
+  const canonSlug = canonicalTournamentSlug(tournamentSlug);
+
   return {
     layout,
-    tournamentSlug,
+    tournamentSlug: canonSlug,
     tournamentName: tour?.shortName ?? tour?.name ?? tournamentSlug,
     region: tour?.region,
     quarters,
@@ -323,7 +327,7 @@ export function buildAllPlayoffBrackets(
 ): PlayoffBracketView[] {
   const slugs = new Set<string>();
   for (const e of events) {
-    if (e.stageMeta?.isPlayoff) slugs.add(e.tournamentSlug);
+    if (e.stageMeta?.isPlayoff) slugs.add(canonicalTournamentSlug(e.tournamentSlug));
   }
   const out: PlayoffBracketView[] = [];
   for (const slug of slugs) {
