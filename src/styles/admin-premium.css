@@ -1505,6 +1505,155 @@
 .bf-admin-wiki-section textarea {
   min-height: 72px;
 }
+
+/* Editor Historia — secciones y párrafos por bloques */
+.bf-admin-wiki-blocks-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bf-admin-wiki-blocks-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+.bf-admin-wiki-mode-tabs {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.bf-admin-wiki-mode-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bp-line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--bp-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.bf-admin-wiki-mode-tabs button.is-on {
+  border-color: rgba(243, 188, 24, 0.45);
+  background: rgba(243, 188, 24, 0.12);
+  color: var(--bp-gold);
+}
+.bf-admin-wiki-sections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.bf-admin-wiki-empty {
+  margin: 0 0 12px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px dashed var(--bp-line);
+  color: var(--bp-muted);
+  font-size: 13px;
+  text-align: center;
+}
+.bf-admin-wiki-section-block {
+  border: 1px solid rgba(243, 188, 24, 0.28);
+  border-radius: 12px;
+  background: rgba(243, 188, 24, 0.05);
+  padding: 14px 14px 12px;
+  margin-bottom: 16px;
+}
+.bf-admin-wiki-section-block-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bf-admin-wiki-section-index {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bp-gold);
+  padding-top: 26px;
+}
+.bf-admin-wiki-grip {
+  flex-shrink: 0;
+  margin-top: 28px;
+  opacity: 0.35;
+}
+.bf-admin-wiki-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bf-admin-wiki-paragraph-block {
+  border: 1px solid var(--bp-line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px 12px;
+}
+.bf-admin-wiki-paragraph-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.bf-admin-wiki-paragraph-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bp-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.bf-admin-wiki-paragraph-moves {
+  display: flex;
+  gap: 4px;
+}
+.bf-admin-wiki-paragraph-input {
+  width: 100%;
+  min-height: 88px;
+  resize: vertical;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.bf-admin-wiki-add-para {
+  align-self: flex-start;
+  font-size: 13px;
+}
+.bf-admin-wiki-add-section {
+  width: 100%;
+  justify-content: center;
+}
+.bf-admin-wiki-section-sep {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 0;
+  padding: 8px 0 0;
+}
+.bf-admin-wiki-section-sep span {
+  font-size: 11px;
+  color: var(--bp-muted);
+  opacity: 0.6;
+  letter-spacing: 0.2em;
+}
+.bf-admin-wiki-csv-textarea {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  min-height: 200px;
+}
+.bf-admin-wiki-csv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
 .bf-admin-social-grid {
   display: grid;
   gap: 12px;

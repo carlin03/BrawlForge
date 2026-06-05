@@ -3,6 +3,7 @@ import { isPickemMatchOpen, withEffectiveMatchStatus } from "./match-effective-s
 import { matchDedupeKey, normalizePlayoffPool, pickBetterMatch } from "./playoff-pool-normalize";
 import type { EsportsMatch } from "./esports-match-types";
 import { matches as legacyMatches } from "./legacy-matches";
+import { enrichMatchForPool } from "./match-pool-enrich";
 
 let runtimePool: EsportsMatch[] | null = null;
 
@@ -12,7 +13,7 @@ export function setRuntimeMatchPool(pool: EsportsMatch[] | null): void {
 }
 
 function mergeByDedupeKey(byId: Map<string, EsportsMatch>, incoming: EsportsMatch): void {
-  const effective = withEffectiveMatchStatus(incoming);
+  const effective = enrichMatchForPool(withEffectiveMatchStatus(incoming));
   let replaceId: string | null = null;
   for (const [id, existing] of byId) {
     if (matchDedupeKey(existing) === matchDedupeKey(effective)) {
@@ -32,13 +33,13 @@ function mergeByDedupeKey(byId: Map<string, EsportsMatch>, incoming: EsportsMatc
 
 /** Calendario completo (Partidos, torneos, home): todos los cruces, sin slots winner-* inventados. */
 function buildPublicMatchPool(base: EsportsMatch[]): EsportsMatch[] {
-  const normalized = normalizePlayoffPool(base);
+  const normalized = normalizePlayoffPool(base.map(enrichMatchForPool));
   const byId = new Map<string, EsportsMatch>();
   for (const m of normalized) {
     mergeByDedupeKey(byId, m);
   }
   return [...byId.values()]
-    .map(withEffectiveMatchStatus)
+    .map((m) => enrichMatchForPool(withEffectiveMatchStatus(m)))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 

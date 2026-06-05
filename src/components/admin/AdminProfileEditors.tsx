@@ -1,11 +1,13 @@
 "use client";
 
-import { Plus, Trash2, ChevronUp, ChevronDown, GripVertical } from "lucide-react";
+import { useState } from "react";
+import { Plus, Trash2, ChevronUp, ChevronDown, GripVertical, Layers, FileText } from "lucide-react";
 import { AdminField, AdminFieldRow } from "@/components/admin/AdminField";
 import { AdminPlayerLogoPicker } from "@/components/admin/AdminPlayerLogoPicker";
 import {
   emptyAchievement,
   emptySection,
+  newSectionId,
   linesToList,
   listToLines,
   type CareerHighlight,
@@ -13,6 +15,10 @@ import {
   type WikiAchievement,
   type WikiSection,
 } from "@/lib/data/profile-wiki";
+import {
+  parseHistoryContentToWikiSections,
+  serializeWikiSectionsToHistory,
+} from "@/lib/admin/teams-master-csv";
 import type { TeamSponsorEntry } from "@/lib/data/team-page-stats";
 
 export function AdminTabBar<T extends string>({
@@ -216,78 +222,277 @@ export function AdminSponsorsEditor({
   );
 }
 
+function cloneSections(sections: WikiSection[]): WikiSection[] {
+  return sections.map((s) => ({ ...s, paragraphs: [...s.paragraphs] }));
+}
+
+function updateSection(
+  sections: WikiSection[],
+  secIdx: number,
+  patch: Partial<WikiSection>,
+): WikiSection[] {
+  const next = cloneSections(sections);
+  next[secIdx] = { ...next[secIdx], ...patch };
+  return next;
+}
+
+function updateParagraph(
+  sections: WikiSection[],
+  secIdx: number,
+  paraIdx: number,
+  text: string,
+): WikiSection[] {
+  const next = cloneSections(sections);
+  const paras = [...next[secIdx].paragraphs];
+  paras[paraIdx] = text;
+  next[secIdx] = { ...next[secIdx], paragraphs: paras };
+  return next;
+}
+
+function moveParagraph(
+  sections: WikiSection[],
+  secIdx: number,
+  paraIdx: number,
+  dir: -1 | 1,
+): WikiSection[] {
+  const j = paraIdx + dir;
+  const paras = sections[secIdx].paragraphs;
+  if (j < 0 || j >= paras.length) return sections;
+  const next = cloneSections(sections);
+  const row = [...next[secIdx].paragraphs];
+  [row[paraIdx], row[j]] = [row[j], row[paraIdx]];
+  next[secIdx] = { ...next[secIdx], paragraphs: row };
+  return next;
+}
+
 export function AdminWikiSectionsEditor({
   value,
   onChange,
+  /** Slug del equipo/jugador para IDs estables al importar texto CSV */
+  entitySlug = "draft",
 }: {
   value: WikiSection[];
   onChange: (v: WikiSection[]) => void;
+  entitySlug?: string;
 }) {
-  function move(idx: number, dir: -1 | 1) {
+  const [mode, setMode] = useState<"blocks" | "csv">("blocks");
+  const [csvDraft, setCsvDraft] = useState("");
+
+  function moveSection(idx: number, dir: -1 | 1) {
     const j = idx + dir;
     if (j < 0 || j >= value.length) return;
-    const next = [...value];
+    const next = cloneSections(value);
     [next[idx], next[j]] = [next[j], next[idx]];
     onChange(next);
   }
 
+  function openCsvMode() {
+    setCsvDraft(serializeWikiSectionsToHistory(value));
+    setMode("csv");
+  }
+
+  function applyCsvToBlocks() {
+    const parsed = parseHistoryContentToWikiSections(csvDraft, entitySlug);
+    onChange(parsed.length ? parsed : [emptySection()]);
+    setMode("blocks");
+  }
+
   return (
-    <div className="bf-admin-stack-editor">
-      <p className="bf-admin-field-hint">
-        Como una Wikipedia: títulos de sección y párrafos. Cada párrafo separado por una línea en blanco en el
-        cuadro de texto.
-      </p>
-      {value.map((sec, i) => (
-        <div key={sec.id} className="bf-admin-stack-card bf-admin-wiki-section">
-          <div className="bf-admin-wiki-section-head">
-            <GripVertical size={16} aria-hidden />
-            <AdminField label="Título de la sección" className="bf-admin-field-grow">
-              <input
-                value={sec.title}
-                onChange={(e) => {
-                  const next = [...value];
-                  next[i] = { ...sec, title: e.target.value };
-                  onChange(next);
-                }}
-              />
-            </AdminField>
-            <div className="bf-admin-wiki-moves">
-              <button type="button" className="bf-admin-icon-btn" onClick={() => move(i, -1)} title="Subir">
-                <ChevronUp size={16} />
-              </button>
-              <button type="button" className="bf-admin-icon-btn" onClick={() => move(i, 1)} title="Bajar">
-                <ChevronDown size={16} />
-              </button>
-              <button
-                type="button"
-                className="bf-admin-icon-btn is-danger"
-                onClick={() => onChange(value.filter((s) => s.id !== sec.id))}
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          </div>
-          <AdminField label="Contenido" hint="Un párrafo por bloque — pulsa Enter dos veces entre párrafos">
+    <div className="bf-admin-wiki-blocks-editor">
+      <div className="bf-admin-wiki-blocks-toolbar">
+        <p className="bf-admin-field-hint" style={{ margin: 0, flex: 1 }}>
+          Cada <strong>sección</strong> es un bloque en la pestaña Historia (índice lateral). Dentro, cada{" "}
+          <strong>párrafo</strong> es otro bloque independiente.
+        </p>
+        <div className="bf-admin-wiki-mode-tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "blocks"}
+            className={mode === "blocks" ? "is-on" : ""}
+            onClick={() => setMode("blocks")}
+          >
+            <Layers size={14} /> Por bloques
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "csv"}
+            className={mode === "csv" ? "is-on" : ""}
+            onClick={() => (mode === "csv" ? setMode("blocks") : openCsvMode())}
+          >
+            <FileText size={14} /> Texto CSV
+          </button>
+        </div>
+      </div>
+
+      {mode === "csv" ? (
+        <div className="bf-admin-stack-card">
+          <AdminField
+            label="history_content"
+            hint="Mismo formato que el CSV: ## Título, párrafos, separador --- entre secciones"
+          >
             <textarea
-              rows={6}
-              value={sec.paragraphs.join("\n\n")}
-              onChange={(e) => {
-                const next = [...value];
-                next[i] = {
-                  ...sec,
-                  paragraphs: e.target.value.split(/\n\n+/).map((p) => p.trim()).filter(Boolean).length
-                    ? e.target.value.split(/\n\n+/).map((p) => p.trim())
-                    : [""],
-                };
-                onChange(next);
-              }}
+              className="bf-admin-wiki-csv-textarea"
+              rows={14}
+              value={csvDraft}
+              onChange={(e) => setCsvDraft(e.target.value)}
+              placeholder={`## Historia\n\nPrimer párrafo…\n\n---\n\n## Temporada 2026\n\nSegundo bloque…`}
             />
           </AdminField>
+          <div className="bf-admin-wiki-csv-actions">
+            <button type="button" className="bp-btn bp-btn-gold" onClick={applyCsvToBlocks}>
+              Aplicar a bloques
+            </button>
+            <button type="button" className="bp-btn bp-btn-ghost" onClick={() => setMode("blocks")}>
+              Cancelar
+            </button>
+          </div>
         </div>
-      ))}
-      <button type="button" className="bp-btn bp-btn-ghost" onClick={() => onChange([...value, emptySection()])}>
-        <Plus size={16} /> Añadir sección
-      </button>
+      ) : (
+        <div className="bf-admin-wiki-sections-list">
+          {value.length === 0 && (
+            <p className="bf-admin-wiki-empty">
+              Sin secciones todavía. Añade la primera (por ejemplo &quot;Historia&quot; o &quot;Temporada
+              2026&quot;).
+            </p>
+          )}
+          {value.map((sec, secIdx) => (
+            <article key={sec.id} className="bf-admin-wiki-section-block">
+              <header className="bf-admin-wiki-section-block-head">
+                <span className="bf-admin-wiki-section-index">Sección {secIdx + 1}</span>
+                <GripVertical size={16} aria-hidden className="bf-admin-wiki-grip" />
+                <AdminField label="Título (aparece en el índice)" className="bf-admin-field-grow">
+                  <input
+                    value={sec.title}
+                    placeholder="Ej: Historia, Palmarés reciente, Plantilla 2026"
+                    onChange={(e) => onChange(updateSection(value, secIdx, { title: e.target.value }))}
+                  />
+                </AdminField>
+                <div className="bf-admin-wiki-moves">
+                  <button
+                    type="button"
+                    className="bf-admin-icon-btn"
+                    onClick={() => moveSection(secIdx, -1)}
+                    title="Subir sección"
+                    disabled={secIdx === 0}
+                  >
+                    <ChevronUp size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    className="bf-admin-icon-btn"
+                    onClick={() => moveSection(secIdx, 1)}
+                    title="Bajar sección"
+                    disabled={secIdx === value.length - 1}
+                  >
+                    <ChevronDown size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    className="bf-admin-icon-btn is-danger"
+                    title="Eliminar sección"
+                    onClick={() => onChange(value.filter((s) => s.id !== sec.id))}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </header>
+
+              <div className="bf-admin-wiki-paragraphs">
+                {(sec.paragraphs.length ? sec.paragraphs : [""]).map((para, paraIdx) => (
+                  <div key={`${sec.id}-p-${paraIdx}`} className="bf-admin-wiki-paragraph-block">
+                    <div className="bf-admin-wiki-paragraph-head">
+                      <span className="bf-admin-wiki-paragraph-label">Párrafo {paraIdx + 1}</span>
+                      <div className="bf-admin-wiki-paragraph-moves">
+                        <button
+                          type="button"
+                          className="bf-admin-icon-btn"
+                          title="Subir párrafo"
+                          disabled={paraIdx === 0}
+                          onClick={() => onChange(moveParagraph(value, secIdx, paraIdx, -1))}
+                        >
+                          <ChevronUp size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          className="bf-admin-icon-btn"
+                          title="Bajar párrafo"
+                          disabled={paraIdx >= sec.paragraphs.length - 1}
+                          onClick={() => onChange(moveParagraph(value, secIdx, paraIdx, 1))}
+                        >
+                          <ChevronDown size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          className="bf-admin-icon-btn is-danger"
+                          title="Quitar párrafo"
+                          disabled={sec.paragraphs.length <= 1}
+                          onClick={() => {
+                            const paras = sec.paragraphs.filter((_, j) => j !== paraIdx);
+                            onChange(
+                              updateSection(value, secIdx, {
+                                paragraphs: paras.length ? paras : [""],
+                              }),
+                            );
+                          }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <textarea
+                      className="bf-admin-wiki-paragraph-input"
+                      rows={4}
+                      value={para}
+                      placeholder="Escribe el texto de este párrafo…"
+                      onChange={(e) =>
+                        onChange(updateParagraph(value, secIdx, paraIdx, e.target.value))
+                      }
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="bp-btn bp-btn-ghost bf-admin-wiki-add-para"
+                  onClick={() =>
+                    onChange(
+                      updateSection(value, secIdx, {
+                        paragraphs: [...sec.paragraphs, ""],
+                      }),
+                    )
+                  }
+                >
+                  <Plus size={14} /> Añadir párrafo a esta sección
+                </button>
+              </div>
+
+              {secIdx < value.length - 1 && (
+                <div className="bf-admin-wiki-section-sep" aria-hidden>
+                  <span>---</span>
+                </div>
+              )}
+            </article>
+          ))}
+
+          <button
+            type="button"
+            className="bp-btn bp-btn-ghost bf-admin-wiki-add-section"
+            onClick={() =>
+              onChange([
+                ...value,
+                {
+                  id: newSectionId(),
+                  title: value.length === 0 ? "Historia" : "Nueva sección",
+                  paragraphs: [""],
+                },
+              ])
+            }
+          >
+            <Plus size={16} /> Añadir sección (nuevo bloque)
+          </button>
+        </div>
+      )}
     </div>
   );
 }

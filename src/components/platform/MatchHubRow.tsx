@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { EsportsMatch } from "@/lib/data/matches";
-import { getTeam, teamName } from "@/lib/data";
+import { getTeam, resolveMatchTeamName } from "@/lib/data";
 import { getMatchEnrichment, isPendingTeamSlug } from "@/lib/data/match-meta";
 import { bracketSlotDisplayLabel } from "@/lib/data/bracket-slot-display";
 import { getEffectiveMatchStatus } from "@/lib/data/match-effective-status";
@@ -10,9 +10,10 @@ import { TeamLogo } from "@/components/ui/TeamLogo";
 import { MatchCountdown } from "@/components/platform/MatchCountdown";
 import { FormDots } from "@/components/platform/ui";
 
-function displayTeamName(slug: string): string {
+function displayTeamName(match: EsportsMatch, side: "A" | "B"): string {
+  const slug = side === "A" ? match.teamASlug : match.teamBSlug;
   if (isPendingTeamSlug(slug)) return bracketSlotDisplayLabel(slug);
-  return teamName(slug);
+  return resolveMatchTeamName(match, side);
 }
 
 export function MatchHubRow({ match }: { match: EsportsMatch }) {
@@ -50,9 +51,9 @@ export function MatchHubRow({ match }: { match: EsportsMatch }) {
       <div className="bf-match-row-time">{timeLabel}</div>
 
       <div className="bf-match-row-team">
-        <TeamLogo slug={match.teamASlug} name={displayTeamName(match.teamASlug)} size={36} glow={false} />
+        <TeamLogo slug={match.teamASlug} name={displayTeamName(match, "A")} size={36} glow={false} />
         <div className="bf-match-row-team-text">
-          <span className={`bf-match-row-name ${winA ? "is-win" : ""}`}>{displayTeamName(match.teamASlug)}</span>
+          <span className={`bf-match-row-name ${winA ? "is-win" : ""}`}>{displayTeamName(match, "A")}</span>
           {teamA?.form && <FormDots form={teamA.form} />}
         </div>
       </div>
@@ -74,9 +75,9 @@ export function MatchHubRow({ match }: { match: EsportsMatch }) {
       </div>
 
       <div className="bf-match-row-team is-away">
-        <TeamLogo slug={match.teamBSlug} name={displayTeamName(match.teamBSlug)} size={36} glow={false} />
+        <TeamLogo slug={match.teamBSlug} name={displayTeamName(match, "B")} size={36} glow={false} />
         <div className="bf-match-row-team-text">
-          <span className={`bf-match-row-name ${winB ? "is-win" : ""}`}>{displayTeamName(match.teamBSlug)}</span>
+          <span className={`bf-match-row-name ${winB ? "is-win" : ""}`}>{displayTeamName(match, "B")}</span>
           {teamB?.form && <FormDots form={teamB.form} />}
         </div>
       </div>

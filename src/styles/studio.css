@@ -770,6 +770,20 @@
   margin-bottom: 8px;
 }
 
+.bf-studio-tag-unmapped {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+  border-radius: 4px;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
 /* Tarjeta más compacta en rejilla 2–3 columnas */
 .bf-studio-match-list--cols-2 .bf-admin-match-bracket-preview,
 .bf-studio-match-list--cols-3 .bf-admin-match-bracket-preview {

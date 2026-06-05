@@ -36,6 +36,14 @@ export {
   getTournamentParticipantSlugs,
   expandTournamentSlugFilter,
 } from "./matches";
+export {
+  getTeamDisplayName,
+  resolveMatchTeamName,
+  isTeamInCatalog,
+  isSchedulableMatch,
+  isSchedulableTeamSlug,
+  slugToDisplayName,
+} from "./team-display-resolve";
 export { getCuratedHomeMatches } from "./home-matches";
 export {
   isPublicScheduleMatch,
@@ -126,10 +134,11 @@ export type {
 
 import { getTeam } from "./teams";
 import { getTournament } from "./matches";
+import { getTeamDisplayName } from "./team-display-resolve";
 
 /** Resolve team slug → display name, safe fallback */
 export function teamName(slug: string): string {
-  return getTeam(slug)?.name ?? slug;
+  return getTeamDisplayName(slug);
 }
 
 /** Resolve tournament slug → display name */

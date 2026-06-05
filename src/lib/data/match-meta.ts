@@ -1,9 +1,9 @@
 import type { BrawlerOverride, MapStrategicOverride } from "./game-assets-catalog";
 import type { EsportsMatch } from "./matches";
-import { getTeam } from "./teams";
+import { getTeamDisplayName } from "./team-display-resolve";
 
 function teamDisplayName(slug: string): string {
-  return getTeam(slug)?.name ?? slug;
+  return getTeamDisplayName(slug);
 }
 
 const DEMO_MVP_IGN: Record<string, string> = {
@@ -172,6 +172,8 @@ export type MatchAdvancedPredictionsMeta = {
 export type MatchMeta = {
   /** confirmed = calendario real; template = seed pick'em BSC; generated = bracket admin. */
   schedule_trust?: "confirmed" | "template" | "generated";
+  /** Nombres Liquipedia cuando el slug aún no está en catálogo. */
+  team_display?: { a?: string; b?: string };
   /** Si true, no aparece en /matches ni home. */
   pickem_only?: boolean;
   importance?: MatchImportance;

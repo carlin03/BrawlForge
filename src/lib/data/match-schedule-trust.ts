@@ -3,8 +3,9 @@ import { BSC_TOURNAMENT_ALIASES, bsc2026Tournaments } from "./bsc-tournaments";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { isBracketPlaceholderSlug } from "./bracket-slot-display";
 import { isPendingTeamSlug, parseMatchMeta, type MatchMeta } from "./match-meta";
+import { enrichMatchForPool } from "./match-pool-enrich";
 import { canonicalTournamentSlug } from "./playoff-pool-normalize";
-import { isDisplayableMatch } from "./pickem-eligibility";
+import { isSchedulableMatch } from "./pickem-eligibility";
 import type { EsportsMatch } from "./esports-match-types";
 
 function tournamentEndDate(slug: string): string | undefined {
@@ -57,30 +58,34 @@ export function isStaleTournamentUpcoming(m: EsportsMatch): boolean {
   return Date.now() > end + 24 * 60 * 60 * 1000;
 }
 
-/** Próximos/en vivo en calendario: confirmados + plantillas con dos equipos reales (cuartos MF). */
+/** Próximos/en vivo: solo calendario confirmado (Liquipedia, CMS, resultados reales). Sin plantillas inventadas. */
 export function isPublicUpcomingCalendarMatch(m: EsportsMatch): boolean {
+  if (isPickemTemplateMatch(m)) return false;
   if (isStaleTournamentUpcoming(m)) return false;
   if (isPendingTeamSlug(m.teamASlug) || isPendingTeamSlug(m.teamBSlug)) return false;
   if (isBracketPlaceholderSlug(m.teamASlug) || isBracketPlaceholderSlug(m.teamBSlug)) return false;
-  if (!isDisplayableMatch(m)) return false;
+  if (!isSchedulableMatch(m)) return false;
   const status = getEffectiveMatchStatus(m);
   if (status !== "upcoming" && status !== "live") return false;
-  if (isPublicScheduleMatch(m)) return true;
-  return isPickemTemplateMatch(m);
+  return isPublicScheduleMatch(m);
 }
 
-/** Pool unificado para /matches (resultados confirmados + próximos con plantilla si aplica). */
+/** Pool unificado para /matches: resultados + próximos confirmados (Liquipedia/CMS). Sin seed pick'em. */
 export function buildPublicCalendarPool(basePool: EsportsMatch[]): EsportsMatch[] {
+  const pool = basePool.map(enrichMatchForPool);
   const byId = new Map<string, EsportsMatch>();
-  for (const m of basePool) {
-    if (isPublicScheduleMatch(m) || isPublicUpcomingCalendarMatch(m)) {
+
+  for (const m of pool) {
+    if (isPublicScheduleMatch(m)) {
       byId.set(m.id, m);
     }
   }
-  for (const m of getActivePickemTemplates(basePool)) {
+
+  for (const m of pool) {
     if (!isPublicUpcomingCalendarMatch(m)) continue;
     byId.set(m.id, m);
   }
+
   return [...byId.values()].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );
@@ -94,7 +99,7 @@ export function isPublicScheduleMatch(m: EsportsMatch): boolean {
   if (isStaleTournamentUpcoming(m)) return false;
   if (isPendingTeamSlug(m.teamASlug) || isPendingTeamSlug(m.teamBSlug)) return false;
   if (isBracketPlaceholderSlug(m.teamASlug) || isBracketPlaceholderSlug(m.teamBSlug)) return false;
-  return isDisplayableMatch(m);
+  return isSchedulableMatch(m);
 }
 
 function withTemplateMeta(m: EsportsMatch): EsportsMatch {
@@ -103,7 +108,7 @@ function withTemplateMeta(m: EsportsMatch): EsportsMatch {
     schedule_trust: "template",
     pickem_only: true,
   };
-  return { ...m, meta };
+  return enrichMatchForPool({ ...m, meta });
 }
 
 /** Plantillas pick'em (no mezclar en getMatchPool). */

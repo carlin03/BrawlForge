@@ -208,6 +208,7 @@ export function AdminPlayerWikiForm({
             />
           </AdminField>
           <AdminWikiSectionsEditor
+            entitySlug={player.slug}
             value={p.wiki_sections ?? []}
             onChange={(wiki_sections) => onChange({ ...player, profile: { ...p, wiki_sections } })}
           />

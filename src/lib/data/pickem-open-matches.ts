@@ -1,8 +1,6 @@
 import { shouldHideIncompletePlayoffRound } from "./bracket-playoff-sanitize";
 import { isPickemMatchOpen } from "./match-effective-status";
 import {
-  getActivePickemTemplates,
-  getPickemTemplateMatches,
   isPickemTemplateMatch,
   isStaleTournamentUpcoming,
 } from "./match-schedule-trust";
@@ -10,10 +8,7 @@ import type { EsportsMatch } from "./esports-match-types";
 import { isPickemMatchEligible } from "./pickem-eligibility";
 import { getMatchPool, getPickemBracketPool } from "./match-pool";
 import { getMatchStageMeta } from "./match-stage-meta";
-import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { matchDedupeKey, pickBetterMatch } from "./playoff-pool-normalize";
-
-const CURATED_IDS = new Set(BSC_UPCOMING_PREDICTION_MATCHES.map((m) => m.id));
 
 function pickemVisible(m: EsportsMatch, pool: EsportsMatch[]): boolean {
   if (!isPickemMatchEligible(m) || !isPickemMatchOpen(m)) return false;
@@ -50,16 +45,15 @@ export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[]
 
     const meta = getMatchStageMeta(m.stage || "");
     const fromAdmin = Boolean(m.stage?.trim());
-    const isCurated = CURATED_IDS.has(m.id);
 
-    if (isCurated || fromAdmin || meta.isPlayoff || meta.roundKey === "group") {
+    if (isPickemTemplateMatch(m)) continue;
+
+    if (fromAdmin || meta.isPlayoff || meta.roundKey === "group") {
       upsertPickem(byId, m, pool);
     }
   }
 
-  for (const m of getActivePickemTemplates(pool)) {
-    upsertPickem(byId, m, pool);
-  }
+  // Plantillas seed desactivadas — pick'em solo con calendario confirmado
 
   for (const m of extra) {
     upsertPickem(byId, m, pool);

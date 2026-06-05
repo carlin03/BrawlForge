@@ -361,6 +361,10 @@ export function parseMatchesFromWikitext(wikitext, tournamentSlug, region, resol
       status,
       region,
       format: bestof ? `Bo${bestof}` : "Bo5",
+      meta: {
+        schedule_trust: "confirmed",
+        team_display: { a: t1, b: t2 },
+      },
     });
   }
   return out;

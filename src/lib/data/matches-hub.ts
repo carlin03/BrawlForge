@@ -3,15 +3,15 @@ import type { EsportsMatch } from "./matches";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { expandTournamentSlugFilter, getTournament } from "./matches";
 import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
-import { getTeam } from "./teams";
+import { resolveMatchTeamName } from "./team-display-resolve";
 import { getMatchStageMeta, type StageRoundKey } from "./match-stage-meta";
 
 function tournamentName(slug: string): string {
   return getTournament(slug)?.shortName ?? slug;
 }
 
-function teamName(slug: string): string {
-  return getTeam(slug)?.name ?? slug;
+function teamName(m: EsportsMatch, side: "A" | "B"): string {
+  return resolveMatchTeamName(m, side);
 }
 
 export type MatchTab = "live" | "upcoming" | "results";
@@ -66,8 +66,8 @@ function tabPool(tab: MatchTab, all: EsportsMatch[]): EsportsMatch[] {
 function matchSearchHaystack(m: EsportsMatch): string {
   const stageMeta = getMatchStageMeta(m.stage);
   return [
-    teamName(m.teamASlug),
-    teamName(m.teamBSlug),
+    teamName(m, "A"),
+    teamName(m, "B"),
     m.teamASlug,
     m.teamBSlug,
     tournamentName(m.tournamentSlug),

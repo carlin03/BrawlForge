@@ -284,6 +284,8 @@ export function getRecentMatches(limit = 8): EsportsMatch[] {
 export {
   isKnownTeamSlug,
   isDisplayableMatch,
+  isSchedulableMatch,
+  isSchedulableTeamSlug,
   isPickemMatchEligible,
 } from "./pickem-eligibility";
 

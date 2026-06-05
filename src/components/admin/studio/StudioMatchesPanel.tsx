@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getBscCircuitTournaments } from "@/lib/data/matches";
-import { teamName } from "@/lib/data";
+import { teamName, isTeamInCatalog } from "@/lib/data";
 import { MATCH_ROUND_OPTIONS } from "@/lib/data/match-round-types";
 import {
   MATCH_IMPORTANCE_OPTIONS,
@@ -706,7 +706,18 @@ export function StudioMatchesPanel() {
                         <div className="bf-studio-match-item-main">
                           <div className="bf-studio-match-item-head">
                             <strong>
-                              {teamName(m.team_a_slug)} vs {teamName(m.team_b_slug)}
+                              {teamName(m.team_a_slug)}
+                              {!isTeamInCatalog(m.team_a_slug) && (
+                                <span className="bf-studio-tag-unmapped" title="Sin mapear en catálogo — reemplaza el slug o crea el equipo">
+                                  LP
+                                </span>
+                              )}{" "}
+                              vs {teamName(m.team_b_slug)}
+                              {!isTeamInCatalog(m.team_b_slug) && (
+                                <span className="bf-studio-tag-unmapped" title="Sin mapear en catálogo — reemplaza el slug o crea el equipo">
+                                  LP
+                                </span>
+                              )}
                             </strong>
                             <code className="bf-studio-match-id">{m.id}</code>
                           </div>

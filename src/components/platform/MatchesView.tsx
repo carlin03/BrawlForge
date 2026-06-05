@@ -22,6 +22,7 @@ import {
   groupMatchesByTournament,
   playoffSectionsForMatches,
   tournamentsInMatches,
+  defaultMatchHubTab,
   type MatchTab,
 } from "@/lib/data/matches-hub";
 import {
@@ -31,8 +32,8 @@ import {
   isPublicScheduleMatch,
   getRecentMatches,
   buildPublicCalendarPool,
+  resolveMatchTeamName,
   getTierBPlusTournaments,
-  teamName,
 } from "@/lib/data";
 import { isPickemMatchOpen } from "@/lib/data/match-effective-status";
 import { getMatchPool } from "@/lib/data/match-pool";
@@ -48,7 +49,7 @@ export function MatchesView() {
   }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
-  const [tab, setTab] = useState<MatchTab>("upcoming");
+  const [tab, setTab] = useState<MatchTab>(() => defaultMatchHubTab(countHubMatches(displayable)));
   const [region, setRegion] = useState<Region | "all">("all");
   const [tournamentSlug, setTournamentSlug] = useState("all");
   const [query, setQuery] = useState("");
@@ -124,7 +125,7 @@ export function MatchesView() {
     tab === "live"
       ? "No hay partidos en directo ahora. Revisa Próximos o Resultados."
       : tab === "upcoming"
-        ? "Sin partidos próximos con estos filtros. Los MF futuros aparecen aquí cuando hay cruces confirmados o calendario previsto."
+        ? "Sin partidos próximos confirmados. Solo aparecen cruces reales (Liquipedia/CMS). Ejecuta sync o añade partidos en admin."
         : "Sin resultados con estos filtros.";
 
   return (
@@ -292,11 +293,11 @@ export function MatchesView() {
               <div className="bf-matches-hub-upsets-grid">
                 {upsets.map((m) => (
                   <Link key={m.id} href={`/matches/${m.id}`} className="bf-matches-hub-upset-card">
-                    <TeamLogo slug={m.teamASlug} name={teamName(m.teamASlug)} size={28} glow={false} />
+                    <TeamLogo slug={m.teamASlug} name={resolveMatchTeamName(m, "A")} size={28} glow={false} />
                     <span className="bf-matches-hub-upset-score">
                       {m.scoreA} – {m.scoreB}
                     </span>
-                    <TeamLogo slug={m.teamBSlug} name={teamName(m.teamBSlug)} size={28} glow={false} />
+                    <TeamLogo slug={m.teamBSlug} name={resolveMatchTeamName(m, "B")} size={28} glow={false} />
                     <span className="bp-chip bp-chip-gold">Upset</span>
                   </Link>
                 ))}
