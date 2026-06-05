@@ -4,11 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Radio, Target, Trophy } from "lucide-react";
 import type { Region } from "@/lib/types";
-import { useGame } from "@/contexts/GameContext";
-import { buildPredictionEvents } from "@/lib/data/predictions-build";
-import { predictChronologySort } from "@/lib/data/predictions-filters";
-import { buildAllPlayoffBrackets, enrichPrediction } from "@/lib/data/predictions-ui";
-import { PredictionsQuickVoteSection } from "@/components/platform/predictions/PredictionsQuickVoteSection";
 import { MatchesControls } from "@/components/platform/MatchesControls";
 import { MatchSpotlightCard } from "@/components/platform/MatchSpotlightCard";
 import { MatchHubRow } from "@/components/platform/MatchHubRow";
@@ -26,22 +21,17 @@ import {
   type MatchTab,
 } from "@/lib/data/matches-hub";
 import {
-  getMatch,
   isKnownTeamSlug,
-  isPickemMatchEligible,
-  isPublicScheduleMatch,
   getRecentMatches,
   buildPublicCalendarPool,
   resolveMatchTeamName,
   getTierBPlusTournaments,
 } from "@/lib/data";
-import { isPickemMatchOpen } from "@/lib/data/match-effective-status";
+import { getMatchEnrichment } from "@/lib/data/match-meta";
 import { getMatchPool } from "@/lib/data/match-pool";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
-import { getMatchEnrichment } from "@/lib/data/match-meta";
 
 export function MatchesView() {
-  const { aggregates, game } = useGame();
   const cms = useOptionalCmsRuntime();
   const displayable = useMemo(() => {
     const pool = cms?.matchPool ?? getMatchPool();
@@ -49,7 +39,7 @@ export function MatchesView() {
   }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
-  const [tab, setTab] = useState<MatchTab>(() => defaultMatchHubTab(countHubMatches(displayable)));
+  const [tab, setTab] = useState<MatchTab>(() => defaultMatchHubTab(counts));
   const [region, setRegion] = useState<Region | "all">("all");
   const [tournamentSlug, setTournamentSlug] = useState("all");
   const [query, setQuery] = useState("");
@@ -73,40 +63,6 @@ export function MatchesView() {
   const [tourQuery, setTourQuery] = useState("");
   const tierTours = useMemo(() => getTierBPlusTournaments(48), []);
 
-  const quickVoteEvents = useMemo(() => {
-    if (tab === "results") return [];
-    const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
-    const poolIds = new Set(
-      filterHubMatches(displayable, { tab, region, tournamentSlug, query }).map((m) => m.id),
-    );
-    return open
-      .filter((e) => poolIds.has(e.matchId))
-      .filter((e) => {
-        const m = getMatch(e.matchId);
-        if (m) return isPickemMatchEligible(m) && isPickemMatchOpen(m);
-        return isPickemMatchEligible({
-          id: e.matchId,
-          teamASlug: e.teamASlug,
-          teamBSlug: e.teamBSlug,
-          stage: e.stage,
-          scoreA: 0,
-          scoreB: 0,
-          tournamentSlug: e.tournamentSlug,
-          date: e.deadline,
-          status: "upcoming",
-          region: "GLOBAL",
-          format: "Bo3",
-        });
-      })
-      .map((e) => enrichPrediction(e, game?.votes ?? {}))
-      .sort(predictChronologySort);
-  }, [aggregates, game?.votes, displayable, tab, region, tournamentSlug, query]);
-
-  const quickVoteBrackets = useMemo(
-    () => buildAllPlayoffBrackets(quickVoteEvents),
-    [quickVoteEvents],
-  );
-
   const upsets = useMemo(
     () =>
       getRecentMatches(40)
@@ -125,7 +81,7 @@ export function MatchesView() {
     tab === "live"
       ? "No hay partidos en directo ahora. Revisa Próximos o Resultados."
       : tab === "upcoming"
-        ? "Sin partidos próximos confirmados en Liquipedia. Solo aparecen cruces oficiales — nada inventado."
+        ? "Sin partidos próximos confirmados en Liquipedia. Solo cruces oficiales con horario — nada inventado."
         : "Sin resultados con estos filtros.";
 
   return (
@@ -139,7 +95,7 @@ export function MatchesView() {
             Partidos <em>pro</em>
           </h1>
           <p className="bf-matches-hero-lead">
-            Directo, calendario y resultados del circuito. Filtra por región, torneo o club.
+            Calendario y resultados reales (Liquipedia). Las predicciones están en su sección aparte.
           </p>
         </div>
 
@@ -201,22 +157,6 @@ export function MatchesView() {
             </section>
           )}
 
-          {quickVoteEvents.length > 0 && (
-            <div className="bf-matches-hub-vote bf-predict-bsc">
-              <PredictionsQuickVoteSection
-                events={quickVoteEvents}
-                votes={game?.votes ?? {}}
-                brackets={quickVoteBrackets}
-                title="Predicción rápida"
-                hint="Todos los abiertos — cuartos 2×2; semis y final se desbloquean al votar."
-                compact
-              />
-              <p className="bf-matches-hub-vote-foot">
-                <Link href="/predictions">Centro de predicciones y bracket</Link>
-              </p>
-            </div>
-          )}
-
           <section className="bf-matches-hub-list" aria-labelledby="matches-list-title">
             <div className="bf-matches-hub-list-head">
               <h2 id="matches-list-title">
@@ -260,17 +200,22 @@ export function MatchesView() {
                     {(() => {
                       const sections = playoffSectionsForMatches(g.matches, tab);
                       const useSections = sections.some((s) =>
-                        ["quarter", "semi", "final", "grand_final"].includes(s.roundKey),
+                        ["quarter", "semi", "final"].includes(String(s.roundKey)),
                       );
                       if (!useSections) {
                         return g.matches.map((m) => <MatchHubRow key={m.id} match={m} />);
                       }
                       return sections.map((section) => (
-                        <div key={`${g.tournamentSlug}-${section.roundKey}`} className="bf-matches-hub-round">
+                        <div
+                          key={`${g.tournamentSlug}-${section.roundKey}`}
+                          className={`bf-matches-hub-round ${section.roundKey === "quarter" ? "is-quarters" : ""} ${section.roundKey === "semi" ? "is-semis" : ""} ${section.roundKey === "final" ? "is-final" : ""}`}
+                        >
                           <h3 className="bf-matches-hub-round-title">{section.label}</h3>
-                          {section.matches.map((m) => (
-                            <MatchHubRow key={m.id} match={m} />
-                          ))}
+                          <div className="bf-matches-hub-round-rows">
+                            {section.matches.map((m) => (
+                              <MatchHubRow key={m.id} match={m} />
+                            ))}
+                          </div>
                         </div>
                       ));
                     })()}

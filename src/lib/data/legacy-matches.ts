@@ -3,18 +3,37 @@ import { isBscCircuitSlug } from "./bsc-tournaments";
 import { bscMatches } from "./bsc-matches";
 import type { EsportsMatch } from "./esports-match-types";
 import { enrichMatchForPool } from "./match-pool-enrich";
-import { matchDedupeKey } from "./playoff-pool-normalize";
+import { matchContentKey, pickBetterMatch } from "./playoff-pool-normalize";
+import { inferPlayoffStagesInPool } from "./playoff-stage-infer";
 import { isSchedulableMatch } from "./pickem-eligibility";
+
+function upsertMatch(map: Map<string, EsportsMatch>, incoming: EsportsMatch): void {
+  const key = matchContentKey(incoming);
+  for (const [id, existing] of map) {
+    if (matchContentKey(existing) === key) {
+      const better = pickBetterMatch(existing, incoming);
+      map.delete(id);
+      map.set(better.id, better);
+      return;
+    }
+  }
+  map.set(incoming.id, incoming);
+}
 
 function buildMatches(): EsportsMatch[] {
   const wikiMatches = getBscEnrichedMatches().filter(
     (m) => isBscCircuitSlug(m.tournamentSlug) && isSchedulableMatch(m),
   );
-  const keys = new Set(wikiMatches.map(matchDedupeKey));
-  const manualFallback = bscMatches.filter(
-    (m) => isBscCircuitSlug(m.tournamentSlug) && isSchedulableMatch(m) && !keys.has(matchDedupeKey(m)),
-  );
-  const extra = [...wikiMatches, ...manualFallback].map(enrichMatchForPool);
+  const wikiInferred = inferPlayoffStagesInPool(wikiMatches);
+  const byContent = new Map<string, EsportsMatch>();
+  for (const m of wikiInferred) upsertMatch(byContent, m);
+
+  for (const m of bscMatches) {
+    if (!isBscCircuitSlug(m.tournamentSlug) || !isSchedulableMatch(m)) continue;
+    upsertMatch(byContent, m);
+  }
+
+  const extra = [...byContent.values()].map(enrichMatchForPool);
   return extra.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 

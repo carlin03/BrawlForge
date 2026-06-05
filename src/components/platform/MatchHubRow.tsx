@@ -27,6 +27,13 @@ export function MatchHubRow({ match }: { match: EsportsMatch }) {
   const teamB = getTeam(match.teamBSlug);
   const enrich = getMatchEnrichment(match);
   const date = new Date(match.date);
+  const scheduleLabel = date.toLocaleString("es-ES", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const timeLabel = live ? (
     <span className="bf-match-row-live">
@@ -42,7 +49,7 @@ export function MatchHubRow({ match }: { match: EsportsMatch }) {
       <strong>
         <MatchCountdown dateStr={match.date} />
       </strong>
-      <span>{date.toLocaleDateString("es-ES", { weekday: "short", day: "numeric" })}</span>
+      <span>{scheduleLabel}</span>
     </>
   );
 

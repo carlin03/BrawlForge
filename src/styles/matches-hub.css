@@ -561,6 +561,29 @@
   gap: 8px;
 }
 
+.bf-matches-hub-round-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bf-matches-hub-round.is-quarters .bf-matches-hub-round-rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .bf-matches-hub-round.is-quarters .bf-matches-hub-round-rows {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bf-matches-hub-round.is-semis .bf-matches-hub-round-title,
+.bf-matches-hub-round.is-final .bf-matches-hub-round-title {
+  color: var(--bp-gold, #fbbf24);
+}
+
 .bf-matches-hub-round {
   display: flex;
   flex-direction: column;

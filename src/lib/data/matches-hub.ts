@@ -132,40 +132,81 @@ export type MatchTournamentGroup = {
 };
 
 export type MatchPlayoffSection = {
-  roundKey: StageRoundKey;
+  roundKey: "quarter" | "semi" | "final" | StageRoundKey;
   label: string;
   matches: EsportsMatch[];
+  expectedCount: number;
 };
 
-/** Agrupa partidos de un torneo por ronda (cuartos → semis → final) para el hub. */
+const PLAYOFF_LABELS: Record<"quarter" | "semi" | "final", string> = {
+  quarter: "Cuartos de final",
+  semi: "Semifinales",
+  final: "Final",
+};
+
+const PLAYOFF_EXPECTED: Record<"quarter" | "semi" | "final", number> = {
+  quarter: 4,
+  semi: 2,
+  final: 1,
+};
+
+function bucketRoundKey(stage: string): "quarter" | "semi" | "final" | StageRoundKey {
+  const rk = getMatchStageMeta(stage).roundKey;
+  if (rk === "grand_final" || rk === "final") return "final";
+  if (rk === "quarter" || rk === "semi") return rk;
+  return rk;
+}
+
+/** Agrupa cuartos (4) → semis (2) → final (1) con etiquetas fijas. */
 export function playoffSectionsForMatches(
   matches: EsportsMatch[],
   tab: MatchTab,
 ): MatchPlayoffSection[] {
-  const order: StageRoundKey[] = [
-    "group",
-    "last_chance",
-    "other",
-    "quarter",
-    "semi",
-    "final",
-    "grand_final",
-  ];
-  const buckets = new Map<StageRoundKey, EsportsMatch[]>();
+  const prePlayoff: StageRoundKey[] = ["group", "last_chance", "other"];
+  const preBuckets = new Map<StageRoundKey, EsportsMatch[]>();
+  const playoffBuckets = new Map<"quarter" | "semi" | "final", EsportsMatch[]>([
+    ["quarter", []],
+    ["semi", []],
+    ["final", []],
+  ]);
+
   for (const m of matches) {
-    const key = getMatchStageMeta(m.stage).roundKey;
-    const arr = buckets.get(key) ?? [];
-    arr.push(m);
-    buckets.set(key, arr);
+    const rk = getMatchStageMeta(m.stage).roundKey;
+    if (rk === "quarter" || rk === "semi" || rk === "final" || rk === "grand_final") {
+      const bucket = bucketRoundKey(m.stage) as "quarter" | "semi" | "final";
+      playoffBuckets.get(bucket)!.push(m);
+    } else if (prePlayoff.includes(rk)) {
+      const arr = preBuckets.get(rk) ?? [];
+      arr.push(m);
+      preBuckets.set(rk, arr);
+    }
   }
-  return order
-    .filter((k) => (buckets.get(k)?.length ?? 0) > 0)
-    .map((roundKey) => {
-      const list = buckets.get(roundKey)!;
-      const sorted = [...list].sort((a, b) => compareHubMatches(a, b, tab));
-      const label = getMatchStageMeta(sorted[0]!.stage).fullLabel;
-      return { roundKey, label, matches: sorted };
+
+  const sections: MatchPlayoffSection[] = [];
+
+  for (const rk of prePlayoff) {
+    const list = preBuckets.get(rk);
+    if (!list?.length) continue;
+    sections.push({
+      roundKey: rk,
+      label: getMatchStageMeta(list[0]!.stage).fullLabel,
+      matches: [...list].sort((a, b) => compareHubMatches(a, b, tab)),
+      expectedCount: list.length,
     });
+  }
+
+  for (const rk of ["quarter", "semi", "final"] as const) {
+    const list = playoffBuckets.get(rk)!;
+    if (!list.length) continue;
+    sections.push({
+      roundKey: rk,
+      label: `${PLAYOFF_LABELS[rk]} · ${list.length}/${PLAYOFF_EXPECTED[rk]}`,
+      matches: [...list].sort((a, b) => compareHubMatches(a, b, tab)),
+      expectedCount: PLAYOFF_EXPECTED[rk],
+    });
+  }
+
+  return sections;
 }
 
 export function groupMatchesByTournament(list: EsportsMatch[], tab: MatchTab = "upcoming"): MatchTournamentGroup[] {
