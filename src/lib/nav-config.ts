@@ -4,6 +4,7 @@ export const MAIN_NAV = [
   { label: "Fantasy", href: "/fantasy", accent: "fantasy" as const },
   { label: "Predicciones", href: "/predictions", accent: "predict" as const },
   { label: "Partidos", href: "/matches" },
+  { label: "Esports", href: "/esport" },
   { label: "Torneos", href: "/tournaments" },
   { label: "Clubes", href: "/teams" },
   { label: "Rankings", href: "/rankings" },

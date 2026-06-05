@@ -76,6 +76,9 @@ export function TeamsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
         }
         actions={
           <>
+            <Link href="/esport" className="fu-btn fu-btn-ghost">
+              Esports stats
+            </Link>
             <Link href="/rankings" className="fu-btn fu-btn-ghost">
               Rankings
             </Link>

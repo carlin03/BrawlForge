@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { buildPredictionEvents } from "@/lib/data/predictions-build";
 import { predictChronologySort } from "@/lib/data/predictions-filters";
@@ -43,7 +43,6 @@ import {
   teams,
 } from "@/lib/data";
 import { isPickemMatchOpen } from "@/lib/data/match-effective-status";
-import { defaultMatchHubTab } from "@/lib/data/matches-hub";
 import { NewsCover } from "@/components/news/NewsCover";
 import { getHomeTournaments } from "@/lib/data/home-tournaments";
 import { hasTeamLogoSource } from "@/lib/data/png-logo-urls";
@@ -85,19 +84,7 @@ export function HomeView() {
   const mergedTeams = useMergedCircuitTeams(teams);
   const circuitTeamCount = useCatalogTeamCount();
   const { complete: completeClubs } = usePublicCircuitTeams(teams);
-  const [matchTab, setMatchTab] = useState<MatchTab>("upcoming");
-  const autoMatchTabDone = useRef(false);
-  useEffect(() => {
-    if (autoMatchTabDone.current) return;
-    autoMatchTabDone.current = true;
-    setMatchTab(
-      defaultMatchHubTab({
-        live: getLiveMatches().length,
-        upcoming: getUpcomingMatches().length,
-        results: getRecentMatches(200).length,
-      }),
-    );
-  }, []);
+  const [matchTab, setMatchTab] = useState<MatchTab>("results");
 
   const live = getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug));
   const squad = getUserSquadDisplay(DEFAULT_FANTASY_TOURNAMENT);

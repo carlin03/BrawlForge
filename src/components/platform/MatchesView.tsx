@@ -22,7 +22,6 @@ import {
   groupMatchesByTournament,
   playoffSectionsForMatches,
   tournamentsInMatches,
-  defaultMatchHubTab,
   type MatchTab,
 } from "@/lib/data/matches-hub";
 import {
@@ -49,7 +48,7 @@ export function MatchesView() {
   }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
-  const [tab, setTab] = useState<MatchTab>(() => defaultMatchHubTab(countHubMatches(displayable)));
+  const [tab, setTab] = useState<MatchTab>("results");
   const [region, setRegion] = useState<Region | "all">("all");
   const [tournamentSlug, setTournamentSlug] = useState("all");
   const [query, setQuery] = useState("");
