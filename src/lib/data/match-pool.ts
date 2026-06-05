@@ -3,8 +3,10 @@ import { isPickemMatchOpen, withEffectiveMatchStatus } from "./match-effective-s
 import { matchContentKey, matchDedupeKey, normalizePlayoffPool, pickBetterMatch } from "./playoff-pool-normalize";
 import { inferPlayoffStagesInPool } from "./playoff-stage-infer";
 import type { EsportsMatch } from "./esports-match-types";
+import { getOfficialUpcomingCalendarMatches } from "./bsc-calendar-upcoming";
 import { matches as legacyMatches } from "./legacy-matches";
 import { enrichMatchForPool } from "./match-pool-enrich";
+import { sanitizeMatchPoolTournamentSlugs } from "./tournament-slug-sanitize";
 
 let runtimePool: EsportsMatch[] | null = null;
 
@@ -51,9 +53,16 @@ function buildPublicMatchPool(base: EsportsMatch[]): EsportsMatch[] {
   for (const m of normalized) {
     mergeByDedupeKey(byId, m);
   }
-  return [...byId.values()]
-    .map((m) => enrichMatchForPool(withEffectiveMatchStatus(m)))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  for (const m of getOfficialUpcomingCalendarMatches([...byId.values()])) {
+    mergeByDedupeKey(byId, m);
+  }
+
+  return sanitizeMatchPoolTournamentSlugs(
+    [...byId.values()]
+      .map((m) => enrichMatchForPool(withEffectiveMatchStatus(m)))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+  );
 }
 
 export function getMatchPool(): EsportsMatch[] {

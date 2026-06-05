@@ -2,6 +2,8 @@ import type { Region } from "@/lib/types";
 import type { EsportsMatch } from "./esports-match-types";
 import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import { getEffectiveMatchStatus } from "./match-effective-status";
+import { parseMatchMeta } from "./match-meta";
+import { hasFinishedSeriesResults } from "./finish-match-results-enrich";
 import { isPublicScheduleMatch } from "./match-schedule-trust";
 import { getActivePlayers } from "./players";
 import { getTeamDisplayName } from "./team-display-resolve";
@@ -25,13 +27,28 @@ export type EsportLeaderboard = {
   mostMatches: TeamEsportStats[];
 };
 
+export type BrawlerEsportStat = {
+  name: string;
+  picks: number;
+  bans: number;
+  mvpMentions: number;
+};
+
+export type MapEsportStat = {
+  name: string;
+  plays: number;
+};
+
 export type EsportOverview = {
   teamCount: number;
   playerCount: number;
   matchCount: number;
+  matchesWithMeta: number;
   syncedFrom: "liquipedia" | "mixed";
   teams: TeamEsportStats[];
   leaderboards: EsportLeaderboard;
+  topBrawlers: BrawlerEsportStat[];
+  topMaps: MapEsportStat[];
 };
 
 const MIN_WR_SAMPLE = 3;
@@ -106,14 +123,71 @@ export function buildEsportAnalytics(pool: EsportsMatch[]): EsportOverview {
 
   const lpCount = finished.filter((m) => m.id.startsWith("lp-")).length;
 
+  const brawlerAcc = new Map<string, { picks: number; bans: number; mvpMentions: number }>();
+  const mapAcc = new Map<string, number>();
+  let matchesWithMeta = 0;
+
+  for (const m of finished) {
+    const meta = parseMatchMeta(m.meta);
+    if (!hasFinishedSeriesResults(meta)) continue;
+    matchesWithMeta += 1;
+
+    const adv = meta.advanced_predictions;
+    if (adv?.most_used_brawler) bumpBrawler(brawlerAcc, adv.most_used_brawler, "mvpMentions");
+    if (adv?.match_mvp_brawler) bumpBrawler(brawlerAcc, adv.match_mvp_brawler, "mvpMentions");
+    if (adv?.most_banned_brawler) bumpBrawler(brawlerAcc, adv.most_banned_brawler, "bans");
+
+    for (const row of Object.values(adv?.map_results ?? {})) {
+      for (const b of row.picks_a ?? []) bumpBrawler(brawlerAcc, b, "picks");
+      for (const b of row.picks_b ?? []) bumpBrawler(brawlerAcc, b, "picks");
+      for (const b of row.central_bans ?? []) bumpBrawler(brawlerAcc, b, "bans");
+      for (const b of row.team_bans_a ?? []) bumpBrawler(brawlerAcc, b, "bans");
+      for (const b of row.team_bans_b ?? []) bumpBrawler(brawlerAcc, b, "bans");
+    }
+
+    for (const entry of meta.maps?.played ?? []) {
+      if (entry.name) mapAcc.set(entry.name, (mapAcc.get(entry.name) ?? 0) + 1);
+    }
+  }
+
+  const topBrawlers = [...brawlerAcc.entries()]
+    .map(([name, row]) => ({
+      name,
+      picks: row.picks,
+      bans: row.bans,
+      mvpMentions: row.mvpMentions,
+    }))
+    .sort((a, b) => b.picks + b.mvpMentions * 2 - (a.picks + a.mvpMentions * 2))
+    .slice(0, 12);
+
+  const topMaps = [...mapAcc.entries()]
+    .map(([name, plays]) => ({ name, plays }))
+    .sort((a, b) => b.plays - a.plays)
+    .slice(0, 10);
+
   return {
     teamCount: teams.length,
     playerCount: getActivePlayers().length,
     matchCount: finished.length,
+    matchesWithMeta,
     syncedFrom: lpCount >= finished.length * 0.5 ? "liquipedia" : "mixed",
     teams,
     leaderboards: buildLeaderboards(teams),
+    topBrawlers,
+    topMaps,
   };
+}
+
+function bumpBrawler(
+  acc: Map<string, { picks: number; bans: number; mvpMentions: number }>,
+  name: string,
+  field: "picks" | "bans" | "mvpMentions",
+): void {
+  const key = name.trim();
+  if (!key) return;
+  const row = acc.get(key) ?? { picks: 0, bans: 0, mvpMentions: 0 };
+  row[field] += 1;
+  acc.set(key, row);
 }
 
 export function filterEsportTeamsByRegion(

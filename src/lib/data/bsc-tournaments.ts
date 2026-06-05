@@ -359,6 +359,8 @@ export const BSC_TOURNAMENT_ALIASES: Record<string, string> = {
   "bsc-2026-s3-emea-mf": "bsc-2026-april-emea-mf",
   "bsc-2026-s3-ea-mf": "bsc-2026-april-ea-mf",
   "bsc-2026-s3-na-mf": "bsc-2026-april-na-mf",
+  /** CMS/Supercell antiguo: partidos de mayo eran Brawl Cup, no Tokyo. */
+  "world-finals-2026-may": "bsc-2026-brawl-cup",
 };
 
 export const BSC_DEFAULT_LOGO = BSC_LOGO;

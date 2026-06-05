@@ -2,7 +2,7 @@ import type { EsportsMatch } from "./esports-match-types";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { getMatchPool } from "./match-pool";
 import { isDisplayableMatch } from "./pickem-eligibility";
-import { isPublicScheduleMatch } from "./match-schedule-trust";
+import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
 
 function homeMatchScore(m: EsportsMatch): number {
   let score = 0;
@@ -17,7 +17,11 @@ export function getCuratedHomeMatches(
   tab: "live" | "upcoming" | "results",
   limit = 8,
 ): EsportsMatch[] {
-  const all = getMatchPool().filter(isPublicScheduleMatch);
+  const base = getMatchPool();
+  const all =
+    tab === "upcoming"
+      ? base.filter(isPublicUpcomingCalendarMatch)
+      : base.filter(isPublicScheduleMatch);
   let pool: EsportsMatch[];
   if (tab === "live") {
     pool = all.filter((m) => getEffectiveMatchStatus(m) === "live");

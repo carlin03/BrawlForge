@@ -20,6 +20,8 @@ import { MatchWinnerDuel } from "@/components/match-esports/MatchWinnerDuel";
 import { MatchMapSeriesBoard } from "@/components/match-esports/MatchMapSeriesBoard";
 import { MatchMapAnalysisSection } from "@/components/match-esports/MatchMapAnalysisSection";
 import { MatchPredictionPointsBar } from "@/components/match-esports/MatchPredictionPointsBar";
+import { MatchCollapsibleSection } from "@/components/match-esports/MatchCollapsibleSection";
+import { extFromFinishedResults, finishedExactScore } from "@/lib/data/match-results-display";
 import { mapCountFromExactScore, resolveMatchMapOrder } from "@/lib/data/series-map-utils";
 import { pruneMapPredictionsForExactScore } from "@/lib/match-predictions-prune";
 import { useAuth } from "@/contexts/AuthContext";
@@ -91,11 +93,30 @@ export function MatchPredictionsCenter({
     [ext, game?.exactScores, match.id],
   );
 
-  const exactForMaps = extWithScore.exactScore;
+  const exactForMaps = closed ? finishedExactScore(match) : extWithScore.exactScore;
+  const displayExt = useMemo(() => {
+    if (!closed) return extWithScore;
+    const official = extFromFinishedResults(match, meta);
+    return {
+      ...official,
+      ...extWithScore,
+      exactScore: official.exactScore,
+      mapWinners: { ...official.mapWinners, ...extWithScore.mapWinners },
+      mapBrawlerPicks: { ...official.mapBrawlerPicks, ...extWithScore.mapBrawlerPicks },
+    };
+  }, [closed, extWithScore, match, meta]);
   const predictedMapCount = useMemo(
     () => mapCountFromExactScore(exactForMaps, match.format),
     [exactForMaps, match.format],
   );
+  const hasExtraPredictions =
+    cfg.exact_score ||
+    hasPerMapPredictions ||
+    cfg.mvp ||
+    cfg.brawler_mvp ||
+    cfg.brawler_most_used ||
+    cfg.brawler_most_banned ||
+    cfg.brawler_lowest_wr;
   const canShowMapPredictions =
     hasPerMapPredictions && predictedMapCount != null && predictedMapCount > 0;
 
@@ -145,90 +166,108 @@ export function MatchPredictionsCenter({
             </p>
           )}
 
-          {(showUnlocked || closed) && cfg.exact_score && (
-            <div className="bf-match-predict-exact-card">
-              <h4 className="bf-match-predict-subh">Resultado exacto</h4>
-              <p className="bf-match-predict-hint" style={{ margin: "0 0 10px" }}>
-                Más difícil que el ganador: hasta <strong>+{points.exact_score ?? 0} pts</strong> (ganador
-                +{points.winner ?? 0}). Si aciertas el marcador, también sumas el ganador.
-              </p>
-              <ScoreStepperPicker
-                matchId={match.id}
-                format={match.format}
-                teamASlug={match.teamASlug}
-                teamBSlug={match.teamBSlug}
-                teamAName={teamName(match.teamASlug)}
-                teamBName={teamName(match.teamBSlug)}
-                initialScore={exactForMaps}
-                disabled={closed}
-                pointsReward={points.exact_score}
-                onExactChange={(exact) => {
-                  const pruned = pruneMapPredictionsForExactScore(ext, exact ?? undefined, match.format);
-                  const next = patchMatchPrediction(match.id, {
-                    exactScore: exact ?? undefined,
-                    ...pruned,
-                  });
-                  setExt(next);
-                }}
-              />
-            </div>
-          )}
+          {(showUnlocked || closed) && hasExtraPredictions && (
+            <MatchCollapsibleSection
+              title="Predicciones extra"
+              subtitle={
+                closed
+                  ? "Tu marcador, mapas, MVP y brawlers vs resultado real"
+                  : "Marcador exacto, mapas, MVP y meta brawler"
+              }
+              badge={closed ? "Cerrado" : showUnlocked ? "Opcional" : undefined}
+              defaultOpen={false}
+              className="bf-match-predict-extra-fold"
+            >
+              {cfg.exact_score && (
+                <div className="bf-match-predict-exact-card">
+                  <h4 className="bf-match-predict-subh">Resultado exacto</h4>
+                  {!closed && (
+                    <p className="bf-match-predict-hint" style={{ margin: "0 0 10px" }}>
+                      Más difícil que el ganador: hasta <strong>+{points.exact_score ?? 0} pts</strong> (ganador
+                      +{points.winner ?? 0}). Si aciertas el marcador, también sumas el ganador.
+                    </p>
+                  )}
+                  <ScoreStepperPicker
+                    matchId={match.id}
+                    format={match.format}
+                    teamASlug={match.teamASlug}
+                    teamBSlug={match.teamBSlug}
+                    teamAName={teamName(match.teamASlug)}
+                    teamBName={teamName(match.teamBSlug)}
+                    initialScore={exactForMaps}
+                    disabled={closed}
+                    pointsReward={points.exact_score}
+                    onExactChange={(exact) => {
+                      const pruned = pruneMapPredictionsForExactScore(ext, exact ?? undefined, match.format);
+                      const next = patchMatchPrediction(match.id, {
+                        exactScore: exact ?? undefined,
+                        ...pruned,
+                      });
+                      setExt(next);
+                    }}
+                  />
+                </div>
+              )}
 
-          {(showUnlocked || closed) && hasPerMapPredictions && !canShowMapPredictions && !closed && (
-            <p className="bf-match-predict-hint is-full">
-              Elige un <strong>resultado exacto</strong> válido arriba para ver los mapas que debes
-              predecir (p. ej. 2-0 = 2 mapas, 2-1 = 3 mapas en BO3).
-            </p>
-          )}
+              {hasPerMapPredictions && !canShowMapPredictions && !closed && (
+                <p className="bf-match-predict-hint is-full">
+                  Elige un <strong>resultado exacto</strong> válido arriba para ver los mapas que debes
+                  predecir (p. ej. 2-0 = 2 mapas, 2-1 = 3 mapas en BO3).
+                </p>
+              )}
 
-          {(showUnlocked || closed) && canShowMapPredictions && (
-            <>
-              <h3 className="bf-match-map-series-title">Serie por mapas · {match.format}</h3>
-              <MatchMapSeriesBoard
-                match={match}
-                meta={meta}
-                ext={extWithScore}
-                points={points}
-                onPatch={patch}
-                interactive={!closed}
-              />
-            </>
-          )}
+              {canShowMapPredictions && (
+                <>
+                  <h3 className="bf-match-map-series-title">
+                    {closed ? "Serie jugada" : "Serie por mapas"} · {match.format}
+                  </h3>
+                  <MatchMapSeriesBoard
+                    match={match}
+                    meta={meta}
+                    ext={displayExt}
+                    points={points}
+                    onPatch={patch}
+                    interactive={!closed}
+                  />
+                </>
+              )}
 
-          {(showUnlocked || closed) && hasMain && (
-            <MatchMvpBrawlersRow
-              match={match}
-              meta={meta}
-              ext={ext}
-              matchBans={matchBans}
-              points={points}
-              showMvp={!!cfg.mvp}
-              showWr={!!cfg.brawler_mvp}
-              showMostUsed={!!cfg.brawler_most_used}
-              showMostBanned={!!cfg.brawler_most_banned}
-              showLowestWr={!!cfg.brawler_lowest_wr}
-              onPatch={patch}
-              disabled={closed}
-            />
-          )}
+              {hasMain && (
+                <MatchMvpBrawlersRow
+                  match={match}
+                  meta={meta}
+                  ext={displayExt}
+                  matchBans={matchBans}
+                  points={points}
+                  showMvp={!!cfg.mvp}
+                  showWr={!!cfg.brawler_mvp}
+                  showMostUsed={!!cfg.brawler_most_used}
+                  showMostBanned={!!cfg.brawler_most_banned}
+                  showLowestWr={!!cfg.brawler_lowest_wr}
+                  onPatch={patch}
+                  disabled={closed}
+                />
+              )}
 
-          {(showUnlocked || closed) && winnerPick && (
-            <MatchPointsBreakdown
-              match={match}
-              meta={meta}
-              ext={extWithScore}
-              winnerPick={winnerPick}
-              exactScoreVote={exactForMaps ?? game?.exactScores?.[match.id]}
-            />
-          )}
+              {winnerPick && (
+                <MatchPointsBreakdown
+                  match={match}
+                  meta={meta}
+                  ext={displayExt}
+                  winnerPick={winnerPick}
+                  exactScoreVote={exactForMaps ?? game?.exactScores?.[match.id]}
+                />
+              )}
 
-          {(showUnlocked || closed) && winnerPick && (
-            <MatchPredictionSaveBar
-              matchId={match.id}
-              winnerPick={winnerPick}
-              ext={extWithScore}
-              disabled={closed}
-            />
+              {winnerPick && !closed && (
+                <MatchPredictionSaveBar
+                  matchId={match.id}
+                  winnerPick={winnerPick}
+                  ext={displayExt}
+                  disabled={closed}
+                />
+              )}
+            </MatchCollapsibleSection>
           )}
 
         </div>
@@ -244,7 +283,7 @@ export function MatchPredictionsCenter({
       </section>
 
       {hasMapAnalysis && (showUnlocked || closed) && (
-        <MatchMapAnalysisSection match={match} meta={meta} ext={extWithScore} />
+        <MatchMapAnalysisSection match={match} meta={meta} ext={displayExt} />
       )}
 
       {(showUnlocked || closed) && winnerPick && (

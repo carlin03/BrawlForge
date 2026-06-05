@@ -2,6 +2,7 @@ import { shouldHideIncompletePlayoffRound } from "./bracket-playoff-sanitize";
 import { isPickemMatchOpen } from "./match-effective-status";
 import {
   isPickemTemplateMatch,
+  isPublicUpcomingCalendarMatch,
   isStaleTournamentUpcoming,
 } from "./match-schedule-trust";
 import type { EsportsMatch } from "./esports-match-types";
@@ -41,19 +42,17 @@ export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[]
   const byId = new Map<string, EsportsMatch>();
 
   for (const m of pool) {
+    if (isPickemTemplateMatch(m)) continue;
+    if (!isPublicUpcomingCalendarMatch(m)) continue;
     if (!pickemVisible(m, pool)) continue;
 
     const meta = getMatchStageMeta(m.stage || "");
     const fromAdmin = Boolean(m.stage?.trim());
 
-    if (isPickemTemplateMatch(m)) continue;
-
     if (fromAdmin || meta.isPlayoff || meta.roundKey === "group") {
       upsertPickem(byId, m, pool);
     }
   }
-
-  // Plantillas seed desactivadas — pick'em solo con calendario confirmado
 
   for (const m of extra) {
     upsertPickem(byId, m, pool);

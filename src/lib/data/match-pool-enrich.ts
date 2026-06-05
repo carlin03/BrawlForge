@@ -5,6 +5,9 @@ import {
   DEFAULT_MAP_POOL,
   parseMatchMeta,
 } from "./match-meta";
+import { enrichFinishedMatchResults } from "./finish-match-results-enrich";
+import { fixMislabeledWorldFinalsSlug } from "./tournament-slug-sanitize";
+import { getEffectiveMatchStatus } from "./match-effective-status";
 import {
   applyTemplateToMatchForm,
   DEFAULT_TOURNAMENT_MATCH_TEMPLATES,
@@ -13,6 +16,7 @@ import {
 
 /** Mapas, brawlers y puntos de predicción por defecto para todo partido público. */
 export function enrichMatchForPool(m: EsportsMatch): EsportsMatch {
+  m = fixMislabeledWorldFinalsSlug(m);
   let meta = applyDefaultPredictionsToMeta(parseMatchMeta(m.meta));
 
   if (m.id.startsWith("lp-") && meta.schedule_trust !== "template") {
@@ -46,6 +50,11 @@ export function enrichMatchForPool(m: EsportsMatch): EsportsMatch {
         most_used: meta.brawlers?.most_used ?? [...DEFAULT_BRAWLER_POOL.slice(0, 6)],
       },
     };
+  }
+
+  const effectiveStatus = getEffectiveMatchStatus({ ...m, meta, format });
+  if (effectiveStatus === "finished") {
+    meta = enrichFinishedMatchResults({ ...m, meta, format, status: effectiveStatus }, meta);
   }
 
   return { ...m, meta, format };

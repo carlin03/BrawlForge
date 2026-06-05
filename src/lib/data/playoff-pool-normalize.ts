@@ -43,10 +43,19 @@ function isPlayoffRound(rk: string): boolean {
   return rk === "quarter" || rk === "semi" || rk === "final" || rk === "grand_final";
 }
 
+function isFutureScheduled(m: EsportsMatch): boolean {
+  const t = new Date(m.date).getTime();
+  return !Number.isNaN(t) && t > Date.now();
+}
+
 /** Prefiere Liquipedia/CMS terminado; fusiona stage explícito del seed BSC. */
 export function pickBetterMatch(a: EsportsMatch, b: EsportsMatch): EsportsMatch {
   const sa = getEffectiveMatchStatus(a);
   const sb = getEffectiveMatchStatus(b);
+  const aFutureUp = sa === "upcoming" && isFutureScheduled(a);
+  const bFutureUp = sb === "upcoming" && isFutureScheduled(b);
+  if (aFutureUp && sb === "finished") return mergeStage(a, b);
+  if (bFutureUp && sa === "finished") return mergeStage(b, a);
   if (sa === "finished" && sb !== "finished") return mergeStage(a, b);
   if (sb === "finished" && sa !== "finished") return mergeStage(b, a);
   const scoreA = a.scoreA + a.scoreB;

@@ -19,7 +19,8 @@ const SETTINGS_KEY = "playoff_brackets";
 
 /** eventId Supercell → slug torneo BrawlForge */
 export const SUPERCELL_EVENT_TOURNAMENT: Record<string, string> = {
-  w4Lu1Ua9yIKv2ZBABn6oP: "world-finals-2026",
+  /** Brawl Cup 2026 (global, mayo) — no World Finals Tokyo. */
+  w4Lu1Ua9yIKv2ZBABn6oP: "bsc-2026-brawl-cup",
 };
 
 export type SupercellSyncResult = {

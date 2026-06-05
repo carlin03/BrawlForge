@@ -1,11 +1,14 @@
+import { getOfficialUpcomingCalendarMatches } from "./bsc-calendar-upcoming";
 import { BSC_UPCOMING_PREDICTION_MATCHES } from "./bsc-upcoming-predictions";
 import { BSC_TOURNAMENT_ALIASES, bsc2026Tournaments } from "./bsc-tournaments";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { isBracketPlaceholderSlug } from "./bracket-slot-display";
 import { isPendingTeamSlug, parseMatchMeta, type MatchMeta } from "./match-meta";
 import { enrichMatchForPool } from "./match-pool-enrich";
+import { fixMislabeledWorldFinalsSlug } from "./tournament-slug-sanitize";
 import { canonicalTournamentSlug } from "./playoff-pool-normalize";
 import { isSchedulableMatch } from "./team-display-resolve";
+import { getMatchStageMeta } from "./match-stage-meta";
 import type { EsportsMatch } from "./esports-match-types";
 
 function tournamentEndDate(slug: string): string | undefined {
@@ -26,6 +29,7 @@ export function isPickemTemplateId(id: string): boolean {
 
 export function isPickemTemplateMatch(m: EsportsMatch): boolean {
   const meta = parseMatchMeta(m.meta);
+  if (meta.schedule_trust === "confirmed") return false;
   if (meta.schedule_trust === "template") return true;
   if (meta.pickem_only === true) return true;
   return isPickemTemplateId(m.id);
@@ -58,21 +62,44 @@ export function isStaleTournamentUpcoming(m: EsportsMatch): boolean {
   return Date.now() > end + 24 * 60 * 60 * 1000;
 }
 
-/** Próximos/en vivo: solo calendario confirmado (Liquipedia, CMS, resultados reales). Sin plantillas inventadas. */
+function allowsPlayoffPlaceholderTeams(m: EsportsMatch): boolean {
+  const rk = getMatchStageMeta(m.stage).roundKey;
+  return rk === "semi" || rk === "final" || rk === "grand_final";
+}
+
+/** Próximos/en vivo: calendario confirmado + slots de bracket (semis/final). */
 export function isPublicUpcomingCalendarMatch(m: EsportsMatch): boolean {
   if (isPickemTemplateMatch(m)) return false;
   if (isStaleTournamentUpcoming(m)) return false;
-  if (isPendingTeamSlug(m.teamASlug) || isPendingTeamSlug(m.teamBSlug)) return false;
-  if (isBracketPlaceholderSlug(m.teamASlug) || isBracketPlaceholderSlug(m.teamBSlug)) return false;
-  if (!isSchedulableMatch(m)) return false;
+  const meta = parseMatchMeta(m.meta);
+  const confirmed = meta.schedule_trust === "confirmed";
+
+  const hasBracketSlot =
+    isBracketPlaceholderSlug(m.teamASlug) || isBracketPlaceholderSlug(m.teamBSlug);
+  const bothTbd =
+    isPendingTeamSlug(m.teamASlug) &&
+    isPendingTeamSlug(m.teamBSlug) &&
+    !hasBracketSlot;
+  if (bothTbd) return false;
+
+  const placeholderOk =
+    confirmed && allowsPlayoffPlaceholderTeams(m) && hasBracketSlot;
+
+  if (!placeholderOk) {
+    if (hasBracketSlot) return false;
+    if (!isSchedulableMatch(m)) return false;
+  }
+
   const status = getEffectiveMatchStatus(m);
   if (status !== "upcoming" && status !== "live") return false;
+
+  if (confirmed) return true;
   return isPublicScheduleMatch(m);
 }
 
 /** Pool unificado para /matches: resultados + próximos confirmados (Liquipedia/CMS). Sin seed pick'em. */
 export function buildPublicCalendarPool(basePool: EsportsMatch[]): EsportsMatch[] {
-  const pool = basePool.map(enrichMatchForPool);
+  const pool = basePool.map(enrichMatchForPool).map(fixMislabeledWorldFinalsSlug);
   const byId = new Map<string, EsportsMatch>();
 
   for (const m of pool) {
@@ -82,6 +109,11 @@ export function buildPublicCalendarPool(basePool: EsportsMatch[]): EsportsMatch[
   }
 
   for (const m of pool) {
+    if (!isPublicUpcomingCalendarMatch(m)) continue;
+    byId.set(m.id, m);
+  }
+
+  for (const m of getOfficialUpcomingCalendarMatches(pool)) {
     if (!isPublicUpcomingCalendarMatch(m)) continue;
     byId.set(m.id, m);
   }

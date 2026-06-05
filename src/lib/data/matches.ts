@@ -12,7 +12,8 @@ import { isValidLogoSlug } from "./logo-slugs";
 import { normalizeParticipantList } from "./catalog";
 import { sanitizePublicWebsite } from "@/lib/sanitize-liquipedia";
 import { getMatchPool } from "./match-pool";
-import { isPublicScheduleMatch } from "./match-schedule-trust";
+import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
+import { getEffectiveMatchStatus } from "./match-effective-status";
 import { isPendingTeamSlug } from "./match-meta";
 import { getMatchStageMeta } from "./match-stage-meta";
 
@@ -249,7 +250,12 @@ export function getLiveMatches(): EsportsMatch[] {
 
 export function getUpcomingMatches(): EsportsMatch[] {
   return [...getMatchPool()]
-    .filter((m) => isPublicScheduleMatch(m) && (m.status === "upcoming" || m.status === "live"))
+    .filter((m) => {
+      const status = getEffectiveMatchStatus(m);
+      return (
+        isPublicUpcomingCalendarMatch(m) && (status === "upcoming" || status === "live")
+      );
+    })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 

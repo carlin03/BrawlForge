@@ -8,6 +8,8 @@ import { MatchPickemBracketBanner } from "@/components/match-esports/MatchPickem
 import { MatchPredictionsCenter } from "@/components/match-esports/MatchPredictionsCenter";
 import { MatchStatsVisual } from "@/components/match-esports/MatchStatsVisual";
 import { MatchFinishedRecap } from "@/components/match-esports/MatchFinishedRecap";
+import { MatchFinishedSeriesStats } from "@/components/match-esports/MatchFinishedSeriesStats";
+import { MatchMapsVisual } from "@/components/match-esports/MatchMapsVisual";
 import { useGame } from "@/contexts/GameContext";
 
 export function MatchEsportsExperience({ match }: { match: EsportsMatch }) {
@@ -20,7 +22,18 @@ export function MatchEsportsExperience({ match }: { match: EsportsMatch }) {
     <div className="bf-match-esports">
       <MatchCompetitiveNarrative match={effective} />
       <MatchStatsVisual match={effective} />
-      {finished && <MatchFinishedRecap match={effective} meta={meta} />}
+      {finished && (
+        <>
+          <MatchFinishedSeriesStats match={effective} meta={meta} />
+          <MatchMapsVisual
+            meta={meta}
+            format={effective.format}
+            teamASlug={effective.teamASlug}
+            teamBSlug={effective.teamBSlug}
+          />
+          <MatchFinishedRecap match={effective} meta={meta} />
+        </>
+      )}
       <MatchPickemBracketBanner match={effective} />
       <MatchPredictionsCenter match={effective} meta={meta} aggregates={aggregates} />
     </div>

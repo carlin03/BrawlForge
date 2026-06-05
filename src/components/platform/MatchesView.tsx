@@ -81,7 +81,7 @@ export function MatchesView() {
     tab === "live"
       ? "No hay partidos en directo ahora. Revisa Próximos o Resultados."
       : tab === "upcoming"
-        ? "Sin partidos próximos confirmados en Liquipedia. Solo cruces oficiales con horario — nada inventado."
+        ? "Sin partidos próximos con estos filtros. Revisa Resultados o quita el filtro de torneo."
         : "Sin resultados con estos filtros.";
 
   return (

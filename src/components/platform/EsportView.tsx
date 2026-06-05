@@ -16,7 +16,9 @@ import {
   type EsportSortKey,
   type TeamEsportStats,
 } from "@/lib/data/esport-analytics";
+import { buildPublicCalendarPool } from "@/lib/data/match-schedule-trust";
 import { getMatchPool } from "@/lib/data/match-pool";
+import { BrawlerAssetIcon } from "@/components/match-esports/BrawlerAssetIcon";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
@@ -63,10 +65,10 @@ function LeaderboardCard({
 
 export function EsportView() {
   const cms = useOptionalCmsRuntime();
-  const overview = useMemo(
-    () => buildEsportAnalytics(cms?.matchPool ?? getMatchPool()),
-    [cms?.matchPool],
-  );
+  const overview = useMemo(() => {
+    const base = cms?.matchPool ?? getMatchPool();
+    return buildEsportAnalytics(buildPublicCalendarPool(base));
+  }, [cms?.matchPool]);
 
   const [region, setRegion] = useState<Region | "all">("all");
   const [query, setQuery] = useState("");
@@ -130,6 +132,11 @@ export function EsportView() {
             <b>{overview.matchCount}</b>
             <span>Partidos</span>
           </div>
+          <div className="bf-esport-stat">
+            <BarChart3 size={18} aria-hidden />
+            <b>{overview.matchesWithMeta}</b>
+            <span>Con meta</span>
+          </div>
         </div>
 
         <div className="bf-esport-hero-actions">
@@ -163,6 +170,47 @@ export function EsportView() {
         <LeaderboardCard title="Más victorias" rows={scopedLeaderboards.mostWins} metric="wins" />
         <LeaderboardCard title="Más partidos" rows={scopedLeaderboards.mostMatches} metric="matches" />
       </div>
+
+      {(overview.topBrawlers.length > 0 || overview.topMaps.length > 0) && (
+        <div className="bf-esport-meta-grid">
+          {overview.topBrawlers.length > 0 && (
+            <section className="bf-esport-meta-panel">
+              <h2>Brawlers más jugados</h2>
+              <p className="bf-esport-meta-lead">
+                Picks y MVP agregados de {overview.matchesWithMeta} partidos con estadísticas.
+              </p>
+              <ul className="bf-esport-brawler-list">
+                {overview.topBrawlers.map((b) => (
+                  <li key={b.name}>
+                    <BrawlerAssetIcon name={b.name} size={48} variant="meta" />
+                    <div>
+                      <strong>{b.name}</strong>
+                      <span>
+                        {b.picks} picks · {b.bans} bans
+                        {b.mvpMentions > 0 ? ` · ${b.mvpMentions} MVP` : ""}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {overview.topMaps.length > 0 && (
+            <section className="bf-esport-meta-panel">
+              <h2>Mapas más jugados</h2>
+              <p className="bf-esport-meta-lead">Frecuencia en series finalizadas del circuito BSC.</p>
+              <ul className="bf-esport-map-list">
+                {overview.topMaps.map((m) => (
+                  <li key={m.name}>
+                    <strong>{m.name}</strong>
+                    <span>{m.plays} mapas</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+      )}
 
       <section className="bf-esport-table-section" aria-labelledby="esport-teams-title">
         <div className="bf-esport-table-head">

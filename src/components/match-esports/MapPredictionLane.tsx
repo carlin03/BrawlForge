@@ -54,9 +54,22 @@ export function MapPredictionLane({
 }) {
   const { maps: mapCatalog } = useGameAssetsCatalog();
   const mapEntry = resolveMapForMatch(slot.name, meta, mapCatalog);
-  const picks = ext.mapBrawlerPicks?.[slot.index];
-  const bans = ext.mapBrawlerBans?.[slot.index] ?? [];
-  const teamBans = normalizeMapTeamBans(ext)[slot.index] ?? { a: [], b: [] };
+  const official = meta.advanced_predictions?.map_results?.[String(slot.index)];
+  const picks =
+    ext.mapBrawlerPicks?.[slot.index] ??
+    (official?.picks_a?.length || official?.picks_b?.length
+      ? { a: official.picks_a ?? [], b: official.picks_b ?? [] }
+      : undefined);
+  const bans =
+    ext.mapBrawlerBans?.[slot.index] ??
+    (official?.central_bans?.length ? official.central_bans : []);
+  const teamBans =
+    normalizeMapTeamBans(ext)[slot.index] ??
+    (official?.team_bans_a?.length || official?.team_bans_b?.length
+      ? { a: official.team_bans_a ?? [], b: official.team_bans_b ?? [] }
+      : { a: [], b: [] });
+  const mapWinner =
+    ext.mapWinners?.[slot.index] ?? official?.winner ?? null;
   const teamA = teamName(match.teamASlug);
   const teamB = teamName(match.teamBSlug);
 
@@ -103,15 +116,15 @@ export function MapPredictionLane({
               teamBSlug={match.teamBSlug}
               teamAName={teamA}
               teamBName={teamB}
-              value={ext.mapWinners?.[slot.index] ?? null}
+              value={mapWinner}
               onChange={(v) => v && onMapWinner(v)}
               showVs
               inline
             />
-          ) : ext.mapWinners?.[slot.index] ? (
+          ) : mapWinner ? (
             <p className="bf-map-pred-readonly">
               {teamName(
-                ext.mapWinners[slot.index] === "A" ? match.teamASlug : match.teamBSlug,
+                mapWinner === "A" ? match.teamASlug : match.teamBSlug,
               )}
             </p>
           ) : (
