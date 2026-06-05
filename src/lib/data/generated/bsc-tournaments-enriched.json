@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-05-29T09:56:59.922Z",
+  "syncedAt": "2026-06-05T20:29:26.535Z",
   "source": "liquipedia.net/brawlstars",
   "tournaments": {
     "bsc-2026-brawl-cup": {
@@ -38,7 +38,7 @@
       ],
       "matchCount": 19,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:55.341Z"
+      "syncedAt": "2026-06-05T20:29:19.645Z"
     },
     "bsc-2026-rtbc-sa-west": {
       "slug": "bsc-2026-rtbc-sa-west",
@@ -73,7 +73,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:55.342Z"
+      "syncedAt": "2026-06-05T20:29:19.647Z"
     },
     "bsc-2026-challengers-dach": {
       "slug": "bsc-2026-challengers-dach",
@@ -139,7 +139,25 @@
       "slug": "world-finals-2026",
       "liquipediaPage": "Brawl_Stars_World_Finals/2026",
       "liquipediaUrl": "https://liquipedia.net/brawlstars/Brawl_Stars_World_Finals/2026",
-      "missing": true
+      "name": "Brawl Stars World Finals 2026",
+      "shortName": "WF 2026",
+      "prizePool": "$1,000,000",
+      "startDate": "2026-11-20",
+      "endDate": "2026-11-22",
+      "location": "Tokyo, Japan",
+      "city": "Tokyo",
+      "country": "Japan",
+      "type": "Offline",
+      "organizer": "Supercell",
+      "liquipediaTier": 1,
+      "teamCount": 12,
+      "series": "World Finals",
+      "website": "https://event.brawlstars.com",
+      "status": "upcoming",
+      "participantSlugs": [],
+      "matchCount": 0,
+      "prizeBreakdown": [],
+      "syncedAt": "2026-06-05T20:29:19.647Z"
     },
     "bsc-2026-psi-emea": {
       "slug": "bsc-2026-psi-emea",
@@ -170,7 +188,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:55.343Z"
+      "syncedAt": "2026-06-05T20:29:19.648Z"
     },
     "bsc-2026-psi-ea": {
       "slug": "bsc-2026-psi-ea",
@@ -201,7 +219,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:55.343Z"
+      "syncedAt": "2026-06-05T20:29:19.648Z"
     },
     "bsc-2026-psi-na": {
       "slug": "bsc-2026-psi-na",
@@ -233,7 +251,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:55.344Z"
+      "syncedAt": "2026-06-05T20:29:19.649Z"
     },
     "bsc-2026-psi-sa": {
       "slug": "bsc-2026-psi-sa",
@@ -264,7 +282,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:55.344Z"
+      "syncedAt": "2026-06-05T20:29:19.650Z"
     },
     "bsc-2026-cn-february-mf": {
       "slug": "bsc-2026-cn-february-mf",
@@ -328,7 +346,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.645Z"
+      "syncedAt": "2026-06-05T20:29:23.549Z"
     },
     "bsc-2026-february-ea-mf": {
       "slug": "bsc-2026-february-ea-mf",
@@ -367,7 +385,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.646Z"
+      "syncedAt": "2026-06-05T20:29:23.550Z"
     },
     "bsc-2026-february-na-mf": {
       "slug": "bsc-2026-february-na-mf",
@@ -406,7 +424,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.646Z"
+      "syncedAt": "2026-06-05T20:29:23.551Z"
     },
     "bsc-2026-february-sa-mf": {
       "slug": "bsc-2026-february-sa-mf",
@@ -445,7 +463,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.647Z"
+      "syncedAt": "2026-06-05T20:29:23.552Z"
     },
     "bsc-2026-march-emea-mf": {
       "slug": "bsc-2026-march-emea-mf",
@@ -484,7 +502,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.647Z"
+      "syncedAt": "2026-06-05T20:29:23.552Z"
     },
     "bsc-2026-march-ea-mf": {
       "slug": "bsc-2026-march-ea-mf",
@@ -523,7 +541,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.648Z"
+      "syncedAt": "2026-06-05T20:29:23.553Z"
     },
     "bsc-2026-march-na-mf": {
       "slug": "bsc-2026-march-na-mf",
@@ -563,7 +581,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.649Z"
+      "syncedAt": "2026-06-05T20:29:23.555Z"
     },
     "bsc-2026-march-sa-mf": {
       "slug": "bsc-2026-march-sa-mf",
@@ -602,7 +620,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.650Z"
+      "syncedAt": "2026-06-05T20:29:23.556Z"
     },
     "bsc-2026-april-emea-mf": {
       "slug": "bsc-2026-april-emea-mf",
@@ -633,7 +651,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.651Z"
+      "syncedAt": "2026-06-05T20:29:23.557Z"
     },
     "bsc-2026-april-ea-mf": {
       "slug": "bsc-2026-april-ea-mf",
@@ -664,7 +682,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.651Z"
+      "syncedAt": "2026-06-05T20:29:23.558Z"
     },
     "bsc-2026-april-na-mf": {
       "slug": "bsc-2026-april-na-mf",
@@ -695,7 +713,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.652Z"
+      "syncedAt": "2026-06-05T20:29:23.559Z"
     },
     "bsc-2026-april-sa-mf": {
       "slug": "bsc-2026-april-sa-mf",
@@ -726,7 +744,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.652Z"
+      "syncedAt": "2026-06-05T20:29:23.560Z"
     },
     "bsc-2026-may-emea-mf": {
       "slug": "bsc-2026-may-emea-mf",
@@ -748,7 +766,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.652Z"
+      "syncedAt": "2026-06-05T20:29:23.561Z"
     },
     "bsc-2026-may-ea-mf": {
       "slug": "bsc-2026-may-ea-mf",
@@ -770,7 +788,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.652Z"
+      "syncedAt": "2026-06-05T20:29:23.562Z"
     },
     "bsc-2026-may-na-mf": {
       "slug": "bsc-2026-may-na-mf",
@@ -792,7 +810,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.653Z"
+      "syncedAt": "2026-06-05T20:29:23.562Z"
     },
     "bsc-2026-may-sa-mf": {
       "slug": "bsc-2026-may-sa-mf",
@@ -814,7 +832,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.653Z"
+      "syncedAt": "2026-06-05T20:29:23.563Z"
     },
     "bsc-2026-june-emea-mf": {
       "slug": "bsc-2026-june-emea-mf",
@@ -836,7 +854,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:57.653Z"
+      "syncedAt": "2026-06-05T20:29:23.563Z"
     },
     "bsc-2026-june-ea-mf": {
       "slug": "bsc-2026-june-ea-mf",
@@ -858,7 +876,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:59.920Z"
+      "syncedAt": "2026-06-05T20:29:26.533Z"
     },
     "bsc-2026-june-na-mf": {
       "slug": "bsc-2026-june-na-mf",
@@ -880,7 +898,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:59.920Z"
+      "syncedAt": "2026-06-05T20:29:26.533Z"
     },
     "bsc-2026-june-sa-mf": {
       "slug": "bsc-2026-june-sa-mf",
@@ -902,7 +920,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:59.921Z"
+      "syncedAt": "2026-06-05T20:29:26.533Z"
     },
     "bsc-2026-july-emea-mf": {
       "slug": "bsc-2026-july-emea-mf",
@@ -924,7 +942,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:59.921Z"
+      "syncedAt": "2026-06-05T20:29:26.534Z"
     },
     "bsc-2026-july-ea-mf": {
       "slug": "bsc-2026-july-ea-mf",
@@ -946,7 +964,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:59.921Z"
+      "syncedAt": "2026-06-05T20:29:26.534Z"
     },
     "bsc-2026-july-na-mf": {
       "slug": "bsc-2026-july-na-mf",
@@ -968,7 +986,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:59.921Z"
+      "syncedAt": "2026-06-05T20:29:26.534Z"
     },
     "bsc-2026-july-sa-mf": {
       "slug": "bsc-2026-july-sa-mf",
@@ -990,7 +1008,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-05-29T09:56:59.922Z"
+      "syncedAt": "2026-06-05T20:29:26.534Z"
     },
     "bsc-2026-august-emea-mf": {
       "slug": "bsc-2026-august-emea-mf",
@@ -1029,7 +1047,14 @@
       "date": "2026-05-15T13:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Bounty Hunters Esports",
+          "b": "hmble"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-bounty-hunters-esports-vs-ace-xero-2026-05-15",
@@ -1042,7 +1067,14 @@
       "date": "2026-05-15T14:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Bounty Hunters Esports",
+          "b": "ace xero"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-hmble-vs-ace-xero-2026-05-15",
@@ -1055,7 +1087,14 @@
       "date": "2026-05-15T15:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "hmble",
+          "b": "ace xero"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-only-realm-vs-zeta-division-2026-05-15",
@@ -1068,7 +1107,14 @@
       "date": "2026-05-15T16:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Only Realm",
+          "b": "Zeta Division"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-only-realm-vs-bc-gaming-sa-2026-05-15",
@@ -1081,7 +1127,14 @@
       "date": "2026-05-15T16:45Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "only realm",
+          "b": "BC* Gaming SA"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-zeta-division-vs-bc-gaming-sa-2026-05-15",
@@ -1094,7 +1147,14 @@
       "date": "2026-05-15T17:30Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Zeta Division",
+          "b": "BC* Gaming SA"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-crazy-raccoon-vs-eternal-esports-2026-05-16",
@@ -1107,7 +1167,14 @@
       "date": "2026-05-16T13:30Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "eternal esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-crazy-raccoon-vs-revenant-xspark-2026-05-16",
@@ -1120,7 +1187,14 @@
       "date": "2026-05-16T14:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "Revenant XSpark"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-eternal-esports-vs-revenant-xspark-2026-05-16",
@@ -1133,7 +1207,14 @@
       "date": "2026-05-16T15:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Eternal Esports",
+          "b": "Revenant XSpark"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-fut-esports-vs-tribe-gaming-2026-05-16",
@@ -1146,7 +1227,14 @@
       "date": "2026-05-16T15:30Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "fut esports",
+          "b": "tribe gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-fut-esports-vs-toxic-lotus-2026-05-16",
@@ -1159,7 +1247,14 @@
       "date": "2026-05-16T16:45Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "fut esports",
+          "b": "toxic lotus"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-tribe-gaming-vs-toxic-lotus-2026-05-16",
@@ -1172,7 +1267,14 @@
       "date": "2026-05-16T17:30Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "tribe gaming",
+          "b": "toxic lotus"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-hmble-vs-only-realm-2026-05-17",
@@ -1185,7 +1287,14 @@
       "date": "2026-05-17T13:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Hmble",
+          "b": "only realm"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-tribe-gaming-vs-revenant-xspark-2026-05-17",
@@ -1198,7 +1307,14 @@
       "date": "2026-05-17T14:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "tribe gaming",
+          "b": "Revenant XSpark"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-zeta-division-vs-bounty-hunters-esports-2026-05-17",
@@ -1211,7 +1327,14 @@
       "date": "2026-05-17T15:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "ZETA Division",
+          "b": "bounty hunters esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-crazy-raccoon-vs-fut-esports-2026-05-17",
@@ -1224,7 +1347,14 @@
       "date": "2026-05-17T15:30Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "fut esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-hmble-vs-tribe-gaming-2026-05-17",
@@ -1237,7 +1367,14 @@
       "date": "2026-05-17T16:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Hmble",
+          "b": "Tribe Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-zeta-division-vs-fut-esports-2026-05-17",
@@ -1250,7 +1387,14 @@
       "date": "2026-05-17T17:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "ZETA Division",
+          "b": "FUT Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-brawl-cup-hmble-vs-fut-esports-2026-05-17",
@@ -1263,7 +1407,14 @@
       "date": "2026-05-17T17:30Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Hmble",
+          "b": "FUT Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-emea-hmble-vs-team-heretics-2026-01-24",
@@ -1276,7 +1427,14 @@
       "date": "2026-01-24T14:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "HMBLE",
+          "b": "Team Heretics"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-emea-sk-gaming-vs-totem-esports-2026-01-24",
@@ -1289,7 +1447,14 @@
       "date": "2026-01-24T15:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "sk gaming",
+          "b": "totem esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-emea-hmble-vs-sk-gaming-2026-01-24",
@@ -1302,7 +1467,14 @@
       "date": "2026-01-24T16:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "HMBLE",
+          "b": "sk gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-ea-crazy-raccoon-vs-legend-ken-g-2026-01-24",
@@ -1315,7 +1487,14 @@
       "date": "2026-01-24T19:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "Legend Ken-G"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-ea-accept-vs-skcalalas-ea-2026-01-24",
@@ -1328,7 +1507,14 @@
       "date": "2026-01-24T20:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Accept",
+          "b": "SKCalalas EA"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-ea-legend-ken-g-vs-skcalalas-ea-2026-01-24",
@@ -1341,7 +1527,14 @@
       "date": "2026-01-24T20:45Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Legend Ken-G",
+          "b": "SKCalalas EA"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-na-tribe-gaming-vs-stmn-esports-2026-01-25",
@@ -1354,7 +1547,14 @@
       "date": "2026-01-25T14:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "tribe gaming",
+          "b": "stmn esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-na-vatic-esports-vs-kds-esports-2026-01-25",
@@ -1367,7 +1567,14 @@
       "date": "2026-01-25T14:45Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "vatic esports",
+          "b": "kds esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-na-stmn-vs-vatic-esports-2026-01-25",
@@ -1380,7 +1587,14 @@
       "date": "2026-01-25T15:30Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "STMN",
+          "b": "Vatic Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-sa-loud-vs-kaioperro-2026-01-25",
@@ -1393,7 +1607,14 @@
       "date": "2026-01-25T20:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Loud",
+          "b": "KaioPerro"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-sa-skcalalas-vs-eternal-esports-2026-01-25",
@@ -1406,7 +1627,14 @@
       "date": "2026-01-25T21:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Skcalalas",
+          "b": "eternal esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-psi-sa-loud-vs-eternal-esports-2026-01-25",
@@ -1419,7 +1647,14 @@
       "date": "2026-01-25T22:00Z",
       "status": "finished",
       "region": "GLOBAL",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "loud",
+          "b": "eternal esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-emea-mf-sk-gaming-vs-cmm-2026-02-15",
@@ -1432,7 +1667,14 @@
       "date": "2026-02-15T13:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SK Gaming",
+          "b": "CMM"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-emea-mf-team-heretics-vs-fut-esports-2026-02-15",
@@ -1445,7 +1687,14 @@
       "date": "2026-02-15T14:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Team Heretics",
+          "b": "Fut Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-emea-mf-hmble-vs-big-2026-02-15",
@@ -1458,7 +1707,14 @@
       "date": "2026-02-15T15:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Hmble",
+          "b": "Big"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-emea-mf-totem-esports-vs-natus-vincere-2026-02-15",
@@ -1471,7 +1727,14 @@
       "date": "2026-02-15T16:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "totem esports",
+          "b": "navi"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-emea-mf-cmm-vs-fut-esports-2026-02-15",
@@ -1484,7 +1747,14 @@
       "date": "2026-02-15T17:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "CMM",
+          "b": "FUT Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-emea-mf-hmble-vs-totem-2026-02-15",
@@ -1497,7 +1767,14 @@
       "date": "2026-02-15T17:30Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "HMBLE",
+          "b": "Totem"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-emea-mf-fut-esports-vs-hmble-2026-02-15",
@@ -1510,7 +1787,14 @@
       "date": "2026-02-15T18:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "FUT Esports",
+          "b": "HMBLE"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-ea-mf-zeta-division-vs-effort-result-2026-02-14",
@@ -1523,7 +1807,14 @@
       "date": "2026-02-14T16:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "ZETA Division",
+          "b": "Effort Result"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-ea-mf-skcalalas-ea-vs-rival-esports-2026-02-14",
@@ -1536,7 +1827,14 @@
       "date": "2026-02-14T17:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas EA",
+          "b": "Rival Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-ea-mf-reject-vs-wwl-esports-2026-02-14",
@@ -1549,7 +1847,14 @@
       "date": "2026-02-14T18:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "REJECT",
+          "b": "WWL Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-ea-mf-crazy-raccoon-vs-abc-ea-team-2026-02-14",
@@ -1562,7 +1867,14 @@
       "date": "2026-02-14T19:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "ABC (EA Team)"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-ea-mf-zeta-division-vs-rival-esports-2026-02-14",
@@ -1575,7 +1887,14 @@
       "date": "2026-02-14T19:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Zeta Division",
+          "b": "Rival Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-ea-mf-wwl-esports-vs-abc-ea-team-2026-02-14",
@@ -1588,7 +1907,14 @@
       "date": "2026-02-14T20:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "WWL Esports",
+          "b": "ABC (EA Team)"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-ea-mf-zeta-division-vs-abc-ea-team-2026-02-14",
@@ -1601,7 +1927,14 @@
       "date": "2026-02-14T20:55Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Zeta Division",
+          "b": "ABC (EA Team)"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-na-mf-tribe-gaming-vs-elevate-2026-02-22",
@@ -1614,7 +1947,14 @@
       "date": "2026-02-22T20:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "tribe gaming",
+          "b": "elevate"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-na-mf-team-elektros-vs-vatic-esports-2026-02-22",
@@ -1627,7 +1967,14 @@
       "date": "2026-02-22T21:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "team elektros",
+          "b": "vatic esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-na-mf-kds-esports-vs-only-realm-2026-02-22",
@@ -1640,7 +1987,14 @@
       "date": "2026-02-22T21:30Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "kds esports",
+          "b": "only Realm"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-na-mf-stmn-vs-crows-nest-esports-2026-02-22",
@@ -1653,7 +2007,14 @@
       "date": "2026-02-22T22:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "stmn",
+          "b": "Crows nest esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-na-mf-tribe-gaming-vs-team-elektros-2026-02-22",
@@ -1666,7 +2027,14 @@
       "date": "2026-02-22T22:30Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Tribe Gaming",
+          "b": "Team Elektros"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-na-mf-kds-esports-vs-stmn-2026-02-22",
@@ -1679,7 +2047,14 @@
       "date": "2026-02-22T23:30Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "KDS Esports",
+          "b": "STMN"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-na-mf-team-elektros-vs-stmn-2026-02-23",
@@ -1692,7 +2067,14 @@
       "date": "2026-02-23T00:30Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Team Elektros",
+          "b": "STMN"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-sa-mf-loud-vs-ninguem-segura-2026-02-21",
@@ -1705,7 +2087,14 @@
       "date": "2026-02-21T16:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "LOUD",
+          "b": "ninguem segura"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-sa-mf-olimpo-squad-vs-eternal-esports-2026-02-21",
@@ -1718,7 +2107,14 @@
       "date": "2026-02-21T17:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Olimpo Squad",
+          "b": "eternal esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-sa-mf-skcalalas-vs-sonhadores-2026-02-21",
@@ -1731,7 +2127,14 @@
       "date": "2026-02-21T17:45Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas",
+          "b": "Sonhadores"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-sa-mf-bounty-hunters-esports-vs-new-heights-gaming-2026-02-21",
@@ -1744,7 +2147,14 @@
       "date": "2026-02-21T18:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Bounty Hunters Esports",
+          "b": "New Heights Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-sa-mf-loud-vs-eternal-esports-2026-02-21",
@@ -1757,7 +2167,14 @@
       "date": "2026-02-21T19:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "LOUD",
+          "b": "Eternal Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-sa-mf-skcalalas-vs-new-heights-gaming-2026-02-21",
@@ -1770,7 +2187,14 @@
       "date": "2026-02-21T20:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas",
+          "b": "New Heights Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-february-sa-mf-eternal-esports-vs-new-heights-gaming-2026-02-21",
@@ -1783,7 +2207,14 @@
       "date": "2026-02-21T21:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Eternal Esports",
+          "b": "New Heights Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-emea-mf-fut-esports-vs-kebap-2026-03-15",
@@ -1796,7 +2227,14 @@
       "date": "2026-03-15T13:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "FUT Esports",
+          "b": "Kebap"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-emea-mf-team-heretics-vs-natus-vincere-2026-03-15",
@@ -1809,7 +2247,14 @@
       "date": "2026-03-15T13:30Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "team heretics",
+          "b": "navi"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-emea-mf-hmble-vs-madrid-2026-03-15",
@@ -1822,7 +2267,14 @@
       "date": "2026-03-15T14:45Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "hmble",
+          "b": "madrid"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-emea-mf-reply-totem-vs-novo-esports-2026-03-15",
@@ -1835,7 +2287,14 @@
       "date": "2026-03-15T15:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "reply totem",
+          "b": "novo esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-emea-mf-fut-esports-vs-team-heretics-2026-03-15",
@@ -1848,7 +2307,14 @@
       "date": "2026-03-15T16:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "FUT Esports",
+          "b": "Team Heretics"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-emea-mf-hmble-vs-novo-esports-2026-03-15",
@@ -1861,7 +2327,14 @@
       "date": "2026-03-15T17:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "hmble",
+          "b": "NOVO Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-emea-mf-fut-esports-vs-hmble-2026-03-15",
@@ -1874,7 +2347,14 @@
       "date": "2026-03-15T18:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "FUT Esports",
+          "b": "HMBLE"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-ea-mf-zeta-division-vs-dropeados-f-a-2026-03-14",
@@ -1887,7 +2367,14 @@
       "date": "2026-03-14T16:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Zeta Division",
+          "b": "DF"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-ea-mf-skcalalas-ea-vs-rival-esports-2026-03-14",
@@ -1900,7 +2387,14 @@
       "date": "2026-03-14T16:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas EA",
+          "b": "Rival Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-ea-mf-wwl-esports-vs-feasible-gaming-2026-03-14",
@@ -1913,7 +2407,14 @@
       "date": "2026-03-14T17:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "WWL Esports",
+          "b": "Feasible Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-ea-mf-crazy-raccoon-vs-reject-2026-03-14",
@@ -1926,7 +2427,14 @@
       "date": "2026-03-14T18:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "crazy raccoon",
+          "b": "REJECT"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-ea-mf-zeta-division-vs-skcalalas-ea-2026-03-14",
@@ -1939,7 +2447,14 @@
       "date": "2026-03-14T19:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "zeta division",
+          "b": "skcalalas ea"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-ea-mf-feasible-gaming-vs-crazy-raccoon-2026-03-14",
@@ -1952,7 +2467,14 @@
       "date": "2026-03-14T20:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Feasible Gaming",
+          "b": "crazy raccoon"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-ea-mf-zeta-division-vs-crazy-raccoon-2026-03-14",
@@ -1965,7 +2487,14 @@
       "date": "2026-03-14T21:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "zeta division",
+          "b": "crazy raccoon"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-na-mf-team-elektros-vs-enosis-esports-2026-03-22",
@@ -1978,7 +2507,14 @@
       "date": "2026-03-22T19:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Team Elektros",
+          "b": "Enosis eSports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-na-mf-vatic-esports-vs-tribe-gaming-2026-03-22",
@@ -1991,7 +2527,14 @@
       "date": "2026-03-22T20:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Vatic Esports",
+          "b": "Tribe Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-na-mf-only-realm-na-vs-legacy-esports-2026-03-22",
@@ -2004,7 +2547,14 @@
       "date": "2026-03-22T21:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Only Realm NA",
+          "b": "Legacy Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-na-mf-vic-day-vs-zoos-esports-2026-03-22",
@@ -2017,7 +2567,14 @@
       "date": "2026-03-22T21:30Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "vic day",
+          "b": "ZOOS Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-na-mf-team-elektros-vs-tribe-2026-03-22",
@@ -2030,7 +2587,14 @@
       "date": "2026-03-22T22:45Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Team Elektros",
+          "b": "Tribe"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-na-mf-only-realm-na-vs-zoos-esports-2026-03-22",
@@ -2043,7 +2607,14 @@
       "date": "2026-03-22T23:45Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Only Realm NA",
+          "b": "ZOOS Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-na-mf-tribe-gaming-vs-only-realm-na-2026-03-23",
@@ -2056,7 +2627,14 @@
       "date": "2026-03-23T01:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "tribe gaming",
+          "b": "Only Realm NA"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-sa-mf-new-heights-gaming-vs-acre-lovers-2026-03-21",
@@ -2069,7 +2647,14 @@
       "date": "2026-03-21T16:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "New Heights Gaming",
+          "b": "Acre Lovers"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-sa-mf-elevate-vs-bounty-hunters-esports-2026-03-21",
@@ -2082,7 +2667,14 @@
       "date": "2026-03-21T16:30Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "elevate",
+          "b": "Bounty Hunters Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-sa-mf-loud-vs-skcalalas-2026-03-21",
@@ -2095,7 +2687,14 @@
       "date": "2026-03-21T17:30Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "loud",
+          "b": "skcalalas"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-sa-mf-olimpo-squad-vs-eternal-esports-2026-03-21",
@@ -2108,7 +2707,14 @@
       "date": "2026-03-21T18:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "olimpo squad",
+          "b": "eternal esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-sa-mf-new-heights-gaming-vs-elevate-2026-03-21",
@@ -2121,7 +2727,14 @@
       "date": "2026-03-21T19:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "New Heights Gaming",
+          "b": "Elevate"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-sa-mf-loud-vs-olimpo-squad-2026-03-21",
@@ -2134,7 +2747,14 @@
       "date": "2026-03-21T19:45Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Loud",
+          "b": "Olimpo Squad"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-march-sa-mf-new-heights-gaming-vs-loud-2026-03-21",
@@ -2147,7 +2767,14 @@
       "date": "2026-03-21T20:30Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "New Heights Gaming",
+          "b": "LOUD"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-emea-mf-hmble-vs-big-2026-04-12",
@@ -2160,7 +2787,14 @@
       "date": "2026-04-12T12:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "HMBLE",
+          "b": "Big Talents"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-emea-mf-natus-vincere-vs-sk-gaming-2026-04-12",
@@ -2173,7 +2807,14 @@
       "date": "2026-04-12T13:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "NAVI",
+          "b": "SK Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-emea-mf-fut-esports-vs-fut-esports-academy-2026-04-12",
@@ -2186,7 +2827,14 @@
       "date": "2026-04-12T13:40Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "FUT Esports",
+          "b": "FUT Esports Academy"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-emea-mf-team-heretics-vs-madrid-2026-04-12",
@@ -2199,7 +2847,14 @@
       "date": "2026-04-12T14:05Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Team Heretics",
+          "b": "Madrid"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-emea-mf-big-vs-natus-vincere-2026-04-12",
@@ -2212,7 +2867,14 @@
       "date": "2026-04-12T15:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Big Talents",
+          "b": "NAVI"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-emea-mf-fut-esports-vs-madrid-2026-04-12",
@@ -2225,7 +2887,14 @@
       "date": "2026-04-12T17:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "FUT Esports",
+          "b": "Madrid"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-emea-mf-big-vs-fut-esports-2026-04-12",
@@ -2238,7 +2907,14 @@
       "date": "2026-04-12T18:00Z",
       "status": "finished",
       "region": "EMEA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Big Talents",
+          "b": "FUT Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-ea-mf-zeta-division-vs-kcn-2026-04-11",
@@ -2251,7 +2927,14 @@
       "date": "2026-04-11T16:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "ZETA DIVISION",
+          "b": "KCN"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-ea-mf-skcalalas-ea-vs-reject-2026-04-11",
@@ -2264,7 +2947,14 @@
       "date": "2026-04-11T16:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas EA",
+          "b": "REJECT"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-ea-mf-crazy-raccoon-vs-insomnia-2026-04-11",
@@ -2277,7 +2967,14 @@
       "date": "2026-04-11T17:30Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "INSOMNIA"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-ea-mf-fennel-vs-rival-esports-2026-04-11",
@@ -2290,7 +2987,14 @@
       "date": "2026-04-11T18:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "FENNEL",
+          "b": "Rival Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-ea-mf-zeta-division-vs-skcalalas-ea-2026-04-11",
@@ -2303,7 +3007,14 @@
       "date": "2026-04-11T19:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "ZETA DIVISION",
+          "b": "SKCalalas EA"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-ea-mf-crazy-raccoon-vs-rival-esports-2026-04-11",
@@ -2316,7 +3027,14 @@
       "date": "2026-04-11T20:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "Rival Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-ea-mf-skcalalas-ea-vs-crazy-raccoon-2026-04-11",
@@ -2329,7 +3047,14 @@
       "date": "2026-04-11T21:00Z",
       "status": "finished",
       "region": "EA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas EA",
+          "b": "Crazy Raccoon"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-na-mf-team-elektros-vs-legacy-esports-2026-04-19",
@@ -2342,7 +3067,14 @@
       "date": "2026-04-19T19:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "team elektros",
+          "b": "Legacy Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-na-mf-f-a-homeless-vs-vatic-esports-2026-04-19",
@@ -2355,7 +3087,14 @@
       "date": "2026-04-19T20:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "F/A Homeless",
+          "b": "vatic esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-na-mf-only-realm-vs-vic-day-2026-04-19",
@@ -2368,7 +3107,14 @@
       "date": "2026-04-19T21:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "only realm",
+          "b": "vic day"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-na-mf-tribe-gaming-vs-stmn-esports-2026-04-19",
@@ -2381,7 +3127,14 @@
       "date": "2026-04-19T22:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "tribe gaming",
+          "b": "stmn esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-na-mf-legacy-esports-vs-vatic-esports-2026-04-19",
@@ -2394,7 +3147,14 @@
       "date": "2026-04-19T23:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Legacy Esports",
+          "b": "Vatic Esports"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-na-mf-only-realm-vs-tribe-gaming-2026-04-19",
@@ -2407,7 +3167,14 @@
       "date": "2026-04-19T23:55Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Only Realm",
+          "b": "Tribe Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-na-mf-vatic-esports-vs-tribe-gaming-2026-04-20",
@@ -2420,7 +3187,14 @@
       "date": "2026-04-20T01:00Z",
       "status": "finished",
       "region": "NA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Vatic Esports",
+          "b": "Tribe Gaming"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-sa-mf-bounty-hunters-esports-vs-acre-lovers-2026-04-18",
@@ -2433,7 +3207,14 @@
       "date": "2026-04-18T16:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo3"
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Bounty Hunters Esports",
+          "b": "Acre Lovers"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-sa-mf-skcalalas-vs-topa-tudo-por-dinheiro-2026-04-18",
@@ -2446,7 +3227,14 @@
       "date": "2026-04-18T17:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas",
+          "b": "Topa Tudo Por Dinheiro"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-sa-mf-eternal-esports-vs-oddyssey-2026-04-18",
@@ -2459,7 +3247,14 @@
       "date": "2026-04-18T17:30Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Eternal Esports",
+          "b": "Oddyssey"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-sa-mf-loud-vs-olimpo-squad-2026-04-18",
@@ -2472,7 +3267,14 @@
       "date": "2026-04-18T18:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "LOUD",
+          "b": "Olimpo Squad"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-sa-mf-bounty-hunters-esports-vs-skcalalas-2026-04-18",
@@ -2485,7 +3287,14 @@
       "date": "2026-04-18T19:00Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Bounty Hunters Esports",
+          "b": "SKCalalas"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-sa-mf-eternal-esports-vs-olimpo-squad-2026-04-18",
@@ -2498,7 +3307,14 @@
       "date": "2026-04-18T19:45Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Eternal Esports",
+          "b": "Olimpo Squad"
+        }
+      }
     },
     {
       "id": "lp-bsc-2026-april-sa-mf-bounty-hunters-esports-vs-eternal-esports-2026-04-18",
@@ -2511,7 +3327,14 @@
       "date": "2026-04-18T20:30Z",
       "status": "finished",
       "region": "SA",
-      "format": "Bo5"
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Bounty Hunters Esports",
+          "b": "Eternal Esports"
+        }
+      }
     }
   ]
 }

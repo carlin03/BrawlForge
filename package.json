@@ -39,6 +39,8 @@
     "data:sync:full": "node scripts/sync-liquipedia-full.mjs --write --logos",
     "data:sync:tier-bplus": "node scripts/sync-liquipedia-full.mjs --write --logos --max-tier=3",
     "data:enrich:2026": "node scripts/enrich-liquipedia-2026.mjs --write --logos",
+    "data:enrich:2026:fast": "node scripts/enrich-liquipedia-2026.mjs --write",
+    "data:expand:2026": "node scripts/expand-2026-pool.mjs --write",
     "data:sync:bsc2026-players": "node scripts/sync-bsc-2026-rosters.mjs --write",
     "data:discover:bsc-circuit": "node scripts/discover-bsc-2026-circuit.mjs --write",
     "data:sync:bsc-tournaments": "node scripts/sync-bsc-tournaments-liquipedia.mjs --write",

@@ -372,11 +372,138 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
+.bf-esport-stats--wide {
+  max-width: 720px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.bf-esport-region-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.bf-esport-region-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--bp-r-sm);
+  background: var(--bp-panel-muted);
+  border: 1px solid var(--bp-line);
+  font-size: 12px;
+  color: var(--bp-muted);
+}
+
+.bf-esport-form {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.bf-esport-form.is-empty {
+  color: var(--bp-dim);
+  font-size: 12px;
+}
+
+.bf-esport-form span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.bf-esport-form .is-win {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+}
+
+.bf-esport-form .is-loss {
+  background: rgba(244, 67, 54, 0.15);
+  color: #e57373;
+}
+
+.bf-esport-lb-text .bf-esport-form {
+  margin-top: 2px;
+}
+
+.bf-esport-tour-panel {
+  padding: 16px;
+  border-radius: var(--bp-r);
+  background: var(--bp-surface);
+  border: 1px solid var(--bp-line);
+}
+
+.bf-esport-tour-panel h2 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bp-gold);
+}
+
+.bf-esport-tour-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bf-esport-tour-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: var(--bp-r-sm);
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.02);
+  transition: background 0.15s ease;
+}
+
+.bf-esport-tour-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.bf-esport-tour-row strong {
+  font-size: 13px;
+  display: block;
+}
+
+.bf-esport-tour-row span {
+  font-size: 11px;
+  color: var(--bp-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bf-esport-tour-row b {
+  font-family: var(--bp-head);
+  color: var(--bp-gold);
+}
+
+.bf-esport-map-cell {
+  font-size: 13px;
+  color: var(--bp-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 900px) {
   .bf-esport-meta-grid {
     grid-template-columns: 1fr;
   }
-  .bf-esport-stats {
+  .bf-esport-stats,
+  .bf-esport-stats--wide {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
   }
 }

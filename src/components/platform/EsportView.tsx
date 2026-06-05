@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { BarChart3, Search, Swords, Trophy, Users } from "lucide-react";
+import { BarChart3, Calendar, Search, Swords, Trophy, Users } from "lucide-react";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { SectionTabsBar } from "@/components/platform/SectionTabsBar";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
@@ -22,6 +22,19 @@ import { BrawlerAssetIcon } from "@/components/match-esports/BrawlerAssetIcon";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
+
+function FormStrip({ form }: { form: ("W" | "L")[] }) {
+  if (!form.length) return <span className="bf-esport-form is-empty">—</span>;
+  return (
+    <span className="bf-esport-form" aria-label={`Forma: ${form.join(", ")}`}>
+      {form.map((r, i) => (
+        <span key={`${r}-${i}`} className={r === "W" ? "is-win" : "is-loss"}>
+          {r}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 function LeaderboardCard({
   title,
@@ -50,6 +63,7 @@ function LeaderboardCard({
                   <span>
                     {t.wins}W – {t.losses}L · <RegionBadge region={t.region} />
                   </span>
+                  <FormStrip form={t.form} />
                 </div>
                 <b className="bf-esport-lb-metric">
                   {metric === "winRate" ? `${t.winRate}%` : metric === "wins" ? `${t.wins}W` : t.matches}
@@ -103,20 +117,26 @@ export function EsportView() {
     };
   }, [overview.teams, region]);
 
+  const regionalTotal = useMemo(
+    () => Object.values(overview.regionalMatches).reduce((a, b) => a + b, 0),
+    [overview.regionalMatches],
+  );
+
   return (
     <PageUltraShell className="bf-esport-page">
       <header className="bf-esport-hero">
         <p className="bf-esport-kicker">
-          <BarChart3 size={14} aria-hidden /> Datos reales · BSC 2026 · Liquipedia
+          <BarChart3 size={14} aria-hidden /> Datos reales · BSC 2026 · Liquipedia · regionales
         </p>
         <h1>
           Esports <em>stats</em>
         </h1>
         <p className="bf-esport-lead">
-          Win rate, victorias y actividad calculados desde partidos oficiales confirmados — sin datos inventados.
+          Win rate, forma reciente, meta de brawlers/mapas y actividad por torneo — calculado desde partidos
+          confirmados, incluyendo ligas SA/NA y Challengers.
         </p>
 
-        <div className="bf-esport-stats">
+        <div className="bf-esport-stats bf-esport-stats--wide">
           <div className="bf-esport-stat">
             <Users size={18} aria-hidden />
             <b>{overview.teamCount}</b>
@@ -130,14 +150,42 @@ export function EsportView() {
           <div className="bf-esport-stat">
             <Trophy size={18} aria-hidden />
             <b>{overview.matchCount}</b>
-            <span>Partidos</span>
+            <span>Resultados</span>
+          </div>
+          <div className="bf-esport-stat">
+            <Calendar size={18} aria-hidden />
+            <b>{overview.upcomingCount + overview.liveCount}</b>
+            <span>Próximos</span>
           </div>
           <div className="bf-esport-stat">
             <BarChart3 size={18} aria-hidden />
             <b>{overview.matchesWithMeta}</b>
             <span>Con meta</span>
           </div>
+          <div className="bf-esport-stat">
+            <BarChart3 size={18} aria-hidden />
+            <b>{overview.mapDecisionsTracked}</b>
+            <span>Mapas draft</span>
+          </div>
         </div>
+
+        {regionalTotal > 0 && (
+          <div className="bf-esport-region-bar" aria-label="Partidos por región">
+            {(["EMEA", "NA", "SA", "EA"] as Region[]).map((r) => {
+              const n = overview.regionalMatches[r] ?? 0;
+              if (!n) return null;
+              const pct = Math.round((n / regionalTotal) * 100);
+              return (
+                <div key={r} className="bf-esport-region-chip">
+                  <RegionBadge region={r} />
+                  <span>
+                    {n} partidos · {pct}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         <div className="bf-esport-hero-actions">
           <Link href="/matches" className="fu-btn fu-btn-ghost">
@@ -171,23 +219,49 @@ export function EsportView() {
         <LeaderboardCard title="Más partidos" rows={scopedLeaderboards.mostMatches} metric="matches" />
       </div>
 
+      {overview.activeTournaments.length > 0 && (
+        <section className="bf-esport-tour-panel">
+          <h2>Torneos activos 2026</h2>
+          <p className="bf-esport-meta-lead">
+            BSC, Challengers y ligas regionales con partidos jugados o por jugar en el pool.
+          </p>
+          <ul className="bf-esport-tour-list">
+            {overview.activeTournaments.map((t) => (
+              <li key={t.slug}>
+                <Link href={`/tournaments/${t.slug}`} className="bf-esport-tour-row">
+                  <TournamentLogo slug={t.slug} name={t.name} size={36} />
+                  <div>
+                    <strong>{t.name}</strong>
+                    <span>
+                      <RegionBadge region={t.region} /> · {t.finished} jugados · {t.upcoming} próximos
+                    </span>
+                  </div>
+                  <b>{t.total}</b>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {(overview.topBrawlers.length > 0 || overview.topMaps.length > 0) && (
         <div className="bf-esport-meta-grid">
           {overview.topBrawlers.length > 0 && (
             <section className="bf-esport-meta-panel">
-              <h2>Brawlers más jugados</h2>
+              <h2>Meta brawlers</h2>
               <p className="bf-esport-meta-lead">
-                Picks y MVP agregados de {overview.matchesWithMeta} partidos con estadísticas.
+                Picks, bans, MVP y win rate en mapas de {overview.matchesWithMeta} series con draft.
               </p>
               <ul className="bf-esport-brawler-list">
                 {overview.topBrawlers.map((b) => (
                   <li key={b.name}>
-                    <BrawlerAssetIcon name={b.name} size={48} variant="meta" />
+                    <BrawlerAssetIcon name={b.name} size={44} variant="meta" />
                     <div>
                       <strong>{b.name}</strong>
                       <span>
                         {b.picks} picks · {b.bans} bans
                         {b.mvpMentions > 0 ? ` · ${b.mvpMentions} MVP` : ""}
+                        {b.picks > 0 ? ` · ${b.winRate}% WR mapa` : ""}
                       </span>
                     </div>
                   </li>
@@ -197,13 +271,13 @@ export function EsportView() {
           )}
           {overview.topMaps.length > 0 && (
             <section className="bf-esport-meta-panel">
-              <h2>Mapas más jugados</h2>
-              <p className="bf-esport-meta-lead">Frecuencia en series finalizadas del circuito BSC.</p>
+              <h2>Mapas del meta</h2>
+              <p className="bf-esport-meta-lead">Frecuencia en series con estadísticas registradas.</p>
               <ul className="bf-esport-map-list">
                 {overview.topMaps.map((m) => (
                   <li key={m.name}>
                     <strong>{m.name}</strong>
-                    <span>{m.plays} mapas</span>
+                    <span>{m.plays} jugados</span>
                   </li>
                 ))}
               </ul>
@@ -234,6 +308,7 @@ export function EsportView() {
               <option value="matches">Partidos</option>
               <option value="winRate">Win rate</option>
               <option value="wins">Victorias</option>
+              <option value="mapWins">Mapas ganados</option>
             </select>
           </div>
         </div>
@@ -245,15 +320,16 @@ export function EsportView() {
                 <th>#</th>
                 <th>Equipo</th>
                 <th>Región</th>
+                <th>Forma</th>
                 <th>W – L</th>
-                <th>Partidos</th>
+                <th>Mapas</th>
                 <th>WR</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="bf-esport-empty">
+                  <td colSpan={7} className="bf-esport-empty">
                     Sin equipos con partidos en esta región.
                   </td>
                 </tr>
@@ -271,9 +347,14 @@ export function EsportView() {
                       <RegionBadge region={t.region} />
                     </td>
                     <td>
+                      <FormStrip form={t.form} />
+                    </td>
+                    <td>
                       {t.wins} – {t.losses}
                     </td>
-                    <td>{t.matches}</td>
+                    <td className="bf-esport-map-cell">
+                      {t.mapWins + t.mapLosses > 0 ? `${t.mapWins}–${t.mapLosses}` : "—"}
+                    </td>
                     <td>
                       <span className={t.winRate >= 50 ? "is-good" : "is-muted"}>{t.winRate}%</span>
                     </td>

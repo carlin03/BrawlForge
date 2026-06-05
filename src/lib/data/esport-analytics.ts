@@ -4,10 +4,12 @@ import { getBsc2026TeamRegion } from "./bsc-2026-team-regions";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { parseMatchMeta } from "./match-meta";
 import { hasFinishedSeriesResults } from "./finish-match-results-enrich";
-import { isPublicScheduleMatch } from "./match-schedule-trust";
+import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
+import { isCredibleFinishedResult } from "./public-calendar-matches";
 import { getActivePlayers } from "./players";
 import { getTeamDisplayName } from "./team-display-resolve";
 import { getTeam } from "./teams";
+import { getTournament } from "./matches";
 
 export type TeamEsportStats = {
   slug: string;
@@ -18,6 +20,9 @@ export type TeamEsportStats = {
   losses: number;
   matches: number;
   winRate: number;
+  form: ("W" | "L")[];
+  mapWins: number;
+  mapLosses: number;
 };
 
 export type EsportLeaderboard = {
@@ -32,23 +37,41 @@ export type BrawlerEsportStat = {
   picks: number;
   bans: number;
   mvpMentions: number;
+  mapWins: number;
+  winRate: number;
 };
 
 export type MapEsportStat = {
   name: string;
   plays: number;
+  winsA: number;
+  winsB: number;
+};
+
+export type TournamentEsportStat = {
+  slug: string;
+  name: string;
+  region: Region;
+  finished: number;
+  upcoming: number;
+  total: number;
 };
 
 export type EsportOverview = {
   teamCount: number;
   playerCount: number;
   matchCount: number;
+  upcomingCount: number;
+  liveCount: number;
   matchesWithMeta: number;
+  mapDecisionsTracked: number;
   syncedFrom: "liquipedia" | "mixed";
   teams: TeamEsportStats[];
   leaderboards: EsportLeaderboard;
   topBrawlers: BrawlerEsportStat[];
   topMaps: MapEsportStat[];
+  activeTournaments: TournamentEsportStat[];
+  regionalMatches: Record<Region, number>;
 };
 
 const MIN_WR_SAMPLE = 3;
@@ -59,21 +82,29 @@ function resolveTeamRegion(slug: string, matchRegion: Region): Region {
 
 function toTeamStats(
   slug: string,
-  wins: number,
-  losses: number,
-  region: Region,
+  row: {
+    wins: number;
+    losses: number;
+    region: Region;
+    form: ("W" | "L")[];
+    mapWins: number;
+    mapLosses: number;
+  },
 ): TeamEsportStats {
-  const matches = wins + losses;
+  const matches = row.wins + row.losses;
   const team = getTeam(slug);
   return {
     slug,
     name: team?.name ?? getTeamDisplayName(slug),
     tag: team?.tag ?? slug.slice(0, 3).toUpperCase(),
-    region,
-    wins,
-    losses,
+    region: row.region,
+    wins: row.wins,
+    losses: row.losses,
     matches,
-    winRate: matches > 0 ? Math.round((wins / matches) * 1000) / 10 : 0,
+    winRate: matches > 0 ? Math.round((row.wins / matches) * 1000) / 10 : 0,
+    form: row.form.slice(0, 5),
+    mapWins: row.mapWins,
+    mapLosses: row.mapLosses,
   };
 }
 
@@ -92,15 +123,51 @@ function buildLeaderboards(teams: TeamEsportStats[]): EsportLeaderboard {
   };
 }
 
-/** Estadísticas competitivas derivadas solo de partidos reales (Liquipedia/CMS). */
+function bumpBrawler(
+  acc: Map<string, { picks: number; bans: number; mvpMentions: number; mapWins: number }>,
+  name: string,
+  field: "picks" | "bans" | "mvpMentions" | "mapWins",
+): void {
+  const key = name.trim();
+  if (!key) return;
+  const row = acc.get(key) ?? { picks: 0, bans: 0, mvpMentions: 0, mapWins: 0 };
+  row[field] += 1;
+  acc.set(key, row);
+}
+
+/** Estadísticas competitivas derivadas de partidos reales (BSC + Liquipedia + CMS). */
 export function buildEsportAnalytics(pool: EsportsMatch[]): EsportOverview {
   const finished = pool.filter(
-    (m) => isPublicScheduleMatch(m) && getEffectiveMatchStatus(m) === "finished",
+    (m) =>
+      isPublicScheduleMatch(m) &&
+      getEffectiveMatchStatus(m) === "finished" &&
+      isCredibleFinishedResult(m),
   );
 
-  const acc = new Map<string, { wins: number; losses: number; region: Region }>();
+  const upcoming = pool.filter(
+    (m) => isPublicUpcomingCalendarMatch(m) && getEffectiveMatchStatus(m) === "upcoming",
+  );
+  const live = pool.filter(
+    (m) => isPublicUpcomingCalendarMatch(m) && getEffectiveMatchStatus(m) === "live",
+  );
 
-  for (const m of finished) {
+  const acc = new Map<
+    string,
+    {
+      wins: number;
+      losses: number;
+      region: Region;
+      form: ("W" | "L")[];
+      mapWins: number;
+      mapLosses: number;
+    }
+  >();
+
+  const sortedFinished = [...finished].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+
+  for (const m of sortedFinished) {
     if (m.scoreA === m.scoreB) continue;
     const winA = m.scoreA > m.scoreB;
 
@@ -109,23 +176,29 @@ export function buildEsportAnalytics(pool: EsportsMatch[]): EsportOverview {
       [m.teamBSlug, !winA],
     ] as const) {
       const region = resolveTeamRegion(slug, m.region);
-      const row = acc.get(slug) ?? { wins: 0, losses: 0, region };
+      const row = acc.get(slug) ?? {
+        wins: 0,
+        losses: 0,
+        region,
+        form: [],
+        mapWins: 0,
+        mapLosses: 0,
+      };
       if (won) row.wins += 1;
       else row.losses += 1;
+      if (row.form.length < 5) row.form.push(won ? "W" : "L");
       row.region = row.region === "GLOBAL" ? region : row.region;
       acc.set(slug, row);
     }
   }
 
-  const teams = [...acc.entries()]
-    .map(([slug, row]) => toTeamStats(slug, row.wins, row.losses, row.region))
-    .sort((a, b) => b.matches - a.matches || b.winRate - a.winRate);
-
-  const lpCount = finished.filter((m) => m.id.startsWith("lp-")).length;
-
-  const brawlerAcc = new Map<string, { picks: number; bans: number; mvpMentions: number }>();
-  const mapAcc = new Map<string, number>();
+  const brawlerAcc = new Map<
+    string,
+    { picks: number; bans: number; mvpMentions: number; mapWins: number }
+  >();
+  const mapAcc = new Map<string, { plays: number; winsA: number; winsB: number }>();
   let matchesWithMeta = 0;
+  let mapDecisionsTracked = 0;
 
   for (const m of finished) {
     const meta = parseMatchMeta(m.meta);
@@ -138,17 +211,56 @@ export function buildEsportAnalytics(pool: EsportsMatch[]): EsportOverview {
     if (adv?.most_banned_brawler) bumpBrawler(brawlerAcc, adv.most_banned_brawler, "bans");
 
     for (const row of Object.values(adv?.map_results ?? {})) {
-      for (const b of row.picks_a ?? []) bumpBrawler(brawlerAcc, b, "picks");
-      for (const b of row.picks_b ?? []) bumpBrawler(brawlerAcc, b, "picks");
+      mapDecisionsTracked += 1;
+      const winnerSide = row.winner;
+      for (const b of row.picks_a ?? []) {
+        bumpBrawler(brawlerAcc, b, "picks");
+        if (winnerSide === "A") bumpBrawler(brawlerAcc, b, "mapWins");
+      }
+      for (const b of row.picks_b ?? []) {
+        bumpBrawler(brawlerAcc, b, "picks");
+        if (winnerSide === "B") bumpBrawler(brawlerAcc, b, "mapWins");
+      }
       for (const b of row.central_bans ?? []) bumpBrawler(brawlerAcc, b, "bans");
       for (const b of row.team_bans_a ?? []) bumpBrawler(brawlerAcc, b, "bans");
       for (const b of row.team_bans_b ?? []) bumpBrawler(brawlerAcc, b, "bans");
     }
 
     for (const entry of meta.maps?.played ?? []) {
-      if (entry.name) mapAcc.set(entry.name, (mapAcc.get(entry.name) ?? 0) + 1);
+      if (entry.name) {
+        const prev = mapAcc.get(entry.name) ?? { plays: 0, winsA: 0, winsB: 0 };
+        prev.plays += 1;
+        mapAcc.set(entry.name, prev);
+      }
+    }
+
+    for (const [slug, won] of [
+      [m.teamASlug, m.scoreA > m.scoreB],
+      [m.teamBSlug, m.scoreB > m.scoreA],
+    ] as const) {
+      const row = acc.get(slug);
+      if (!row) continue;
+      const metaMaps = Object.values(adv?.map_results ?? {});
+      let mw = 0;
+      let ml = 0;
+      for (const mr of metaMaps) {
+        const side = m.teamASlug === slug ? "A" : "B";
+        if (mr.winner === side) mw += 1;
+        else if (mr.winner) ml += 1;
+      }
+      if (mw + ml > 0) {
+        row.mapWins += mw;
+        row.mapLosses += ml;
+        acc.set(slug, row);
+      }
     }
   }
+
+  const teams = [...acc.entries()]
+    .map(([slug, row]) => toTeamStats(slug, row))
+    .sort((a, b) => b.matches - a.matches || b.winRate - a.winRate);
+
+  const lpCount = finished.filter((m) => m.id.startsWith("lp-")).length;
 
   const topBrawlers = [...brawlerAcc.entries()]
     .map(([name, row]) => ({
@@ -156,38 +268,82 @@ export function buildEsportAnalytics(pool: EsportsMatch[]): EsportOverview {
       picks: row.picks,
       bans: row.bans,
       mvpMentions: row.mvpMentions,
+      mapWins: row.mapWins,
+      winRate:
+        row.picks > 0 ? Math.round((row.mapWins / row.picks) * 1000) / 10 : 0,
     }))
-    .sort((a, b) => b.picks + b.mvpMentions * 2 - (a.picks + a.mvpMentions * 2))
-    .slice(0, 12);
+    .sort(
+      (a, b) =>
+        b.picks + b.mvpMentions * 2 + b.mapWins - (a.picks + a.mvpMentions * 2 + a.mapWins),
+    )
+    .slice(0, 14);
 
   const topMaps = [...mapAcc.entries()]
-    .map(([name, plays]) => ({ name, plays }))
+    .map(([name, row]) => ({ name, plays: row.plays, winsA: row.winsA, winsB: row.winsB }))
     .sort((a, b) => b.plays - a.plays)
-    .slice(0, 10);
+    .slice(0, 12);
+
+  const tourAcc = new Map<string, { finished: number; upcoming: number; region: Region }>();
+  for (const m of [...finished, ...upcoming, ...live]) {
+    const row = tourAcc.get(m.tournamentSlug) ?? {
+      finished: 0,
+      upcoming: 0,
+      region: m.region,
+    };
+    const st = getEffectiveMatchStatus(m);
+    if (st === "finished") row.finished += 1;
+    else row.upcoming += 1;
+    tourAcc.set(m.tournamentSlug, row);
+  }
+
+  const activeTournaments = [...tourAcc.entries()]
+    .map(([slug, row]) => ({
+      slug,
+      name: getTournament(slug)?.shortName ?? slugToTournamentName(slug),
+      region: row.region,
+      finished: row.finished,
+      upcoming: row.upcoming,
+      total: row.finished + row.upcoming,
+    }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 14);
+
+  const regionalMatches: Record<Region, number> = {
+    EMEA: 0,
+    NA: 0,
+    SA: 0,
+    EA: 0,
+    SEA: 0,
+    GLOBAL: 0,
+  };
+  for (const m of finished) {
+    regionalMatches[m.region] = (regionalMatches[m.region] ?? 0) + 1;
+  }
 
   return {
     teamCount: teams.length,
     playerCount: getActivePlayers().length,
     matchCount: finished.length,
+    upcomingCount: upcoming.length,
+    liveCount: live.length,
     matchesWithMeta,
-    syncedFrom: lpCount >= finished.length * 0.5 ? "liquipedia" : "mixed",
+    mapDecisionsTracked,
+    syncedFrom: lpCount >= finished.length * 0.35 ? "liquipedia" : "mixed",
     teams,
     leaderboards: buildLeaderboards(teams),
     topBrawlers,
     topMaps,
+    activeTournaments,
+    regionalMatches,
   };
 }
 
-function bumpBrawler(
-  acc: Map<string, { picks: number; bans: number; mvpMentions: number }>,
-  name: string,
-  field: "picks" | "bans" | "mvpMentions",
-): void {
-  const key = name.trim();
-  if (!key) return;
-  const row = acc.get(key) ?? { picks: 0, bans: 0, mvpMentions: 0 };
-  row[field] += 1;
-  acc.set(key, row);
+function slugToTournamentName(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 export function filterEsportTeamsByRegion(
@@ -198,7 +354,7 @@ export function filterEsportTeamsByRegion(
   return teams.filter((t) => t.region === region);
 }
 
-export type EsportSortKey = "matches" | "winRate" | "wins";
+export type EsportSortKey = "matches" | "winRate" | "wins" | "mapWins";
 
 export function sortEsportTeams(
   teams: TeamEsportStats[],
@@ -209,6 +365,7 @@ export function sortEsportTeams(
   return [...teams].sort((a, b) => {
     if (key === "matches") return mul * (a.matches - b.matches);
     if (key === "wins") return mul * (a.wins - b.wins);
+    if (key === "mapWins") return mul * (a.mapWins - b.mapWins);
     return mul * (a.winRate - b.winRate) || mul * (a.matches - b.matches);
   });
 }

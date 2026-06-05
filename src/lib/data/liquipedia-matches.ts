@@ -1,5 +1,5 @@
 import { poolMergeKey } from "./bracket-order";
-import { getGeneratedMatches, type GeneratedMatch } from "./catalog";
+import { getGeneratedMatches, normalizeParticipantSlug, type GeneratedMatch } from "./catalog";
 import { isBscCircuitSlug } from "./bsc-tournaments";
 import type { EsportsMatch } from "./esports-match-types";
 import { pickBetterMatch } from "./playoff-pool-normalize";
@@ -20,7 +20,7 @@ const MONTH_TO_NUM: Record<string, string> = {
   december: "12",
 };
 
-const MIN_LIQUIPEDIA_MATCH_YEAR = 2024;
+const MIN_LIQUIPEDIA_MATCH_YEAR = 2025;
 
 /** Torneos Liquipedia fuera del circuito BSC curado (AGG, Challengers regionales, ligas SA…). */
 export function isLiquipediaNonBscTournament(slug: string): boolean {
@@ -93,8 +93,22 @@ function toLiquipediaId(m: GeneratedMatch, day: string): string {
   return `lp-${m.tournamentSlug}-${m.teamASlug}-vs-${m.teamBSlug}-${day}`.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
 }
 
-export function generatedMatchToEsportsMatch(m: GeneratedMatch): EsportsMatch | null {
-  if (!isLiquipediaNonBscTournament(m.tournamentSlug)) return null;
+function resolveTeamSlug(raw: string): string | null {
+  const n = normalizeParticipantSlug(raw);
+  if (n) return n;
+  const key = raw.trim().toLowerCase();
+  if (!key || key === "tbd" || key === "team") return null;
+  return key;
+}
+
+function buildLiquipediaMatch(m: GeneratedMatch, allowBsc: boolean): EsportsMatch | null {
+  const isBsc = isBscCircuitSlug(m.tournamentSlug);
+  if (isBsc && !allowBsc) return null;
+  if (!isBsc && !isLiquipediaNonBscTournament(m.tournamentSlug)) return null;
+
+  const teamASlug = resolveTeamSlug(m.teamASlug);
+  const teamBSlug = resolveTeamSlug(m.teamBSlug);
+  if (!teamASlug || !teamBSlug) return null;
 
   const date = normalizeLiquipediaMatchDate(m.date);
   if (!date || !isRecentLiquipediaMatchDate(date)) return null;
@@ -102,8 +116,8 @@ export function generatedMatchToEsportsMatch(m: GeneratedMatch): EsportsMatch | 
   const day = date.slice(0, 10);
   const match: EsportsMatch = {
     id: toLiquipediaId(m, day),
-    teamASlug: m.teamASlug,
-    teamBSlug: m.teamBSlug,
+    teamASlug,
+    teamBSlug,
     scoreA: m.scoreA ?? 0,
     scoreB: m.scoreB ?? 0,
     tournamentSlug: m.tournamentSlug,
@@ -118,6 +132,14 @@ export function generatedMatchToEsportsMatch(m: GeneratedMatch): EsportsMatch | 
   return isSchedulableMatch(match) ? match : null;
 }
 
+export function generatedMatchToEsportsMatch(m: GeneratedMatch): EsportsMatch | null {
+  return buildLiquipediaMatch(m, false);
+}
+
+export function generatedMatchToBscLiquipediaMatch(m: GeneratedMatch): EsportsMatch | null {
+  return buildLiquipediaMatch(m, true);
+}
+
 function dedupeLiquipediaMatches(list: EsportsMatch[]): EsportsMatch[] {
   const byContent = new Map<string, EsportsMatch>();
   for (const m of list) {
@@ -129,36 +151,58 @@ function dedupeLiquipediaMatches(list: EsportsMatch[]): EsportsMatch[] {
 }
 
 const LP_IMPORT_MIN_YEAR = 2025;
-const LP_IMPORT_MAX_FUTURE_MS = 120 * 24 * 60 * 60 * 1000;
+const LP_IMPORT_MAX_FUTURE_MS = 365 * 24 * 60 * 60 * 1000;
 
-function isLiquipediaImportCandidate(m: GeneratedMatch): boolean {
-  if (!isLiquipediaNonBscTournament(m.tournamentSlug)) return false;
+function isLiquipediaImportCandidate(m: GeneratedMatch, includeBsc: boolean): boolean {
+  const isBsc = isBscCircuitSlug(m.tournamentSlug);
+  if (isBsc && !includeBsc) return false;
+  if (!isBsc && !isLiquipediaNonBscTournament(m.tournamentSlug)) return false;
+
   const year = Number((m.date ?? "").slice(0, 4));
-  if (Number.isFinite(year) && year >= LP_IMPORT_MIN_YEAR) return true;
+  if (Number.isFinite(year) && year >= LP_IMPORT_MIN_YEAR) {
+    if (m.status === "finished" && year < 2026 && m.scoreA === m.scoreB) return false;
+    return true;
+  }
+
   const normalized = normalizeLiquipediaMatchDate(m.date);
   if (!normalized) return false;
   const ts = Date.parse(normalized);
   if (Number.isNaN(ts)) return false;
   if (ts < Date.UTC(LP_IMPORT_MIN_YEAR, 0, 1)) return false;
   if (m.status === "upcoming" && ts > Date.now() + LP_IMPORT_MAX_FUTURE_MS) return false;
+  if (m.status === "finished" && m.scoreA === m.scoreB && ts < Date.UTC(2026, 0, 1)) return false;
   return true;
 }
 
 let liquipediaNonBscCache: EsportsMatch[] | null = null;
+let liquipediaBscCache: EsportsMatch[] | null = null;
+
+function parseLiquipediaPool(
+  includeBsc: boolean,
+  mapper: (m: GeneratedMatch) => EsportsMatch | null,
+): EsportsMatch[] {
+  return dedupeLiquipediaMatches(
+    getGeneratedMatches()
+      .filter((m) => isLiquipediaImportCandidate(m, includeBsc))
+      .map(mapper)
+      .filter((m): m is EsportsMatch => m !== null),
+  ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+}
 
 /** Cruces Liquipedia 2025–2026 fuera de BSC, sin TBD ni fechas inválidas. */
 export function getLiquipediaNonBscMatches(): EsportsMatch[] {
   if (liquipediaNonBscCache) return liquipediaNonBscCache;
-
-  const parsed = getGeneratedMatches()
-    .filter(isLiquipediaImportCandidate)
-    .map(generatedMatchToEsportsMatch)
-    .filter((m): m is EsportsMatch => m !== null);
-
-  liquipediaNonBscCache = dedupeLiquipediaMatches(parsed).sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-  );
+  liquipediaNonBscCache = parseLiquipediaPool(false, generatedMatchToEsportsMatch);
   return liquipediaNonBscCache;
+}
+
+/** Partidos BSC en Liquipedia que aún no están en el pool curado. */
+export function getLiquipediaBscSupplementMatches(): EsportsMatch[] {
+  if (liquipediaBscCache) return liquipediaBscCache;
+  liquipediaBscCache = parseLiquipediaPool(true, generatedMatchToBscLiquipediaMatch).filter((m) =>
+    isBscCircuitSlug(m.tournamentSlug),
+  );
+  return liquipediaBscCache;
 }
 
 /** Evita duplicar un cruce BSC ya presente el mismo día (p. ej. Challengers LP vs bsc-2026-challengers-*). */

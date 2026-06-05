@@ -3,7 +3,11 @@ import { isBscCircuitSlug } from "./bsc-tournaments";
 import { bscMatches } from "./bsc-matches";
 import type { EsportsMatch } from "./esports-match-types";
 import { poolMergeKey } from "./bracket-order";
-import { getLiquipediaNonBscMatches, shouldSkipNonBscDuplicate } from "./liquipedia-matches";
+import {
+  getLiquipediaBscSupplementMatches,
+  getLiquipediaNonBscMatches,
+  shouldSkipNonBscDuplicate,
+} from "./liquipedia-matches";
 import { enrichMatchForPool } from "./match-pool-enrich";
 import { pickBetterMatch } from "./playoff-pool-normalize";
 import { inferPlayoffStagesInPool } from "./playoff-stage-infer";
@@ -31,6 +35,11 @@ function buildMatches(): EsportsMatch[] {
   for (const m of wikiInferred) upsertMatch(byContent, m);
 
   for (const m of bscMatches) {
+    if (!isBscCircuitSlug(m.tournamentSlug) || !isSchedulableMatch(m)) continue;
+    upsertMatch(byContent, m);
+  }
+
+  for (const m of getLiquipediaBscSupplementMatches()) {
     if (!isBscCircuitSlug(m.tournamentSlug) || !isSchedulableMatch(m)) continue;
     upsertMatch(byContent, m);
   }
