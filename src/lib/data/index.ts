@@ -37,7 +37,12 @@ export {
   expandTournamentSlugFilter,
 } from "./matches";
 export { getCuratedHomeMatches } from "./home-matches";
-export { isPublicScheduleMatch, isPickemTemplateMatch } from "./match-schedule-trust";
+export {
+  isPublicScheduleMatch,
+  isPublicUpcomingCalendarMatch,
+  isPickemTemplateMatch,
+  buildPublicCalendarPool,
+} from "./match-schedule-trust";
 export type { EsportsMatch, EsportsTournament } from "./matches";
 export { news, getNews, getLatestNews } from "./news";
 export type { NewsArticle } from "./news";

@@ -330,6 +330,7 @@ export function StudioMatchesPanel() {
       score_a?: number;
       score_b?: number;
       stage?: string;
+      tournament_slug?: string;
     },
     reload: () => void,
   ) {
@@ -712,6 +713,20 @@ export function StudioMatchesPanel() {
                           <span className="bf-studio-match-meta">
                             {m.format ?? "Bo3"} · {new Date(m.scheduled_at).toLocaleString("es-ES")}
                           </span>
+                          <StudioField label="Torneo">
+                            <StudioSelect
+                              value={m.tournament_slug}
+                              onChange={(e) =>
+                                patchMatch(m.id, { tournament_slug: e.target.value }, reload)
+                              }
+                            >
+                              {tournaments.map((t) => (
+                                <option key={t.slug} value={t.slug}>
+                                  {t.name}
+                                </option>
+                              ))}
+                            </StudioSelect>
+                          </StudioField>
                           <StudioField label="Estado (En vivo / marcador en web)">
                             <StudioPills
                               options={MATCH_STATUS_OPTIONS}

@@ -167,6 +167,7 @@ export async function PATCH(request: Request) {
   if (body.stage !== undefined) patch.stage = body.stage ? String(body.stage) : null;
   if (body.format !== undefined) patch.format = String(body.format);
   if (body.status !== undefined) patch.status = String(body.status);
+  if (body.tournament_slug !== undefined) patch.tournament_slug = String(body.tournament_slug);
   if (body.score_a !== undefined) patch.score_a = Number(body.score_a);
   if (body.score_b !== undefined) patch.score_b = Number(body.score_b);
   if (body.meta !== undefined) {

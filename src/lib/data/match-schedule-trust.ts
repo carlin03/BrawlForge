@@ -57,9 +57,37 @@ export function isStaleTournamentUpcoming(m: EsportsMatch): boolean {
   return Date.now() > end + 24 * 60 * 60 * 1000;
 }
 
+/** Próximos/en vivo en calendario: confirmados + plantillas con dos equipos reales (cuartos MF). */
+export function isPublicUpcomingCalendarMatch(m: EsportsMatch): boolean {
+  if (isStaleTournamentUpcoming(m)) return false;
+  if (isPendingTeamSlug(m.teamASlug) || isPendingTeamSlug(m.teamBSlug)) return false;
+  if (isBracketPlaceholderSlug(m.teamASlug) || isBracketPlaceholderSlug(m.teamBSlug)) return false;
+  if (!isDisplayableMatch(m)) return false;
+  const status = getEffectiveMatchStatus(m);
+  if (status !== "upcoming" && status !== "live") return false;
+  if (isPublicScheduleMatch(m)) return true;
+  return isPickemTemplateMatch(m);
+}
+
+/** Pool unificado para /matches (resultados confirmados + próximos con plantilla si aplica). */
+export function buildPublicCalendarPool(basePool: EsportsMatch[]): EsportsMatch[] {
+  const byId = new Map<string, EsportsMatch>();
+  for (const m of basePool) {
+    if (isPublicScheduleMatch(m) || isPublicUpcomingCalendarMatch(m)) {
+      byId.set(m.id, m);
+    }
+  }
+  for (const m of getActivePickemTemplates(basePool)) {
+    if (!isPublicUpcomingCalendarMatch(m)) continue;
+    byId.set(m.id, m);
+  }
+  return [...byId.values()].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+}
+
 /**
- * Calendario público (/matches, home): solo cruces reales con dos equipos,
- * no plantillas pick'em ni placeholders de bracket.
+ * Calendario público confirmado (resultados / historial): sin plantillas pick'em.
  */
 export function isPublicScheduleMatch(m: EsportsMatch): boolean {
   if (isPickemTemplateMatch(m)) return false;

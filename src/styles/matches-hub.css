@@ -689,10 +689,19 @@
 }
 
 .bf-match-row-vs {
-  font-size: 12px;
+  font-size: 0.72rem;
   font-weight: 800;
-  color: var(--bp-dim);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--fu-muted, rgba(255, 255, 255, 0.45));
+}
+
+.bf-match-row-dash {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fu-muted, rgba(255, 255, 255, 0.35));
+  min-width: 1.25rem;
+  text-align: center;
 }
 
 .bf-match-row-meta {

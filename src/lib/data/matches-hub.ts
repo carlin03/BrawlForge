@@ -2,7 +2,7 @@ import type { Region } from "../types";
 import type { EsportsMatch } from "./matches";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { expandTournamentSlugFilter, getTournament } from "./matches";
-import { isPublicScheduleMatch } from "./match-schedule-trust";
+import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
 import { getTeam } from "./teams";
 import { getMatchStageMeta, type StageRoundKey } from "./match-stage-meta";
 
@@ -98,7 +98,13 @@ export function sortHubMatchList(list: EsportsMatch[], tab: MatchTab = "upcoming
 
 export function filterHubMatches(all: EsportsMatch[], filters: MatchHubFilters): EsportsMatch[] {
   const q = filters.query.trim().toLowerCase();
-  let pool = tabPool(filters.tab, all).filter(isPublicScheduleMatch);
+  const scope =
+    filters.tab === "results"
+      ? all.filter(isPublicScheduleMatch)
+      : all.filter(isPublicUpcomingCalendarMatch);
+  let pool = tabPool(filters.tab, scope).filter((m) =>
+    filters.tab === "results" ? isPublicScheduleMatch(m) : isPublicUpcomingCalendarMatch(m),
+  );
 
   if (filters.region !== "all") {
     pool = pool.filter((m) => m.region === filters.region);
@@ -184,15 +190,16 @@ export function groupMatchesByTournament(list: EsportsMatch[], tab: MatchTab = "
 }
 
 export function countHubMatches(all: EsportsMatch[]) {
-  const display = all.filter(isPublicScheduleMatch);
+  const confirmed = all.filter(isPublicScheduleMatch);
+  const scheduled = all.filter(isPublicUpcomingCalendarMatch);
   return {
-    live: display.filter((m) => getEffectiveMatchStatus(m) === "live").length,
-    upcoming: display.filter((m) => getEffectiveMatchStatus(m) === "upcoming").length,
-    results: display.filter((m) => {
+    live: scheduled.filter((m) => getEffectiveMatchStatus(m) === "live").length,
+    upcoming: scheduled.filter((m) => getEffectiveMatchStatus(m) === "upcoming").length,
+    results: confirmed.filter((m) => {
       const s = getEffectiveMatchStatus(m);
       return s === "finished" || s === "cancelled";
     }).length,
-    total: display.length,
+    total: confirmed.length,
   };
 }
 

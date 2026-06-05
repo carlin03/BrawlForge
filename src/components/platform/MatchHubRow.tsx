@@ -59,7 +59,11 @@ export function MatchHubRow({ match }: { match: EsportsMatch }) {
 
       <div className="bf-match-row-score">
         {upcoming ? (
-          <span className="bf-match-row-vs">vs</span>
+          <>
+            <span className="bf-match-row-dash">—</span>
+            <span className="bf-match-row-vs">vs</span>
+            <span className="bf-match-row-dash">—</span>
+          </>
         ) : (
           <>
             <span className={winA ? "is-win" : ""}>{match.scoreA}</span>

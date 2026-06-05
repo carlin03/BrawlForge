@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Radio, Target, Trophy } from "lucide-react";
 import type { Region } from "@/lib/types";
@@ -18,7 +18,6 @@ import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import {
   countHubMatches,
-  defaultMatchHubTab,
   filterHubMatches,
   groupMatchesByTournament,
   playoffSectionsForMatches,
@@ -31,6 +30,7 @@ import {
   isPickemMatchEligible,
   isPublicScheduleMatch,
   getRecentMatches,
+  buildPublicCalendarPool,
   getTierBPlusTournaments,
   teamName,
 } from "@/lib/data";
@@ -44,17 +44,11 @@ export function MatchesView() {
   const cms = useOptionalCmsRuntime();
   const displayable = useMemo(() => {
     const pool = cms?.matchPool ?? getMatchPool();
-    return pool.filter(isPublicScheduleMatch);
+    return buildPublicCalendarPool(pool);
   }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
   const [tab, setTab] = useState<MatchTab>("upcoming");
-  const autoTabDone = useRef(false);
-  useEffect(() => {
-    if (autoTabDone.current) return;
-    autoTabDone.current = true;
-    setTab(defaultMatchHubTab(counts));
-  }, [counts]);
   const [region, setRegion] = useState<Region | "all">("all");
   const [tournamentSlug, setTournamentSlug] = useState("all");
   const [query, setQuery] = useState("");
@@ -130,9 +124,7 @@ export function MatchesView() {
     tab === "live"
       ? "No hay partidos en directo ahora. Revisa Próximos o Resultados."
       : tab === "upcoming"
-        ? counts.results > 0
-          ? `No hay partidos próximos ahora. Pulsa Resultados arriba (${counts.results} partidos).`
-          : "Sin partidos programados con estos filtros."
+        ? "Sin partidos próximos con estos filtros. Los MF futuros aparecen aquí cuando hay cruces confirmados o calendario previsto."
         : "Sin resultados con estos filtros.";
 
   return (
