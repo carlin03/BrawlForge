@@ -22,6 +22,7 @@ import {
   groupMatchesByTournament,
   playoffSectionsForMatches,
   tournamentsInMatches,
+  defaultMatchHubTab,
   type MatchTab,
 } from "@/lib/data/matches-hub";
 import {
@@ -48,7 +49,7 @@ export function MatchesView() {
   }, [cms?.matchPool]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
-  const [tab, setTab] = useState<MatchTab>("results");
+  const [tab, setTab] = useState<MatchTab>(() => defaultMatchHubTab(countHubMatches(displayable)));
   const [region, setRegion] = useState<Region | "all">("all");
   const [tournamentSlug, setTournamentSlug] = useState("all");
   const [query, setQuery] = useState("");
@@ -124,7 +125,7 @@ export function MatchesView() {
     tab === "live"
       ? "No hay partidos en directo ahora. Revisa Próximos o Resultados."
       : tab === "upcoming"
-        ? "Sin partidos próximos confirmados. Solo aparecen cruces reales (Liquipedia/CMS). Ejecuta sync o añade partidos en admin."
+        ? "Sin partidos próximos confirmados en Liquipedia. Solo aparecen cruces oficiales — nada inventado."
         : "Sin resultados con estos filtros.";
 
   return (
