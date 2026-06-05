@@ -1,8 +1,13 @@
-import { isBracketPlaceholderSlug } from "./bracket-slot-display";
 import { isHiddenTeamSlug } from "./blocked-team-slugs";
 import { isPendingTeamSlug, parseMatchMeta } from "./match-meta";
 import type { EsportsMatch } from "./esports-match-types";
 import { getTeam } from "./teams";
+
+function isBracketPlaceholderSlug(slug: string): boolean {
+  const s = slug.trim().toLowerCase();
+  if (!s || s === "tbd" || s === "team" || s === "por-definir") return true;
+  return s.startsWith("winner-");
+}
 
 function isValidSchedulableSlug(slug: string): boolean {
   const key = slug?.trim().toLowerCase();

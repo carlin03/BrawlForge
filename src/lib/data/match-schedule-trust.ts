@@ -5,7 +5,7 @@ import { isBracketPlaceholderSlug } from "./bracket-slot-display";
 import { isPendingTeamSlug, parseMatchMeta, type MatchMeta } from "./match-meta";
 import { enrichMatchForPool } from "./match-pool-enrich";
 import { canonicalTournamentSlug } from "./playoff-pool-normalize";
-import { isSchedulableMatch } from "./pickem-eligibility";
+import { isSchedulableMatch } from "./team-display-resolve";
 import type { EsportsMatch } from "./esports-match-types";
 
 function tournamentEndDate(slug: string): string | undefined {

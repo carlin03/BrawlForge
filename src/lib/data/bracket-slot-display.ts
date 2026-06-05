@@ -1,4 +1,4 @@
-import { teamName } from "./index";
+import { getTeamDisplayName } from "./team-display-resolve";
 
 /** Slugs especiales en bracket (no son equipos reales). */
 export function isBracketPlaceholderSlug(slug: string | null | undefined): boolean {
@@ -34,7 +34,7 @@ export function bracketSlotDisplayLabel(slug: string | null | undefined): string
       .join(" ");
   }
 
-  return teamName(slug);
+  return getTeamDisplayName(slug);
 }
 
 export type BracketRoundKind = "quarter" | "semi" | "final" | "third";

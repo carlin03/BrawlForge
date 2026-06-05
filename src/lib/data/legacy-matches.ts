@@ -5,7 +5,7 @@ import type { EsportsMatch } from "./esports-match-types";
 import { enrichMatchForPool } from "./match-pool-enrich";
 import { matchContentKey, pickBetterMatch } from "./playoff-pool-normalize";
 import { inferPlayoffStagesInPool } from "./playoff-stage-infer";
-import { isSchedulableMatch } from "./pickem-eligibility";
+import { isSchedulableMatch } from "./team-display-resolve";
 
 function upsertMatch(map: Map<string, EsportsMatch>, incoming: EsportsMatch): void {
   const key = matchContentKey(incoming);
