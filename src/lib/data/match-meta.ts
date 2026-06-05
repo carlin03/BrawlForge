@@ -181,6 +181,8 @@ export type MatchMeta = {
   allow_exact_score?: boolean;
   featured_label?: string;
   round_type?: string;
+  /** Orden en bracket (qf1→0, sf2→1) para emparejar rondas en pick'em. */
+  bracket_slot?: number;
   predictions?: MatchPredictionsConfig;
   prediction_points?: MatchPredictionPoints;
   advanced_predictions?: MatchAdvancedPredictionsMeta;

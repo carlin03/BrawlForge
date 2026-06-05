@@ -38,16 +38,25 @@ function isCalendarSchedulable(m: EsportsMatch): boolean {
   return teamSlotOk(m.teamASlug) && teamSlotOk(m.teamBSlug);
 }
 
+function filterSeedCalendar(requireFuture: boolean): EsportsMatch[] {
+  return BSC_UPCOMING_PREDICTION_MATCHES.filter((raw) => {
+    if (!tournamentIsOpen(raw.tournamentSlug)) return false;
+    if (requireFuture && !isFutureMatch(raw)) return false;
+    if (!isCalendarSchedulable(raw)) return false;
+    if (getEffectiveMatchStatus(raw) !== "upcoming") return false;
+    return true;
+  }).map(withConfirmedCalendarMeta);
+}
+
 /**
  * Calendario BSC próximo (Liquipedia / fechas oficiales MF).
  * No son plantillas pick'em: cruces con equipos y horario publicados.
  */
 export function getOfficialUpcomingCalendarMatches(_pool: EsportsMatch[]): EsportsMatch[] {
-  return BSC_UPCOMING_PREDICTION_MATCHES.filter((raw) => {
-    if (!tournamentIsOpen(raw.tournamentSlug)) return false;
-    if (!isFutureMatch(raw)) return false;
-    if (!isCalendarSchedulable(raw)) return false;
-    if (getEffectiveMatchStatus(raw) !== "upcoming") return false;
-    return true;
-  }).map(withConfirmedCalendarMeta);
+  return filterSeedCalendar(true);
+}
+
+/** Pick'em: torneo abierto aunque la fecha del partido ya pasó (grupos recientes). */
+export function getPickemCalendarMatches(_pool: EsportsMatch[]): EsportsMatch[] {
+  return filterSeedCalendar(false);
 }

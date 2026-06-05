@@ -9,6 +9,7 @@ import { MyPredictionsMini } from "@/components/platform/predictions/MyPredictio
 import { PredictionsPopularRails } from "@/components/platform/predictions/PredictionsPopularRails";
 import { PredictionsHistorySection } from "@/components/platform/predictions/PredictionsHistorySection";
 import { PredictionsQuickVoteSection } from "@/components/platform/predictions/PredictionsQuickVoteSection";
+import { PredictionsRoundSections } from "@/components/platform/predictions/PredictionsRoundSections";
 import { PredictionsClosingSoon } from "@/components/platform/predictions/PredictionsClosingSoon";
 import { PredictionsPickemToolbar } from "@/components/platform/predictions/PredictionsPickemToolbar";
 import type { PlayoffBracketsStore } from "@/lib/data/bracket-config";
@@ -144,6 +145,8 @@ export function PredictionsView({
     return openEnriched.filter((e) => slugs.has(e.tournamentSlug));
   }, [openEnriched, selectedTournament]);
 
+  const quickVoteEvents = bracketEvents;
+
   const featuredEvent = useMemo(() => {
     const pool = filteredOpen.filter((e) => !bracketMatchIds.has(e.matchId));
     const scope = selectedTournament
@@ -212,11 +215,25 @@ export function PredictionsView({
       />
 
       <PredictionsQuickVoteSection
-        events={filteredOpen}
+        events={quickVoteEvents}
         votes={votes}
         brackets={playoffBrackets}
         hint="Cuartos en 2×2 — al elegir ganador, semifinales y final se actualizan solas."
       />
+
+      {selectedTournament && selectedRound !== "all" && playoffBrackets.length > 0 && (
+        <div className="bf-predict-bracket-detail-stack">
+          {playoffBrackets.map((bracket) => (
+            <PredictionsRoundSections
+              key={bracket.tournamentSlug}
+              bracket={bracket}
+              votes={votes}
+              events={bracketEvents}
+              roundFilter={selectedRound}
+            />
+          ))}
+        </div>
+      )}
 
       {showFeatured && <FeaturedPredictionDuel event={featuredEvent!} />}
 

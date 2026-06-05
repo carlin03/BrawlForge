@@ -2,15 +2,17 @@ import { getBscEnrichedMatches } from "./bsc-tournaments-enriched";
 import { isBscCircuitSlug } from "./bsc-tournaments";
 import { bscMatches } from "./bsc-matches";
 import type { EsportsMatch } from "./esports-match-types";
+import { poolMergeKey } from "./bracket-order";
+import { getLiquipediaNonBscMatches, shouldSkipNonBscDuplicate } from "./liquipedia-matches";
 import { enrichMatchForPool } from "./match-pool-enrich";
-import { matchContentKey, pickBetterMatch } from "./playoff-pool-normalize";
+import { pickBetterMatch } from "./playoff-pool-normalize";
 import { inferPlayoffStagesInPool } from "./playoff-stage-infer";
 import { isSchedulableMatch } from "./team-display-resolve";
 
 function upsertMatch(map: Map<string, EsportsMatch>, incoming: EsportsMatch): void {
-  const key = matchContentKey(incoming);
+  const key = poolMergeKey(incoming);
   for (const [id, existing] of map) {
-    if (matchContentKey(existing) === key) {
+    if (poolMergeKey(existing) === key) {
       const better = pickBetterMatch(existing, incoming);
       map.delete(id);
       map.set(better.id, better);
@@ -30,6 +32,12 @@ function buildMatches(): EsportsMatch[] {
 
   for (const m of bscMatches) {
     if (!isBscCircuitSlug(m.tournamentSlug) || !isSchedulableMatch(m)) continue;
+    upsertMatch(byContent, m);
+  }
+
+  const bscPool = [...byContent.values()];
+  for (const m of getLiquipediaNonBscMatches()) {
+    if (shouldSkipNonBscDuplicate(m, bscPool)) continue;
     upsertMatch(byContent, m);
   }
 

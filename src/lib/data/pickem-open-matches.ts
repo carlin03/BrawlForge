@@ -1,14 +1,16 @@
+import { getOfficialUpcomingCalendarMatches } from "./bsc-calendar-upcoming";
 import { shouldHideIncompletePlayoffRound } from "./bracket-playoff-sanitize";
 import { isPickemMatchOpen } from "./match-effective-status";
+import { getPublicUpcomingMatches } from "./public-calendar-matches";
 import {
+  getActivePickemTemplates,
   isPickemTemplateMatch,
   isPublicUpcomingCalendarMatch,
   isStaleTournamentUpcoming,
 } from "./match-schedule-trust";
 import type { EsportsMatch } from "./esports-match-types";
 import { isPickemMatchEligible } from "./pickem-eligibility";
-import { getMatchPool, getPickemBracketPool } from "./match-pool";
-import { getMatchStageMeta } from "./match-stage-meta";
+import { getPickemBracketPool } from "./match-pool";
 import { matchDedupeKey, pickBetterMatch } from "./playoff-pool-normalize";
 
 function pickemVisible(m: EsportsMatch, pool: EsportsMatch[]): boolean {
@@ -36,22 +38,33 @@ function upsertPickem(
   byId.set(m.id, m);
 }
 
-/** Partidos abiertos para Pick'em: calendario curado + CMS + brackets guardados. */
+function ingestPickemMatch(
+  byId: Map<string, EsportsMatch>,
+  m: EsportsMatch,
+  pool: EsportsMatch[],
+  allowTemplate = false,
+): void {
+  if (!allowTemplate && isPickemTemplateMatch(m)) return;
+  if (!isPublicUpcomingCalendarMatch(m)) return;
+  if (!pickemVisible(m, pool)) return;
+  upsertPickem(byId, m, pool);
+}
+
+/** Partidos abiertos para Pick'em — alineado con próximos públicos de /matches. */
 export function getPickemOpenMatches(extra: EsportsMatch[] = []): EsportsMatch[] {
   const pool = getPickemBracketPool();
   const byId = new Map<string, EsportsMatch>();
 
-  for (const m of pool) {
-    if (isPickemTemplateMatch(m)) continue;
-    if (!isPublicUpcomingCalendarMatch(m)) continue;
-    if (!pickemVisible(m, pool)) continue;
+  for (const m of getPublicUpcomingMatches()) {
+    ingestPickemMatch(byId, m, pool);
+  }
 
-    const meta = getMatchStageMeta(m.stage || "");
-    const fromAdmin = Boolean(m.stage?.trim());
+  for (const m of getOfficialUpcomingCalendarMatches(pool)) {
+    ingestPickemMatch(byId, m, pool);
+  }
 
-    if (fromAdmin || meta.isPlayoff || meta.roundKey === "group") {
-      upsertPickem(byId, m, pool);
-    }
+  for (const m of getActivePickemTemplates(pool)) {
+    ingestPickemMatch(byId, m, pool, true);
   }
 
   for (const m of extra) {

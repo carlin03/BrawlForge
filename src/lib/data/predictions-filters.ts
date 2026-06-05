@@ -87,11 +87,24 @@ export function bracketShowsRound(
   filter: PredictRoundFilterKey,
 ): { quarters: boolean; semis: boolean; final: boolean } {
   if (filter === "all") return { quarters: true, semis: true, final: true };
-  return {
-    quarters: filter === "quarter" && bracket.quarters.length > 0,
-    semis: filter === "semi" && bracket.semis.length > 0,
-    final: filter === "final" && Boolean(bracket.final),
-  };
+  if (filter === "quarter") {
+    return { quarters: bracket.quarters.length > 0, semis: false, final: false };
+  }
+  if (filter === "semi") {
+    return {
+      quarters: bracket.quarters.length > 0,
+      semis: bracket.semis.length > 0,
+      final: false,
+    };
+  }
+  if (filter === "final") {
+    return {
+      quarters: bracket.quarters.length > 0,
+      semis: bracket.semis.length > 0,
+      final: Boolean(bracket.final),
+    };
+  }
+  return { quarters: false, semis: false, final: false };
 }
 
 export function predictionMatchesSearch(e: EnrichedPrediction, query: string): boolean {

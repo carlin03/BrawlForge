@@ -99,7 +99,10 @@ export function GranFinalRound({
         : null;
   const finalReveal = resolveFinalReveal(bracket.semis, bracket.quarters, votes);
   const progressiveFinal =
-    needTwoSemis || bracket.quarters.length >= 4 || Boolean(
+    needTwoSemis ||
+    bracket.quarters.length >= 4 ||
+    bracket.semis.length > 0 ||
+    Boolean(
       bracket.final &&
         (isPendingTeamSlug(bracket.final.teamASlug) || isPendingTeamSlug(bracket.final.teamBSlug)),
     );

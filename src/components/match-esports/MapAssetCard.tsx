@@ -34,7 +34,7 @@ export function MapAssetCard({
 
   return (
     <article
-      className={`bf-map-asset ${variant === "ban" ? "is-banned" : ""} ${isCurrent ? "is-current" : ""} ${isDecisive ? "is-decisive" : ""} ${size === "lg" ? "is-lg" : ""} ${size === "xl" ? "is-xl" : ""} ${imageFit === "contain" ? "is-contain" : ""}`}
+      className={`bf-map-asset ${variant === "ban" ? "is-banned" : ""} ${isCurrent ? "is-current" : ""} ${isDecisive ? "is-decisive" : ""} ${size === "md" ? "is-md" : ""} ${size === "lg" ? "is-lg" : ""} ${size === "xl" ? "is-xl" : ""} ${imageFit === "contain" ? "is-contain" : ""}`}
     >
       <div className="bf-map-asset-art">
         {src ? (

@@ -9,7 +9,7 @@ import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants"
 import { bscMatches } from "./bsc-matches";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
-import { normalizeParticipantList } from "./catalog";
+import { getGeneratedTournaments, isFeaturedTournament, normalizeParticipantList } from "./catalog";
 import { sanitizePublicWebsite } from "@/lib/sanitize-liquipedia";
 import { getMatchPool } from "./match-pool";
 import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
@@ -175,9 +175,31 @@ export const tournaments: EsportsTournament[] = buildTournaments();
 export { matches } from "./legacy-matches";
 export { matchDedupeKey } from "./playoff-pool-normalize";
 
+function mapGeneratedTournament(t: ReturnType<typeof getGeneratedTournaments>[number]): EsportsTournament {
+  return {
+    slug: t.slug,
+    name: t.name,
+    shortName: t.shortName,
+    region: t.region,
+    prizePool: t.prizePool,
+    teams: t.teams,
+    status: t.status,
+    startDate: t.startDate,
+    endDate: t.endDate,
+    location: t.location,
+    stage: t.stage,
+    tier: t.tier,
+    featured: isFeaturedTournament(t),
+    participantSlugs: t.participantSlugs,
+    logoFile: t.logoFile,
+  };
+}
+
 export function getTournament(slug: string): EsportsTournament | undefined {
-  if (!isBscCircuitSlug(slug)) return undefined;
-  return tournaments.find((t) => t.slug === slug);
+  const bsc = tournaments.find((t) => t.slug === slug);
+  if (bsc) return bsc;
+  const gen = getGeneratedTournaments().find((t) => t.slug === slug);
+  return gen ? mapGeneratedTournament(gen) : undefined;
 }
 
 const STATUS_ORDER: Record<EsportsTournament["status"], number> = { live: 0, upcoming: 1, finished: 2 };

@@ -99,14 +99,16 @@ export function PredictionsQuickVoteSection({
   maxItems?: number;
 }) {
   const bracketIds = getAllPlayoffBracketMatchIds(brackets);
-  const bracketBoards = brackets.filter((b) => {
-    if (b.quarters.length === 4) return true;
-    if (b.quarters.length === 0 && (b.semis.length > 0 || b.final)) return true;
-    return false;
-  });
+  const bracketBoards = brackets.filter(
+    (b) => b.quarters.length > 0 || b.semis.length > 0 || Boolean(b.final),
+  );
+  const visibleBracketIds = getAllPlayoffBracketMatchIds(bracketBoards);
   const useBracketLayout = bracketBoards.length > 0;
 
-  const otherEvents = sortByDate(events.filter((e) => !bracketIds.has(e.matchId)));
+  const orphanedBracketEvents = sortByDate(
+    events.filter((e) => bracketIds.has(e.matchId) && !visibleBracketIds.has(e.matchId)),
+  );
+  const otherEvents = sortByDate(events.filter((e) => !visibleBracketIds.has(e.matchId)));
   const otherList = maxItems ? otherEvents.slice(0, maxItems) : otherEvents;
 
   if (!useBracketLayout && events.length === 0) return null;
@@ -144,6 +146,19 @@ export function PredictionsQuickVoteSection({
             </div>
           ))}
         </div>
+      )}
+
+      {orphanedBracketEvents.length > 0 && (
+        <section className="bf-predict-quick-other">
+          <h3 className="bf-predict-bracket-round-sub">Eliminatoria y calendario</h3>
+          <div className="bf-predict-quick-other-grid">
+            {orphanedBracketEvents.map((e) => (
+              <div key={e.id} id={`pick-${e.matchId}`} className="bf-predict-quick-vote-cell">
+                <BracketMatchCard event={e} votes={votes} />
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {otherList.length > 0 && (

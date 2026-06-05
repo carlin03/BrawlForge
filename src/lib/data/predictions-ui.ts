@@ -2,6 +2,7 @@ import type { BracketLayoutMode, PlayoffBracketsStore } from "@/lib/data/bracket
 import type { PredictionEvent } from "@/lib/data/predictions";
 import { getEffectiveMatchStatus } from "@/lib/data/match-effective-status";
 import { expandTournamentSlugFilter, getMatch, getTournament } from "@/lib/data/matches";
+import { bracketSlotFromMatch } from "@/lib/data/bracket-order";
 import { canonicalTournamentSlug } from "@/lib/data/playoff-pool-normalize";
 import { getPredictionLabel, getPredictionTournament } from "@/lib/data";
 import { hasRealVotes } from "@/lib/data/predictions-build";
@@ -278,11 +279,16 @@ export function buildPlayoffBracket(
   const tourEvents = events.filter((e) => slugSet.has(e.tournamentSlug) && e.stageMeta?.isPlayoff);
   if (tourEvents.length < 1) return null;
 
-  const byDate = (list: EnrichedPrediction[]) =>
-    [...list].sort((a, b) => (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline));
+  const byBracketSlot = (list: EnrichedPrediction[]) =>
+    [...list].sort((a, b) => {
+      const sa = bracketSlotFromMatch({ id: a.matchId, meta: getMatch(a.matchId)?.meta });
+      const sb = bracketSlotFromMatch({ id: b.matchId, meta: getMatch(b.matchId)?.meta });
+      if (sa !== sb) return sa - sb;
+      return (a.matchDate ?? a.deadline).localeCompare(b.matchDate ?? b.deadline);
+    });
 
-  const quarters = byDate(tourEvents.filter((e) => e.stageMeta?.roundKey === "quarter")).slice(0, 4);
-  const semisAll = byDate(
+  const quarters = byBracketSlot(tourEvents.filter((e) => e.stageMeta?.roundKey === "quarter")).slice(0, 4);
+  const semisAll = byBracketSlot(
     tourEvents.filter(
       (e) =>
         e.stageMeta?.roundKey === "semi" ||
@@ -301,8 +307,7 @@ export function buildPlayoffBracket(
     quarters.length > 0 || semisAll.length > 0 || Boolean(final);
   if (!hasBracket) return null;
 
-  const bracketSemis =
-    quarters.length > 0 && quarters.length < 4 ? [] : semisAll.slice(0, 2);
+  const bracketSemis = semisAll.slice(0, 2);
   const bracketFinal = final;
 
   if (!quarters.length && !bracketSemis.length && !bracketFinal) return null;

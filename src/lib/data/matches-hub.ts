@@ -2,6 +2,7 @@ import type { Region } from "../types";
 import type { EsportsMatch } from "./matches";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { expandTournamentSlugFilter, getTournament } from "./matches";
+import { isCredibleFinishedResult, isScheduledStillOpen } from "./public-calendar-matches";
 import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
 import { resolveMatchTeamName } from "./team-display-resolve";
 import { getMatchStageMeta, type StageRoundKey } from "./match-stage-meta";
@@ -56,7 +57,11 @@ function compareHubMatches(a: EsportsMatch, b: EsportsMatch, tab: MatchTab): num
 
 function tabPool(tab: MatchTab, all: EsportsMatch[]): EsportsMatch[] {
   if (tab === "live") return all.filter((m) => getEffectiveMatchStatus(m) === "live");
-  if (tab === "upcoming") return all.filter((m) => getEffectiveMatchStatus(m) === "upcoming");
+  if (tab === "upcoming") {
+    return all.filter(
+      (m) => getEffectiveMatchStatus(m) === "upcoming" && isScheduledStillOpen(m),
+    );
+  }
   return all.filter((m) => {
     const s = getEffectiveMatchStatus(m);
     return s === "finished" || s === "cancelled";
@@ -102,9 +107,12 @@ export function filterHubMatches(all: EsportsMatch[], filters: MatchHubFilters):
     filters.tab === "results"
       ? all.filter(isPublicScheduleMatch)
       : all.filter(isPublicUpcomingCalendarMatch);
-  let pool = tabPool(filters.tab, scope).filter((m) =>
-    filters.tab === "results" ? isPublicScheduleMatch(m) : isPublicUpcomingCalendarMatch(m),
-  );
+  let pool = tabPool(filters.tab, scope).filter((m) => {
+    if (filters.tab === "results") {
+      return isPublicScheduleMatch(m) && isCredibleFinishedResult(m);
+    }
+    return isPublicUpcomingCalendarMatch(m);
+  });
 
   if (filters.region !== "all") {
     pool = pool.filter((m) => m.region === filters.region);
@@ -235,10 +243,12 @@ export function countHubMatches(all: EsportsMatch[]) {
   const scheduled = all.filter(isPublicUpcomingCalendarMatch);
   return {
     live: scheduled.filter((m) => getEffectiveMatchStatus(m) === "live").length,
-    upcoming: scheduled.filter((m) => getEffectiveMatchStatus(m) === "upcoming").length,
+    upcoming: scheduled.filter(
+      (m) => getEffectiveMatchStatus(m) === "upcoming" && isScheduledStillOpen(m),
+    ).length,
     results: confirmed.filter((m) => {
       const s = getEffectiveMatchStatus(m);
-      return s === "finished" || s === "cancelled";
+      return (s === "finished" || s === "cancelled") && isCredibleFinishedResult(m);
     }).length,
     total: confirmed.length,
   };

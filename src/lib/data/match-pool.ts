@@ -1,6 +1,7 @@
 import { sanitizePlayoffBracketPool } from "./bracket-playoff-sanitize";
 import { isPickemMatchOpen, withEffectiveMatchStatus } from "./match-effective-status";
-import { matchContentKey, matchDedupeKey, normalizePlayoffPool, pickBetterMatch } from "./playoff-pool-normalize";
+import { poolMergeKey } from "./bracket-order";
+import { matchDedupeKey, normalizePlayoffPool, pickBetterMatch } from "./playoff-pool-normalize";
 import { inferPlayoffStagesInPool } from "./playoff-stage-infer";
 import type { EsportsMatch } from "./esports-match-types";
 import { getOfficialUpcomingCalendarMatches } from "./bsc-calendar-upcoming";
@@ -17,10 +18,10 @@ export function setRuntimeMatchPool(pool: EsportsMatch[] | null): void {
 
 function mergeByDedupeKey(byId: Map<string, EsportsMatch>, incoming: EsportsMatch): void {
   const effective = enrichMatchForPool(withEffectiveMatchStatus(incoming));
-  const contentKey = matchContentKey(effective);
+  const contentKey = poolMergeKey(effective);
 
   for (const [id, existing] of byId) {
-    if (matchContentKey(existing) === contentKey) {
+    if (poolMergeKey(existing) === contentKey) {
       const better = pickBetterMatch(existing, effective);
       byId.delete(id);
       byId.set(better.id, better);

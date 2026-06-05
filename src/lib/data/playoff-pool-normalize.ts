@@ -1,4 +1,4 @@
-import { BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
+import { BSC_TOURNAMENT_ALIASES, isBscCircuitSlug } from "./bsc-tournaments";
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import type { EsportsMatch } from "./matches";
 import { getMatchStageMeta } from "./match-stage-meta";
@@ -115,8 +115,10 @@ export function normalizePlayoffPool(pool: EsportsMatch[]): EsportsMatch[] {
 
   const normalizedPlayoff: EsportsMatch[] = [];
 
-  for (const [, matches] of playoffByTour) {
-    const quarters = dedupeRound(matches.filter((m) => roundKey(m) === "quarter")).slice(0, MAX_QUARTERS);
+  for (const [canon, matches] of playoffByTour) {
+    const strictBracket = isBscCircuitSlug(canon);
+    const quartersAll = dedupeRound(matches.filter((m) => roundKey(m) === "quarter"));
+    const quarters = strictBracket ? quartersAll.slice(0, MAX_QUARTERS) : quartersAll;
     const semisRaw = dedupeRound(
       matches.filter(
         (m) =>
@@ -132,7 +134,7 @@ export function normalizePlayoffPool(pool: EsportsMatch[]): EsportsMatch[] {
         ),
       )[0];
 
-    let semis = semisRaw.slice(0, MAX_SEMIS);
+    const semis = strictBracket ? semisRaw.slice(0, MAX_SEMIS) : semisRaw;
 
     normalizedPlayoff.push(...quarters, ...semis, ...(gf ? [gf] : []));
   }

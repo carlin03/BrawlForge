@@ -35,6 +35,7 @@ function inferBracketStages(sorted: EsportsMatch[]): EsportsMatch[] {
   } else if (n === 5) {
     qf = 4;
     sf = 1;
+    /* 5 partidos = 4 QF + 1 SF (EA/NA/SA MF) — no forzar 2 semis */
   } else if (n === 4) {
     qf = 4;
   } else if (n === 3) {

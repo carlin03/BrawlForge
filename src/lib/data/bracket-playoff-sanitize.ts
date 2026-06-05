@@ -1,5 +1,7 @@
+import { sortBracketRoundMatches } from "./bracket-order";
+import { isBracketPlaceholderSlug } from "./bracket-slot-display";
 import type { EsportsMatch } from "./matches";
-import { normalizePlayoffPool } from "./playoff-pool-normalize";
+import { canonicalTournamentSlug, normalizePlayoffPool } from "./playoff-pool-normalize";
 import { getMatchStageMeta } from "./match-stage-meta";
 
 const SEMI_SLOTS: [string, string][] = [
@@ -11,26 +13,27 @@ function roundKey(m: EsportsMatch): string {
   return getMatchStageMeta(m.stage).roundKey;
 }
 
-function sortByDate(list: EsportsMatch[]): EsportsMatch[] {
-  return [...list].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+function tourKey(slug: string): string {
+  return canonicalTournamentSlug(slug);
 }
 
 /** Torneo con 4+ cuartos: semis/final solo slots winner-* (nunca spoilers de CMS). */
 export function sanitizePlayoffBracketPool(pool: EsportsMatch[]): EsportsMatch[] {
   const byTour = new Map<string, EsportsMatch[]>();
   for (const m of normalizePlayoffPool(pool)) {
-    const arr = byTour.get(m.tournamentSlug) ?? [];
+    const key = tourKey(m.tournamentSlug);
+    const arr = byTour.get(key) ?? [];
     arr.push(m);
-    byTour.set(m.tournamentSlug, arr);
+    byTour.set(key, arr);
   }
 
   const out = new Map(pool.map((m) => [m.id, m]));
 
   for (const matches of byTour.values()) {
-    const quarters = sortByDate(matches.filter((m) => roundKey(m) === "quarter"));
+    const quarters = sortBracketRoundMatches(matches.filter((m) => roundKey(m) === "quarter"));
     if (quarters.length < 4) continue;
 
-    const semis = sortByDate(
+    const semis = sortBracketRoundMatches(
       matches.filter((m) => roundKey(m) === "semi" || (/semifinal/i.test(m.stage) && !/grand/i.test(m.stage))),
     );
     semis.forEach((m, i) => {
@@ -52,12 +55,15 @@ export function sanitizePlayoffBracketPool(pool: EsportsMatch[]): EsportsMatch[]
 }
 
 export function countTournamentQuarters(pool: EsportsMatch[], tournamentSlug: string): number {
-  return pool.filter(
-    (m) => m.tournamentSlug === tournamentSlug && roundKey(m) === "quarter",
-  ).length;
+  const key = tourKey(tournamentSlug);
+  return pool.filter((m) => tourKey(m.tournamentSlug) === key && roundKey(m) === "quarter").length;
 }
 
-/** BSC solo publicó cuartos (1–3): no mostrar semis/final con equipos en pick'em. */
+function semiUsesBracketSlots(m: EsportsMatch): boolean {
+  return isBracketPlaceholderSlug(m.teamASlug) || isBracketPlaceholderSlug(m.teamBSlug);
+}
+
+/** Oculta semis/final con spoilers si faltan cuartos y aún no hay slots winner-*. */
 export function shouldHideIncompletePlayoffRound(
   pool: EsportsMatch[],
   m: EsportsMatch,
@@ -66,5 +72,7 @@ export function shouldHideIncompletePlayoffRound(
   if (rk !== "semi" && rk !== "final" && rk !== "grand_final") return false;
   const qCount = countTournamentQuarters(pool, m.tournamentSlug);
   if (qCount === 0) return false;
-  return qCount < 4;
+  if (qCount >= 4) return false;
+  if (semiUsesBracketSlots(m)) return false;
+  return true;
 }

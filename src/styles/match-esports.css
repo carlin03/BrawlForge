@@ -1741,6 +1741,16 @@
   color: #ffd54f;
 }
 
+.bf-map-asset.is-md .bf-map-asset-art {
+  aspect-ratio: 16/9;
+  max-height: 120px;
+}
+.bf-map-asset.is-md .bf-map-asset-art img {
+  object-fit: cover;
+}
+.bf-map-asset.is-md .bf-map-asset-meta strong {
+  font-size: 12px;
+}
 .bf-map-asset.is-lg .bf-map-asset-art {
   aspect-ratio: 16/9;
 }
@@ -3470,9 +3480,17 @@
   font-weight: 700;
 }
 
+.bf-series-map-art {
+  max-width: 220px;
+  width: 100%;
+}
+.bf-series-map-art .bf-map-asset {
+  width: 100%;
+}
+
 .bf-series-map-body {
   display: grid;
-  grid-template-columns: minmax(140px, 200px) 1fr;
+  grid-template-columns: minmax(120px, 200px) 1fr;
   gap: 16px;
   padding: 16px;
 }

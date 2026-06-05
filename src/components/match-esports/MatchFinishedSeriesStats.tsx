@@ -16,7 +16,7 @@ function BrawlerChipList({ items, variant = "pick" }: { items: string[]; variant
     <div className={`bf-series-brawler-chips is-${variant}`}>
       {items.map((name) => (
         <div key={name} className="bf-series-brawler-chip">
-          <BrawlerAssetIcon name={name} size={40} variant="pick" />
+          <BrawlerAssetIcon name={name} size={32} variant="pick" />
           <span>{name}</span>
         </div>
       ))}
@@ -102,7 +102,7 @@ export function MatchFinishedSeriesStats({
                     index={slot.index}
                     isDecisive={slot.decisive}
                     meta={meta}
-                    size="lg"
+                    size="md"
                   />
                 </div>
 
@@ -152,28 +152,28 @@ export function MatchFinishedSeriesStats({
             {adv.most_used_brawler && (
               <div>
                 <span>Más usado</span>
-                <BrawlerAssetIcon name={adv.most_used_brawler} size={72} variant="meta" />
+                <BrawlerAssetIcon name={adv.most_used_brawler} size={52} variant="meta" />
                 <strong>{adv.most_used_brawler}</strong>
               </div>
             )}
             {adv.match_mvp_brawler && (
               <div>
                 <span>MVP partido</span>
-                <BrawlerAssetIcon name={adv.match_mvp_brawler} size={72} variant="meta" />
+                <BrawlerAssetIcon name={adv.match_mvp_brawler} size={52} variant="meta" />
                 <strong>{adv.match_mvp_brawler}</strong>
               </div>
             )}
             {adv.most_banned_brawler && (
               <div>
                 <span>Más baneado</span>
-                <BrawlerAssetIcon name={adv.most_banned_brawler} size={72} variant="ban" />
+                <BrawlerAssetIcon name={adv.most_banned_brawler} size={52} variant="ban" />
                 <strong>{adv.most_banned_brawler}</strong>
               </div>
             )}
             {adv.lowest_wr_brawler && (
               <div>
                 <span>Menor WR</span>
-                <BrawlerAssetIcon name={adv.lowest_wr_brawler} size={72} variant="meta" />
+                <BrawlerAssetIcon name={adv.lowest_wr_brawler} size={52} variant="meta" />
                 <strong>{adv.lowest_wr_brawler}</strong>
               </div>
             )}

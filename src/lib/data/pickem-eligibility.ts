@@ -1,3 +1,4 @@
+import { isBracketPlaceholderSlug } from "./bracket-slot-display";
 import type { EsportsMatch } from "./esports-match-types";
 import { isPendingTeamSlug } from "./match-meta";
 import { getMatchStageMeta } from "./match-stage-meta";
@@ -19,17 +20,14 @@ export function isDisplayableMatch(m: EsportsMatch): boolean {
 export { isSchedulableMatch, isSchedulableTeamSlug } from "./team-display-resolve";
 
 function slugOkForPickem(slug: string): boolean {
-  return isKnownTeamSlug(slug) || isPendingTeamSlug(slug);
+  return (
+    isSchedulableTeamSlug(slug) ||
+    isPendingTeamSlug(slug) ||
+    isBracketPlaceholderSlug(slug)
+  );
 }
 
-/** Pick'em / predicciones: cuartos con equipos reales; semis/final pueden usar winner-qf-* / winner-sf-*. */
+/** Pick'em: cualquier cruce con slugs válidos (catálogo o Liquipedia regional). */
 export function isPickemMatchEligible(m: EsportsMatch): boolean {
-  const round = getMatchStageMeta(m.stage).roundKey;
-  if (round === "quarter") {
-    return isSchedulableMatch(m);
-  }
-  if (round === "semi" || round === "final" || round === "grand_final") {
-    return slugOkForPickem(m.teamASlug) && slugOkForPickem(m.teamBSlug);
-  }
-  return isSchedulableMatch(m);
+  return slugOkForPickem(m.teamASlug) && slugOkForPickem(m.teamBSlug);
 }

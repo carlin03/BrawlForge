@@ -55,12 +55,10 @@ export function isPickemMatchOpen(m: EsportsMatch): boolean {
   if (status === "finished" || status === "cancelled") return false;
 
   const scheduled = new Date(m.date).getTime();
-  if (
-    !Number.isNaN(scheduled) &&
-    (Date.now() > scheduled + PICKEM_CLOSE_MS || Date.now() > scheduled + PICKEM_STALE_MS) &&
-    status !== "live"
-  ) {
-    return false;
+  if (!Number.isNaN(scheduled)) {
+    if (Date.now() > scheduled + PICKEM_STALE_MS) return false;
+    if (Date.now() > scheduled + PICKEM_CLOSE_MS && status !== "live") return false;
+    if (Date.now() > scheduled && status !== "live") return false;
   }
 
   return status === "upcoming" || status === "live";
