@@ -161,12 +161,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let mounted = true;
 
-    (async () => {
+    const run = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!mounted) return;
       await syncSession(session?.user ?? null);
       if (mounted) setLoading(false);
-    })();
+    };
+    const t = window.setTimeout(() => void run(), 400);
 
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       void syncSession(session?.user ?? null);
@@ -174,6 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       mounted = false;
+      window.clearTimeout(t);
       sub.subscription.unsubscribe();
     };
   }, [supabase, syncSession]);

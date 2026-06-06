@@ -7,6 +7,7 @@ import { themeTokensToCssVars } from "@/lib/cms/theme-css";
 export function CmsThemeClient() {
   useEffect(() => {
     let cancelled = false;
+    const t = window.setTimeout(() => {
     fetch("/api/cms/runtime", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
@@ -23,8 +24,10 @@ export function CmsThemeClient() {
         el.textContent = css;
       })
       .catch(() => {});
+    }, 1500);
     return () => {
       cancelled = true;
+      window.clearTimeout(t);
     };
   }, []);
 

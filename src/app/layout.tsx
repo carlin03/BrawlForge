@@ -1,27 +1,11 @@
 import type { Metadata } from "next";
-import { Oswald, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
-import { AppShell } from "@/components/layout/AppShell";
-import { Providers } from "@/app/providers";
-import { InstantBootShell } from "@/components/layout/InstantBootShell";
+import { InstantBootShell, INSTANT_CRITICAL_CSS } from "@/components/layout/InstantBootShell";
+import { BootRelease } from "@/components/layout/BootRelease";
+import { ClientRoot } from "@/components/layout/ClientRoot";
 import { CmsThemeClient } from "@/components/cms/CmsThemeClient";
-import { CmsRuntimeBootstrap } from "@/components/cms/CmsRuntimeBootstrap";
 import { DEFAULT_LEGACY_CONFIG } from "@/lib/cms/defaults";
 import { SITE_URL } from "@/lib/site-url";
-
-export const dynamic = "force-dynamic";
-
-const oswald = Oswald({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
-
-const ibmPlex = IBM_Plex_Sans({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
 
 export function generateMetadata(): Metadata {
   const seo = DEFAULT_LEGACY_CONFIG.settings.seo;
@@ -58,15 +42,18 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${oswald.variable} ${ibmPlex.variable} h-full`}>
-      <body className="min-h-full antialiased" style={{ background: "#0a0c12", color: "#f4f4f5" }}>
+    <html lang="es" className="h-full" style={{ background: "#0a0c12", color: "#f4f4f5" }}>
+      <head>
+        <style id="bf-critical-boot" dangerouslySetInnerHTML={{ __html: INSTANT_CRITICAL_CSS }} />
+      </head>
+      <body
+        className="min-h-full antialiased"
+        style={{ background: "#0a0c12", color: "#f4f4f5", margin: 0, minHeight: "100%" }}
+      >
         <InstantBootShell />
+        <BootRelease />
         <CmsThemeClient />
-        <CmsRuntimeBootstrap>
-          <Providers>
-            <AppShell>{children}</AppShell>
-          </Providers>
-        </CmsRuntimeBootstrap>
+        <ClientRoot>{children}</ClientRoot>
       </body>
     </html>
   );
