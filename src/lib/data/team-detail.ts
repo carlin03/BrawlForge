@@ -1,5 +1,5 @@
 import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants";
-import { getBscCircuitTournaments, getTournament, matches, type EsportsTournament } from "./matches";
+import { getBscCircuitTournaments, getTournament, getLegacyMatchList, type EsportsTournament } from "./matches";
 import { getTeam } from "./teams";
 
 export interface TeamTournamentRow {
@@ -16,6 +16,7 @@ export interface TeamTournamentRow {
 
 export function getTeamTournamentHistory(teamSlug: string, limit = 12): TeamTournamentRow[] {
   const playedSlugs = new Set<string>();
+  const matches = getLegacyMatchList();
   for (const m of matches) {
     if (m.teamASlug === teamSlug || m.teamBSlug === teamSlug) {
       playedSlugs.add(m.tournamentSlug);

@@ -28,7 +28,7 @@ const NewsContext = createContext<NewsState>({
 
 export function NewsProvider({ children }: { children: ReactNode }) {
   const [articles, setArticles] = useState<NewsArticle[]>(() => getLatestNews(64));
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const [fromDb, setFromDb] = useState(false);
 
   const refresh = useCallback(async () => {

@@ -3,7 +3,7 @@ import { requireCmsAdmin } from "@/lib/cms/admin-api";
 import { loadMatchesFromDb, mergeMatchPools } from "@/lib/cms/resolve/matches";
 import { auditMatchPool } from "@/lib/data/match-schedule-audit";
 import { getMatchPool } from "@/lib/data/match-pool";
-import { matches as legacyMatches } from "@/lib/data/matches";
+import { getLegacyMatchList } from "@/lib/data/matches";
 
 export const dynamic = "force-dynamic";
 
@@ -19,9 +19,9 @@ export async function GET(request: Request) {
   if (view === "catalog") {
     pool = db ?? [];
   } else if (view === "merged" && db?.length) {
-    pool = mergeMatchPools(db, legacyMatches);
+    pool = mergeMatchPools(db, getLegacyMatchList());
   } else if (view === "legacy") {
-    pool = legacyMatches;
+    pool = getLegacyMatchList();
   }
 
   const report = auditMatchPool(pool);

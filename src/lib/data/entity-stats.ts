@@ -1,5 +1,5 @@
 import { getPlayer, getTeam, getPlayersByTeam, teams } from "@/lib/data";
-import { matches, type EsportsMatch } from "@/lib/data/matches";
+import { getLegacyMatchList, type EsportsMatch } from "@/lib/data/matches";
 import type { Region } from "@/lib/types";
 
 export type TeamComputedStats = {
@@ -55,7 +55,7 @@ export type RosterPlayerStats = {
 };
 
 function teamFinishedMatches(teamSlug: string) {
-  return matches
+  return getLegacyMatchList()
     .filter((m) => m.status === "finished" && (m.teamASlug === teamSlug || m.teamBSlug === teamSlug))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
@@ -78,7 +78,7 @@ export function getRegionalRank(teamSlug: string, region: Region, globalRank: nu
 
 export function getTeamComputedStats(teamSlug: string, rosterSlugs: string[]): TeamComputedStats {
   const team = getTeam(teamSlug);
-  const teamMatches = matches.filter((m) => m.teamASlug === teamSlug || m.teamBSlug === teamSlug);
+  const teamMatches = getLegacyMatchList().filter((m) => m.teamASlug === teamSlug || m.teamBSlug === teamSlug);
   const finished = teamFinishedMatches(teamSlug);
   let wins = 0;
   const recentForm: ("W" | "L")[] = [];
@@ -122,6 +122,7 @@ export function getTeamComputedStats(teamSlug: string, rosterSlugs: string[]): T
 }
 
 export function getTeamNextOrLiveMatch(teamSlug: string): EsportsMatch | null {
+  const matches = getLegacyMatchList();
   const live = matches.find(
     (m) => m.status === "live" && (m.teamASlug === teamSlug || m.teamBSlug === teamSlug),
   );
@@ -210,7 +211,7 @@ export function getPlayerComputedStats(
     wins = fin.filter((m) => matchWon(m, teamSlug)).length;
     losses = matchesPlayed - wins;
     tournamentsPlayed = new Set(
-      matches
+      getLegacyMatchList()
         .filter((m) => m.teamASlug === teamSlug || m.teamBSlug === teamSlug)
         .map((m) => m.tournamentSlug),
     ).size;

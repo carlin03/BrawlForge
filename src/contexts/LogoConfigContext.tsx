@@ -29,7 +29,7 @@ const LogoConfigContext = createContext<{
 
 export function LogoConfigProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<LogoRuntimeConfig>(DEFAULT);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
 
   const refresh = useCallback(async () => {
     try {

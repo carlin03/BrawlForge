@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext } from "react";
-import type { CmsRuntimePayload } from "@/lib/cms/runtime";
+import { createContext, useContext, useEffect } from "react";
+import type { CmsRuntimePayload } from "@/lib/cms/runtime-types";
 import { setRuntimeMatchPool } from "@/lib/data/match-pool";
 
 const CmsRuntimeContext = createContext<CmsRuntimePayload | null>(null);
@@ -13,7 +13,13 @@ export function CmsRuntimeProvider({
   value: CmsRuntimePayload;
   children: React.ReactNode;
 }) {
-  setRuntimeMatchPool(value.matchPool);
+  useEffect(() => {
+    setRuntimeMatchPool(value.matchPool.length ? value.matchPool : null);
+    if (value.matchPool.length) {
+      window.dispatchEvent(new Event("bf-match-pool-updated"));
+    }
+  }, [value.matchPool]);
+
   return <CmsRuntimeContext.Provider value={value}>{children}</CmsRuntimeContext.Provider>;
 }
 

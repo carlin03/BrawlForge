@@ -20,7 +20,7 @@ export { getBsc2026CircuitTeamSlugs, BSC_2026_CIRCUIT_SLUGS, BSC_2026_CLUB_COUNT
 export { BSC_2026_ROSTERS, BSC_2026_TEAM_SLUGS } from "./bsc-2026-rosters";
 export {
   tournaments,
-  matches,
+  getLegacyMatchList,
   getTournament,
   getMatch,
   getMatchesByTournament,

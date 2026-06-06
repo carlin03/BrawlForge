@@ -1,11 +1,11 @@
 import { getTournament } from "@/lib/data/matches";
-import { matches } from "@/lib/data/matches";
+import { getLegacyMatchList } from "@/lib/data/matches";
 import type { Region } from "@/lib/types";
 import type { RosterPlayerStats } from "@/lib/data/entity-stats";
 import type { TeamTournamentRow } from "@/lib/data/team-detail";
 
 function teamFinishedMatches(teamSlug: string) {
-  return matches
+  return getLegacyMatchList()
     .filter((m) => m.status === "finished" && (m.teamASlug === teamSlug || m.teamBSlug === teamSlug))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }

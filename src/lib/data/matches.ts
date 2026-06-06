@@ -179,7 +179,7 @@ function buildTournaments(): EsportsTournament[] {
 
 export const tournaments: EsportsTournament[] = buildTournaments();
 
-export { matches } from "./legacy-matches";
+export { getLegacyMatchList } from "./legacy-matches";
 export { matchDedupeKey } from "./playoff-pool-normalize";
 
 function mapGeneratedTournament(t: ReturnType<typeof getGeneratedTournaments>[number]): EsportsTournament {

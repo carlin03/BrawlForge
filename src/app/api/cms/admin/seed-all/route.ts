@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/supabase/admin-auth";
 import { createClient } from "@/lib/supabase/server";
-import { matches as legacyMatches } from "@/lib/data/matches";
+import { getLegacyMatchList } from "@/lib/data/matches";
 import { logCmsAudit } from "@/lib/cms/audit";
 import { DEFAULT_FEATURE_FLAGS } from "@/lib/cms/defaults";
 
@@ -24,7 +24,7 @@ export async function POST() {
     results.push(`flag:${flag}=on`);
   }
 
-  const batch = legacyMatches.slice(0, 120).map((m) => ({
+  const batch = getLegacyMatchList().slice(0, 120).map((m) => ({
     id: m.id,
     tournament_slug: m.tournamentSlug,
     team_a_slug: m.teamASlug,

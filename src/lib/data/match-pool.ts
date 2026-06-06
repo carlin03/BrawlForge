@@ -5,7 +5,7 @@ import { matchDedupeKey, normalizePlayoffPool, pickBetterMatch } from "./playoff
 import { inferPlayoffStagesInPool } from "./playoff-stage-infer";
 import type { EsportsMatch } from "./esports-match-types";
 import { getOfficialUpcomingCalendarMatches } from "./bsc-calendar-upcoming";
-import { matches as legacyMatches } from "./legacy-matches";
+import { getLegacyMatchList } from "./legacy-matches";
 import { enrichMatchForPool } from "./match-pool-enrich";
 import { sanitizeMatchPoolTournamentSlugs } from "./tournament-slug-sanitize";
 
@@ -67,7 +67,7 @@ function buildPublicMatchPool(base: EsportsMatch[]): EsportsMatch[] {
 }
 
 export function getMatchPool(): EsportsMatch[] {
-  const base = runtimePool ?? legacyMatches;
+  const base = runtimePool ?? getLegacyMatchList();
   return buildPublicMatchPool(base);
 }
 

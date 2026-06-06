@@ -2,13 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
-import { useCatalog } from "@/contexts/CatalogContext";
-import { useLogoConfigReady } from "@/contexts/LogoConfigContext";
-import { useNewsReady } from "@/contexts/NewsContext";
 
-const MIN_MS = 900;
-const MAX_MS = 12000;
+const MIN_MS = 350;
+const MAX_MS = 5000;
 
 type BootStage = {
   id: string;
@@ -31,36 +27,56 @@ function useWindowLoaded() {
   return loaded;
 }
 
+function useReactBootReady() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    setReady(true);
+  }, []);
+  return ready;
+}
+
+declare global {
+  interface Window {
+    __bfBootHandoff?: (pct?: number) => void;
+    __bfBootSetLabel?: (text: string) => void;
+    __bfBootDone?: () => void;
+  }
+}
+
 /**
- * Pantalla de arranque 0–100 % hasta que auth, catálogo, logos y recursos estén listos.
- * Se muestra en cada entrada al sitio (recarga / nueva pestaña), no en navegación interna.
+ * Toma el relevo del loader HTML estático y cierra en cuanto la app puede pintarse.
+ * Catálogo, auth y logos siguen cargando en segundo plano.
  */
 export function FirstVisitLoader() {
   const pathname = usePathname();
-  const { loading: authLoading } = useAuth();
-  const { ready: catalogReady } = useCatalog();
-  const logosReady = useLogoConfigReady();
-  const newsReady = useNewsReady();
   const windowLoaded = useWindowLoaded();
+  const reactReady = useReactBootReady();
 
   const [active, setActive] = useState(() => !pathname.startsWith("/admin"));
   const [fade, setFade] = useState(false);
   const [displayProgress, setDisplayProgress] = useState(0);
   const [mountedAt] = useState(() => Date.now());
+  const [softReady, setSoftReady] = useState(false);
 
   const domReady = typeof document !== "undefined" && document.readyState !== "loading";
 
+  useEffect(() => {
+    window.__bfBootHandoff?.(displayProgress);
+    window.__bfBootSetLabel?.("Conectando con BrawlForge…");
+  }, []);
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setSoftReady(true), 700);
+    return () => window.clearTimeout(t);
+  }, []);
+
   const stages: BootStage[] = useMemo(
     () => [
-      { id: "boot", label: "Iniciando BrawlForge…", weight: 12, done: true },
-      { id: "dom", label: "Preparando interfaz…", weight: 13, done: domReady },
-      { id: "assets", label: "Cargando recursos…", weight: 15, done: windowLoaded },
-      { id: "auth", label: "Comprobando sesión…", weight: 15, done: !authLoading },
-      { id: "catalog", label: "Sincronizando equipos y torneos…", weight: 25, done: catalogReady },
-      { id: "logos", label: "Aplicando logos…", weight: 10, done: logosReady },
-      { id: "news", label: "Actualizando noticias…", weight: 10, done: newsReady },
+      { id: "boot", label: "Iniciando BrawlForge…", weight: 25, done: reactReady },
+      { id: "dom", label: "Preparando interfaz…", weight: 35, done: domReady },
+      { id: "shell", label: "Abriendo la web…", weight: 40, done: windowLoaded || softReady },
     ],
-    [domReady, windowLoaded, authLoading, catalogReady, logosReady, newsReady],
+    [domReady, windowLoaded, reactReady, softReady],
   );
 
   const targetProgress = useMemo(() => {
@@ -83,14 +99,19 @@ export function FirstVisitLoader() {
   }, [pathname]);
 
   useEffect(() => {
+    window.__bfBootHandoff?.(targetProgress);
+    window.__bfBootSetLabel?.(stageLabel);
+  }, [targetProgress, stageLabel]);
+
+  useEffect(() => {
     if (!active || fade) return;
 
     let raf = 0;
     const tick = () => {
       setDisplayProgress((prev) => {
-        const cap = allReady ? 100 : Math.min(targetProgress, 96);
+        const cap = allReady ? 100 : Math.min(targetProgress, 97);
         if (prev >= cap) return prev;
-        const step = Math.max(0.35, (cap - prev) * 0.14);
+        const step = Math.max(0.8, (cap - prev) * 0.22);
         return Math.min(prev + step, cap);
       });
       raf = requestAnimationFrame(tick);
@@ -107,8 +128,11 @@ export function FirstVisitLoader() {
       if (done) return;
       done = true;
       setDisplayProgress(100);
+      window.__bfBootHandoff?.(100);
+      window.__bfBootSetLabel?.("Listo");
       setFade(true);
-      window.setTimeout(() => setActive(false), 550);
+      window.__bfBootDone?.();
+      window.setTimeout(() => setActive(false), 480);
     };
 
     const check = () => {
@@ -117,24 +141,15 @@ export function FirstVisitLoader() {
         finish();
         return;
       }
-      if (displayProgress >= 99 && allReady && elapsed >= MIN_MS) {
+      if (allReady && elapsed >= MIN_MS) {
         finish();
       }
     };
 
-    const id = window.setInterval(check, 80);
+    const id = window.setInterval(check, 60);
     check();
     return () => window.clearInterval(id);
-  }, [active, fade, allReady, displayProgress, mountedAt]);
-
-  useEffect(() => {
-    if (!active) {
-      document.body.classList.remove("bf-boot-loading");
-      return;
-    }
-    document.body.classList.add("bf-boot-loading");
-    return () => document.body.classList.remove("bf-boot-loading");
-  }, [active]);
+  }, [active, fade, allReady, mountedAt]);
 
   if (!active) return null;
 
@@ -149,6 +164,7 @@ export function FirstVisitLoader() {
       aria-valuenow={pct}
       aria-valuemin={0}
       aria-valuemax={100}
+      style={{ zIndex: 2147483647 }}
     >
       <div className="bf-first-visit-loader-inner">
         <p className="bf-first-visit-loader-brand">BrawlForge</p>
@@ -160,9 +176,7 @@ export function FirstVisitLoader() {
           <span className="bf-first-visit-loader-bar-fill" style={{ width: `${pct}%` }} />
         </div>
         <p className="bf-first-visit-loader-hint">
-          {allReady && pct >= 99
-            ? "Abriendo la web…"
-            : "Más datos competitivos = un poco más de espera la primera vez."}
+          {allReady ? "Entrando…" : "Los datos se sincronizan en segundo plano."}
         </p>
       </div>
     </div>

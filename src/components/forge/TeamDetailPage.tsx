@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { Block, Chip, FormDots, MatchRow, StatStrip } from "@/components/forge/ui";
 import { RegionBadge } from "@/components/ui/RegionBadge";
-import { getTeam, getPlayersByTeam, matches, getPlayer, getPickRate, getFantasyRole, hasFantasyForTournament } from "@/lib/data";
+import { getTeam, getPlayersByTeam, getLegacyMatchList, getPlayer, getPickRate, getFantasyRole, hasFantasyForTournament } from "@/lib/data";
 import { getPlayerPrice, transferMarket, DEFAULT_FANTASY_TOURNAMENT } from "@/lib/data/fantasy";
 
 export function ForgeTeamDetail({ slug }: { slug: string }) {
@@ -12,7 +12,7 @@ export function ForgeTeamDetail({ slug }: { slug: string }) {
 
   const roster = getPlayersByTeam(slug);
   const rosterPlayers = roster.length ? roster : team.roster.map((s) => getPlayer(s)).filter(Boolean);
-  const teamMatches = matches
+  const teamMatches = getLegacyMatchList()
     .filter((m) => m.teamASlug === slug || m.teamBSlug === slug)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const recent = teamMatches.slice(0, 5);

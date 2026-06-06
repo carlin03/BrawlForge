@@ -1,5 +1,5 @@
 import type { EsportsMatch } from "./matches";
-import { matches } from "./matches";
+import { getLegacyMatchList } from "./matches";
 import { getTeam, teamName } from "./index";
 
 export type TeamMatchStats = {
@@ -26,6 +26,7 @@ function teamWon(m: EsportsMatch, slug: string): boolean {
 }
 
 export function getTeamMatchStats(slug: string, limit = 8): TeamMatchStats {
+  const matches = getLegacyMatchList();
   const finished = matches
     .filter((m) => m.status === "finished" && (m.teamASlug === slug || m.teamBSlug === slug))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -56,6 +57,7 @@ export function getTeamMatchStats(slug: string, limit = 8): TeamMatchStats {
 }
 
 export function getH2HStats(teamA: string, teamB: string, excludeId?: string): H2HStats {
+  const matches = getLegacyMatchList();
   const h2h = matches.filter(
     (m) =>
       m.id !== excludeId &&

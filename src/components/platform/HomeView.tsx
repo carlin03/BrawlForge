@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useMatchPoolRefreshKey } from "@/contexts/MatchPoolRefreshContext";
 import { useGame } from "@/contexts/GameContext";
 import { buildPredictionEvents } from "@/lib/data/predictions-build";
 import { predictChronologySort } from "@/lib/data/predictions-filters";
@@ -81,12 +82,16 @@ function cleanName(raw: string): string {
 export function HomeView() {
   const logoConfig = useLogoConfig();
   const { aggregates, game } = useGame();
+  const matchPoolRefreshKey = useMatchPoolRefreshKey();
   const mergedTeams = useMergedCircuitTeams(teams);
   const circuitTeamCount = useCatalogTeamCount();
   const { complete: completeClubs } = usePublicCircuitTeams(teams);
   const [matchTab, setMatchTab] = useState<MatchTab>("results");
 
-  const live = getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug));
+  const live = useMemo(
+    () => getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)),
+    [matchPoolRefreshKey],
+  );
   const squad = getUserSquadDisplay(DEFAULT_FANTASY_TOURNAMENT);
   const budgetLeft = FANTASY_BUDGET - getSquadValue(squad, DEFAULT_FANTASY_TOURNAMENT);
   const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
@@ -119,7 +124,10 @@ export function HomeView() {
 
   const marqueeClubs = useMemo(() => [...homeClubs, ...homeClubs], [homeClubs]);
   const homeTournaments = useMemo(() => getHomeTournaments(), []);
-  const matchPool = useMemo(() => getCuratedHomeMatches(matchTab, 6), [matchTab]);
+  const matchPool = useMemo(
+    () => getCuratedHomeMatches(matchTab, 6),
+    [matchTab, matchPoolRefreshKey],
+  );
   const topNews = useLatestNewsMerged(3);
   const voteEvents = useMemo(() => {
     const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
@@ -148,8 +156,13 @@ export function HomeView() {
 
   const homeVoteBrackets = useMemo(() => buildAllPlayoffBrackets(voteEvents), [voteEvents]);
 
-  const spotlight =
-    live[0] ?? getUpcomingMatches().find((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)) ?? null;
+  const spotlight = useMemo(
+    () =>
+      live[0] ??
+      getUpcomingMatches().find((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)) ??
+      null,
+    [live, matchPoolRefreshKey],
+  );
 
   return (
     <div className="bf-home-ultra bf-page-ultra">

@@ -6,7 +6,7 @@ import {
   getTeam,
   teamName,
   tournamentName,
-  matches,
+  getLegacyMatchList,
   openPredictions,
   getPlayersByTeam,
   getPredictionLabel,
@@ -24,7 +24,7 @@ export function ForgeMatchDetail({ id }: { id: string }) {
   const teamB = getTeam(match.teamBSlug);
   const winA = match.status === "finished" && match.scoreA > match.scoreB;
   const winB = match.status === "finished" && match.scoreB > match.scoreA;
-  const h2h = matches.filter(
+  const h2h = getLegacyMatchList().filter(
     (m) =>
       m.id !== match.id &&
       m.status === "finished" &&

@@ -1,6 +1,6 @@
 import type { EsportsMatch } from "@/lib/data/matches";
 import { normalizePlayoffPool } from "@/lib/data/playoff-pool-normalize";
-import { matches as legacyMatches } from "@/lib/data/matches";
+import { getLegacyMatchList } from "@/lib/data/matches";
 import { parseMatchMeta } from "@/lib/data/match-meta";
 import { enrichMatchForPool } from "@/lib/data/match-pool-enrich";
 import { fixMislabeledWorldFinalsSlug } from "@/lib/data/tournament-slug-sanitize";
@@ -96,9 +96,10 @@ export async function resolveMatchList(): Promise<{
   const dbFlags = await loadFlagsFromDb();
   const flags = mergeFlags(dbFlags);
   if (!isCmsResolverActive(flags) || !isFlagEnabled(flags, "cms.matches.enabled")) {
-    return { pool: legacyMatches, source: "legacy" };
+    return { pool: getLegacyMatchList(), source: "legacy" };
   }
   const db = await loadMatchesFromDb();
+  const legacyMatches = getLegacyMatchList();
   if (!db?.length) return { pool: legacyMatches, source: "legacy" };
   return { pool: mergeMatchPools(db, legacyMatches), source: "hybrid" };
 }

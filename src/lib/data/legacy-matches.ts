@@ -54,4 +54,10 @@ function buildMatches(): EsportsMatch[] {
   return extra.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 
-export const matches: EsportsMatch[] = buildMatches();
+let legacyMatchCache: EsportsMatch[] | null = null;
+
+/** Construye el pool legacy solo cuando hace falta (no al importar el módulo). */
+export function getLegacyMatchList(): EsportsMatch[] {
+  if (!legacyMatchCache) legacyMatchCache = buildMatches();
+  return legacyMatchCache;
+}

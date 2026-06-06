@@ -9,7 +9,7 @@ import { RegionBadge } from "@/components/ui/RegionBadge";
 import { CountryFlag } from "@/components/ui/CountryFlag";
 import {
   getPlayersByTeam,
-  matches,
+  getLegacyMatchList,
   getPlayer,
   getUpcomingMatches,
   hasFantasyForTournament,
@@ -109,7 +109,7 @@ export function TeamDetailView({ slug }: { slug: string }) {
     );
   }
 
-  const teamMatches = matches
+  const teamMatches = getLegacyMatchList()
     .filter((m) => m.teamASlug === slug || m.teamBSlug === slug)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const recentMatches = teamMatches.filter((m) => m.status === "finished").slice(0, 8);

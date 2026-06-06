@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { EsportsMatch } from "@/lib/data/matches";
-import { teamName, matches } from "@/lib/data";
+import { teamName, getLegacyMatchList } from "@/lib/data";
 import { parseMatchMeta } from "@/lib/data/match-meta";
 import { InteractiveVoteCard } from "@/components/platform/InteractiveVoteCard";
 import { enrichPrediction } from "@/lib/data/predictions-ui";
@@ -36,7 +36,8 @@ export function MatchDetailExtras({ match }: { match: EsportsMatch }) {
   const votes = game?.votes ?? {};
   const meta = parseMatchMeta(match.meta);
 
-  const h2h = matches
+  const allMatches = getLegacyMatchList();
+  const h2h = allMatches
     .filter(
       (m) =>
         m.id !== match.id &&
@@ -46,10 +47,10 @@ export function MatchDetailExtras({ match }: { match: EsportsMatch }) {
     )
     .slice(0, 5);
 
-  const recentA = matches
+  const recentA = allMatches
     .filter((m) => m.id !== match.id && (m.teamASlug === match.teamASlug || m.teamBSlug === match.teamASlug))
     .slice(0, 4);
-  const recentB = matches
+  const recentB = allMatches
     .filter((m) => m.id !== match.id && (m.teamASlug === match.teamBSlug || m.teamBSlug === match.teamBSlug))
     .slice(0, 4);
 

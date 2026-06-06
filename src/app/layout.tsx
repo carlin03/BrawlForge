@@ -3,8 +3,9 @@ import { Oswald, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
 import { Providers } from "@/app/providers";
-import { CmsThemeInjector } from "@/components/cms/CmsThemeInjector";
-import { CmsRuntimeLoader } from "@/components/cms/CmsRuntimeLoader";
+import { InstantBootShell } from "@/components/layout/InstantBootShell";
+import { CmsThemeClient } from "@/components/cms/CmsThemeClient";
+import { CmsRuntimeBootstrap } from "@/components/cms/CmsRuntimeBootstrap";
 import { resolveSiteSeo } from "@/lib/cms/resolve";
 import { SITE_URL } from "@/lib/site-url";
 
@@ -57,12 +58,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={`${oswald.variable} ${ibmPlex.variable} h-full`}>
       <body className="min-h-full antialiased" style={{ background: "#0a0c12", color: "#f4f4f5" }}>
-        <CmsThemeInjector />
-        <CmsRuntimeLoader>
+        <InstantBootShell />
+        <CmsThemeClient />
+        <CmsRuntimeBootstrap>
           <Providers>
             <AppShell>{children}</AppShell>
           </Providers>
-        </CmsRuntimeLoader>
+        </CmsRuntimeBootstrap>
       </body>
     </html>
   );

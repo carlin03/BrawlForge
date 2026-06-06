@@ -43,7 +43,7 @@ const CatalogContext = createContext<CatalogState>({
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<CatalogSnapshot | null>(null);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
 
   const load = useCallback(async () => {
     try {
