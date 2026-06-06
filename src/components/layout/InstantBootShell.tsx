@@ -91,7 +91,7 @@ const BOOT_JS = `
   },5000);
   setTimeout(function(){
     if(!done)window.__bfBootDone();
-  },8000);
+  },5000);
 })();
 `;
 

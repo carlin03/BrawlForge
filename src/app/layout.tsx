@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { InstantBootShell, INSTANT_CRITICAL_CSS } from "@/components/layout/InstantBootShell";
 import { BootRelease } from "@/components/layout/BootRelease";
-import { ClientRoot } from "@/components/layout/ClientRoot";
-import { CmsThemeClient } from "@/components/cms/CmsThemeClient";
+import { DeferredApp } from "@/components/layout/DeferredApp";
 import { DEFAULT_LEGACY_CONFIG } from "@/lib/cms/defaults";
 import { SITE_URL } from "@/lib/site-url";
 
@@ -52,8 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <InstantBootShell />
         <BootRelease />
-        <CmsThemeClient />
-        <ClientRoot>{children}</ClientRoot>
+        <DeferredApp>{children}</DeferredApp>
       </body>
     </html>
   );
