@@ -114,6 +114,32 @@
   text-align: center;
 }
 
+.bf-tours-hub-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--bp-muted);
+}
+
+.bf-tours-hub-search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--bp-text);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.bf-tours-hub-search input::placeholder {
+  color: var(--bp-muted);
+}
+
 .bf-tours-hub-tabs {
   display: flex;
   flex-wrap: wrap;

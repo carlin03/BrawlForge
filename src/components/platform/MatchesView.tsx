@@ -61,7 +61,7 @@ export function MatchesView() {
   const groups = useMemo(() => groupMatchesByTournament(listRest, tab), [listRest, tab]);
 
   const [tourQuery, setTourQuery] = useState("");
-  const tierTours = useMemo(() => getTierBPlusTournaments(48), []);
+  const tierTours = useMemo(() => getTierBPlusTournaments(120), []);
 
   const upsets = useMemo(
     () =>

@@ -9,7 +9,14 @@ import { getBscTournamentParticipantSlugs } from "./bsc-tournament-participants"
 import { bscMatches } from "./bsc-matches";
 import { getTeam } from "./teams";
 import { isValidLogoSlug } from "./logo-slugs";
-import { getGeneratedTournaments, isFeaturedTournament, normalizeParticipantList } from "./catalog";
+import { ensureAutoTournament, getDiscoveredTournaments } from "./auto-tournaments";
+import {
+  getGeneratedMatches,
+  getGeneratedTournaments,
+  isFeaturedTournament,
+  isTierBPlus,
+  normalizeParticipantList,
+} from "./catalog";
 import { sanitizePublicWebsite } from "@/lib/sanitize-liquipedia";
 import { getMatchPool } from "./match-pool";
 import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-schedule-trust";
@@ -199,7 +206,8 @@ export function getTournament(slug: string): EsportsTournament | undefined {
   const bsc = tournaments.find((t) => t.slug === slug);
   if (bsc) return bsc;
   const gen = getGeneratedTournaments().find((t) => t.slug === slug);
-  return gen ? mapGeneratedTournament(gen) : undefined;
+  if (gen) return mapGeneratedTournament(gen);
+  return ensureAutoTournament(slug);
 }
 
 const STATUS_ORDER: Record<EsportsTournament["status"], number> = { live: 0, upcoming: 1, finished: 2 };
@@ -220,7 +228,7 @@ export function getBscCircuitTournaments(limit?: number): EsportsTournament[] {
 }
 
 export function searchTournaments(query: string, limit = 60): EsportsTournament[] {
-  const pool = getBscCircuitTournaments();
+  const pool = getTierBPlusTournaments();
   const q = query.trim().toLowerCase();
   if (!q) {
     return pool.filter((t) => t.featured || t.status !== "finished").slice(0, limit);
@@ -241,9 +249,32 @@ export function getFeaturedTournaments(limit = 24): EsportsTournament[] {
     .slice(0, limit);
 }
 
-/** Listados públicos de torneos (hub / partidos) — circuito BSC 2026 */
-export function getTierBPlusTournaments(limit = 32): EsportsTournament[] {
-  return getBscCircuitTournaments(limit);
+function buildTierBPlusTournamentList(): EsportsTournament[] {
+  const map = new Map<string, EsportsTournament>();
+  const matchSlugs = new Set(getGeneratedMatches().map((m) => m.tournamentSlug));
+
+  for (const t of tournaments) {
+    if (isBscCircuitSlug(t.slug) || matchSlugs.has(t.slug)) map.set(t.slug, t);
+  }
+
+  for (const t of getGeneratedTournaments()) {
+    if (!isTierBPlus(t)) continue;
+    if (matchSlugs.size && !matchSlugs.has(t.slug)) continue;
+    if (!map.has(t.slug)) map.set(t.slug, mapGeneratedTournament(t));
+  }
+
+  for (const t of getDiscoveredTournaments()) {
+    if (matchSlugs.size && !matchSlugs.has(t.slug)) continue;
+    if (!map.has(t.slug)) map.set(t.slug, t);
+  }
+
+  return sortCircuitTournaments([...map.values()]);
+}
+
+/** Listados públicos de torneos (hub / partidos) — BSC + tier B+ Liquipedia con partidos */
+export function getTierBPlusTournaments(limit?: number): EsportsTournament[] {
+  const list = buildTierBPlusTournamentList();
+  return limit ? list.slice(0, limit) : list;
 }
 
 export function getMatch(id: string): EsportsMatch | undefined {

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Calendar, MapPin, Trophy, Users, Zap } from "lucide-react";
+import { Calendar, MapPin, Search, Trophy, Users, Zap } from "lucide-react";
 import { PageUltraShell } from "@/components/platform/PageUltraShell";
 import { SectionTabsBar } from "@/components/platform/SectionTabsBar";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
@@ -37,13 +37,24 @@ function formatTourDate(start: string, end: string) {
 
 export function TournamentsView() {
   const [status, setStatus] = useState<StatusFilter>("all");
-  const all = useMemo(() => getTierBPlusTournaments(48), []);
+  const [query, setQuery] = useState("");
+  const all = useMemo(() => getTierBPlusTournaments(), []);
   const liveCount = all.filter((t) => t.status === "live").length;
 
   const filtered = useMemo(() => {
-    if (status === "all") return all;
-    return all.filter((t) => t.status === status);
-  }, [all, status]);
+    const q = query.trim().toLowerCase();
+    let list = status === "all" ? all : all.filter((t) => t.status === status);
+    if (q) {
+      list = list.filter(
+        (t) =>
+          t.name.toLowerCase().includes(q) ||
+          t.shortName.toLowerCase().includes(q) ||
+          t.slug.includes(q) ||
+          t.region.toLowerCase().includes(q),
+      );
+    }
+    return list;
+  }, [all, status, query]);
 
   const heroShowcase = filtered[0] ?? all[0];
 
@@ -101,6 +112,16 @@ export function TournamentsView() {
           )
         }
       >
+        <div className="bf-tours-hub-search">
+          <Search size={16} aria-hidden />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar torneo, región o slug…"
+            aria-label="Buscar torneos"
+          />
+        </div>
         <div className="bf-tours-hub-tabs">
           {(["all", "live", "upcoming", "finished"] as const).map((s) => (
             <button
