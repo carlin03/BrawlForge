@@ -15,6 +15,8 @@
     "deploy:check": "npm run supabase:check && npm run build",
     "supabase:build:catalog": "node scripts/build-bsc-catalog-enriched.mjs --write",
     "supabase:seed:catalog": "node scripts/build-bsc-catalog-enriched.mjs --write && node scripts/seed-supabase-catalog.mjs",
+    "supabase:seed:discovered": "node scripts/seed-tier-bplus-discovered.mjs",
+    "data:publish:all": "npm run supabase:seed:catalog && npm run supabase:seed:discovered",
     "cms:seed:phase0": "echo Run POST /api/cms/admin/seed-phase0 from Studio Platform after migration",
     "supabase:export:csv": "node scripts/export-catalog-csv.mjs",
     "supabase:import:csv": "node scripts/import-supabase-csv.mjs",

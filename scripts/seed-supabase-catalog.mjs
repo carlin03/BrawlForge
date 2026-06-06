@@ -13,10 +13,22 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const envPath = resolve(root, ".env.local");
 
 function loadEnv() {
-  const raw = readFileSync(envPath, "utf8");
-  for (const line of raw.split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].trim().replace(/^["']|["']$/g, "");
+  let raw = readFileSync(envPath, "utf8");
+  if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1);
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq < 1) continue;
+    const k = trimmed.slice(0, eq).trim();
+    let v = trimmed.slice(eq + 1).trim();
+    if (
+      (v.startsWith('"') && v.endsWith('"')) ||
+      (v.startsWith("'") && v.endsWith("'"))
+    ) {
+      v = v.slice(1, -1);
+    }
+    if (k && v) process.env[k] = v;
   }
 }
 
