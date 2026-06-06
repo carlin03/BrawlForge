@@ -106,14 +106,9 @@
   }
 }
 
-/* Ambiente global fijo */
+/* Ambiente global — desactivado (sin orbes azul/dorado) */
 .bf-motion-app .bf-ambient-layer {
-  position: fixed;
-  inset: 0;
-  top: 48px;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
+  display: none;
 }
 
 .bf-motion-app .bf-ambient-orb {
@@ -155,7 +150,7 @@
 }
 
 .bf-motion-app .bp-main::before {
-  animation: bf-ambient-shift 20s ease-in-out infinite;
+  animation: none;
 }
 
 /* Entrada por secciones */

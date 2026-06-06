@@ -8,7 +8,6 @@ import { MAIN_NAV } from "@/lib/nav-config";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 import { PlayerProfileMenu } from "@/components/platform/PlayerProfileMenu";
 import { AdminFab } from "@/components/admin/AdminFab";
-import { MotionAmbience } from "@/components/platform/MotionAmbience";
 import { useAuth } from "@/contexts/AuthContext";
 
 function isActive(pathname: string, href: string) {
@@ -34,7 +33,6 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="bp-app bf-game-app bf-ultra-app bf-premium-app bf-motion-app">
-      <MotionAmbience />
       <header className="bp-nav bf-game-nav bf-premium-nav">
         <div className="bp-nav-inner">
           <Link href="/" className="bp-logo bf-game-logo" onClick={() => setOpen(false)}>

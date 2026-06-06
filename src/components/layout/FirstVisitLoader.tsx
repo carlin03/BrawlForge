@@ -159,13 +159,6 @@ export function FirstVisitLoader() {
         <div className="bf-first-visit-loader-bar" aria-hidden>
           <span className="bf-first-visit-loader-bar-fill" style={{ width: `${pct}%` }} />
         </div>
-        <ul className="bf-first-visit-loader-steps" aria-hidden>
-          {stages.map((st) => (
-            <li key={st.id} className={st.done ? "is-done" : st.id === stages.find((x) => !x.done)?.id ? "is-on" : ""}>
-              {st.label.replace(/…$/, "")}
-            </li>
-          ))}
-        </ul>
         <p className="bf-first-visit-loader-hint">
           {allReady && pct >= 99
             ? "Abriendo la web…"

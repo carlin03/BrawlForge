@@ -13,11 +13,7 @@
   inset: 0;
   top: 52px;
   z-index: -2;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 23, 68, 0.12), transparent 55%),
-    radial-gradient(ellipse 70% 45% at 85% 5%, rgba(0, 153, 255, 0.1), transparent 50%),
-    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(255, 200, 46, 0.08), transparent 55%),
-    #06080e;
+  background: #06080e;
   pointer-events: none;
 }
 

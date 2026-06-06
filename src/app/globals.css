@@ -75,9 +75,17 @@ table { border-spacing: 0; }
   letter-spacing: 0.06em;
   color: rgba(255, 200, 46, 0.7);
 }
+.logo-missing-tour .logo-missing-tag {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.65em;
+}
 .logo-missing .bf-logo-frame-ring {
   background: rgba(0, 0, 0, 0.35);
   border: 1px dashed rgba(255, 200, 46, 0.25);
+}
+.logo-missing-tour .bf-logo-frame-ring {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
 }
 
 ::selection { background: rgba(59, 130, 246, 0.25); color: #fff; }

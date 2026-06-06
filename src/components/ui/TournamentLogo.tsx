@@ -27,9 +27,10 @@ export function TournamentLogo({ slug, name, size = "md", className = "", glow =
   const loaded = status === "ready" && !!src;
 
   if (status === "failed" || !src) {
+    const initial = cleanName.replace(/[^A-Za-z0-9]/g, "").slice(0, 1).toUpperCase() || "?";
     return (
-      <LogoFrame size={pixelSize} kind="tournament" glow={false} className={`logo-missing ${className}`.trim()} title={cleanName}>
-        <span className="logo-missing-tag">BSC</span>
+      <LogoFrame size={pixelSize} kind="tournament" glow={false} className={`logo-missing logo-missing-tour ${className}`.trim()} title={cleanName}>
+        <span className="logo-missing-tag">{initial}</span>
       </LogoFrame>
     );
   }
