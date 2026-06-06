@@ -1,5 +1,10 @@
 export { resolveCmsConfig } from "./config";
-export { resolveMatchList, loadMatchesFromDb, mergeMatchPools } from "./matches";
+export {
+  resolveMatchList,
+  loadMatchesFromDb,
+  loadMatchByIdFromDb,
+  mergeMatchPools,
+} from "./matches";
 export { resolveHomePage } from "./home";
 export type { ResolvedHomePage, ResolvedHomeBlock, HomeBlockType } from "./home";
 export { resolveSiteSeo } from "./seo";

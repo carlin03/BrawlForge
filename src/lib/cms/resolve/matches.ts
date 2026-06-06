@@ -1,10 +1,11 @@
 import type { EsportsMatch } from "@/lib/data/matches";
-import { normalizePlayoffPool } from "@/lib/data/playoff-pool-normalize";
 import { getLegacyMatchList } from "@/lib/data/matches";
 import { parseMatchMeta } from "@/lib/data/match-meta";
 import { enrichMatchForPool } from "@/lib/data/match-pool-enrich";
 import { fixMislabeledWorldFinalsSlug } from "@/lib/data/tournament-slug-sanitize";
-import { matchDedupeKey, pickBetterMatch } from "@/lib/data/playoff-pool-normalize";
+import { mergeMatchPools } from "@/lib/data/merge-match-pools";
+
+export { mergeMatchPools } from "@/lib/data/merge-match-pools";
 import { createClient } from "@/lib/supabase/server";
 import { isCmsResolverActive, isFlagEnabled, mergeFlags } from "../flags";
 import { loadFlagsFromDb } from "../db";
@@ -41,6 +42,21 @@ function rowToMatch(row: {
   );
 }
 
+export async function loadMatchByIdFromDb(id: string): Promise<EsportsMatch | undefined> {
+  const supabase = await createClient();
+  if (!supabase) return undefined;
+  const { data, error } = await supabase
+    .from("matches_catalog")
+    .select(
+      "id, tournament_slug, team_a_slug, team_b_slug, scheduled_at, status, stage, region, format, score_a, score_b, meta",
+    )
+    .eq("id", id)
+    .eq("published", true)
+    .maybeSingle();
+  if (error || !data) return undefined;
+  return rowToMatch(data);
+}
+
 export async function loadMatchesFromDb(): Promise<EsportsMatch[] | null> {
   const supabase = await createClient();
   if (!supabase) return null;
@@ -57,36 +73,6 @@ export async function loadMatchesFromDb(): Promise<EsportsMatch[] | null> {
   }
   if (!data?.length) return null;
   return data.map(rowToMatch);
-}
-
-/** Fusiona DB + legacy: una fila por cruce (torneo+ronda+equipos+día); gana CMS sobre seed. */
-export function mergeMatchPools(db: EsportsMatch[], legacy: EsportsMatch[]): EsportsMatch[] {
-  const dbIds = new Set(db.map((m) => m.id));
-  const byKey = new Map<string, EsportsMatch>();
-
-  function upsert(incoming: EsportsMatch) {
-    const key = matchDedupeKey(incoming);
-    const prev = byKey.get(key);
-    if (!prev) {
-      byKey.set(key, incoming);
-      return;
-    }
-    const prevDb = dbIds.has(prev.id);
-    const nextDb = dbIds.has(incoming.id);
-    if (prevDb && !nextDb) return;
-    if (!prevDb && nextDb) {
-      byKey.set(key, incoming);
-      return;
-    }
-    byKey.set(key, pickBetterMatch(prev, incoming));
-  }
-
-  for (const m of legacy) upsert(m);
-  for (const m of db) upsert(m);
-
-  return normalizePlayoffPool([...byKey.values()]).sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-  );
 }
 
 export async function resolveMatchList(): Promise<{
