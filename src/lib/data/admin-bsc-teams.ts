@@ -1,4 +1,5 @@
 import type { Region } from "../types";
+import discoveredTeams from "./generated/teams-discovered.json";
 import { teams, getTeam } from "./teams";
 import { BSC_2026_REGISTRY_SLUGS, getBsc2026TeamEntry } from "./bsc-2026-team-registry";
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
@@ -26,6 +27,55 @@ export const BSC_2026_ADMIN_TEAM_COUNT = BSC_2026_CORE_TEAM_COUNT;
 
 export function isBsc2026NewTeam(slug: string): boolean {
   return BSC_2026_REGISTRY_SLUGS.has(slug.trim().toLowerCase());
+}
+
+type DiscoveredTeamRow = {
+  slug: string;
+  name: string;
+  tag?: string;
+  region?: Region;
+  source?: string;
+};
+
+const discoveredRows = (Array.isArray(discoveredTeams) ? discoveredTeams : []) as DiscoveredTeamRow[];
+
+export function isLiquipediaDiscoveredTeam(slug: string): boolean {
+  const key = slug.trim().toLowerCase();
+  return discoveredRows.some((t) => t.slug.trim().toLowerCase() === key);
+}
+
+function discoveredToCatalogRow(row: DiscoveredTeamRow): AdminTeamCatalogRow {
+  const slug = row.slug.trim().toLowerCase();
+  const tag =
+    row.tag?.trim() ||
+    slug
+      .split("-")
+      .filter(Boolean)
+      .map((p) => p[0])
+      .join("")
+      .slice(0, 3)
+      .toUpperCase();
+  return {
+    slug,
+    name: row.name?.trim() || humanizeSlug(slug),
+    tag,
+    region: (row.region ?? "GLOBAL") as Region,
+    country: "",
+    earnings: 0,
+    rank: null,
+    rank_change: 0,
+    form: [],
+    roster_slugs: [],
+    logo_url: null,
+    description: null,
+    circuit_status: "discovered",
+    bsc_qualified_2026: false,
+    circuit_summary: null,
+    headquarters: "",
+    achievements: [],
+    social: {},
+    meta: { source: "liquipedia-discovered", editable: true },
+  };
 }
 
 function humanizeSlug(slug: string): string {
@@ -151,8 +201,24 @@ export function mergeAdminTeamRows(
       ...fromDb,
     });
   }
+  for (const row of discoveredRows) {
+    const slug = row.slug.trim().toLowerCase();
+    if (!slug || isHiddenTeamSlug(slug) || bySlug.has(slug)) continue;
+    bySlug.set(slug, discoveredToCatalogRow(row));
+  }
+
   const orderIdx = new Map(BSC_2026_ACTIVE_TEAM_SLUGS.map((s, i) => [s, i]));
   return [...bySlug.values()]
     .filter((t) => !isHiddenTeam(t))
-    .sort((a, b) => (orderIdx.get(a.slug) ?? 999) - (orderIdx.get(b.slug) ?? 999));
+    .sort((a, b) => {
+      const ai = orderIdx.get(a.slug);
+      const bi = orderIdx.get(b.slug);
+      if (ai != null && bi != null) return ai - bi;
+      if (ai != null) return -1;
+      if (bi != null) return 1;
+      const aDisc = a.meta?.source === "liquipedia-discovered";
+      const bDisc = b.meta?.source === "liquipedia-discovered";
+      if (aDisc !== bDisc) return aDisc ? 1 : -1;
+      return a.name.localeCompare(b.name);
+    });
 }

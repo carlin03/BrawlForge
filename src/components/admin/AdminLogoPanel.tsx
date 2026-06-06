@@ -6,12 +6,12 @@ import { Image, Search } from "lucide-react";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { AdminField } from "@/components/admin/AdminField";
-import { getAdminBscTournaments } from "@/lib/data/bsc-tournaments";
 import {
   getAdminBscTeamsListFromRows,
   mergeAdminTeamRows,
   type AdminTeamCatalogRow,
 } from "@/lib/data/admin-bsc-teams";
+import { mergeAdminTournamentRows } from "@/lib/data/admin-tournaments";
 import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
 import { notifyLogosUpdated, useLogoConfig, useRefreshLogos } from "@/contexts/LogoConfigContext";
 import { normalizeAdminMediaUrl } from "@/lib/image-fetch-url";
@@ -36,6 +36,7 @@ type AdminLogoPanelProps = {
 export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
   const searchParams = useSearchParams();
   const teamFromQuery = searchParams.get("team")?.trim().toLowerCase() ?? "";
+  const tournamentFromQuery = searchParams.get("tournament")?.trim().toLowerCase() ?? "";
 
   const [kind, setKind] = useState<LogoKind>("team");
   const [search, setSearch] = useState("");
@@ -94,6 +95,17 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
     if (!selected && teams[0]?.slug) setSelected(teams[0].slug);
   }, [selected, teams]);
 
+  const tournamentRows = useMemo(() => mergeAdminTournamentRows(null), []);
+  const tournaments = useMemo(
+    () =>
+      tournamentRows.map((r) => ({
+        slug: r.slug,
+        name: r.name,
+        shortName: r.short_name ?? r.name,
+      })),
+    [tournamentRows],
+  );
+
   useEffect(() => {
     if (!teamFromQuery) return;
     if (teams.some((t) => t.slug === teamFromQuery)) {
@@ -103,7 +115,13 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
     }
   }, [teamFromQuery, teams]);
 
-  const tournaments = useMemo(() => getAdminBscTournaments(), []);
+  useEffect(() => {
+    if (!tournamentFromQuery) return;
+    if (tournaments.some((t) => t.slug === tournamentFromQuery)) {
+      setKind("tournament");
+      setSelected(tournamentFromQuery);
+    }
+  }, [tournamentFromQuery, tournaments]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -133,10 +151,15 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
   const displayName = selectedTeam?.name ?? selectedTour?.shortName ?? selected;
 
   useEffect(() => {
-    if (kind !== "team" || !selected) return;
-    const row = catalogRows.find((t) => t.slug === selected);
+    if (!selected) return;
+    if (kind === "team") {
+      const row = catalogRows.find((t) => t.slug === selected);
+      setImageUrl(row?.logo_url ?? "");
+      return;
+    }
+    const row = tournamentRows.find((t) => t.slug === selected);
     setImageUrl(row?.logo_url ?? "");
-  }, [kind, selected, catalogRows]);
+  }, [kind, selected, catalogRows, tournamentRows]);
 
   async function saveOverride(e?: React.FormEvent, forcedUrl?: string) {
     e?.preventDefault();
@@ -199,8 +222,8 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
       <div className="bf-admin-logo-help" role="note">
         <strong>Logos por URL</strong>
         <p>
-          {teams.length} clubes y {tournaments.length} torneos BSC. Pega un enlace directo (PNG, JPG, SVG o WebP) y
-          guarda: la web usará exactamente esa imagen, sin recortar fondos ni filtros.
+          {teams.length} clubes (BSC + Liquipedia) y {tournaments.length} torneos tier B+. Pega un enlace directo
+          (PNG, JPG, SVG o WebP) y guarda: la web usará exactamente esa imagen.
         </p>
       </div>
       <div className="bf-admin-logos-tabs">
@@ -223,7 +246,7 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
             setSelected(tournaments[0]?.slug ?? "world-finals-2026");
           }}
         >
-          Torneos ({tournaments.length})
+          Torneos tier B+ ({tournaments.length})
         </button>
       </div>
 
@@ -256,7 +279,7 @@ export function AdminLogoPanel({ catalogTeams }: AdminLogoPanelProps) {
             <input
               className="bf-admin-search"
               style={{ paddingLeft: 40 }}
-              placeholder={kind === "team" ? "Buscar club BSC…" : "Buscar torneo…"}
+              placeholder={kind === "team" ? "Buscar club…" : "Buscar torneo tier B+…"}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

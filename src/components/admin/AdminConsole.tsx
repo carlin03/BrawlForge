@@ -38,7 +38,7 @@ import {
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { notifyCatalogUpdated } from "@/contexts/CatalogContext";
 import { getLatestNews } from "@/lib/data";
-import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
+import { isLiquipediaDiscoveredTeam, mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { mergeAdminPlayerRows } from "@/lib/data/admin-bsc-players";
 import type { AdminTeamCatalogRow, AdminPlayerCatalogRow } from "@/lib/data/admin-catalog-fields";
 import {
@@ -134,6 +134,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
   const [selectedNews, setSelectedNews] = useState<NewsRow | null>(null);
   const [teamSearch, setTeamSearch] = useState("");
   const [teamRegionFilter, setTeamRegionFilter] = useState<"all" | string>("all");
+  const [teamSourceFilter, setTeamSourceFilter] = useState<"all" | "bsc" | "discovered">("all");
   const [playerSearch, setPlayerSearch] = useState("");
   const [playerRegionFilter, setPlayerRegionFilter] = useState<"all" | string>("all");
   const [newsSearch, setNewsSearch] = useState("");
@@ -277,9 +278,16 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
     setLoading(false);
   }
 
+  const discoveredTeamCount = teams.filter((t) => isLiquipediaDiscoveredTeam(t.slug)).length;
+
   const filteredTeams = teams
     .filter((t) => {
       if (teamRegionFilter !== "all") return t.region === teamRegionFilter;
+      return true;
+    })
+    .filter((t) => {
+      if (teamSourceFilter === "bsc") return t.bsc_qualified_2026 === true;
+      if (teamSourceFilter === "discovered") return isLiquipediaDiscoveredTeam(t.slug);
       return true;
     })
     .filter(
@@ -515,6 +523,24 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
               </button>
             )}
             <div className="bf-admin-region-filters" role="group" aria-label="Filtrar equipos">
+              {(
+                [
+                  { id: "all", label: "Todos" },
+                  { id: "bsc", label: "BSC" },
+                  { id: "discovered", label: `Liquipedia (${discoveredTeamCount})` },
+                ] as const
+              ).map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  className={`bf-admin-region-chip ${teamSourceFilter === f.id ? "is-on" : ""}`}
+                  onClick={() => setTeamSourceFilter(f.id)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+            <div className="bf-admin-region-filters" role="group" aria-label="Filtrar por región">
               {(["all", ...REGIONS.filter((r) => r !== "GLOBAL" && r !== "CN")] as const).map((id) => (
                 <button
                   key={id}
@@ -522,7 +548,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                   className={`bf-admin-region-chip ${teamRegionFilter === id ? "is-on" : ""}`}
                   onClick={() => setTeamRegionFilter(id)}
                 >
-                  {id === "all" ? "Todos" : id}
+                  {id === "all" ? "Todas" : id}
                 </button>
               ))}
             </div>
@@ -557,6 +583,7 @@ export function AdminConsole({ embedded = false, initialTab }: AdminConsoleProps
                         <span className="bf-admin-list-card-sub">{t.name}</span>
                         <span className="bf-admin-list-card-meta">
                           #{t.rank ?? "—"} · {t.region}
+                          {isLiquipediaDiscoveredTeam(t.slug) ? " · LP nuevo" : ""}
                         </span>
                       </span>
                     </button>

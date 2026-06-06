@@ -1,4 +1,6 @@
-import { tournaments, getTournament } from "./matches";
+import discoveredTournaments from "./generated/tournaments-discovered.json";
+import { getTournamentLogoFile } from "./catalog";
+import { tournaments, getTournament, getTierBPlusTournaments } from "./matches";
 import type { EsportsTournament } from "./matches";
 import type { Region } from "../types";
 
@@ -20,7 +22,30 @@ export type AdminTournamentRow = {
   meta: Record<string, unknown>;
 };
 
-function localToRow(t: EsportsTournament): AdminTournamentRow {
+const DISCOVERED_SLUGS = new Set(
+  (Array.isArray(discoveredTournaments) ? discoveredTournaments : []).map((t) =>
+    String((t as { slug?: string }).slug ?? "").trim().toLowerCase(),
+  ),
+);
+
+const BSC_SLUGS = new Set(tournaments.map((t) => t.slug));
+
+export function isLiquipediaDiscoveredTournament(slug: string): boolean {
+  return DISCOVERED_SLUGS.has(slug.trim().toLowerCase());
+}
+
+export function getAdminTournamentSource(row: AdminTournamentRow): string {
+  const src = row.meta?.source;
+  return typeof src === "string" ? src : BSC_SLUGS.has(row.slug) ? "bsc" : "liquipedia";
+}
+
+function defaultTournamentLogoUrl(slug: string): string | null {
+  if (getTournamentLogoFile(slug)) return `/logos/tournaments/${slug}.png`;
+  return null;
+}
+
+function localToRow(t: EsportsTournament, source: string): AdminTournamentRow {
+  const discovered = isLiquipediaDiscoveredTournament(t.slug);
   return {
     slug: t.slug,
     name: t.name,
@@ -34,15 +59,18 @@ function localToRow(t: EsportsTournament): AdminTournamentRow {
     location: t.location || null,
     stage: t.stage || null,
     tier: t.tier ?? null,
-    logo_url: null,
+    logo_url: defaultTournamentLogoUrl(t.slug),
     participant_slugs: t.participantSlugs ?? [],
-    meta: {},
+    meta: {
+      source: discovered ? "liquipedia-discovered" : source,
+      editable: true,
+    },
   };
 }
 
 export function adminTournamentToCatalogRow(slug: string): AdminTournamentRow {
   const t = getTournament(slug);
-  if (t) return localToRow(t);
+  if (t) return localToRow(t, isLiquipediaDiscoveredTournament(slug) ? "liquipedia-discovered" : "liquipedia");
   const human = slug
     .split("-")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
@@ -62,7 +90,7 @@ export function adminTournamentToCatalogRow(slug: string): AdminTournamentRow {
     tier: null,
     logo_url: null,
     participant_slugs: [],
-    meta: {},
+    meta: { source: "manual", editable: true },
   };
 }
 
@@ -70,9 +98,20 @@ export function mergeAdminTournamentRows(
   catalogRows: Array<Record<string, unknown>> | null | undefined,
 ): AdminTournamentRow[] {
   const bySlug = new Map<string, AdminTournamentRow>();
+
   for (const t of tournaments) {
-    bySlug.set(t.slug, localToRow(t));
+    bySlug.set(t.slug, localToRow(t, "bsc"));
   }
+
+  for (const t of getTierBPlusTournaments()) {
+    if (!bySlug.has(t.slug)) {
+      bySlug.set(
+        t.slug,
+        localToRow(t, isLiquipediaDiscoveredTournament(t.slug) ? "liquipedia-discovered" : "liquipedia"),
+      );
+    }
+  }
+
   for (const row of catalogRows ?? []) {
     const slug = String(row.slug ?? "").trim().toLowerCase();
     if (!slug) continue;
@@ -96,13 +135,37 @@ export function mergeAdminTournamentRows(
       participant_slugs: Array.isArray(participants)
         ? (participants as string[])
         : base.participant_slugs,
-      meta:
-        meta && typeof meta === "object" && !Array.isArray(meta)
+      meta: {
+        ...base.meta,
+        ...(meta && typeof meta === "object" && !Array.isArray(meta)
           ? (meta as Record<string, unknown>)
-          : base.meta,
+          : {}),
+        saved_in_catalog: true,
+      },
     });
   }
-  return [...bySlug.values()].sort((a, b) => a.name.localeCompare(b.name));
+
+  return [...bySlug.values()].sort((a, b) => {
+    const aBsc = BSC_SLUGS.has(a.slug);
+    const bBsc = BSC_SLUGS.has(b.slug);
+    if (aBsc !== bBsc) return aBsc ? -1 : 1;
+    const aSrc = getAdminTournamentSource(a);
+    const bSrc = getAdminTournamentSource(b);
+    if (aSrc !== bSrc) {
+      const order = { bsc: 0, liquipedia: 1, "liquipedia-discovered": 2, manual: 3 };
+      return (order[aSrc as keyof typeof order] ?? 9) - (order[bSrc as keyof typeof order] ?? 9);
+    }
+    return a.name.localeCompare(b.name);
+  });
+}
+
+/** Listado mínimo para panel de logos (todos los tier B+ con partidos). */
+export function getAdminLogoTournaments(): Pick<EsportsTournament, "slug" | "name" | "shortName">[] {
+  return mergeAdminTournamentRows(null).map((r) => ({
+    slug: r.slug,
+    name: r.name,
+    shortName: r.short_name ?? r.name,
+  }));
 }
 
 const TOUR_STATUSES = new Set(["live", "upcoming", "finished"]);

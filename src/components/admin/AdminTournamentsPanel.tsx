@@ -7,7 +7,11 @@ import { AdminField, AdminFieldRow, AdminMeta } from "@/components/admin/AdminFi
 import { AdminEntityCreateDialog } from "@/components/admin/AdminEntityCreateDialog";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import type { AdminTournamentRow } from "@/lib/data/admin-tournaments";
-import { mergeAdminTournamentRows } from "@/lib/data/admin-tournaments";
+import {
+  getAdminTournamentSource,
+  isLiquipediaDiscoveredTournament,
+  mergeAdminTournamentRows,
+} from "@/lib/data/admin-tournaments";
 import { mergeAdminTeamRows } from "@/lib/data/admin-bsc-teams";
 import { AdminTeamLogoPicker } from "@/components/admin/AdminTeamLogoPicker";
 import { AdminTournamentWebPreview } from "@/components/admin/AdminTournamentWebPreview";
@@ -19,6 +23,8 @@ const STATUSES = [
   { id: "finished", label: "Finalizado" },
 ] as const;
 
+type SourceFilter = "all" | "bsc" | "liquipedia" | "discovered";
+
 type Props = {
   teams: { slug: string; name: string; tag: string; region?: string }[];
   embedded?: boolean;
@@ -29,6 +35,7 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
   const [list, setList] = useState<AdminTournamentRow[]>([]);
   const [selected, setSelected] = useState<AdminTournamentRow | null>(null);
   const [search, setSearch] = useState("");
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
   const [msgError, setMsgError] = useState(false);
@@ -112,12 +119,22 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
     setLoading(false);
   }
 
-  const filtered = list.filter(
-    (t) =>
-      !search ||
-      t.slug.includes(search.toLowerCase()) ||
-      t.name.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filtered = list.filter((t) => {
+    const src = getAdminTournamentSource(t);
+    if (sourceFilter === "bsc" && src !== "bsc") return false;
+    if (sourceFilter === "liquipedia" && src !== "liquipedia") return false;
+    if (sourceFilter === "discovered" && src !== "liquipedia-discovered") return false;
+    if (
+      search &&
+      !t.slug.includes(search.toLowerCase()) &&
+      !t.name.toLowerCase().includes(search.toLowerCase())
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  const discoveredCount = list.filter((t) => isLiquipediaDiscoveredTournament(t.slug)).length;
 
 
   return (
@@ -125,7 +142,9 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
       {!embedded && (
         <header className="bf-admin-hero" style={{ marginBottom: 20 }}>
           <h1 className="bf-admin-hero-title">Torneos</h1>
-          <p className="bf-admin-hero-lead">Crea torneos, participantes, fechas y premios.</p>
+          <p className="bf-admin-hero-lead">
+            BSC curado + tier B+ Liquipedia ({list.length} eventos, {discoveredCount} auto-descubiertos).
+          </p>
         </header>
       )}
       {msg && <div className={`bf-admin-toast ${msgError ? "is-error" : ""}`}>{msg}</div>}
@@ -145,12 +164,34 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
             }}
             disabled={loading}
           />
+          <div className="bf-admin-region-filters" role="group" aria-label="Filtrar torneos">
+            {(
+              [
+                { id: "all", label: "Todos" },
+                { id: "bsc", label: "BSC" },
+                { id: "liquipedia", label: "Liquipedia" },
+                { id: "discovered", label: `Nuevos (${discoveredCount})` },
+              ] as const
+            ).map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                className={`bf-admin-region-chip ${sourceFilter === f.id ? "is-on" : ""}`}
+                onClick={() => setSourceFilter(f.id)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
           <input
             className="bf-admin-search"
             placeholder="Buscar torneo…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <p className="bf-admin-field-hint" style={{ margin: "0 0 8px" }}>
+            {filtered.length} de {list.length} torneos
+          </p>
           <ul className="bf-admin-list-scroll">
             {filtered.map((t) => (
               <li key={t.slug} className="bf-admin-list-item">
@@ -165,6 +206,8 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
                     <span className="bf-admin-list-card-sub">{t.region} · {t.status}</span>
                     <span className="bf-admin-list-card-meta">
                       {t.participant_slugs.length} equipos
+                      {getAdminTournamentSource(t) === "liquipedia-discovered" ? " · LP nuevo" : ""}
+                      {t.meta?.saved_in_catalog ? " · guardado" : ""}
                     </span>
                   </span>
                 </button>
@@ -335,6 +378,13 @@ export function AdminTournamentsPanel({ teams: teamsProp, embedded }: Props) {
 
             <AdminMeta>
               Página: /tournaments/{selected.slug} · {selected.participant_slugs.length} participantes ·{" "}
+              <Link
+                href={`/admin?tab=logos&tournament=${encodeURIComponent(selected.slug)}`}
+                className="bf-home-link"
+              >
+                Editar logo
+              </Link>{" "}
+              ·{" "}
               <Link href="/admin?module=cards" className="bf-home-link">
                 Colores de tarjetas
               </Link>
