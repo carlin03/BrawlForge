@@ -23,11 +23,13 @@ export type { LogoRuntimeConfig };
 
 const LogoConfigContext = createContext<{
   config: LogoRuntimeConfig;
+  ready: boolean;
   refresh: () => Promise<void>;
-}>({ config: DEFAULT, refresh: async () => {} });
+}>({ config: DEFAULT, ready: false, refresh: async () => {} });
 
 export function LogoConfigProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<LogoRuntimeConfig>(DEFAULT);
+  const [ready, setReady] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -45,6 +47,8 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
       });
     } catch {
       /* mantener último config */
+    } finally {
+      setReady(true);
     }
   }, []);
 
@@ -73,13 +77,17 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("bf-logos-updated", onUpdate);
   }, [refresh]);
 
-  const value = useMemo(() => ({ config, refresh }), [config, refresh]);
+  const value = useMemo(() => ({ config, ready, refresh }), [config, ready, refresh]);
 
   return <LogoConfigContext.Provider value={value}>{children}</LogoConfigContext.Provider>;
 }
 
 export function useLogoConfig() {
   return useContext(LogoConfigContext).config;
+}
+
+export function useLogoConfigReady() {
+  return useContext(LogoConfigContext).ready;
 }
 
 export function useRefreshLogos() {
