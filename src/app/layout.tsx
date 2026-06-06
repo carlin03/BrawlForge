@@ -9,6 +9,8 @@ import { CmsRuntimeBootstrap } from "@/components/cms/CmsRuntimeBootstrap";
 import { resolveSiteSeo } from "@/lib/cms/resolve";
 import { SITE_URL } from "@/lib/site-url";
 
+export const dynamic = "force-dynamic";
+
 const oswald = Oswald({
   variable: "--font-display",
   subsets: ["latin"],

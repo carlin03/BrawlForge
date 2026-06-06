@@ -1,8 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCmsHome } from "@/contexts/CmsRuntimeContext";
-import { HomeView } from "@/components/platform/HomeView";
+import { HomeSkeleton } from "@/components/platform/HomeSkeleton";
 import { HomeViewRenderer } from "@/components/cms/HomeViewRenderer";
+
+const HomeView = dynamic(() => import("@/components/platform/HomeView").then((m) => m.HomeView), {
+  ssr: false,
+  loading: () => <HomeSkeleton />,
+});
 
 export function HomePageRouter() {
   const home = useCmsHome();

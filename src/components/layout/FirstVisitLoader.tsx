@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 
-const MIN_MS = 350;
-const MAX_MS = 5000;
+const MIN_MS = 200;
+const MAX_MS = 3000;
 
 type BootStage = {
   id: string;
@@ -13,19 +13,6 @@ type BootStage = {
   done: boolean;
 };
 
-function useWindowLoaded() {
-  const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
-    if (document.readyState === "complete") {
-      setLoaded(true);
-      return;
-    }
-    const onLoad = () => setLoaded(true);
-    window.addEventListener("load", onLoad, { once: true });
-    return () => window.removeEventListener("load", onLoad);
-  }, []);
-  return loaded;
-}
 
 function useReactBootReady() {
   const [ready, setReady] = useState(false);
@@ -49,7 +36,6 @@ declare global {
  */
 export function FirstVisitLoader() {
   const pathname = usePathname();
-  const windowLoaded = useWindowLoaded();
   const reactReady = useReactBootReady();
 
   const [active, setActive] = useState(() => !pathname.startsWith("/admin"));
@@ -66,17 +52,17 @@ export function FirstVisitLoader() {
   }, []);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setSoftReady(true), 700);
+    const t = window.setTimeout(() => setSoftReady(true), 280);
     return () => window.clearTimeout(t);
   }, []);
 
   const stages: BootStage[] = useMemo(
     () => [
-      { id: "boot", label: "Iniciando BrawlForge…", weight: 25, done: reactReady },
+      { id: "boot", label: "Iniciando BrawlForge…", weight: 40, done: reactReady },
       { id: "dom", label: "Preparando interfaz…", weight: 35, done: domReady },
-      { id: "shell", label: "Abriendo la web…", weight: 40, done: windowLoaded || softReady },
+      { id: "shell", label: "Abriendo la web…", weight: 25, done: softReady },
     ],
-    [domReady, windowLoaded, reactReady, softReady],
+    [domReady, reactReady, softReady],
   );
 
   const targetProgress = useMemo(() => {

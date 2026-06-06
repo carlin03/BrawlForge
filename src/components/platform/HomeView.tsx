@@ -1,17 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import { useMatchPoolRefreshKey } from "@/contexts/MatchPoolRefreshContext";
-import { useGame } from "@/contexts/GameContext";
-import { buildPredictionEvents } from "@/lib/data/predictions-build";
-import { predictChronologySort } from "@/lib/data/predictions-filters";
-import { buildAllPlayoffBrackets, enrichPrediction } from "@/lib/data/predictions-ui";
 import Link from "next/link";
 import { FeaturedMatch } from "@/components/platform/ui";
 import { MatchCountdown } from "@/components/platform/MatchCountdown";
 import { PlayerCardMini } from "@/components/platform/PlayerCard";
 import { PlayerCard } from "@/components/platform/PlayerCard";
-import { PredictionsQuickVoteSection } from "@/components/platform/predictions/PredictionsQuickVoteSection";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import {
@@ -24,32 +19,31 @@ import {
 } from "@/lib/data";
 import { useCatalog } from "@/contexts/CatalogContext";
 import { useMergedCircuitTeams, useCatalogTeamCount, usePublicCircuitTeams } from "@/hooks/useMergedCatalog";
+import { useHomeMatches } from "@/hooks/useHomeMatches";
+import { useDeferredMount } from "@/hooks/useDeferredMount";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
-  getCuratedHomeMatches,
-  getLiveMatches,
   getSquadValue,
   getUserSquadDisplay,
-  getMatch,
-  getUpcomingMatches,
-  getRecentMatches,
   getTournamentFantasyProfile,
   getTournamentPlayerPool,
   getPlayer,
   getTopActivePlayers,
-  isKnownTeamSlug,
-  isPickemMatchEligible,
   teamName,
   teams,
 } from "@/lib/data";
-import { isPickemMatchOpen } from "@/lib/data/match-effective-status";
 import { NewsCover } from "@/components/news/NewsCover";
 import { getHomeTournaments } from "@/lib/data/home-tournaments";
 import { hasTeamLogoSource } from "@/lib/data/png-logo-urls";
 import { useLogoConfig } from "@/contexts/LogoConfigContext";
 import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 import { HomeSiteHeader } from "@/components/platform/HomeSiteHeader";
+
+const HomePredictionsSection = dynamic(
+  () => import("@/components/platform/HomePredictionsSection").then((m) => m.HomePredictionsSection),
+  { ssr: false },
+);
 
 type MatchTab = "live" | "upcoming" | "results";
 
@@ -81,26 +75,26 @@ function cleanName(raw: string): string {
 
 export function HomeView() {
   const logoConfig = useLogoConfig();
-  const { aggregates, game } = useGame();
-  const matchPoolRefreshKey = useMatchPoolRefreshKey();
+  const homeMatches = useHomeMatches();
+  const showPredictions = useDeferredMount(1800);
   const mergedTeams = useMergedCircuitTeams(teams);
   const circuitTeamCount = useCatalogTeamCount();
   const { complete: completeClubs } = usePublicCircuitTeams(teams);
   const [matchTab, setMatchTab] = useState<MatchTab>("results");
 
-  const live = useMemo(
-    () => getLiveMatches().filter((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)),
-    [matchPoolRefreshKey],
-  );
+  const live = homeMatches.live;
+  const liveCount = homeMatches.liveCount;
   const squad = getUserSquadDisplay(DEFAULT_FANTASY_TOURNAMENT);
   const budgetLeft = FANTASY_BUDGET - getSquadValue(squad, DEFAULT_FANTASY_TOURNAMENT);
   const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
+  const showHeroCards = useDeferredMount(600);
   const topPros = useMemo(() => {
+    if (!showHeroCards) return [];
     const pool = new Set(getTournamentPlayerPool(DEFAULT_FANTASY_TOURNAMENT));
-    return getTopActivePlayers(48)
+    return getTopActivePlayers(24)
       .filter((p) => p.teamSlug && pool.has(p.slug))
       .slice(0, 3);
-  }, []);
+  }, [showHeroCards]);
 
   const homeClubs = useMemo(() => {
     const bySlug = new Map(completeClubs.map((t) => [t.slug, t]));
@@ -122,46 +116,18 @@ export function HomeView() {
     return ordered;
   }, [logoConfig, completeClubs, mergedTeams]);
 
-  const marqueeClubs = useMemo(() => [...homeClubs, ...homeClubs], [homeClubs]);
-  const homeTournaments = useMemo(() => getHomeTournaments(), []);
-  const matchPool = useMemo(
-    () => getCuratedHomeMatches(matchTab, 6),
-    [matchTab, matchPoolRefreshKey],
-  );
+  const marqueeClubs = useMemo(() => homeClubs.slice(0, 24), [homeClubs]);
+  const homeTournaments = useMemo(() => getHomeTournaments(12), []);
+  const matchPool = useMemo(() => {
+    if (matchTab === "live") return homeMatches.live;
+    if (matchTab === "upcoming") return homeMatches.upcoming;
+    return homeMatches.results;
+  }, [matchTab, homeMatches]);
   const topNews = useLatestNewsMerged(3);
-  const voteEvents = useMemo(() => {
-    const { open } = buildPredictionEvents(aggregates, game?.votes ?? {});
-    const votes = game?.votes ?? {};
-    return open
-      .filter((e) => {
-        const m = getMatch(e.matchId);
-        if (m) return isPickemMatchEligible(m) && isPickemMatchOpen(m);
-        return isPickemMatchEligible({
-          id: e.matchId,
-          teamASlug: e.teamASlug,
-          teamBSlug: e.teamBSlug,
-          stage: e.stage,
-          scoreA: 0,
-          scoreB: 0,
-          tournamentSlug: e.tournamentSlug,
-          date: e.deadline,
-          status: "upcoming",
-          region: "GLOBAL",
-          format: "Bo3",
-        });
-      })
-      .map((e) => enrichPrediction(e, votes))
-      .sort(predictChronologySort);
-  }, [aggregates, game?.votes]);
-
-  const homeVoteBrackets = useMemo(() => buildAllPlayoffBrackets(voteEvents), [voteEvents]);
 
   const spotlight = useMemo(
-    () =>
-      live[0] ??
-      getUpcomingMatches().find((m) => isKnownTeamSlug(m.teamASlug) && isKnownTeamSlug(m.teamBSlug)) ??
-      null,
-    [live, matchPoolRefreshKey],
+    () => live[0] ?? homeMatches.upcoming[0] ?? null,
+    [live, homeMatches.upcoming],
   );
 
   return (
@@ -214,7 +180,7 @@ export function HomeView() {
                 <span>Eventos BSC</span>
               </div>
               <div className="fu-stat">
-                <b>{live.length || "—"}</b>
+                <b>{liveCount || "—"}</b>
                 <span>En directo</span>
               </div>
             </div>
@@ -274,7 +240,7 @@ export function HomeView() {
         <div className="fu-marquee-track">
           {marqueeClubs.map((t, i) => (
             <Link key={`${t.slug}-${i}`} href={`/teams/${t.slug}`} className="fu-marquee-item" title={t.name}>
-              <TeamLogo slug={t.slug} name={t.name} tag={t.tag} size={56} glow={false} priority />
+              <TeamLogo slug={t.slug} name={t.name} tag={t.tag} size={56} glow={false} priority={i < 2} />
               <span className="fu-marquee-tag">{t.tag}</span>
             </Link>
           ))}
@@ -330,7 +296,7 @@ export function HomeView() {
                 className={`fu-tab ${matchTab === tab ? "is-on" : ""}`}
                 onClick={() => setMatchTab(tab)}
               >
-                {tab === "live" ? `Directo (${live.length})` : tab === "upcoming" ? "Próximos" : "Resultados"}
+                {tab === "live" ? `Directo (${liveCount})` : tab === "upcoming" ? "Próximos" : "Resultados"}
               </button>
             ))}
           </div>
@@ -377,23 +343,7 @@ export function HomeView() {
           </div>
         </section>
 
-        {voteEvents.length > 0 && (
-          <section className="fu-panel fu-panel-glow" style={{ gridColumn: "1 / -1" }}>
-            <div className="fu-panel-head">
-              <h2>Predicciones · comunidad</h2>
-              <Link href="/predictions">Todas las predicciones</Link>
-            </div>
-            <div className="bf-predict-bsc bf-predict-bsc-home">
-              <PredictionsQuickVoteSection
-                events={voteEvents}
-                votes={game?.votes ?? {}}
-                brackets={homeVoteBrackets}
-                title="Predicción rápida"
-                hint="Todos los partidos abiertos — bracket 2×2 y grupos."
-              />
-            </div>
-          </section>
-        )}
+        {showPredictions && <HomePredictionsSection />}
 
         {topNews.length > 0 && (
           <section className="fu-panel fu-panel-glow fu-bento-news">

@@ -66,7 +66,8 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    load();
+    const t = window.setTimeout(() => void load(), 900);
+    return () => window.clearTimeout(t);
   }, [load]);
 
   useEffect(() => {

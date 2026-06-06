@@ -117,11 +117,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (userChanged) setReady(false);
 
     let active = true;
-    void refreshRef.current().finally(() => {
-      if (active) setReady(true);
-    });
+    const run = () => {
+      void refreshRef.current().finally(() => {
+        if (active) setReady(true);
+      });
+    };
+    const t = window.setTimeout(run, 1100);
     return () => {
       active = false;
+      window.clearTimeout(t);
     };
   }, [user?.id]);
 
