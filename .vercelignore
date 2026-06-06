@@ -1,3 +1,2 @@
-# Miles de PNG locales — no subir a Vercel (rompe límite 300MB de funciones).
-# La app usa URLs remotas (Liquipedia, Taiyoro, etc.) si no hay archivo local.
-public/logos
+# Logos de equipos masivos (si se añaden) — torneos tier B+ sí se despliegan desde public/logos/tournaments.
+public/logos/teams
