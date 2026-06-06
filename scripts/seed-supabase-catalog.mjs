@@ -91,11 +91,101 @@ function normStatus(s) {
   return "active";
 }
 
+function parseConstArray(raw, name) {
+  const re = new RegExp(`const ${name}\\s*=\\s*\\[([\\s\\S]*?)\\]\\s*as const`);
+  const m = raw.match(re);
+  if (!m) throw new Error(`No se pudo leer const ${name}`);
+  return [...m[1].matchAll(/"([a-z0-9-]+)"/g)].map((x) => x[1]);
+}
+
+function loadActiveTeamSlugs() {
+  const text = readFileSync(resolve(root, "src/lib/data/bsc-2026-active-teams.ts"), "utf8");
+  const m = text.match(/BSC_2026_ACTIVE_TEAM_SLUGS[^[]*\[([\s\S]*?)\]\s*as const/);
+  if (!m) throw new Error("BSC_2026_ACTIVE_TEAM_SLUGS not found");
+  return [...m[1].matchAll(/"([a-z0-9-]+)"/g)].map((x) => x[1]);
+}
+
 function parseParticipants() {
-  const raw = readFileSync(resolve(root, "src/lib/data/bsc-fantasy-participants.ts"), "utf8");
-  const m = raw.match(/export const BSC_FANTASY_PARTICIPANTS[^=]*=\s*(\{[\s\S]*\});/);
-  if (!m) throw new Error("No se pudo leer BSC_FANTASY_PARTICIPANTS");
-  return Function(`"use strict"; return (${m[1]})`)();
+  const path = resolve(root, "src/lib/data/bsc-tournament-participants.ts");
+  const raw = readFileSync(path, "utf8");
+  const MF_EMEA_8 = parseConstArray(raw, "MF_EMEA_8");
+  const MF_EA_8 = parseConstArray(raw, "MF_EA_8");
+  const MF_NA_8 = parseConstArray(raw, "MF_NA_8");
+  const MF_SA_8 = parseConstArray(raw, "MF_SA_8");
+  const CN_MF_8 = parseConstArray(raw, "CN_MF_8");
+  const activeSlugs = loadActiveTeamSlugs();
+  const SA_ACTIVE = activeSlugs.filter((s) =>
+    [
+      "loud",
+      "skcalalas",
+      "new-heights-gaming",
+      "kaioperro",
+      "eternal-esports",
+      "alguem-segura",
+      "olimpo-squad",
+      "bounty-hunters-esports",
+      "enosis-esports",
+      "bc-gaming-sa",
+      "level-esports",
+      "oddyssey",
+      "acre-lovers",
+      "f-a-zurita-gaming",
+    ].includes(s),
+  );
+  const NA_ACTIVE = activeSlugs.filter((s) =>
+    [
+      "tribe-gaming",
+      "only-realm",
+      "stmn-esports",
+      "team-elektros",
+      "vatic-esports",
+      "elevate",
+      "f-a-homeless",
+      "vic-day",
+      "legacy-esports",
+    ].includes(s),
+  );
+
+  const marker = "export const BSC_TOURNAMENT_PARTICIPANTS";
+  const start = raw.indexOf(marker);
+  if (start < 0) throw new Error("No se pudo leer BSC_TOURNAMENT_PARTICIPANTS");
+  const eq = raw.indexOf("=", start);
+  let i = raw.indexOf("{", eq);
+  let depth = 0;
+  let end = i;
+  for (; end < raw.length; end++) {
+    const ch = raw[end];
+    if (ch === "{") depth++;
+    else if (ch === "}") {
+      depth--;
+      if (depth === 0) {
+        end++;
+        break;
+      }
+    }
+  }
+  const objStr = raw.slice(i, end);
+  const participants = Function(
+    "MF_EMEA_8",
+    "MF_EA_8",
+    "MF_NA_8",
+    "MF_SA_8",
+    "CN_MF_8",
+    "SA_ACTIVE",
+    "NA_ACTIVE",
+    `"use strict"; return (${objStr})`,
+  )(MF_EMEA_8, MF_EA_8, MF_NA_8, MF_SA_8, CN_MF_8, SA_ACTIVE, NA_ACTIVE);
+
+  const MF_MONTHS = ["february", "march", "april", "may", "june", "july", "august"];
+  for (const month of MF_MONTHS) {
+    const key = (r) => `bsc-2026-${month}-${r}-mf`;
+    if (!participants[key("emea")]) participants[key("emea")] = [...MF_EMEA_8];
+    if (!participants[key("ea")]) participants[key("ea")] = [...MF_EA_8];
+    if (!participants[key("na")]) participants[key("na")] = [...MF_NA_8];
+    if (!participants[key("sa")]) participants[key("sa")] = [...MF_SA_8];
+  }
+
+  return participants;
 }
 
 const participants = parseParticipants();
@@ -183,9 +273,18 @@ for (const [tournamentSlug, teamList] of Object.entries(participants)) {
   }
 }
 
-await upsert("tournament_team_rosters", rosterRows);
-await upsert("fantasy_market_catalog", marketRows);
+function dedupeRows(rows, keyFn) {
+  const map = new Map();
+  for (const row of rows) map.set(keyFn(row), row);
+  return [...map.values()];
+}
 
-console.log(`  Plantillas torneo: ${rosterRows.length}`);
-console.log(`  Mercado fantasy: ${marketRows.length}`);
+const uniqueRosterRows = dedupeRows(rosterRows, (r) => `${r.tournament_slug}:${r.team_slug}`);
+const uniqueMarketRows = dedupeRows(marketRows, (r) => `${r.tournament_slug}:${r.player_slug}`);
+
+await upsert("tournament_team_rosters", uniqueRosterRows);
+await upsert("fantasy_market_catalog", uniqueMarketRows);
+
+console.log(`  Plantillas torneo: ${uniqueRosterRows.length}`);
+console.log(`  Mercado fantasy: ${uniqueMarketRows.length}`);
 console.log("Catálogo subido correctamente.");

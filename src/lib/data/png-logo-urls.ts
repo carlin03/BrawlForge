@@ -6,6 +6,7 @@ import {
 } from "./catalog";
 import { isValidLogoSlug } from "./logo-slugs";
 import { BSC_DEFAULT_LOGO, BSC_TOURNAMENT_ALIASES } from "./bsc-tournaments";
+import { buildTournamentRemoteLogoChain } from "./tournament-logos";
 
 import { teamLogoOverrideUrl, tournamentLogoOverrideUrl } from "./logo-overrides";
 
@@ -207,11 +208,26 @@ export function buildTournamentLogoSources(slug: string, cfg?: LogoRuntimeConfig
 
   const resolved = resolveTournamentSlug(slug);
   const isBsc = /^bsc-2026|^world-finals/i.test(resolved) || /^bsc-2026|^world-finals/i.test(slug);
+
+  const sources: string[] = [];
   if (isBsc) {
-    return toClientLogoSources([bust(BSC_LOCAL_LOGO, cacheVersion), BSC_DEFAULT_LOGO]);
+    sources.push(bust(BSC_LOCAL_LOGO, cacheVersion));
   }
 
-  return toClientLogoSources([BSC_DEFAULT_LOGO]);
+  for (const s of candidates) {
+    const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
+    if (!sources.includes(local)) sources.push(local);
+  }
+
+  for (const s of candidates) {
+    for (const url of buildTournamentRemoteLogoChain(s)) {
+      if (!sources.includes(url)) sources.push(url);
+    }
+  }
+
+  if (!sources.includes(BSC_DEFAULT_LOGO)) sources.push(BSC_DEFAULT_LOGO);
+
+  return toClientLogoSources(sources);
 }
 
 
