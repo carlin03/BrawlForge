@@ -47,7 +47,13 @@ export function NewsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refresh();
+    const run = () => void refresh();
+    if (typeof requestIdleCallback === "function") {
+      const id = requestIdleCallback(run, { timeout: 2500 });
+      return () => cancelIdleCallback(id);
+    }
+    const t = window.setTimeout(run, 2000);
+    return () => window.clearTimeout(t);
   }, [refresh]);
 
   const value = useMemo(

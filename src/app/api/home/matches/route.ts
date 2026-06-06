@@ -81,11 +81,18 @@ export async function GET() {
       .eq("status", "live"),
   ]);
 
-  return NextResponse.json({
-    ok: true,
-    live,
-    upcoming,
-    results,
-    liveCount: liveCountRes.count ?? live.length,
-  });
+  return NextResponse.json(
+    {
+      ok: true,
+      live,
+      upcoming,
+      results,
+      liveCount: liveCountRes.count ?? live.length,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, s-maxage=45, stale-while-revalidate=300",
+      },
+    },
+  );
 }

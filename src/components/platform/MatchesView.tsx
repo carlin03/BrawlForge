@@ -30,13 +30,17 @@ import {
 import { getMatchEnrichment } from "@/lib/data/match-meta";
 import { getMatchPool } from "@/lib/data/match-pool";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
+import { useDeferredMount } from "@/hooks/useDeferredMount";
+import { PageLoadShell } from "@/components/platform/PageLoadShell";
 
 export function MatchesView() {
   const cms = useOptionalCmsRuntime();
+  const poolReady = useDeferredMount(cms?.matchPool?.length ? 0 : 600);
   const displayable = useMemo(() => {
+    if (!poolReady && !cms?.matchPool?.length) return [];
     const pool = cms?.matchPool ?? getMatchPool();
     return buildPublicCalendarPool(pool);
-  }, [cms?.matchPool]);
+  }, [cms?.matchPool, poolReady]);
   const counts = useMemo(() => countHubMatches(displayable), [displayable]);
 
   const [tab, setTab] = useState<MatchTab>(() => defaultMatchHubTab(counts));
@@ -63,19 +67,23 @@ export function MatchesView() {
   const [tourQuery, setTourQuery] = useState("");
   const tierTours = useMemo(() => getTierBPlusTournaments(120), []);
 
-  const upsets = useMemo(
-    () =>
-      getRecentMatches(40)
-        .filter((m) => isKnownTeamSlug(m.teamASlug) && m.status === "finished")
-        .filter((m) => {
-          const enrich = getMatchEnrichment(m);
-          const winnerIsA = m.scoreA > m.scoreB;
-          const communityFavA = enrich.communityPickA >= 50;
-          return winnerIsA !== communityFavA;
-        })
-        .slice(0, 5),
-    [],
-  );
+  const showUpsets = useDeferredMount(1800);
+  const upsets = useMemo(() => {
+    if (!showUpsets) return [];
+    return getRecentMatches(40)
+      .filter((m) => isKnownTeamSlug(m.teamASlug) && m.status === "finished")
+      .filter((m) => {
+        const enrich = getMatchEnrichment(m);
+        const winnerIsA = m.scoreA > m.scoreB;
+        const communityFavA = enrich.communityPickA >= 50;
+        return winnerIsA !== communityFavA;
+      })
+      .slice(0, 5);
+  }, [showUpsets]);
+
+  if (!poolReady && displayable.length === 0) {
+    return <PageLoadShell label="Cargando calendario BSC…" />;
+  }
 
   const emptyCopy =
     tab === "live"

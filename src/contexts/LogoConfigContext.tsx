@@ -53,7 +53,7 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refresh();
+    const t = window.setTimeout(() => void refresh(), 1200);
     const onUpdate = (e: Event) => {
       const detail = (e as CustomEvent<{ slug?: string; logoUrl?: string; cacheVersion?: string; kind?: string }>)
         .detail;
@@ -74,7 +74,10 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
       void refresh();
     };
     window.addEventListener("bf-logos-updated", onUpdate);
-    return () => window.removeEventListener("bf-logos-updated", onUpdate);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("bf-logos-updated", onUpdate);
+    };
   }, [refresh]);
 
   const value = useMemo(() => ({ config, ready, refresh }), [config, ready, refresh]);

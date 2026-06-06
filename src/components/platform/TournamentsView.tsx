@@ -13,10 +13,12 @@ import {
   tierLabel,
   getTierBPlusTournaments,
   getTournamentParticipantSlugs,
-  getMatchesByTournament,
   teamName,
   isKnownTeamSlug,
 } from "@/lib/data";
+import { getMatchPool } from "@/lib/data/match-pool";
+import { useDeferredMount } from "@/hooks/useDeferredMount";
+import { PageLoadShell } from "@/components/platform/PageLoadShell";
 
 type StatusFilter = "all" | "live" | "upcoming" | "finished";
 
@@ -36,12 +38,22 @@ function formatTourDate(start: string, end: string) {
 }
 
 export function TournamentsView() {
+  const poolReady = useDeferredMount(500);
   const [status, setStatus] = useState<StatusFilter>("all");
   const [query, setQuery] = useState("");
-  const all = useMemo(() => getTierBPlusTournaments(), []);
+  const all = useMemo(() => (poolReady ? getTierBPlusTournaments() : []), [poolReady]);
+  const matchCountsByTour = useMemo(() => {
+    if (!poolReady) return new Map<string, number>();
+    const counts = new Map<string, number>();
+    for (const m of getMatchPool()) {
+      counts.set(m.tournamentSlug, (counts.get(m.tournamentSlug) ?? 0) + 1);
+    }
+    return counts;
+  }, [poolReady]);
   const liveCount = all.filter((t) => t.status === "live").length;
 
   const filtered = useMemo(() => {
+    if (!poolReady) return [];
     const q = query.trim().toLowerCase();
     let list = status === "all" ? all : all.filter((t) => t.status === status);
     if (q) {
@@ -54,7 +66,11 @@ export function TournamentsView() {
       );
     }
     return list;
-  }, [all, status, query]);
+  }, [all, status, query, poolReady]);
+
+  if (!poolReady) {
+    return <PageLoadShell label="Cargando torneos BSC…" />;
+  }
 
   const heroShowcase = filtered[0] ?? all[0];
 
@@ -139,7 +155,7 @@ export function TournamentsView() {
       <div className="bf-tours-hub-grid">
         {filtered.map((t) => {
           const participants = getTournamentParticipantSlugs(t.slug).filter(isKnownTeamSlug);
-          const matchCount = getMatchesByTournament(t.slug).length;
+          const matchCount = matchCountsByTour.get(t.slug) ?? 0;
           const name = cleanName(t.shortName);
           const showTeams = participants.slice(0, 12);
           const moreTeams = participants.length - showTeams.length;

@@ -10,10 +10,14 @@ import { enrichMatchForPool } from "./match-pool-enrich";
 import { sanitizeMatchPoolTournamentSlugs } from "./tournament-slug-sanitize";
 
 let runtimePool: EsportsMatch[] | null = null;
+let builtPoolCache: EsportsMatch[] | null = null;
+let builtPoolCacheKey: string | null = null;
 
 /** Hidrata desde servidor (CmsRuntime) — null = usar legacy import. */
 export function setRuntimeMatchPool(pool: EsportsMatch[] | null): void {
   runtimePool = pool;
+  builtPoolCache = null;
+  builtPoolCacheKey = null;
 }
 
 function mergeByDedupeKey(byId: Map<string, EsportsMatch>, incoming: EsportsMatch): void {
@@ -68,7 +72,11 @@ function buildPublicMatchPool(base: EsportsMatch[]): EsportsMatch[] {
 
 export function getMatchPool(): EsportsMatch[] {
   const base = runtimePool ?? getLegacyMatchList();
-  return buildPublicMatchPool(base);
+  const key = runtimePool ? `rt:${runtimePool.length}` : "legacy";
+  if (builtPoolCache && builtPoolCacheKey === key) return builtPoolCache;
+  builtPoolCache = buildPublicMatchPool(base);
+  builtPoolCacheKey = key;
+  return builtPoolCache;
 }
 
 /** Pool con slots winner-qf/sf para bracket pick'em (solo predicciones). */

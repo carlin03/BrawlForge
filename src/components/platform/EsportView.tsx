@@ -19,7 +19,9 @@ import {
 import { buildPublicCalendarPool } from "@/lib/data/match-schedule-trust";
 import { getMatchPool } from "@/lib/data/match-pool";
 import { BrawlerAssetIcon } from "@/components/match-esports/BrawlerAssetIcon";
-import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
+import { useEsportOverview } from "@/hooks/useEsportOverview";
+import { useDeferredMount } from "@/hooks/useDeferredMount";
+import { PageLoadShell } from "@/components/platform/PageLoadShell";
 
 const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 
@@ -78,17 +80,20 @@ function LeaderboardCard({
 }
 
 export function EsportView() {
-  const cms = useOptionalCmsRuntime();
+  const { overview: apiOverview, ready: apiReady } = useEsportOverview();
+  const allowLocalFallback = useDeferredMount(2500);
   const overview = useMemo(() => {
-    const base = cms?.matchPool ?? getMatchPool();
-    return buildEsportAnalytics(buildPublicCalendarPool(base));
-  }, [cms?.matchPool]);
+    if (apiOverview) return apiOverview;
+    if (!allowLocalFallback) return null;
+    return buildEsportAnalytics(buildPublicCalendarPool(getMatchPool()));
+  }, [apiOverview, allowLocalFallback]);
 
   const [region, setRegion] = useState<Region | "all">("all");
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<EsportSortKey>("matches");
 
   const filtered = useMemo(() => {
+    if (!overview) return [];
     let list = filterEsportTeamsByRegion(overview.teams, region);
     const q = query.trim().toLowerCase();
     if (q) {
@@ -100,9 +105,12 @@ export function EsportView() {
       );
     }
     return sortEsportTeams(list, sortKey, true);
-  }, [overview.teams, region, query, sortKey]);
+  }, [overview, region, query, sortKey]);
 
   const scopedLeaderboards = useMemo(() => {
+    if (!overview) {
+      return { topWinRate: [], worstWinRate: [], mostWins: [], mostMatches: [] };
+    }
     const scoped = filterEsportTeamsByRegion(overview.teams, region);
     const wrEligible = scoped.filter((t) => t.matches >= 3);
     const byWr = [...wrEligible].sort((a, b) => b.winRate - a.winRate || b.matches - a.matches);
@@ -115,12 +123,16 @@ export function EsportView() {
       mostWins: byWins.slice(0, 5),
       mostMatches: byMatches.slice(0, 5),
     };
-  }, [overview.teams, region]);
+  }, [overview, region]);
 
   const regionalTotal = useMemo(
-    () => Object.values(overview.regionalMatches).reduce((a, b) => a + b, 0),
-    [overview.regionalMatches],
+    () => (overview ? Object.values(overview.regionalMatches).reduce((a, b) => a + b, 0) : 0),
+    [overview],
   );
+
+  if (!overview) {
+    return <PageLoadShell label={apiReady ? "Procesando estadísticas…" : "Cargando estadísticas BSC…"} />;
+  }
 
   return (
     <PageUltraShell className="bf-esport-page">

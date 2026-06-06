@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EsportView } from "@/components/platform/EsportView";
+import { LazyEsportView } from "@/components/platform/LazyEsportView";
 
 export const metadata: Metadata = {
   title: "Esports Stats — BrawlForge",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function EsportPage() {
-  return <EsportView />;
+  return <LazyEsportView />;
 }

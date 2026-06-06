@@ -77,6 +77,8 @@ export function HomeView() {
   const logoConfig = useLogoConfig();
   const homeMatches = useHomeMatches();
   const showPredictions = useDeferredMount(1800);
+  const showMarquee = useDeferredMount(900);
+  const showTournaments = useDeferredMount(1100);
   const mergedTeams = useMergedCircuitTeams(teams);
   const circuitTeamCount = useCatalogTeamCount();
   const { complete: completeClubs } = usePublicCircuitTeams(teams);
@@ -117,7 +119,7 @@ export function HomeView() {
   }, [logoConfig, completeClubs, mergedTeams]);
 
   const marqueeClubs = useMemo(() => homeClubs.slice(0, 24), [homeClubs]);
-  const homeTournaments = useMemo(() => getHomeTournaments(12), []);
+  const homeTournaments = useMemo(() => (showTournaments ? getHomeTournaments(12) : []), [showTournaments]);
   const matchPool = useMemo(() => {
     if (matchTab === "live") return homeMatches.live;
     if (matchTab === "upcoming") return homeMatches.upcoming;
@@ -233,20 +235,23 @@ export function HomeView() {
         </Link>
       )}
 
-      <section className="fu-marquee-wrap">
-        <div className="fu-marquee-head">
-          <h2>{circuitTeamCount} clubes del circuito 2026</h2>
-        </div>
-        <div className="fu-marquee-track">
-          {marqueeClubs.map((t, i) => (
-            <Link key={`${t.slug}-${i}`} href={`/teams/${t.slug}`} className="fu-marquee-item" title={t.name}>
-              <TeamLogo slug={t.slug} name={t.name} tag={t.tag} size={56} glow={false} priority={i < 2} />
-              <span className="fu-marquee-tag">{t.tag}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {showMarquee && (
+        <section className="fu-marquee-wrap">
+          <div className="fu-marquee-head">
+            <h2>{circuitTeamCount} clubes del circuito 2026</h2>
+          </div>
+          <div className="fu-marquee-track">
+            {marqueeClubs.map((t, i) => (
+              <Link key={`${t.slug}-${i}`} href={`/teams/${t.slug}`} className="fu-marquee-item" title={t.name}>
+                <TeamLogo slug={t.slug} name={t.name} tag={t.tag} size={56} glow={false} priority={i < 2} />
+                <span className="fu-marquee-tag">{t.tag}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
+      {showTournaments && (
       <section className="fu-panel fu-panel-tournaments">
         <div className="fu-panel-head">
           <div className="fu-tours-title-row">
@@ -281,6 +286,7 @@ export function HomeView() {
           ))}
         </div>
       </section>
+      )}
 
       <div className="fu-bento">
         <section className="fu-panel fu-panel-glow fu-bento-matches">

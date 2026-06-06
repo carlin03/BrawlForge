@@ -6,7 +6,7 @@ import { Providers } from "@/app/providers";
 import { InstantBootShell } from "@/components/layout/InstantBootShell";
 import { CmsThemeClient } from "@/components/cms/CmsThemeClient";
 import { CmsRuntimeBootstrap } from "@/components/cms/CmsRuntimeBootstrap";
-import { resolveSiteSeo } from "@/lib/cms/resolve";
+import { DEFAULT_LEGACY_CONFIG } from "@/lib/cms/defaults";
 import { SITE_URL } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
@@ -23,8 +23,8 @@ const ibmPlex = IBM_Plex_Sans({
   weight: ["400", "500", "600"],
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const seo = await resolveSiteSeo();
+export function generateMetadata(): Metadata {
+  const seo = DEFAULT_LEGACY_CONFIG.settings.seo;
   return {
     metadataBase: new URL(SITE_URL),
     title: seo.title,

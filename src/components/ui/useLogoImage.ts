@@ -88,7 +88,8 @@ export function useLogoImage(sources: string[]) {
         currentSrc?.includes("cdn.bspro.gg") ||
         currentSrc?.includes("tiermaker.com") ||
         currentSrc?.includes("mWB0X8mVG2.png");
-      if (!trusted && hasWhiteBackground(img)) {
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 900;
+      if (!trusted && !isMobile && hasWhiteBackground(img)) {
         advanceOrFail();
         return;
       }
