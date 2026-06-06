@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { InstantBootShell, INSTANT_CRITICAL_CSS } from "@/components/layout/InstantBootShell";
 import { BootRelease } from "@/components/layout/BootRelease";
@@ -41,9 +42,10 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="h-full" style={{ background: "#0a0c12", color: "#f4f4f5" }}>
+    <html lang="es" className="h-full bf-boot-loading" style={{ background: "#0a0c12", color: "#f4f4f5" }}>
       <head>
         <style id="bf-critical-boot" dangerouslySetInnerHTML={{ __html: INSTANT_CRITICAL_CSS }} />
+        <Script src="/bf-boot.js" strategy="beforeInteractive" />
       </head>
       <body
         className="min-h-full antialiased"
