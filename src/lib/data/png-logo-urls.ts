@@ -23,6 +23,7 @@ import { EXTRA_CIRCUIT_TEAM_SLUGS, getCatalogOnlyTeam } from "./circuit-roster";
 import { BSC_2026_ACTIVE_TEAM_SLUGS } from "./bsc-2026-active-teams";
 import { buildUiRemoteLogoChain } from "./team-logo-urls";
 import { toClientLogoSources } from "./logo-client-url";
+import { canServeLocalLogoFiles } from "./local-logos";
 
 
 
@@ -214,9 +215,11 @@ export function buildTournamentLogoSources(slug: string, cfg?: LogoRuntimeConfig
     sources.push(bust(BSC_LOCAL_LOGO, cacheVersion));
   }
 
-  for (const s of candidates) {
-    const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
-    if (!sources.includes(local)) sources.push(local);
+  if (canServeLocalLogoFiles()) {
+    for (const s of candidates) {
+      const local = bust(`/logos/tournaments/${s}.png`, cacheVersion);
+      if (!sources.includes(local)) sources.push(local);
+    }
   }
 
   for (const s of candidates) {

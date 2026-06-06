@@ -1,2 +1,4 @@
-# Logos de equipos masivos (si se añaden) — torneos tier B+ sí se despliegan desde public/logos/tournaments.
+# Logos locales no van al deploy (504MB bloquea la cola de Vercel horas).
+# En producción: proxy remoto /api/logos y CDN (NEXT_PUBLIC_LOGO_PROXY=1).
 public/logos/teams
+public/logos/tournaments
