@@ -1,5 +1,5 @@
 /**
- * Reglas de publicación: próximos solo BSC 2026 curado; Liquipedia regional solo resultados.
+ * Reglas de publicación: próximos BSC + Liquipedia con fecha real; resultados LP históricos.
  */
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
@@ -7,7 +7,8 @@ import { fileURLToPath } from "url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
-/** Fecha placeholder masiva del parser Liquipedia (no es calendario real). */
+/** Fechas placeholder masivas del parser Liquipedia (no son calendario real). */
+export const LP_PLACEHOLDER_DAYS = new Set(["2026-06-06", "2026-06-07"]);
 export const LP_PLACEHOLDER_DAY = "2026-06-06";
 
 const INVALID_TEAM = new Set(["", "tbd", "team", "por-definir", ".", "punto"]);
@@ -42,7 +43,46 @@ export function isBscCircuitSlug(slug) {
 }
 
 export function isPlaceholderLiquipediaDate(date) {
-  return (date || "").slice(0, 10) === LP_PLACEHOLDER_DAY;
+  return LP_PLACEHOLDER_DAYS.has((date || "").slice(0, 10));
+}
+
+const LP_UPCOMING_MAX_FUTURE_MS = 240 * 24 * 60 * 60 * 1000;
+const LP_UPCOMING_PAST_GRACE_MS = 12 * 60 * 60 * 1000;
+
+/** Próximo Liquipedia con fecha creíble (excluye placeholder 2026-06-06 y fechas pasadas). */
+export function isValidLiquipediaUpcoming(m) {
+  const status = m.status || "upcoming";
+  if (status !== "upcoming") return false;
+  if (!m.date?.trim()) return false;
+  if (isPlaceholderLiquipediaDate(m.date)) return false;
+  if (m.teamASlug === m.teamBSlug) return false;
+  if (!okTeamSlug(m.teamASlug) || !okTeamSlug(m.teamBSlug)) return false;
+
+  const ts = Date.parse(m.date);
+  if (Number.isNaN(ts)) return false;
+  const now = Date.now();
+  if (ts < now - LP_UPCOMING_PAST_GRACE_MS) return false;
+  if (ts > now + LP_UPCOMING_MAX_FUTURE_MS) return false;
+
+  const year = Number(m.date.slice(0, 4));
+  if (!Number.isFinite(year) || year < 2025) return false;
+
+  const slug = (m.tournamentSlug || "").trim().toLowerCase();
+  if (/^brawl-stars-championship-/.test(slug)) return false;
+
+  if (m.scoreA > 0 || m.scoreB > 0) {
+    if (m.scoreA !== m.scoreB) return false;
+  }
+
+  const td = m.meta?.team_display;
+  const hasLpNames = !!(td?.a?.trim() && td?.b?.trim());
+  const isLpId = String(m.id || "").startsWith("lp-");
+  return hasLpNames || isLpId;
+}
+
+export function hasPublishableDate(date) {
+  if (!date?.trim()) return false;
+  return !Number.isNaN(Date.parse(date));
 }
 
 export function okTeamSlug(slug) {
@@ -58,7 +98,7 @@ function isBracketSlotSlug(slug) {
 }
 
 export function shouldPublishMatch(m) {
-  if (!m.date?.trim()) return false;
+  if (!hasPublishableDate(m.date)) return false;
   if (m.teamASlug === m.teamBSlug) return false;
 
   const isBsc = isBscCircuitSlug(m.tournamentSlug);
@@ -74,7 +114,9 @@ export function shouldPublishMatch(m) {
 
   if (!okTeamSlug(m.teamASlug) || !okTeamSlug(m.teamBSlug)) return false;
 
-  // Liquipedia regional / ligas: solo historial con resultado
+  if (status === "upcoming") return isValidLiquipediaUpcoming(m);
+
+  // Liquipedia regional / ligas: historial con resultado
   if (status !== "finished") return false;
   if (isPlaceholderLiquipediaDate(m.date)) return false;
   if (m.scoreA === m.scoreB && m.scoreA === 0) return false;
@@ -86,5 +128,6 @@ export function shouldPublishMatch(m) {
 export function matchScheduleTrust(m) {
   if (isBscCircuitSlug(m.tournamentSlug)) return "confirmed";
   if (m.status === "finished") return "confirmed";
+  if (isValidLiquipediaUpcoming(m)) return "confirmed";
   return "template";
 }

@@ -10,7 +10,12 @@ import { spawnSync } from "child_process";
 import { loadEnv, root } from "./lib/load-env.mjs";
 import { upsert } from "./lib/supabase-rest.mjs";
 import { deleteMatchesNotIn } from "./lib/supabase-delete.mjs";
-import { shouldPublishMatch, matchScheduleTrust, isBscCircuitSlug } from "./lib/match-publish-filter.mjs";
+import {
+  shouldPublishMatch,
+  matchScheduleTrust,
+  isBscCircuitSlug,
+  isValidLiquipediaUpcoming,
+} from "./lib/match-publish-filter.mjs";
 import { loadBscUpcomingCalendar } from "./lib/parse-bsc-upcoming-ts.mjs";
 
 loadEnv();
@@ -32,6 +37,10 @@ function matchToRow(m) {
   if (isBscCircuitSlug(m.tournamentSlug)) {
     meta.schedule_trust = "confirmed";
     meta.pickem_only = false;
+  } else if (isValidLiquipediaUpcoming(m)) {
+    meta.schedule_trust = "confirmed";
+    meta.pickem_only = false;
+    meta.data_source = meta.data_source || "liquipedia";
   }
   return {
     id: m.id,

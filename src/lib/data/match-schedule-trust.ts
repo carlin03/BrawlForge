@@ -7,6 +7,7 @@ import { isPendingTeamSlug, parseMatchMeta, type MatchMeta } from "./match-meta"
 import { enrichMatchForPool } from "./match-pool-enrich";
 import { fixMislabeledWorldFinalsSlug } from "./tournament-slug-sanitize";
 import { canonicalTournamentSlug } from "./playoff-pool-normalize";
+import { isValidLiquipediaUpcoming } from "./match-publish-rules";
 import { isSchedulableMatch } from "./team-display-resolve";
 import { getMatchStageMeta } from "./match-stage-meta";
 import type { EsportsMatch } from "./esports-match-types";
@@ -45,6 +46,7 @@ export function isConfirmedScheduleMatch(m: EsportsMatch): boolean {
   const meta = parseMatchMeta(m.meta);
   const status = getEffectiveMatchStatus(m);
   if (meta.schedule_trust === "confirmed") return true;
+  if (m.id.startsWith("lp-") && status === "upcoming") return isValidLiquipediaUpcoming(m);
   if (m.id.startsWith("lp-") && (status === "finished" || status === "live")) return true;
   if (meta.schedule_trust === "generated") return false;
   if (status === "finished" || status === "live") return true;

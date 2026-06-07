@@ -1,5 +1,5 @@
 /**
- * Elimina próximos Liquipedia falsos (fechas placeholder) y deja solo BSC + resultados LP.
+ * Filtra partidos: mantiene próximos Liquipedia con fecha real + BSC + resultados LP.
  *
  *   node scripts/purge-lp-upcoming.mjs
  *   node scripts/purge-lp-upcoming.mjs --write

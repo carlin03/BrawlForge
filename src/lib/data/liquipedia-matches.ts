@@ -127,7 +127,7 @@ function buildLiquipediaMatch(m: GeneratedMatch, allowBsc: boolean): EsportsMatc
     region: m.region,
     format: m.format || "Bo3",
     meta: {
-      schedule_trust: isBsc ? "confirmed" : m.status === "finished" ? "confirmed" : "template",
+      schedule_trust: isBsc || m.status === "finished" || m.status === "upcoming" ? "confirmed" : "template",
     },
   };
 
@@ -160,12 +160,26 @@ function isLiquipediaImportCandidate(m: GeneratedMatch, includeBsc: boolean): bo
   if (isBsc && !includeBsc) return false;
   if (!isBsc && !isLiquipediaNonBscTournament(m.tournamentSlug)) return false;
 
-  // Regional Liquipedia: solo resultados (los próximos del scrape suelen ser fechas placeholder)
+  const normalized = normalizeLiquipediaMatchDate(m.date);
+
+  if (!isBsc && m.status === "upcoming") {
+    const day = normalized?.slice(0, 10) ?? m.date?.slice(0, 10) ?? "";
+    if (day === "2026-06-06" || day === "2026-06-07") return false;
+    const ts = normalized ? Date.parse(normalized) : NaN;
+    if (Number.isNaN(ts)) return false;
+    const now = Date.now();
+    if (ts < now - 12 * 60 * 60 * 1000) return false;
+    if (ts > now + LP_IMPORT_MAX_FUTURE_MS) return false;
+    if (m.scoreA > 0 || m.scoreB > 0) {
+      if (m.scoreA !== m.scoreB) return false;
+    }
+    return true;
+  }
+
   if (!isBsc && m.status !== "finished") return false;
 
-  const normalized = normalizeLiquipediaMatchDate(m.date);
   const day = normalized?.slice(0, 10) ?? m.date?.slice(0, 10) ?? "";
-  if (day === "2026-06-06") return false;
+  if (day === "2026-06-06" || day === "2026-06-07") return false;
 
   const year = Number((normalized ?? m.date ?? "").slice(0, 4));
   if (Number.isFinite(year) && year >= LP_IMPORT_MIN_YEAR) {

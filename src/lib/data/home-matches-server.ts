@@ -3,7 +3,7 @@ import type { EsportsMatch } from "@/lib/data/esports-match-types";
 import { parseMatchMeta } from "@/lib/data/match-meta";
 import { enrichMatchForPool } from "@/lib/data/match-pool-enrich";
 import { fixMislabeledWorldFinalsSlug } from "@/lib/data/tournament-slug-sanitize";
-import { isPublicBscUpcomingMatch } from "@/lib/data/match-publish-rules";
+import { isPublicUpcomingMatch } from "@/lib/data/match-publish-rules";
 import { getOfficialUpcomingCalendarMatches } from "@/lib/data/bsc-calendar-upcoming";
 
 const MATCH_COLS =
@@ -68,12 +68,12 @@ async function fetchTab(
   if (error || !data?.length) return [];
   const mapped = data.map(rowToMatch);
   if (tab === "upcoming" || tab === "live") {
-    const bscOnly = mapped.filter((m) => {
-      if (!isPublicBscUpcomingMatch(m)) return false;
+    const upcomingPool = mapped.filter((m) => {
+      if (!isPublicUpcomingMatch(m)) return false;
       const meta = parseMatchMeta(m.meta);
       return meta.schedule_trust === "confirmed" || !meta.pickem_only;
     });
-    if (bscOnly.length) return bscOnly.slice(0, limit);
+    if (upcomingPool.length) return upcomingPool.slice(0, limit);
     return getOfficialUpcomingCalendarMatches(mapped).slice(0, limit);
   }
   return mapped.slice(0, limit);

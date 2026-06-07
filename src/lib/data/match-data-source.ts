@@ -1,17 +1,17 @@
 import { isBscCircuitSlug } from "./bsc-tournaments";
 import { isLiquipediaNonBscTournament } from "./liquipedia-matches";
+import { isValidLiquipediaUpcoming } from "./match-publish-rules";
 import type { EsportsMatch } from "./esports-match-types";
 
-export type MatchDataSource = "bsc-official" | "liquipedia-finished" | "other";
+export type MatchDataSource = "bsc-official" | "liquipedia-finished" | "liquipedia-upcoming" | "other";
 
-/** Origen del dato — próximos solo BSC; Liquipedia solo resultados históricos. */
 export function getMatchDataSource(m: EsportsMatch): MatchDataSource {
   if (isBscCircuitSlug(m.tournamentSlug)) return "bsc-official";
-  if (
-    m.status === "finished" &&
-    (m.id.startsWith("lp-") || isLiquipediaNonBscTournament(m.tournamentSlug))
-  ) {
-    return "liquipedia-finished";
+  const isLp =
+    m.id.startsWith("lp-") || isLiquipediaNonBscTournament(m.tournamentSlug);
+  if (isLp && m.status === "finished") return "liquipedia-finished";
+  if (isLp && (m.status === "upcoming" || m.status === "live") && isValidLiquipediaUpcoming(m)) {
+    return "liquipedia-upcoming";
   }
   return "other";
 }
@@ -24,6 +24,7 @@ export function getMatchDataSourceLabel(m: EsportsMatch): string | null {
       : "BSC 2026";
   }
   if (src === "liquipedia-finished") return "Resultado histórico · Liquipedia";
+  if (src === "liquipedia-upcoming") return "Próximo · Liquipedia";
   return null;
 }
 
