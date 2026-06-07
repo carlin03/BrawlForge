@@ -17,6 +17,7 @@ import {
   isValidLiquipediaUpcoming,
 } from "./lib/match-publish-filter.mjs";
 import { loadBscUpcomingCalendar } from "./lib/parse-bsc-upcoming-ts.mjs";
+import { dedupeMatchPool } from "./lib/match-dedupe-pool.mjs";
 
 loadEnv();
 
@@ -159,7 +160,7 @@ function buildPublishMatchPool() {
     if (!shouldPublishMatch(m)) continue;
     byId.set(m.id, m);
   }
-  const pool = [...byId.values()];
+  const pool = dedupeMatchPool([...byId.values()]);
   const displayIndex = buildLpTeamDisplayIndex([...fromJson, ...enriched]);
   return pool
     .map((m) => fillTeamDisplay(m, displayIndex))
@@ -169,7 +170,7 @@ function buildPublishMatchPool() {
 async function seedMatches() {
   const matches = buildPublishMatchPool();
   const rows = dedupeById(matches.map(matchToRow));
-  console.log(`\n▶ Partidos publicables → matches_catalog (${rows.length})`);
+  console.log(`\n▶ Partidos publicables → matches_catalog (${rows.length}, dedupe cruce aplicado)`);
   const n = await upsert("matches_catalog", rows);
   const deleted = await deleteMatchesNotIn(rows.map((r) => r.id));
   console.log(`  Subidos: ${n} partidos · eliminados obsoletos: ${deleted}`);

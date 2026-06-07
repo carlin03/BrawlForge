@@ -100,9 +100,10 @@ function main() {
 
   players2026.sort((a, b) => b.fantasyPoints - a.fantasyPoints);
 
+  const teams2026Raw = JSON.parse(fs.readFileSync(path.join(outDir, "teams-2026.json"), "utf8"));
   const teams2026 = teamSlugs
     .map((slug) => {
-      const t = allTeams.find((x) => x.slug === slug);
+      const t = teams2026Raw.find((x) => x.slug === slug) ?? allTeams.find((x) => x.slug === slug);
       if (!t) return null;
       return { ...t, roster: rosters[slug] ?? [] };
     })

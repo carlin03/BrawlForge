@@ -48,7 +48,7 @@ export const BSC_2026_TEAM_REGISTRY: Record<string, Bsc2026TeamEntry> = {
     tag: "VIC",
     region: "NA",
     country: "North America",
-    roster: ["belal", "ezlivi", "duckie"],
+    roster: ["kapi", "ducky", "tyrant"],
     liquipediaPage: "Vic Day",
   },
   "legacy-esports": {
@@ -70,9 +70,9 @@ export const BSC_2026_TEAM_REGISTRY: Record<string, Bsc2026TeamEntry> = {
   "acre-lovers": {
     name: "Acre Lovers",
     tag: "AL",
-    region: "SA",
     country: "South America",
-    roster: ["fire-murilo", "satisfyer", "lipizin"],
+    region: "SA",
+    roster: ["fire-murilo", "sennin", "muri"],
     liquipediaPage: "Acre Lovers",
   },
   "f-a-zurita-gaming": {

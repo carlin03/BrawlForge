@@ -26,12 +26,72 @@ for (const s of extractArray("BSC_2026_EXCLUDED_TEAM_SLUGS")) {
 }
 
 const allTeams = JSON.parse(fs.readFileSync(path.join(outDir, "teams.json"), "utf8"));
-const picked = allTeams.filter((t) => slugs.has(t.slug)).sort((a, b) => a.name.localeCompare(b.name));
-const missing = [...slugs].filter((s) => !picked.some((t) => t.slug === s));
+const discovered = fs.existsSync(path.join(outDir, "teams-discovered.json"))
+  ? JSON.parse(fs.readFileSync(path.join(outDir, "teams-discovered.json"), "utf8"))
+  : [];
+const registryText = fs.readFileSync(path.join(root, "src/lib/data/bsc-2026-team-registry.ts"), "utf8");
+
+function registryStub(slug) {
+  const esc = slug.replace(/-/g, "\\-");
+  const block =
+    registryText.match(new RegExp(`"${esc}"\\s*:\\s*\\{([\\s\\S]*?)\\n  \\}`, "m")) ??
+    registryText.match(new RegExp(`${esc}\\s*:\\s*\\{([\\s\\S]*?)\\n  \\}`, "m"));
+  if (!block) return null;
+  const body = block[1];
+  const pick = (k) => body.match(new RegExp(`${k}:\\s*"([^"]+)"`))?.[1];
+  const roster = [...(body.match(/roster:\s*\[([^\]]*)\]/)?.[1] ?? "").matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
+  return {
+    slug,
+    name: pick("name") ?? slug,
+    tag: pick("tag") ?? slug.slice(0, 3).toUpperCase(),
+    region: pick("region") ?? "GLOBAL",
+    country: pick("country") ?? "",
+    earnings: 0,
+    rank: 99,
+    rankChange: 0,
+    form: [],
+    liquipediaPage: pick("liquipediaPage") ?? slug,
+    logoFile: null,
+    roster,
+  };
+}
+
+const bySlug = new Map(allTeams.map((t) => [t.slug, t]));
+for (const d of discovered) bySlug.set(d.slug, { ...bySlug.get(d.slug), ...d });
+
+const picked = [];
+for (const slug of [...slugs].sort()) {
+  if (bySlug.has(slug)) {
+    picked.push(bySlug.get(slug));
+    continue;
+  }
+  const stub = registryStub(slug);
+  if (stub) {
+    picked.push(stub);
+    continue;
+  }
+  picked.push({
+    slug,
+    name: slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+    tag: slug.slice(0, 3).toUpperCase(),
+    region: "GLOBAL",
+    country: "",
+    earnings: 0,
+    rank: 99,
+    rankChange: 0,
+    form: [],
+    liquipediaPage: slug,
+    logoFile: null,
+    roster: [],
+  });
+}
+picked.sort((a, b) => a.name.localeCompare(b.name));
+const missing = [...slugs].filter((s) => !allTeams.some((t) => t.slug === s) && !registryStub(s));
 
 console.log(`Active slugs: ${slugs.size}`);
-console.log(`Matched in teams.json: ${picked.length}`);
-if (missing.length) console.log(`Missing catalog entries: ${missing.join(", ")}`);
+console.log(`Matched in teams.json: ${picked.filter((t) => bySlug.has(t.slug)).length}`);
+console.log(`Stubs from registry: ${picked.filter((t) => registryStub(t.slug)).length}`);
+if (missing.length) console.log(`Still missing meta: ${missing.join(", ")}`);
 
 if (WRITE) {
   fs.writeFileSync(path.join(outDir, "teams-2026.json"), JSON.stringify(picked, null, 0));

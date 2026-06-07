@@ -1,0 +1,114 @@
+{
+  "auditedAt": "2026-06-07T06:13:22.722Z",
+  "matchesRaw": 428,
+  "matchesDeduped": 413,
+  "duplicateContentKeys": 15,
+  "duplicateFixtureKeys": 15,
+  "duplicateTournamentSlugs": 0,
+  "playersOnMultipleTeams": 0,
+  "contentSamples": [
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-1|sk|snow-crystal|2026-03-06",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-snow-crystal-vs-sk-2026-03-06",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-sk-vs-snow-crystal-2026-03-06"
+    },
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-1|fut-esports|sk|2026-03-06",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-fut-esports-vs-sk-2026-03-06",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-fut-esports-vs-sk-2026-03-06"
+    },
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-2|big|sk-gaming|2026-03-20",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-sk-gaming-vs-big-2026-03-20",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-big-vs-sk-gaming-2026-03-20"
+    },
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-2|big|sk-gaming|2026-03-20",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-sk-gaming-vs-big-2026-03-20",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-big-vs-sk-gaming-2026-03-20"
+    },
+    {
+      "key": "brawl-stars-championship-2025-chinese-mainland-championship-finals|lor|toxic-lotus|2025-06-29",
+      "a": "lp-brawl-stars-championship-2025-chinese-mainland-championship-finals-toxic-lotus-vs-lor-2025-06-29",
+      "b": "lp-brawl-stars-championship-2025-chinese-mainland-championship-finals-toxic-lotus-vs-lor-2025-06-29"
+    },
+    {
+      "key": "brawl-stars-championship-2026-road-to-brawl-cup-sa-west|ice-frio-hielo|zurita-gang|2026-02-28",
+      "a": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-zurita-gang-vs-ice-frio-hielo-2026-02-28",
+      "b": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-zurita-gang-vs-ice-frio-hielo-2026-02-28"
+    },
+    {
+      "key": "brawl-stars-championship-2026-road-to-brawl-cup-sa-west|un-sueo-incompleto|zurita-gang|2026-02-28",
+      "a": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-un-sueo-incompleto-vs-zurita-gang-2026-02-28",
+      "b": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-un-sueo-incompleto-vs-zurita-gang-2026-02-28"
+    },
+    {
+      "key": "brawl-stars-championship-2026-road-to-brawl-cup-sesa-decider-playoffs|overthrow|revenant-xspark|2026-03-08",
+      "a": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sesa-decider-playoffs-revenant-xspark-vs-overthrow-2026-03-08",
+      "b": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sesa-decider-playoffs-revenant-xspark-vs-overthrow-2026-03-08"
+    },
+    {
+      "key": "rvl-challengers-league-season-1-monthly-final|natus-vincere|rival-esports|2025-05-04",
+      "a": "lp-rvl-challengers-league-season-1-monthly-final-natus-vincere-vs-rival-esports-2025-05-04",
+      "b": "lp-rvl-challengers-league-season-1-monthly-final-rival-esports-vs-natus-vincere-2025-05-04"
+    },
+    {
+      "key": "rvl-challengers-league-season-1-monthly-final|reject|rival-esports|2025-05-04",
+      "a": "lp-rvl-challengers-league-season-1-monthly-final-reject-vs-rival-esports-2025-05-04",
+      "b": "lp-rvl-challengers-league-season-1-monthly-final-reject-vs-rival-esports-2025-05-04"
+    }
+  ],
+  "fixtureSamples": [
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-1|other|sk|snow-crystal|2026-03-06",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-snow-crystal-vs-sk-2026-03-06",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-sk-vs-snow-crystal-2026-03-06"
+    },
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-1|other|fut-esports|sk|2026-03-06",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-fut-esports-vs-sk-2026-03-06",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-1-fut-esports-vs-sk-2026-03-06"
+    },
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-2|other|big|sk-gaming|2026-03-20",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-sk-gaming-vs-big-2026-03-20",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-big-vs-sk-gaming-2026-03-20"
+    },
+    {
+      "key": "bigg-pro-series-2026-road-to-gamers-assembly-online-2|other|big|sk-gaming|2026-03-20",
+      "a": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-sk-gaming-vs-big-2026-03-20",
+      "b": "lp-bigg-pro-series-2026-road-to-gamers-assembly-online-2-big-vs-sk-gaming-2026-03-20"
+    },
+    {
+      "key": "brawl-stars-championship-2025-chinese-mainland-championship-finals|other|lor|toxic-lotus|2025-06-29",
+      "a": "lp-brawl-stars-championship-2025-chinese-mainland-championship-finals-toxic-lotus-vs-lor-2025-06-29",
+      "b": "lp-brawl-stars-championship-2025-chinese-mainland-championship-finals-toxic-lotus-vs-lor-2025-06-29"
+    },
+    {
+      "key": "brawl-stars-championship-2026-road-to-brawl-cup-sa-west|other|ice-frio-hielo|zurita-gang|2026-02-28",
+      "a": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-zurita-gang-vs-ice-frio-hielo-2026-02-28",
+      "b": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-zurita-gang-vs-ice-frio-hielo-2026-02-28"
+    },
+    {
+      "key": "brawl-stars-championship-2026-road-to-brawl-cup-sa-west|other|un-sueo-incompleto|zurita-gang|2026-02-28",
+      "a": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-un-sueo-incompleto-vs-zurita-gang-2026-02-28",
+      "b": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sa-west-un-sueo-incompleto-vs-zurita-gang-2026-02-28"
+    },
+    {
+      "key": "brawl-stars-championship-2026-road-to-brawl-cup-sesa-decider-playoffs|other|overthrow|revenant-xspark|2026-03-08",
+      "a": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sesa-decider-playoffs-revenant-xspark-vs-overthrow-2026-03-08",
+      "b": "lp-brawl-stars-championship-2026-road-to-brawl-cup-sesa-decider-playoffs-revenant-xspark-vs-overthrow-2026-03-08"
+    },
+    {
+      "key": "rvl-challengers-league-season-1-monthly-final|other|natus-vincere|rival-esports|2025-05-04",
+      "a": "lp-rvl-challengers-league-season-1-monthly-final-natus-vincere-vs-rival-esports-2025-05-04",
+      "b": "lp-rvl-challengers-league-season-1-monthly-final-rival-esports-vs-natus-vincere-2025-05-04"
+    },
+    {
+      "key": "rvl-challengers-league-season-1-monthly-final|other|reject|rival-esports|2025-05-04",
+      "a": "lp-rvl-challengers-league-season-1-monthly-final-reject-vs-rival-esports-2025-05-04",
+      "b": "lp-rvl-challengers-league-season-1-monthly-final-reject-vs-rival-esports-2025-05-04"
+    }
+  ],
+  "multiTeamSamples": []
+}

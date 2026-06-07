@@ -293,12 +293,18 @@ async function main() {
 
   players2026.sort((a, b) => b.fantasyPoints - a.fantasyPoints);
 
-  const teams2026 = allTeams
-    .filter((t) => BSC_TEAM_SLUGS.has(t.slug))
-    .map((t) => ({
-      ...t,
-      roster: [...(rosterByTeam.get(t.slug) ?? [])],
-    }));
+  const existingTeams2026 = fs.existsSync(path.join(outDir, "teams-2026.json"))
+    ? JSON.parse(fs.readFileSync(path.join(outDir, "teams-2026.json"), "utf8"))
+    : [];
+  const teamMeta = new Map([...existingTeams2026, ...allTeams].map((t) => [t.slug, t]));
+  const teams2026 = [...BSC_TEAM_SLUGS]
+    .map((slug) => {
+      const base = teamMeta.get(slug);
+      if (!base) return null;
+      return { ...base, roster: [...(rosterByTeam.get(slug) ?? base.roster ?? [])] };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   console.log(`\nBSC 2026 teams: ${teams2026.length}`);
   console.log(`BSC 2026 players: ${players2026.length}`);
