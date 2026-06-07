@@ -44,7 +44,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "zeta-division",
@@ -90,7 +90,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "hmble",
@@ -136,7 +136,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "loud",
@@ -182,7 +182,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "sk-gaming",
@@ -228,47 +228,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "big-talents",
-      "name": "Big Talents",
-      "tag": "BT",
-      "region": "EMEA",
-      "country": "United States",
-      "earnings": 0,
-      "rank": 6,
-      "rank_change": 0,
-      "form": [],
-      "liquipedia_page": "Big Talents",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Big_Talents",
-      "logo_file": null,
-      "logo_url": null,
-      "roster_slugs": [
-        "dompe",
-        "mine",
-        "nes"
-      ],
-      "achievements": [],
-      "description": "Big Talents (BT) representa la región Europa, Oriente Medio y África · United States. Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup. Plantilla oficial (3): Dompe, Mine, Nes.  Ranking global #6 · premios acumulados $0.",
-      "coach": null,
-      "founded_year": 2022,
-      "headquarters": "United States",
-      "website": null,
-      "circuit_status": "active",
-      "bsc_qualified_2026": true,
-      "circuit_summary": "Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup.",
-      "social": {
-        "twitter": null,
-        "youtube": "Brawl Stars Esports",
-        "liquipedia": "https://liquipedia.net/brawlstars/Big_Talents"
-      },
-      "meta": {
-        "regionLabel": "Europa, Oriente Medio y África",
-        "rosterCount": 3,
-        "source": "bsc-2026-enriched"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "fut-esports",
@@ -314,7 +274,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "skcalalas",
@@ -360,7 +320,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "team-elektros",
@@ -406,7 +366,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "reject",
@@ -452,7 +412,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "eternal-esports",
@@ -498,7 +458,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "natus-vincere",
@@ -544,7 +504,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "crazy-raccoon",
@@ -590,7 +550,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "revenant-xspark",
@@ -636,7 +596,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "new-heights-gaming",
@@ -682,7 +642,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "elevate",
@@ -728,7 +688,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "rival-esports",
@@ -774,7 +734,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "vatic-esports",
@@ -820,7 +780,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "stmn-esports",
@@ -866,7 +826,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "team-heretics",
@@ -912,7 +872,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "skcalalas-ea",
@@ -958,7 +918,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "toxic-lotus",
@@ -1004,7 +964,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "novo-esports",
@@ -1050,7 +1010,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "kaioperro",
@@ -1096,7 +1056,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "bc-gaming-sa",
@@ -1124,7 +1084,7 @@
         "tomz"
       ],
       "achievements": [],
-      "description": "BC* Gaming SA (BGS) representa la región Sudamérica · germany. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): leo, mica, tomz.  Ranking global #34 · premios acumulados $0.",
+      "description": "BC* Gaming SA (BGS) representa la región Sudamérica · germany. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): Leo, Mica, Tomz.  Ranking global #34 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2021,
       "headquarters": "germany",
@@ -1142,7 +1102,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "bounty-hunters-esports",
@@ -1188,7 +1148,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "big",
@@ -1234,47 +1194,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "metizport",
-      "name": "Metizport",
-      "tag": "MET",
-      "region": "EMEA",
-      "country": "Norway",
-      "earnings": 0,
-      "rank": 36,
-      "rank_change": 0,
-      "form": [],
-      "liquipedia_page": "Metizport",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Metizport",
-      "logo_file": "Metizport_2025_allmode.png",
-      "logo_url": null,
-      "roster_slugs": [
-        "decaii",
-        "ciro",
-        "kellow"
-      ],
-      "achievements": [],
-      "description": "Metizport (MET) representa la región Europa, Oriente Medio y África · Norway. Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup. Plantilla oficial (3): Decaii, ciro, Kellow.  Ranking global #36 · premios acumulados $0.",
-      "coach": null,
-      "founded_year": 2018,
-      "headquarters": "Norway",
-      "website": null,
-      "circuit_status": "active",
-      "bsc_qualified_2026": true,
-      "circuit_summary": "Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup.",
-      "social": {
-        "twitter": null,
-        "youtube": "Brawl Stars Esports",
-        "liquipedia": "https://liquipedia.net/brawlstars/Metizport"
-      },
-      "meta": {
-        "regionLabel": "Europa, Oriente Medio y África",
-        "rosterCount": 3,
-        "source": "bsc-2026-enriched"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "legacy-esports",
@@ -1319,7 +1239,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "olimpo-squad",
@@ -1365,7 +1285,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "totem-esports",
@@ -1411,7 +1331,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "only-realm",
@@ -1457,7 +1377,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "frenzy-esports",
@@ -1500,7 +1420,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "cmm",
@@ -1543,7 +1463,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "feasible-gaming",
@@ -1569,7 +1489,7 @@
         "drake"
       ],
       "achievements": [],
-      "description": "Feasible Gaming (FG) representa la región Asia Oriental · jp. Monthly Finals East Asia, RTBC SESA y escena competitiva japonesa/coreana. Plantilla oficial (3): Nyades, sigemyon, drake.  Ranking global #76 · premios acumulados $0.",
+      "description": "Feasible Gaming (FG) representa la región Asia Oriental · jp. Monthly Finals East Asia, RTBC SESA y escena competitiva japonesa/coreana. Plantilla oficial (3): Nyades, Sigemyon, Drake.  Ranking global #76 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2018,
       "headquarters": "jp",
@@ -1587,7 +1507,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "wwl-esports",
@@ -1631,7 +1551,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "alguem-segura",
@@ -1676,87 +1596,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "f-a-zurita-gaming",
-      "name": "F/A Zurita Gaming",
-      "tag": "FZG",
-      "region": "SA",
-      "country": "South America",
-      "earnings": 0,
-      "rank": 99,
-      "rank_change": 0,
-      "form": [],
-      "liquipedia_page": "Zurita Gang",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Zurita_Gang",
-      "logo_file": null,
-      "logo_url": null,
-      "roster_slugs": [
-        "bryan",
-        "exic",
-        "jxcr"
-      ],
-      "achievements": [],
-      "description": "F/A Zurita Gaming (FZG) representa la región Sudamérica · South America. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): Bryan, Exic, Jxcr.  Ranking global #99 · premios acumulados $0.",
-      "coach": null,
-      "founded_year": 2019,
-      "headquarters": "South America",
-      "website": null,
-      "circuit_status": "active",
-      "bsc_qualified_2026": true,
-      "circuit_summary": "Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC.",
-      "social": {
-        "twitter": null,
-        "youtube": "Brawl Stars Esports",
-        "liquipedia": "https://liquipedia.net/brawlstars/Zurita_Gang"
-      },
-      "meta": {
-        "regionLabel": "Sudamérica",
-        "rosterCount": 3,
-        "source": "bsc-2026-enriched"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "madridmira",
-      "name": "MadridMira",
-      "tag": "MAD",
-      "region": "EMEA",
-      "country": "Spain",
-      "earnings": 0,
-      "rank": 99,
-      "rank_change": 0,
-      "form": [],
-      "liquipedia_page": "Madrid",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Madrid",
-      "logo_file": null,
-      "logo_url": null,
-      "roster_slugs": [
-        "rup",
-        "yoko",
-        "jusorange"
-      ],
-      "achievements": [],
-      "description": "MadridMira (MAD) representa la región Europa, Oriente Medio y África · Spain. Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup. Plantilla oficial (3): Rup, Yoko, Jusorange.  Ranking global #99 · premios acumulados $0.",
-      "coach": null,
-      "founded_year": 2022,
-      "headquarters": "Spain",
-      "website": null,
-      "circuit_status": "active",
-      "bsc_qualified_2026": true,
-      "circuit_summary": "Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup.",
-      "social": {
-        "twitter": null,
-        "youtube": "Brawl Stars Esports",
-        "liquipedia": "https://liquipedia.net/brawlstars/Madrid"
-      },
-      "meta": {
-        "regionLabel": "Europa, Oriente Medio y África",
-        "rosterCount": 3,
-        "source": "bsc-2026-enriched"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "enosis-esports",
@@ -1781,7 +1621,7 @@
         "gun"
       ],
       "achievements": [],
-      "description": "Enosis eSports (EE) representa la región Sudamérica · Hungary. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): B4st, Deykon, gun.  Ranking global #113 · premios acumulados $0.",
+      "description": "Enosis eSports (EE) representa la región Sudamérica · Hungary. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): B4st, Deykon, Gun.  Ranking global #113 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2019,
       "headquarters": "Hungary",
@@ -1799,7 +1639,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "level-esports",
@@ -1825,7 +1665,7 @@
         "titan"
       ],
       "achievements": [],
-      "description": "Level Esports (LE) representa la región Sudamérica · ar. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): Nouthz, darke san, titan.  Ranking global #120 · premios acumulados $0.",
+      "description": "Level Esports (LE) representa la región Sudamérica · ar. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): Nouthz, Darke San, Titan.  Ranking global #120 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2018,
       "headquarters": "ar",
@@ -1843,7 +1683,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "acre-lovers",
@@ -1870,7 +1710,7 @@
         "muri"
       ],
       "achievements": [],
-      "description": "Acre Lovers (AL) representa la región Sudamérica · South America. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): Fire Murilo, Sennin, muri.  Ranking global #125 · premios acumulados $0.",
+      "description": "Acre Lovers (AL) representa la región Sudamérica · South America. Monthly Finals SA, RTBC SA West/Brasil y potencia de LOUD y SKC. Plantilla oficial (3): Fire Murilo, Sennin, Muri.  Ranking global #125 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2018,
       "headquarters": "South America",
@@ -1888,7 +1728,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "kebap",
@@ -1912,7 +1752,7 @@
         "ray092"
       ],
       "achievements": [],
-      "description": "Kebap (KEB) representa la región Europa, Oriente Medio y África · tr. Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup. Plantilla oficial (3): dede, Yuffy, Ray092.  Ranking global #145 · premios acumulados $0.",
+      "description": "Kebap (KEB) representa la región Europa, Oriente Medio y África · tr. Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup. Plantilla oficial (3): Dede, Yuffy, Ray092.  Ranking global #145 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2018,
       "headquarters": "tr",
@@ -1930,7 +1770,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "vic-day",
@@ -1955,7 +1795,7 @@
         "michu"
       ],
       "achievements": [],
-      "description": "Vic Day (VIC) representa la región Norteamérica · North America. Monthly Finals NA, Challengers y rivalidad Tribe vs STMN. Plantilla oficial (3): Kapi, santi, michu.  Ranking global #148 · premios acumulados $0.",
+      "description": "Vic Day (VIC) representa la región Norteamérica · North America. Monthly Finals NA, Challengers y rivalidad Tribe vs STMN. Plantilla oficial (3): Kapi, Santi, Michu.  Ranking global #148 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2018,
       "headquarters": "North America",
@@ -1973,7 +1813,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "insomnia",
@@ -2015,7 +1855,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "fennel",
@@ -2057,7 +1897,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "fut-esports-academy",
@@ -2081,7 +1921,7 @@
         "zeyrox"
       ],
       "achievements": [],
-      "description": "FUT Esports Academy (FEA) representa la región Europa, Oriente Medio y África · Turkey. Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup. Plantilla oficial (3): ferissa, master, zeyrox.  Ranking global #152 · premios acumulados $0.",
+      "description": "FUT Esports Academy (FEA) representa la región Europa, Oriente Medio y África · Turkey. Monthly Finals EMEA, Challengers europeos y clasificación al Brawl Cup. Plantilla oficial (3): Ferissa, Master, Zeyrox.  Ranking global #152 · premios acumulados $0.",
       "coach": null,
       "founded_year": 2020,
       "headquarters": "Turkey",
@@ -2099,7 +1939,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "oddyssey",
@@ -2141,7 +1981,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "f-a-homeless",
@@ -2183,7 +2023,7 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ace-xero",
@@ -2226,13 +2066,13 @@
         "rosterCount": 3,
         "source": "bsc-2026-enriched"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     }
   ],
   "playerRows": [
     {
       "slug": "drake",
-      "ign": "drake",
+      "ign": "Drake",
       "real_name": null,
       "team_slug": "feasible-gaming",
       "region": "EA",
@@ -2250,7 +2090,7 @@
       "secondary_brawler": "Leon",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "drake compite en Asia Oriental con FG (Feasible Gaming). Brawlers referencia: Rico y Leon. Valoración fantasy 96 · rating 1.22.",
+      "bio": "Drake compite en Asia Oriental con FG (Feasible Gaming). Brawlers referencia: Rico y Leon. Valoración fantasy 96 · rating 1.22.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -2258,7 +2098,7 @@
         "teamTag": "FG",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ducky",
@@ -2288,7 +2128,7 @@
         "teamTag": "HML",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "fire-murilo",
@@ -2318,7 +2158,7 @@
         "teamTag": "AL",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "gero",
@@ -2348,7 +2188,7 @@
         "teamTag": "NV",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "joker",
@@ -2378,37 +2218,7 @@
         "teamTag": "TE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "jxcr",
-      "ign": "Jxcr",
-      "real_name": "José Tomas Aguilera Espinoza",
-      "team_slug": "f-a-zurita-gaming",
-      "region": "SA",
-      "role": "Player",
-      "status": "active",
-      "liquipedia_page": "Jxcr",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Jxcr",
-      "fantasy_points": 96,
-      "fantasy_ownership": 30,
-      "rating": 1.12,
-      "country": "South America",
-      "nationality": "South America",
-      "join_date": "2026-01",
-      "primary_brawler": "Hank",
-      "secondary_brawler": "Larry",
-      "is_captain": false,
-      "previous_teams": [],
-      "bio": "Jxcr compite en Sudamérica con FZG (F/A Zurita Gaming). Brawlers referencia: Hank y Larry. Valoración fantasy 96 · rating 1.12.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "F/A Zurita Gaming",
-        "teamTag": "FZG",
-        "regionLabel": "Sudamérica"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "lipizin",
@@ -2438,11 +2248,11 @@
         "teamTag": "ODS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "michu",
-      "ign": "michu",
+      "ign": "Michu",
       "real_name": null,
       "team_slug": "vic-day",
       "region": "NA",
@@ -2460,7 +2270,7 @@
       "secondary_brawler": "Bull",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "michu compite en Norteamérica con VIC (Vic Day). Brawlers referencia: Mr. P y Bull. Valoración fantasy 96 · rating 1.12.",
+      "bio": "Michu compite en Norteamérica con VIC (Vic Day). Brawlers referencia: Mr. P y Bull. Valoración fantasy 96 · rating 1.12.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -2468,7 +2278,7 @@
         "teamTag": "VIC",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "pekka",
@@ -2498,11 +2308,11 @@
         "teamTag": "SKC",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "zeyrox",
-      "ign": "zeyrox",
+      "ign": "Zeyrox",
       "real_name": null,
       "team_slug": "fut-esports-academy",
       "region": "EMEA",
@@ -2520,7 +2330,7 @@
       "secondary_brawler": "Larry",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "zeyrox compite en Europa, Oriente Medio y África con FEA (FUT Esports Academy). Brawlers referencia: Ruffs y Larry. Valoración fantasy 96 · rating 1.07.",
+      "bio": "Zeyrox compite en Europa, Oriente Medio y África con FEA (FUT Esports Academy). Brawlers referencia: Ruffs y Larry. Valoración fantasy 96 · rating 1.07.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -2528,7 +2338,7 @@
         "teamTag": "FEA",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "dreww",
@@ -2558,7 +2368,7 @@
         "teamTag": "ODS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "lxffy",
@@ -2588,37 +2398,7 @@
         "teamTag": "TG",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "rup",
-      "ign": "Rup",
-      "real_name": "David Rupérez Ureña",
-      "team_slug": "madridmira",
-      "region": "EMEA",
-      "role": "Captain",
-      "status": "active",
-      "liquipedia_page": "Rup",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Rup",
-      "fantasy_points": 95,
-      "fantasy_ownership": 62,
-      "rating": 1.26,
-      "country": "Spain",
-      "nationality": "Spain",
-      "join_date": "2026-01",
-      "primary_brawler": "Jacky",
-      "secondary_brawler": "Tara",
-      "is_captain": true,
-      "previous_teams": [],
-      "bio": "Rup compite en Europa, Oriente Medio y África con MAD (MadridMira). Capitán del roster. Brawlers referencia: Jacky y Tara. Valoración fantasy 95 · rating 1.26.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "MadridMira",
-        "teamTag": "MAD",
-        "regionLabel": "Europa, Oriente Medio y África"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "sizuku",
@@ -2648,7 +2428,7 @@
         "teamTag": "ZD",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "tacos",
@@ -2678,7 +2458,7 @@
         "teamTag": "SE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "yutapin",
@@ -2708,7 +2488,7 @@
         "teamTag": "RE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "guesti",
@@ -2738,7 +2518,7 @@
         "teamTag": "FE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "lukii",
@@ -2768,11 +2548,11 @@
         "teamTag": "HMB",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "master",
-      "ign": "master",
+      "ign": "Master",
       "real_name": null,
       "team_slug": "fut-esports-academy",
       "region": "EMEA",
@@ -2790,7 +2570,7 @@
       "secondary_brawler": "Pearl",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "master compite en Europa, Oriente Medio y África con FEA (FUT Esports Academy). Brawlers referencia: Gene y Pearl. Valoración fantasy 94 · rating 1.27.",
+      "bio": "Master compite en Europa, Oriente Medio y África con FEA (FUT Esports Academy). Brawlers referencia: Gene y Pearl. Valoración fantasy 94 · rating 1.27.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -2798,7 +2578,7 @@
         "teamTag": "FEA",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "milkreo",
@@ -2828,7 +2608,7 @@
         "teamTag": "CR",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "minzzun",
@@ -2858,7 +2638,7 @@
         "teamTag": "WE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "sergeant-clash",
@@ -2888,7 +2668,7 @@
         "teamTag": "RX",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "bobby",
@@ -2918,7 +2698,7 @@
         "teamTag": "OR",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "kapi",
@@ -2948,7 +2728,7 @@
         "teamTag": "VIC",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "walkthrough",
@@ -2978,7 +2758,7 @@
         "teamTag": "RX",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "david",
@@ -3008,11 +2788,11 @@
         "teamTag": "AX",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "gun",
-      "ign": "gun",
+      "ign": "Gun",
       "real_name": null,
       "team_slug": "enosis-esports",
       "region": "SA",
@@ -3030,7 +2810,7 @@
       "secondary_brawler": "Bonnie",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "gun compite en Sudamérica con EE (Enosis eSports). Brawlers referencia: Shelly y Bonnie. Valoración fantasy 92 · rating 1.13.",
+      "bio": "Gun compite en Sudamérica con EE (Enosis eSports). Brawlers referencia: Shelly y Bonnie. Valoración fantasy 92 · rating 1.13.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -3038,7 +2818,7 @@
         "teamTag": "EE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "marco",
@@ -3068,7 +2848,7 @@
         "teamTag": "TH",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "filippo",
@@ -3098,7 +2878,7 @@
         "teamTag": "NE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "kellow",
@@ -3128,7 +2908,7 @@
         "teamTag": "CMM",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "nyades",
@@ -3158,7 +2938,7 @@
         "teamTag": "FG",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ope",
@@ -3188,7 +2968,7 @@
         "teamTag": "SG",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "tyrant",
@@ -3218,7 +2998,7 @@
         "teamTag": "HML",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "magic",
@@ -3248,7 +3028,7 @@
         "teamTag": "ODS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "maury",
@@ -3278,11 +3058,11 @@
         "teamTag": "TE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "santi",
-      "ign": "santi",
+      "ign": "Santi",
       "real_name": null,
       "team_slug": "vic-day",
       "region": "NA",
@@ -3300,7 +3080,7 @@
       "secondary_brawler": "Gus",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "santi compite en Norteamérica con VIC (Vic Day). Brawlers referencia: Ash y Gus. Valoración fantasy 90 · rating 1.11.",
+      "bio": "Santi compite en Norteamérica con VIC (Vic Day). Brawlers referencia: Ash y Gus. Valoración fantasy 90 · rating 1.11.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -3308,11 +3088,11 @@
         "teamTag": "VIC",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "dede",
-      "ign": "dede",
+      "ign": "Dede",
       "real_name": null,
       "team_slug": "kebap",
       "region": "EMEA",
@@ -3330,7 +3110,7 @@
       "secondary_brawler": "Mortis",
       "is_captain": true,
       "previous_teams": [],
-      "bio": "dede compite en Europa, Oriente Medio y África con KEB (Kebap). Capitán del roster. Brawlers referencia: Buster y Mortis. Valoración fantasy 89 · rating 1.15.",
+      "bio": "Dede compite en Europa, Oriente Medio y África con KEB (Kebap). Capitán del roster. Brawlers referencia: Buster y Mortis. Valoración fantasy 89 · rating 1.15.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -3338,7 +3118,7 @@
         "teamTag": "KEB",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ray092",
@@ -3368,7 +3148,7 @@
         "teamTag": "KEB",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "sans",
@@ -3398,7 +3178,7 @@
         "teamTag": "OR",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "b4st",
@@ -3428,7 +3208,7 @@
         "teamTag": "EE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ryohei",
@@ -3458,7 +3238,7 @@
         "teamTag": "RE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "vegeta",
@@ -3488,7 +3268,7 @@
         "teamTag": "ELE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "yoshi",
@@ -3518,37 +3298,7 @@
         "teamTag": "SG",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "bryan",
-      "ign": "Bryan",
-      "real_name": "Bryan Mella",
-      "team_slug": "f-a-zurita-gaming",
-      "region": "SA",
-      "role": "Captain",
-      "status": "active",
-      "liquipedia_page": "Bryan",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Bryan",
-      "fantasy_points": 87,
-      "fantasy_ownership": 21,
-      "rating": 1.23,
-      "country": "South America",
-      "nationality": "South America",
-      "join_date": "2026-01",
-      "primary_brawler": "Belle",
-      "secondary_brawler": "8-Bit",
-      "is_captain": true,
-      "previous_teams": [],
-      "bio": "Bryan compite en Sudamérica con FZG (F/A Zurita Gaming). Capitán del roster. Brawlers referencia: Belle y 8-Bit. Valoración fantasy 87 · rating 1.23.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "F/A Zurita Gaming",
-        "teamTag": "FZG",
-        "regionLabel": "Sudamérica"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "hiroshii",
@@ -3578,7 +3328,7 @@
         "teamTag": "RX",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "nubis",
@@ -3608,7 +3358,7 @@
         "teamTag": "AS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "rhz",
@@ -3638,7 +3388,7 @@
         "teamTag": "SKC",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "boss",
@@ -3668,7 +3418,7 @@
         "teamTag": "HMB",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "pain",
@@ -3698,7 +3448,7 @@
         "teamTag": "SE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "rei-do-fut",
@@ -3728,7 +3478,7 @@
         "teamTag": "BHE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "wahochi",
@@ -3758,11 +3508,11 @@
         "teamTag": "INS",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "darke-san",
-      "ign": "darke san",
+      "ign": "Darke San",
       "real_name": null,
       "team_slug": "level-esports",
       "region": "SA",
@@ -3780,7 +3530,7 @@
       "secondary_brawler": "Mr. P",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "darke san compite en Sudamérica con LE (Level Esports). Brawlers referencia: Crow y Mr. P. Valoración fantasy 85 · rating 1.19.",
+      "bio": "Darke San compite en Sudamérica con LE (Level Esports). Brawlers referencia: Crow y Mr. P. Valoración fantasy 85 · rating 1.19.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -3788,7 +3538,7 @@
         "teamTag": "LE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ou",
@@ -3818,11 +3568,11 @@
         "teamTag": "TL",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "tomz",
-      "ign": "tomz",
+      "ign": "Tomz",
       "real_name": null,
       "team_slug": "bc-gaming-sa",
       "region": "SA",
@@ -3840,7 +3590,7 @@
       "secondary_brawler": "R-T",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "tomz compite en Sudamérica con BGS (BC* Gaming SA). Brawlers referencia: 8-Bit y R-T. Valoración fantasy 85 · rating 1.11.",
+      "bio": "Tomz compite en Sudamérica con BGS (BC* Gaming SA). Brawlers referencia: 8-Bit y R-T. Valoración fantasy 85 · rating 1.11.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -3848,7 +3598,7 @@
         "teamTag": "BGS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "i-see",
@@ -3878,7 +3628,7 @@
         "teamTag": "FEN",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "danshari",
@@ -3908,7 +3658,7 @@
         "teamTag": "FE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "galaxy",
@@ -3938,7 +3688,7 @@
         "teamTag": "AX",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "subeme",
@@ -3968,7 +3718,7 @@
         "teamTag": "TH",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "engine",
@@ -3998,7 +3748,7 @@
         "teamTag": "TL",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "juan-carlos",
@@ -4028,7 +3778,7 @@
         "teamTag": "SE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "meow",
@@ -4058,7 +3808,7 @@
         "teamTag": "NE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "naipishu",
@@ -4088,7 +3838,7 @@
         "teamTag": "SE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "achapi",
@@ -4118,11 +3868,11 @@
         "teamTag": "FEN",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "titan",
-      "ign": "titan",
+      "ign": "Titan",
       "real_name": null,
       "team_slug": "level-esports",
       "region": "SA",
@@ -4140,7 +3890,7 @@
       "secondary_brawler": "Buster",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "titan compite en Sudamérica con LE (Level Esports). Brawlers referencia: Brock y Buster. Valoración fantasy 81 · rating 1.22.",
+      "bio": "Titan compite en Sudamérica con LE (Level Esports). Brawlers referencia: Brock y Buster. Valoración fantasy 81 · rating 1.22.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -4148,7 +3898,7 @@
         "teamTag": "LE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "yuffy",
@@ -4178,7 +3928,7 @@
         "teamTag": "KEB",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "belal",
@@ -4208,7 +3958,7 @@
         "teamTag": "VE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "nenne",
@@ -4238,7 +3988,7 @@
         "teamTag": "WE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "redzin",
@@ -4268,7 +4018,7 @@
         "teamTag": "BHE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "tufa",
@@ -4298,7 +4048,7 @@
         "teamTag": "AS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "xemp",
@@ -4328,7 +4078,7 @@
         "teamTag": "HML",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "battoman",
@@ -4358,7 +4108,7 @@
         "teamTag": "ZD",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "sennin",
@@ -4388,7 +4138,7 @@
         "teamTag": "AL",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "symantec",
@@ -4418,7 +4168,7 @@
         "teamTag": "HMB",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "drage",
@@ -4448,7 +4198,7 @@
         "teamTag": "NV",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "firecrow",
@@ -4478,7 +4228,7 @@
         "teamTag": "LOU",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "mira",
@@ -4508,7 +4258,7 @@
         "teamTag": "FE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "nowy297",
@@ -4538,7 +4288,7 @@
         "teamTag": "SG",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "rafiki",
@@ -4568,37 +4318,7 @@
         "teamTag": "LGC",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "yoko",
-      "ign": "Yoko",
-      "real_name": "Dawson Goblet",
-      "team_slug": "madridmira",
-      "region": "EMEA",
-      "role": "Player",
-      "status": "active",
-      "liquipedia_page": "Yoko",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Yoko",
-      "fantasy_points": 77,
-      "fantasy_ownership": 31,
-      "rating": 1.28,
-      "country": "Spain",
-      "nationality": "Spain",
-      "join_date": "2026-01",
-      "primary_brawler": "Belle",
-      "secondary_brawler": "8-Bit",
-      "is_captain": false,
-      "previous_teams": [],
-      "bio": "Yoko compite en Europa, Oriente Medio y África con MAD (MadridMira). Brawlers referencia: Belle y 8-Bit. Valoración fantasy 77 · rating 1.28.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "MadridMira",
-        "teamTag": "MAD",
-        "regionLabel": "Europa, Oriente Medio y África"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "diegogamer",
@@ -4628,7 +4348,7 @@
         "teamTag": "TG",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ezlivi",
@@ -4658,7 +4378,7 @@
         "teamTag": "VE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "nob",
@@ -4688,7 +4408,7 @@
         "teamTag": "FE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "patchy",
@@ -4718,7 +4438,7 @@
         "teamTag": "OR",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "portox",
@@ -4748,7 +4468,7 @@
         "teamTag": "ELE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "satisfyer",
@@ -4778,41 +4498,41 @@
         "teamTag": "AS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "dompe",
       "ign": "Dompe",
       "real_name": "Aarón Domínguez Peña",
-      "team_slug": "big-talents",
+      "team_slug": "cmm",
       "region": "EMEA",
-      "role": "Captain",
+      "role": "Player",
       "status": "active",
       "liquipedia_page": "Dompe",
       "liquipedia_url": "https://liquipedia.net/brawlstars/Dompe",
       "fantasy_points": 75,
       "fantasy_ownership": 29,
       "rating": 1.06,
-      "country": "United States",
-      "nationality": "United States",
+      "country": "Serbia",
+      "nationality": "Serbia",
       "join_date": "2026-01",
       "primary_brawler": "Max",
       "secondary_brawler": "Buzz",
-      "is_captain": true,
+      "is_captain": false,
       "previous_teams": [],
-      "bio": "Dompe compite en Europa, Oriente Medio y África con BT (Big Talents). Capitán del roster. Brawlers referencia: Max y Buzz. Valoración fantasy 75 · rating 1.06.",
+      "bio": "Dompe compite en Europa, Oriente Medio y África con CMM (CMM). Brawlers referencia: Max y Buzz. Valoración fantasy 75 · rating 1.06.",
       "photo_url": null,
       "social": {},
       "meta": {
-        "teamName": "Big Talents",
-        "teamTag": "BT",
+        "teamName": "CMM",
+        "teamTag": "CMM",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ferissa",
-      "ign": "ferissa",
+      "ign": "Ferissa",
       "real_name": null,
       "team_slug": "fut-esports-academy",
       "region": "EMEA",
@@ -4830,7 +4550,7 @@
       "secondary_brawler": "Tick",
       "is_captain": true,
       "previous_teams": [],
-      "bio": "ferissa compite en Europa, Oriente Medio y África con FEA (FUT Esports Academy). Capitán del roster. Brawlers referencia: Max y Tick. Valoración fantasy 75 · rating 1.27.",
+      "bio": "Ferissa compite en Europa, Oriente Medio y África con FEA (FUT Esports Academy). Capitán del roster. Brawlers referencia: Max y Tick. Valoración fantasy 75 · rating 1.27.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -4838,7 +4558,7 @@
         "teamTag": "FEA",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "mohtep",
@@ -4868,7 +4588,7 @@
         "teamTag": "EE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "moya",
@@ -4898,7 +4618,7 @@
         "teamTag": "CR",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "toridesu",
@@ -4928,7 +4648,7 @@
         "teamTag": "FE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "bicho",
@@ -4958,37 +4678,7 @@
         "teamTag": "BHE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "decaii",
-      "ign": "Decaii",
-      "real_name": "Nemanja Mitrović",
-      "team_slug": "metizport",
-      "region": "EMEA",
-      "role": "Captain",
-      "status": "active",
-      "liquipedia_page": "Decaii",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Decaii",
-      "fantasy_points": 74,
-      "fantasy_ownership": 37,
-      "rating": 1.19,
-      "country": "Norway",
-      "nationality": "Norway",
-      "join_date": "2026-01",
-      "primary_brawler": "Tick",
-      "secondary_brawler": "Otis",
-      "is_captain": true,
-      "previous_teams": [],
-      "bio": "Decaii compite en Europa, Oriente Medio y África con MET (Metizport). Capitán del roster. Brawlers referencia: Tick y Otis. Valoración fantasy 74 · rating 1.19.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "Metizport",
-        "teamTag": "MET",
-        "regionLabel": "Europa, Oriente Medio y África"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "maru",
@@ -5018,7 +4708,7 @@
         "teamTag": "TE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "salty",
@@ -5048,7 +4738,7 @@
         "teamTag": "BIG",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "cauebr",
@@ -5078,7 +4768,7 @@
         "teamTag": "EE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "lenain",
@@ -5108,7 +4798,7 @@
         "teamTag": "NV",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "terry",
@@ -5138,7 +4828,7 @@
         "teamTag": "NE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "kristian",
@@ -5168,7 +4858,7 @@
         "teamTag": "SKC",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "nouthz",
@@ -5198,7 +4888,7 @@
         "teamTag": "LE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "totoron",
@@ -5228,7 +4918,7 @@
         "teamTag": "RE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "cookie",
@@ -5258,7 +4948,7 @@
         "teamTag": "WE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "og",
@@ -5288,7 +4978,7 @@
         "teamTag": "ELE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "tensai",
@@ -5318,7 +5008,7 @@
         "teamTag": "CR",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "golden",
@@ -5348,7 +5038,7 @@
         "teamTag": "OS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "arthur",
@@ -5378,7 +5068,7 @@
         "teamTag": "BIG",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "kaiodog",
@@ -5408,7 +5098,7 @@
         "teamTag": "LOU",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "levi",
@@ -5438,7 +5128,7 @@
         "teamTag": "REJ",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "loko",
@@ -5468,7 +5158,7 @@
         "teamTag": "KAI",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "snoiy",
@@ -5498,7 +5188,7 @@
         "teamTag": "TE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "doritos",
@@ -5528,7 +5218,7 @@
         "teamTag": "KAI",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "icecrow",
@@ -5558,7 +5248,7 @@
         "teamTag": "OS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "jene-azure",
@@ -5588,7 +5278,7 @@
         "teamTag": "INS",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "toc",
@@ -5618,7 +5308,7 @@
         "teamTag": "TL",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "brabao",
@@ -5648,7 +5338,7 @@
         "teamTag": "OS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "deykon",
@@ -5678,7 +5368,7 @@
         "teamTag": "EE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ikaoss",
@@ -5708,7 +5398,7 @@
         "teamTag": "TH",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "kuru",
@@ -5738,7 +5428,7 @@
         "teamTag": "SE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "melty",
@@ -5768,11 +5458,11 @@
         "teamTag": "REJ",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "mica",
-      "ign": "mica",
+      "ign": "Mica",
       "real_name": null,
       "team_slug": "bc-gaming-sa",
       "region": "SA",
@@ -5790,7 +5480,7 @@
       "secondary_brawler": "Lou",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "mica compite en Sudamérica con BGS (BC* Gaming SA). Brawlers referencia: Cordelius y Lou. Valoración fantasy 67 · rating 1.08.",
+      "bio": "Mica compite en Sudamérica con BGS (BC* Gaming SA). Brawlers referencia: Cordelius y Lou. Valoración fantasy 67 · rating 1.08.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -5798,11 +5488,11 @@
         "teamTag": "BGS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "muri",
-      "ign": "muri",
+      "ign": "Muri",
       "real_name": null,
       "team_slug": "acre-lovers",
       "region": "SA",
@@ -5820,7 +5510,7 @@
       "secondary_brawler": "Jessie",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "muri compite en Sudamérica con AL (Acre Lovers). Brawlers referencia: Mico y Jessie. Valoración fantasy 67 · rating 1.13.",
+      "bio": "Muri compite en Sudamérica con AL (Acre Lovers). Brawlers referencia: Mico y Jessie. Valoración fantasy 67 · rating 1.13.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -5828,7 +5518,7 @@
         "teamTag": "AL",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "wesley",
@@ -5858,37 +5548,7 @@
         "teamTag": "NHG",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "ciro",
-      "ign": "ciro",
-      "real_name": null,
-      "team_slug": "metizport",
-      "region": "EMEA",
-      "role": "Player",
-      "status": "active",
-      "liquipedia_page": "ciro",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/ciro",
-      "fantasy_points": 66,
-      "fantasy_ownership": 21,
-      "rating": 1.22,
-      "country": "Norway",
-      "nationality": "Norway",
-      "join_date": "2026-01",
-      "primary_brawler": "Otis",
-      "secondary_brawler": "Willow",
-      "is_captain": false,
-      "previous_teams": [],
-      "bio": "ciro compite en Europa, Oriente Medio y África con MET (Metizport). Brawlers referencia: Otis y Willow. Valoración fantasy 66 · rating 1.22.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "Metizport",
-        "teamTag": "MET",
-        "regionLabel": "Europa, Oriente Medio y África"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "sitetampo",
@@ -5918,7 +5578,7 @@
         "teamTag": "ZD",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "zee",
@@ -5948,7 +5608,7 @@
         "teamTag": "VE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ghost-t",
@@ -5978,7 +5638,7 @@
         "teamTag": "SE",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "koga",
@@ -6008,7 +5668,7 @@
         "teamTag": "INS",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "amos",
@@ -6038,7 +5698,7 @@
         "teamTag": "BIG",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "coldrink",
@@ -6068,7 +5728,7 @@
         "teamTag": "AX",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "derrp",
@@ -6098,7 +5758,7 @@
         "teamTag": "KAI",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "doin",
@@ -6128,7 +5788,7 @@
         "teamTag": "TE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "edinho",
@@ -6158,37 +5818,7 @@
         "teamTag": "LOU",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "jusorange",
-      "ign": "Jusorange",
-      "real_name": null,
-      "team_slug": "madridmira",
-      "region": "EMEA",
-      "role": "Player",
-      "status": "active",
-      "liquipedia_page": "Jusorange",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Jusorange",
-      "fantasy_points": 63,
-      "fantasy_ownership": 46,
-      "rating": 1.22,
-      "country": "Spain",
-      "nationality": "Spain",
-      "join_date": "2026-01",
-      "primary_brawler": "R-T",
-      "secondary_brawler": "Carl",
-      "is_captain": false,
-      "previous_teams": [],
-      "bio": "Jusorange compite en Europa, Oriente Medio y África con MAD (MadridMira). Brawlers referencia: R-T y Carl. Valoración fantasy 63 · rating 1.22.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "MadridMira",
-        "teamTag": "MAD",
-        "regionLabel": "Europa, Oriente Medio y África"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "ken-g",
@@ -6218,37 +5848,7 @@
         "teamTag": "FEN",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "nes",
-      "ign": "Nes",
-      "real_name": "Nestor Zhu",
-      "team_slug": "big-talents",
-      "region": "EMEA",
-      "role": "Player",
-      "status": "active",
-      "liquipedia_page": "Nes",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Nes",
-      "fantasy_points": 63,
-      "fantasy_ownership": 17,
-      "rating": 1.04,
-      "country": "United States",
-      "nationality": "United States",
-      "join_date": "2026-01",
-      "primary_brawler": "Kit",
-      "secondary_brawler": "Lola",
-      "is_captain": false,
-      "previous_teams": [],
-      "bio": "Nes compite en Europa, Oriente Medio y África con BT (Big Talents). Brawlers referencia: Kit y Lola. Valoración fantasy 63 · rating 1.04.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "Big Talents",
-        "teamTag": "BT",
-        "regionLabel": "Europa, Oriente Medio y África"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "rbm",
@@ -6278,7 +5878,7 @@
         "teamTag": "TG",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "shu",
@@ -6308,11 +5908,11 @@
         "teamTag": "REJ",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "sigemyon",
-      "ign": "sigemyon",
+      "ign": "Sigemyon",
       "real_name": null,
       "team_slug": "feasible-gaming",
       "region": "EA",
@@ -6330,7 +5930,7 @@
       "secondary_brawler": "Willow",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "sigemyon compite en Asia Oriental con FG (Feasible Gaming). Brawlers referencia: Penny y Willow. Valoración fantasy 63 · rating 1.12.",
+      "bio": "Sigemyon compite en Asia Oriental con FG (Feasible Gaming). Brawlers referencia: Penny y Willow. Valoración fantasy 63 · rating 1.12.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -6338,7 +5938,7 @@
         "teamTag": "FG",
         "regionLabel": "Asia Oriental"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "angelboy",
@@ -6368,37 +5968,7 @@
         "teamTag": "FE",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
-    },
-    {
-      "slug": "exic",
-      "ign": "Exic",
-      "real_name": "Elías Navarrete",
-      "team_slug": "f-a-zurita-gaming",
-      "region": "SA",
-      "role": "Player",
-      "status": "active",
-      "liquipedia_page": "Exic",
-      "liquipedia_url": "https://liquipedia.net/brawlstars/Exic",
-      "fantasy_points": 62,
-      "fantasy_ownership": 73,
-      "rating": 1.08,
-      "country": "South America",
-      "nationality": "South America",
-      "join_date": "2026-01",
-      "primary_brawler": "Dynamike",
-      "secondary_brawler": "Jacky",
-      "is_captain": false,
-      "previous_teams": [],
-      "bio": "Exic compite en Sudamérica con FZG (F/A Zurita Gaming). Brawlers referencia: Dynamike y Jacky. Valoración fantasy 62 · rating 1.08.",
-      "photo_url": null,
-      "social": {},
-      "meta": {
-        "teamName": "F/A Zurita Gaming",
-        "teamTag": "FZG",
-        "regionLabel": "Sudamérica"
-      },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "jubileu",
@@ -6428,11 +5998,11 @@
         "teamTag": "EE",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "leo",
-      "ign": "leo",
+      "ign": "Leo",
       "real_name": null,
       "team_slug": "bc-gaming-sa",
       "region": "SA",
@@ -6450,7 +6020,7 @@
       "secondary_brawler": "Lou",
       "is_captain": true,
       "previous_teams": [],
-      "bio": "leo compite en Sudamérica con BGS (BC* Gaming SA). Capitán del roster. Brawlers referencia: Cordelius y Lou. Valoración fantasy 62 · rating 1.23.",
+      "bio": "Leo compite en Sudamérica con BGS (BC* Gaming SA). Capitán del roster. Brawlers referencia: Cordelius y Lou. Valoración fantasy 62 · rating 1.23.",
       "photo_url": null,
       "social": {},
       "meta": {
@@ -6458,7 +6028,7 @@
         "teamTag": "BGS",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "memen",
@@ -6488,13 +6058,13 @@
         "teamTag": "TE",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "mine",
       "ign": "Mine",
       "real_name": "Marcin Frysztacki",
-      "team_slug": "big-talents",
+      "team_slug": "cmm",
       "region": "EMEA",
       "role": "Player",
       "status": "active",
@@ -6503,22 +6073,22 @@
       "fantasy_points": 62,
       "fantasy_ownership": 18,
       "rating": 1.28,
-      "country": "United States",
-      "nationality": "United States",
+      "country": "Serbia",
+      "nationality": "Serbia",
       "join_date": "2026-01",
       "primary_brawler": "Fang",
       "secondary_brawler": "Chester",
       "is_captain": false,
       "previous_teams": [],
-      "bio": "Mine compite en Europa, Oriente Medio y África con BT (Big Talents). Brawlers referencia: Fang y Chester. Valoración fantasy 62 · rating 1.28.",
+      "bio": "Mine compite en Europa, Oriente Medio y África con CMM (CMM). Brawlers referencia: Fang y Chester. Valoración fantasy 62 · rating 1.28.",
       "photo_url": null,
       "social": {},
       "meta": {
-        "teamName": "Big Talents",
-        "teamTag": "BT",
+        "teamName": "CMM",
+        "teamTag": "CMM",
         "regionLabel": "Europa, Oriente Medio y África"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "prozy",
@@ -6548,7 +6118,7 @@
         "teamTag": "NHG",
         "regionLabel": "Sudamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "zeus",
@@ -6578,7 +6148,7 @@
         "teamTag": "LGC",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     },
     {
       "slug": "zoulan",
@@ -6608,12 +6178,12 @@
         "teamTag": "LGC",
         "regionLabel": "Norteamérica"
       },
-      "synced_at": "2026-06-07T06:13:23.979Z"
+      "synced_at": "2026-06-07T06:18:41.982Z"
     }
   ],
-  "syncedAt": "2026-06-07T06:13:23.979Z",
+  "syncedAt": "2026-06-07T06:18:41.982Z",
   "counts": {
-    "teams": 50,
-    "players": 146
+    "teams": 46,
+    "players": 137
   }
 }

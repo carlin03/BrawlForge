@@ -129,7 +129,6 @@ function parseParticipants() {
       "level-esports",
       "oddyssey",
       "acre-lovers",
-      "f-a-zurita-gaming",
     ].includes(s),
   );
   const NA_ACTIVE = activeSlugs.filter((s) =>
@@ -193,8 +192,10 @@ const { teamRows, playerRows, syncedAt } = buildBscCatalogEnriched();
 const teamBySlug = new Map(teamRows.map((t) => [t.slug, t]));
 const playerBySlug = new Map(playerRows.map((p) => [p.slug, p]));
 
+const catalogTeamSlugs = new Set(teamRows.map((t) => t.slug));
+
 const tournamentRows = Object.entries(participants).map(([slug, teamList]) => {
-  const uniqueTeams = [...new Set(teamList)];
+  const uniqueTeams = [...new Set(teamList)].filter((s) => catalogTeamSlugs.has(s));
   return {
     slug,
     name: slug.replace(/^bsc-2026-/, "BSC 2026 · ").replace(/-/g, " "),
@@ -240,6 +241,7 @@ for (const [tournamentSlug, teamList] of Object.entries(participants)) {
   const seenTeams = new Set();
   for (const teamSlug of teamList) {
     if (seenTeams.has(teamSlug)) continue;
+    if (!catalogTeamSlugs.has(teamSlug)) continue;
     seenTeams.add(teamSlug);
 
     const team = teamBySlug.get(teamSlug);

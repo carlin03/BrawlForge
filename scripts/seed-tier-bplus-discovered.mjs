@@ -6,6 +6,7 @@
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { loadPlayedTeamSlugs } from "./lib/played-team-slugs.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const gen = resolve(root, "src/lib/data/generated");
@@ -124,7 +125,10 @@ for (const m of matches) {
   }
 }
 
-const allDiscoveredTeams = [...teamBySlug.values()].sort((a, b) => a.slug.localeCompare(b.slug));
+const { played } = loadPlayedTeamSlugs();
+const allDiscoveredTeams = [...teamBySlug.values()]
+  .filter((t) => played.has(t.slug))
+  .sort((a, b) => a.slug.localeCompare(b.slug));
 
 const matchTourSlugs = new Set(matches.map((m) => m.tournamentSlug));
 

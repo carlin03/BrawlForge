@@ -191,6 +191,10 @@ console.log(" BrawlForge — publicación 100% a Supabase");
 console.log("═══════════════════════════════════════════");
 
 runStep("Purgar próximos Liquipedia falsos", "node", ["scripts/purge-lp-upcoming.mjs", "--write"]);
+runStep("Purgar equipos sin partidos (JSON + Supabase)", "node", [
+  "scripts/purge-teams-without-matches.mjs",
+  "--write",
+]);
 runStep("Catálogo BSC (equipos, jugadores, torneos fantasy)", "npm", ["run", "supabase:seed:catalog"]);
 runStep("Tier B+ descubierto (equipos + torneos Liquipedia)", "npm", ["run", "supabase:seed:discovered"]);
 

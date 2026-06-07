@@ -53,7 +53,7 @@ const MF_SA_8 = [
 ] as const;
 
 const SA_ACTIVE = BSC_2026_ACTIVE_TEAM_SLUGS.filter((s) =>
-  ["loud", "skcalalas", "new-heights-gaming", "kaioperro", "eternal-esports", "alguem-segura", "olimpo-squad", "bounty-hunters-esports", "enosis-esports", "bc-gaming-sa", "level-esports", "oddyssey", "acre-lovers", "f-a-zurita-gaming"].includes(s),
+  ["loud", "skcalalas", "new-heights-gaming", "kaioperro", "eternal-esports", "alguem-segura", "olimpo-squad", "bounty-hunters-esports", "enosis-esports", "bc-gaming-sa", "level-esports", "oddyssey", "acre-lovers"].includes(s),
 );
 
 const NA_ACTIVE = BSC_2026_ACTIVE_TEAM_SLUGS.filter((s) =>
@@ -173,17 +173,14 @@ export const BSC_TOURNAMENT_PARTICIPANTS: Record<string, readonly string[]> = {
     "totem-esports",
     "novo-esports",
     "big",
-    "big-talents",
     "kebap",
-    "metizport",
-    "madridmira",
     "cmm",
     "fut-esports-academy",
     "sk-gaming",
     "natus-vincere",
   ],
   "bsc-2026-challengers-spain": ["sk-gaming", "team-heretics", "novo-esports", "totem-esports"],
-  "bsc-2026-challengers-italy": ["novo-esports", "totem-esports", "big-talents", "metizport"],
+  "bsc-2026-challengers-italy": ["novo-esports", "totem-esports"],
   "bsc-2026-challengers-france": [
     "fut-esports",
     "team-heretics",
@@ -203,10 +200,7 @@ export const BSC_TOURNAMENT_PARTICIPANTS: Record<string, readonly string[]> = {
     "novo-esports",
     "big",
     "kebap",
-    "metizport",
-    "madridmira",
     "cmm",
-    "big-talents",
     "fut-esports-academy",
     "sk-gaming",
     "revenant-xspark",

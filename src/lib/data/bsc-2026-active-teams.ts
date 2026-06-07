@@ -12,12 +12,9 @@ export const BSC_2026_ACTIVE_TEAM_SLUGS: readonly string[] = [
   "totem-esports",
   "novo-esports",
   "big",
-  "big-talents",
   "cmm",
   "fut-esports-academy",
   "kebap",
-  "metizport",
-  "madridmira",
 
   // East Asia
   "crazy-raccoon",
@@ -58,7 +55,6 @@ export const BSC_2026_ACTIVE_TEAM_SLUGS: readonly string[] = [
   "level-esports",
   "oddyssey",
   "acre-lovers",
-  "f-a-zurita-gaming",
 
   // Global / multi-región en Brawl Cup
   "revenant-xspark",
@@ -94,6 +90,10 @@ export const BSC_2026_EXCLUDED_TEAM_SLUGS: readonly string[] = [
   "effort-result",
   "abc-ea-team",
   "zurita-gang",
+  "big-talents",
+  "metizport",
+  "madridmira",
+  "f-a-zurita-gaming",
 ] as const;
 
 export const BSC_2026_ACTIVE_SLUG_SET = new Set<string>(BSC_2026_ACTIVE_TEAM_SLUGS);
