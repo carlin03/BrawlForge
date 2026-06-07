@@ -9,7 +9,7 @@ import { resolve } from "path";
 import { spawnSync } from "child_process";
 import { loadEnv, root } from "./lib/load-env.mjs";
 import { upsert } from "./lib/supabase-rest.mjs";
-import { deleteMatchesNotIn } from "./lib/supabase-delete.mjs";
+import { deleteMatchesNotIn, deletePlayersNotIn, deletePlayersWithOrphanTeam } from "./lib/supabase-delete.mjs";
 import {
   shouldPublishMatch,
   matchScheduleTrust,
@@ -182,7 +182,9 @@ async function seedPlayers() {
   const rows = players.map(playerToRow);
   console.log(`\n▶ Jugadores 2026 → players_catalog (${rows.length})`);
   const n = await upsert("players_catalog", rows);
-  console.log(`  Subidos: ${n} jugadores`);
+  const orphanDel = await deletePlayersWithOrphanTeam();
+  const staleDel = await deletePlayersNotIn(rows.map((r) => r.slug));
+  console.log(`  Subidos: ${n} jugadores · huérfanos: ${orphanDel} · obsoletos: ${staleDel}`);
   return n;
 }
 

@@ -12,13 +12,10 @@ export const BSC_2026_ROSTERS: Record<string, string[]> = {
   "natus-vincere": ["drage", "gero", "lenain"],
   "fut-esports": ["angelboy", "guesti", "nob"],
   big: ["amos", "arthur", "salty"],
-  "big-talents": ["dompe", "mine", "nes"],
   cmm: ["kellow", "mine", "dompe"],
   "novo-esports": ["filippo", "meow", "terry"],
   "fut-esports-academy": ["ferissa", "master", "zeyrox"],
-  madridmira: ["rup", "yoko", "jusorange"],
   kebap: ["dede", "yuffy", "ray092"],
-  metizport: ["decaii", "ciro", "kellow"],
 
   "zeta-division": ["battoman", "sitetampo", "sizuku"],
   "crazy-raccoon": ["milkreo", "moya", "tensai"],
@@ -56,7 +53,6 @@ export const BSC_2026_ROSTERS: Record<string, string[]> = {
   "level-esports": ["nouthz", "darke-san", "titan"],
   oddyssey: ["dreww", "lipizin", "magic"],
   "acre-lovers": ["fire-murilo", "sennin", "muri"],
-  "f-a-zurita-gaming": ["bryan", "exic", "jxcr"],
 
   "revenant-xspark": ["sergeant-clash", "hiroshii", "walkthrough"],
 };

@@ -59,13 +59,17 @@ export async function GET(request: Request) {
     (playersRes.data[0]?.synced_at as string | undefined) ??
     null;
 
+  const teams = filterVisibleTeams(
+    teamsRes.data.map((r) => stripLiquipediaFields(r) as unknown as CatalogTeamRow),
+  );
+  const teamSlugSet = new Set(teams.map((t) => t.slug));
+
   const body: CatalogSnapshot & { ok: true } = {
     ok: true,
-    teams: filterVisibleTeams(
-      teamsRes.data.map((r) => stripLiquipediaFields(r) as unknown as CatalogTeamRow),
-    ),
+    teams,
     players: playersRes.data
       .map((r) => stripLiquipediaFields(r) as unknown as CatalogPlayerRow)
+      .filter((p) => !p.team_slug?.trim() || teamSlugSet.has(p.team_slug.trim().toLowerCase()))
       .map((p) =>
         p.team_slug && isHiddenTeamSlug(p.team_slug) ? { ...p, team_slug: null } : p,
       ),
