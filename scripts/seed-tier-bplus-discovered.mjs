@@ -74,9 +74,61 @@ const discoveredTours = JSON.parse(readFileSync(resolve(gen, "tournaments-discov
 const tours2026 = JSON.parse(readFileSync(resolve(gen, "tournaments-2026.json"), "utf8"));
 const matches = JSON.parse(readFileSync(resolve(gen, "matches-2026.json"), "utf8"));
 
+const INVALID_TEAM = new Set(["", "tbd", "team", "por-definir", ".", "punto"]);
+
+function slugToName(slug) {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => (w.length <= 3 ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)))
+    .join(" ");
+}
+
+function tagFromSlug(slug) {
+  const parts = slug.split("-").filter(Boolean);
+  if (parts.length >= 2) return parts.map((p) => p[0]).join("").slice(0, 3).toUpperCase();
+  return slug.slice(0, 3).toUpperCase();
+}
+
+function okTeamSlug(slug) {
+  const k = (slug || "").trim().toLowerCase();
+  if (!k || INVALID_TEAM.has(k) || k.startsWith("winner-")) return false;
+  return true;
+}
+
+const catalogBySlug = new Map();
+for (const file of ["teams.json", "teams-2026.json"]) {
+  const p = resolve(gen, file);
+  try {
+    for (const t of JSON.parse(readFileSync(p, "utf8"))) catalogBySlug.set(t.slug, t);
+  } catch {
+    /* ignore */
+  }
+}
+
+const teamBySlug = new Map(discoveredTeams.map((t) => [t.slug, t]));
+
+for (const m of matches) {
+  for (const raw of [m.teamASlug, m.teamBSlug]) {
+    if (!okTeamSlug(raw)) continue;
+    const slug = raw.trim().toLowerCase();
+    if (teamBySlug.has(slug)) continue;
+    const cat = catalogBySlug.get(slug);
+    teamBySlug.set(slug, {
+      slug,
+      name: cat?.name || slugToName(slug),
+      tag: cat?.tag || tagFromSlug(slug),
+      region: cat?.region || m.region || "GLOBAL",
+      source: "liquipedia-match-sync",
+    });
+  }
+}
+
+const allDiscoveredTeams = [...teamBySlug.values()].sort((a, b) => a.slug.localeCompare(b.slug));
+
 const matchTourSlugs = new Set(matches.map((m) => m.tournamentSlug));
 
-const teamRows = discoveredTeams.map((t) => ({
+const teamRows = allDiscoveredTeams.map((t) => ({
   slug: t.slug,
   name: t.name,
   tag: t.tag || t.slug.slice(0, 3).toUpperCase(),
@@ -90,7 +142,9 @@ const teamRows = discoveredTeams.map((t) => ({
   logo_url: null,
   description: null,
   social: {},
-  meta: { source: "liquipedia-discovered", seed: "tier-bplus" },
+  circuit_status: "discovered",
+  bsc_qualified_2026: false,
+  meta: { source: "liquipedia-discovered", seed: "tier-bplus", tier_pool: "bplus" },
   synced_at: syncedAt,
 }));
 
@@ -147,7 +201,7 @@ for (const t of discoveredTours) {
 const tournamentRows = [...tourBySlug.values()];
 
 console.log("Guardando tier B+ en Supabase…");
-console.log(`  Equipos descubiertos: ${teamRows.length}`);
+console.log(`  Equipos (discovered + partidos): ${teamRows.length} (json ${discoveredTeams.length})`);
 console.log(`  Torneos tier B+ (con partidos): ${tournamentRows.length}`);
 
 const teamsN = await upsert("teams_catalog", teamRows);

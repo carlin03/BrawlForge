@@ -182,6 +182,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "4-button",
+    "name": "4 Button",
+    "tag": "4B",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "512",
     "name": "512",
     "tag": "5",
@@ -301,6 +308,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "abc-ea-team",
+    "name": "ABC",
+    "tag": "ABC",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "abc-sas-team",
     "name": "ABC SAS Team",
     "tag": "AST",
@@ -334,6 +348,20 @@
     "tag": "AK",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "ace-xero",
+    "name": "Ace Xero",
+    "tag": "AX",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "acre-lovers",
+    "name": "Acre Lovers",
+    "tag": "AL",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "activium",
@@ -455,6 +483,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "alguem-segura",
+    "name": "Alguem Segura",
+    "tag": "AS",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "alhpa",
     "name": "Alhpa",
     "tag": "A",
@@ -462,11 +497,25 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "alpha7-esports",
+    "name": "Alpha7 Esports",
+    "tag": "AE",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "alya-asta",
     "name": "Alya Asta",
     "tag": "AA",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "am-o-fantezie",
+    "name": "Am o fantezie",
+    "tag": "AOF",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "am-o-speranta",
@@ -973,6 +1022,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "bc-gaming",
+    "name": "BC* Gaming",
+    "tag": "BG",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "bc-gaming-academy",
     "name": "BC Gaming Academy",
     "tag": "BGA",
@@ -985,6 +1041,13 @@
     "tag": "BGN",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "bc-gaming-sa",
+    "name": "BC* Gaming SA",
+    "tag": "BGS",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "be-bold",
@@ -1090,6 +1153,13 @@
     "tag": "B",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "big",
+    "name": "BIG",
+    "tag": "BIG",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "big-mishlen-1",
@@ -1225,6 +1295,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "blood-diamond-na",
+    "name": "Blood Diamond NA",
+    "tag": "BDN",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "bloodthirsty",
     "name": "Bloodthirsty",
     "tag": "B",
@@ -1328,6 +1405,13 @@
     "tag": "BBO",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "bounty-hunters-esports",
+    "name": "Bounty Hunters Esports",
+    "tag": "BHE",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "bow",
@@ -1526,6 +1610,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "casa-brawl-e-sports",
+    "name": "Casa Brawl E-Sports",
+    "tag": "CBE",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "casuals",
     "name": "Casuals",
     "tag": "C",
@@ -1573,6 +1664,34 @@
     "tag": "COH",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "chapter-of-happiness",
+    "name": "Chapter of Happiness",
+    "tag": "COH",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "chasmac-gaming-br",
+    "name": "Chasmac Gaming BR",
+    "tag": "CGB",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "chasmac-gaming-eu",
+    "name": "Chasmac Gaming EU",
+    "tag": "CGE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "chasmac-gaming-na",
+    "name": "Chasmac Gaming NA",
+    "tag": "CGN",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "chattu-yt",
@@ -1743,11 +1862,25 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "cmm",
+    "name": "CMM",
+    "tag": "CMM",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "cobra-jets",
     "name": "Cobra Jets",
     "tag": "CJ",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "coco-loco",
+    "name": "Coco Loco",
+    "tag": "CL",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "coconut-lassi",
@@ -1776,6 +1909,13 @@
     "tag": "CL",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "code-og",
+    "name": "Code OG",
+    "tag": "CO",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "codornas-f-a",
@@ -1832,6 +1972,13 @@
     "tag": "C",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "connections",
+    "name": "Connections",
+    "tag": "CON",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "contagem-sapopemba",
@@ -1918,11 +2065,25 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "craze-clan",
+    "name": "CraZe Clan",
+    "tag": "CC",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "crazy-bears",
     "name": "Crazy Bears",
     "tag": "CB",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "crazy-raccoon",
+    "name": "Crazy Raccoon",
+    "tag": "CR",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "crazy-xenoverse",
@@ -1944,6 +2105,13 @@
     "tag": "C",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "creche-brawl",
+    "name": "Creche Brawl",
+    "tag": "CB",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "crickets",
@@ -2021,6 +2189,13 @@
     "tag": "C",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "ctw-f-a",
+    "name": "CTW F/A",
+    "tag": "CF",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "cuando-earnings",
@@ -2331,6 +2506,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "dogster-lobster",
+    "name": "Dogster Lobster",
+    "tag": "DL",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "dominant-force",
     "name": "Dominant Force",
     "tag": "DF",
@@ -2436,6 +2618,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "dropeados-f-a",
+    "name": "Dropeados F/A",
+    "tag": "DF",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "drunk-beavers",
     "name": "Drunk Beavers",
     "tag": "DB",
@@ -2492,6 +2681,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "eclipsar-esport",
+    "name": "Eclipsar Esport",
+    "tag": "EE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "eclipse",
     "name": "Eclipse",
     "tag": "E",
@@ -2504,6 +2700,13 @@
     "tag": "ET",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "effort-result",
+    "name": "Effort Result",
+    "tag": "ER",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "eg-esports",
@@ -2576,6 +2779,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "elevate",
+    "name": "Elevate",
+    "tag": "ELE",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "elt",
     "name": "ELT",
     "tag": "E",
@@ -2588,6 +2798,13 @@
     "tag": "E",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "embananados-f-a",
+    "name": "EmbaNANAdos F/A",
+    "tag": "EF",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "emotional-damage",
@@ -2639,6 +2856,20 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "enosis-esports",
+    "name": "Enosis eSports",
+    "tag": "EE",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "enterprise-esports",
+    "name": "Enterprise Esports",
+    "tag": "EE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "equinox",
     "name": "Equinox",
     "tag": "E",
@@ -2651,6 +2882,20 @@
     "tag": "E",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "eternal-esports",
+    "name": "Eternal Esports",
+    "tag": "EE",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "eternal-fire",
+    "name": "Eternal Fire",
+    "tag": "EF",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "ethereal-entities",
@@ -2936,7 +3181,7 @@
     "slug": "f-a-frutas",
     "name": "F A Frutas",
     "tag": "FAF",
-    "region": "GLOBAL",
+    "region": "EMEA",
     "source": "liquipedia-match-2026"
   },
   {
@@ -3290,6 +3535,20 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "fa-baguette",
+    "name": "F/A Baguette",
+    "tag": "FB",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "fa-snigets",
+    "name": "F/A Snigets",
+    "tag": "FS",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "faith1700",
     "name": "Faith1700",
     "tag": "F",
@@ -3374,6 +3633,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "feasible-gaming",
+    "name": "Feasible Gaming",
+    "tag": "FG",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "feasible-gaming-zero",
     "name": "Feasible Gaming Zero",
     "tag": "FGZ",
@@ -3386,6 +3652,13 @@
     "tag": "FL",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "fennel",
+    "name": "FENNEL",
+    "tag": "FEN",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "fenrir-gaming",
@@ -3500,6 +3773,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "fnix",
+    "name": "Fênix",
+    "tag": "FÊN",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "fofoqueiros-brawl",
     "name": "Fofoqueiros Brawl",
     "tag": "FB",
@@ -3605,6 +3885,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "frenzy-esports",
+    "name": "Frenzy Esports",
+    "tag": "FE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "frenzy-gaming",
     "name": "Frenzy Gaming",
     "tag": "FG",
@@ -3666,6 +3953,20 @@
     "tag": "F",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "fut-esports",
+    "name": "FUT Esports",
+    "tag": "FE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "fut-esports-academy",
+    "name": "FUT Esports Academy",
+    "tag": "FEA",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "future-goats",
@@ -3757,6 +4058,13 @@
     "tag": "G",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "geng-esports",
+    "name": "Gen.G Esports",
+    "tag": "GE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "genius-belle",
@@ -4242,6 +4550,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "hmble",
+    "name": "HMBLE",
+    "tag": "HMB",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "hnt",
     "name": "HNT",
     "tag": "H",
@@ -4536,11 +4851,25 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "inner-circle-esports",
+    "name": "Inner Circle Esports",
+    "tag": "ICE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "inshallah-a-passe",
     "name": "Inshallah A Passe",
     "tag": "IAP",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "insomnia",
+    "name": "INSOMNIA",
+    "tag": "INS",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "intz-bellus",
@@ -4618,6 +4947,20 @@
     "tag": "I",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "iworlds",
+    "name": "iworlds",
+    "tag": "IWO",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "ix-gaming",
+    "name": "IX Gaming",
+    "tag": "IG",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "ix-squares",
@@ -4732,6 +5075,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "juan-carlos-team",
+    "name": "Juan Carlos Team",
+    "tag": "JCT",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "just-gimme-my-money",
     "name": "Just Gimme MY Money",
     "tag": "JGM",
@@ -4793,6 +5143,13 @@
     "tag": "KZR",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "kaioperro",
+    "name": "KaioPerro",
+    "tag": "KAI",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "kaito-best-spot-manager",
@@ -4886,11 +5243,25 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "kds-esports",
+    "name": "KDS Esports",
+    "tag": "KE",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "kebab-lovers",
     "name": "Kebab Lovers",
     "tag": "KL",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "kebap",
+    "name": "Kebap",
+    "tag": "KEB",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "kendrick",
@@ -4926,6 +5297,13 @@
     "tag": "KA",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "kib-esports",
+    "name": "KIB Esports",
+    "tag": "KE",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "kings",
@@ -5017,6 +5395,13 @@
     "tag": "K",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "kozaki",
+    "name": "F/A Kozaki",
+    "tag": "FK",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "kpu",
@@ -5243,6 +5628,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "legion-otaku",
+    "name": "Legion Otaku",
+    "tag": "LO",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "leopards-squires",
     "name": "Leopards Squires",
     "tag": "LS",
@@ -5283,6 +5675,13 @@
     "tag": "LA",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "level-esports",
+    "name": "Level Esports",
+    "tag": "LE",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "leynarjr-goat",
@@ -5390,6 +5789,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "lor",
+    "name": "LOR",
+    "tag": "LOR",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "los-chicos-f-a",
     "name": "LOS Chicos F A",
     "tag": "LCF",
@@ -5444,6 +5850,13 @@
     "tag": "L",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "loud",
+    "name": "LOUD",
+    "tag": "LOU",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "loud-academy",
@@ -5642,6 +6055,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "marruecos",
+    "name": "Marruecos",
+    "tag": "MAR",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "marsees",
     "name": "Marsees",
     "tag": "M",
@@ -5775,6 +6195,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "metizport",
+    "name": "Metizport",
+    "tag": "MET",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "mexicans",
     "name": "Mexicans",
     "tag": "M",
@@ -5901,6 +6328,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "monarchy",
+    "name": "Monarchy",
+    "tag": "MON",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "monkey-team",
     "name": "Monkey Team",
     "tag": "MT",
@@ -5983,6 +6417,13 @@
     "tag": "MD",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "mountain-men-f-a",
+    "name": "Mountain Men F/A",
+    "tag": "MMF",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "mouse",
@@ -6174,6 +6615,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "natus-vincere",
+    "name": "Natus Vincere",
+    "tag": "NV",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "nefarious-star",
     "name": "Nefarious Star",
     "tag": "NS",
@@ -6242,6 +6690,13 @@
     "tag": "N",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "new-heights-gaming",
+    "name": "New Heights Gaming",
+    "tag": "NHG",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "new-meta",
@@ -6314,6 +6769,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "ninguem-segura",
+    "name": "Ninguem Segura",
+    "tag": "NS",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "nini-tem",
     "name": "Nini TEM",
     "tag": "NT",
@@ -6333,6 +6795,13 @@
     "tag": "NFA",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "niwa",
+    "name": "NIWA",
+    "tag": "NIW",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "nls-academy",
@@ -6566,6 +7035,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "novo-esports",
+    "name": "NOVO Esports",
+    "tag": "NE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "npc",
     "name": "NPC",
     "tag": "N",
@@ -6636,6 +7112,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "obey-alliance",
+    "name": "Obey Alliance",
+    "tag": "OA",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "oblivion",
     "name": "Oblivion",
     "tag": "O",
@@ -6655,6 +7138,13 @@
     "tag": "OD",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "oddyssey",
+    "name": "Oddyssey",
+    "tag": "ODD",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "oddyssey-eu",
@@ -6720,6 +7210,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "olimpo-squad",
+    "name": "Olimpo Squad",
+    "tag": "OS",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "olympus",
     "name": "Olympus",
     "tag": "O",
@@ -6755,6 +7252,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "onetrickponies",
+    "name": "OneTrickPonies",
+    "tag": "ONE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "ongyouki",
     "name": "Ongyouki",
     "tag": "O",
@@ -6769,11 +7273,25 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "only-realm",
+    "name": "Only Realm",
+    "tag": "OR",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "only-realm-academy",
     "name": "Only Realm Academy",
     "tag": "ORA",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "only-realm-na",
+    "name": "Only Realm NA",
+    "tag": "ORN",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "oob1",
@@ -6809,6 +7327,13 @@
     "tag": "OE",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "orion-gaming",
+    "name": "Orion Gaming",
+    "tag": "OG",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "os-aposentados-f-a",
@@ -6909,6 +7434,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "overthrow",
+    "name": "Overthrow",
+    "tag": "OVE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "ox-gaming",
     "name": "OX Gaming",
     "tag": "OG",
@@ -6991,6 +7523,13 @@
     "tag": "P",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "papara-supermassive",
+    "name": "Papara SuperMassive",
+    "tag": "PS",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "paradis-esport",
@@ -7145,6 +7684,20 @@
     "tag": "P",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "pioneers",
+    "name": "Pioneers",
+    "tag": "PIO",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "pirates",
+    "name": "Pirates",
+    "tag": "PIR",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "pirraa-brawl",
@@ -7637,6 +8190,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "reconic-esports-na",
+    "name": "Reconic Esports NA",
+    "tag": "REN",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "red-jackals",
     "name": "RED Jackals",
     "tag": "RJ",
@@ -7651,11 +8211,32 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "reis-da-pl",
+    "name": "Reis Da PL",
+    "tag": "RDP",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "reis-da-pl-south-america-team",
     "name": "Reis DA PL South America Team",
     "tag": "RDP",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "reject",
+    "name": "REJECT",
+    "tag": "REJ",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "renegados",
+    "name": "Renegados",
+    "tag": "REN",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "rent",
@@ -7749,6 +8330,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "revenant-xspark",
+    "name": "Revenant XSpark",
+    "tag": "RX",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "reveng",
     "name": "Reveng",
     "tag": "R",
@@ -7768,6 +8356,13 @@
     "tag": "RG",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "reverso-gaming-eu",
+    "name": "Reverso Gaming EU",
+    "tag": "RGE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "reverso-hive-eu",
@@ -7826,11 +8421,32 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "rising-sun-esports-ea",
+    "name": "Rising Sun Esports",
+    "tag": "RSE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "rising-sun-esports-sea",
+    "name": "Rising Sun Esports SEA",
+    "tag": "RSES",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "rising-sun-sea",
     "name": "Rising SUN SEA",
     "tag": "RSS",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "rival-esports",
+    "name": "Rival Esports",
+    "tag": "RE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "rival-esports-na",
@@ -8274,6 +8890,27 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "sk-gaming",
+    "name": "SK Gaming",
+    "tag": "SG",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "skcalalas",
+    "name": "SKCalalas",
+    "tag": "SKC",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "skcalalas-ea",
+    "name": "SKCalalas EA",
+    "tag": "SE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "skepsis-gaming",
     "name": "Skepsis Gaming",
     "tag": "SG",
@@ -8533,6 +9170,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "spacestation-gaming",
+    "name": "Spacestation Gaming",
+    "tag": "SG",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "spain-top",
     "name": "Spain TOP",
     "tag": "ST",
@@ -8645,6 +9289,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "stalwart-esports",
+    "name": "Stalwart Esports",
+    "tag": "SE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "star-emea-team",
     "name": "Star Emea Team",
     "tag": "SET",
@@ -8692,6 +9343,13 @@
     "tag": "S",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "stmn-esports",
+    "name": "STMN Esports",
+    "tag": "SE",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "stmn-eu",
@@ -8848,6 +9506,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "synchronic-gaming",
+    "name": "Synchronic Gaming",
+    "tag": "SG",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "sz",
     "name": "SZ",
     "tag": "S",
@@ -8967,6 +9632,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "team-elektros",
+    "name": "Team Elektros",
+    "tag": "TE",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "team-ennard",
     "name": "Team Ennard",
     "tag": "TE",
@@ -9014,6 +9686,13 @@
     "tag": "TH",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "team-heretics",
+    "name": "Team Heretics",
+    "tag": "TH",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "team-hunters",
@@ -9114,6 +9793,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "team-queso",
+    "name": "Team Queso",
+    "tag": "TQ",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "team-rbm",
     "name": "Team RBM",
     "tag": "TR",
@@ -9142,6 +9828,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "team-sampi",
+    "name": "Team Sampi",
+    "tag": "TS",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "team-spirit",
     "name": "Team Spirit",
     "tag": "TS",
@@ -9161,6 +9854,13 @@
     "tag": "TU",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "team-wood",
+    "name": "Team Wood",
+    "tag": "TW",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "team-zeus",
@@ -9513,6 +10213,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "toc-team",
+    "name": "TOC",
+    "tag": "TOC",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "todos-cacorros",
     "name": "Todos Cacorros",
     "tag": "TC",
@@ -9576,6 +10283,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "topa-tudo-por-dinheiro",
+    "name": "Topa Tudo Por Dinheiro",
+    "tag": "TTPD",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "torby",
     "name": "Torby",
     "tag": "T",
@@ -9602,6 +10316,20 @@
     "tag": "T",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "totem-esports",
+    "name": "Totem Esports",
+    "tag": "TE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "toxic-lotus",
+    "name": "Toxic Lotus",
+    "tag": "TL",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "toxic-lotusss",
@@ -9665,6 +10393,20 @@
     "tag": "T6",
     "region": "SA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "tribe-gaming",
+    "name": "Tribe Gaming",
+    "tag": "TG",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "tribe-gaming-eu",
+    "name": "Tribe Gaming EU",
+    "tag": "TGE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "tribe-gaming-sa",
@@ -9926,6 +10668,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "upcore-esports",
+    "name": "UPCore Esports",
+    "tag": "UE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "upcore-esports-sea",
     "name": "Upcore Esports SEA",
     "tag": "UES",
@@ -9938,6 +10687,13 @@
     "tag": "U",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "urubus-do-pix",
+    "name": "Urubus Do Pix",
+    "tag": "UDP",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "utopia",
@@ -9989,11 +10745,32 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "vanguard-gaming",
+    "name": "Vanguard Gaming",
+    "tag": "VG",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "vanilla-ice-cream",
     "name": "Vanilla ICE Cream",
     "tag": "VIC",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "vatic-esports",
+    "name": "Vatic Esports",
+    "tag": "VE",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "vatra-gaming",
+    "name": "Vatra Gaming",
+    "tag": "VG",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "vcs",
@@ -10290,6 +11067,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "west-coast",
+    "name": "West Coast",
+    "tag": "WC",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "white-rice",
     "name": "White Rice",
     "tag": "WR",
@@ -10416,6 +11200,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "wwl-esports",
+    "name": "WWL Esports",
+    "tag": "WE",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "www",
     "name": "WWW",
     "tag": "W",
@@ -10456,6 +11247,13 @@
     "tag": "X",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "xperion-nxt",
+    "name": "XPERION NXT",
+    "tag": "XN",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "y",
@@ -10519,6 +11317,13 @@
     "tag": "YG",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "young-blood",
+    "name": "Young Blood",
+    "tag": "YB",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "yoyo",
@@ -10619,6 +11424,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "zest-latam",
+    "name": "ZEST LATAM",
+    "tag": "ZL",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "zesty-besties",
     "name": "Zesty Besties",
     "tag": "ZB",
@@ -10631,6 +11443,27 @@
     "tag": "Z",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "zeta-division",
+    "name": "ZETA DIVISION",
+    "tag": "ZD",
+    "region": "EMEA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "zeta-division-one",
+    "name": "ZETA DIVISION ONE",
+    "tag": "ZDO",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
+    "slug": "zeta-division-zero",
+    "name": "ZETA DIVISION ZERO",
+    "tag": "ZDZ",
+    "region": "EA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "ziguem0",
@@ -10668,6 +11501,13 @@
     "source": "liquipedia-match-2026"
   },
   {
+    "slug": "zoos-esports",
+    "name": "ZOOS Esports",
+    "tag": "ZE",
+    "region": "NA",
+    "source": "liquipedia-catalog-match"
+  },
+  {
     "slug": "zorlix",
     "name": "Zorlix",
     "tag": "Z",
@@ -10687,6 +11527,13 @@
     "tag": "ZE",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
+  },
+  {
+    "slug": "zurita-gang",
+    "name": "Zurita Gang",
+    "tag": "ZG",
+    "region": "SA",
+    "source": "liquipedia-catalog-match"
   },
   {
     "slug": "zzs-f-a",

@@ -122,10 +122,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         if (active) setReady(true);
       });
     };
-    const t = window.setTimeout(run, 1100);
+    run();
+    const onResume = () => run();
+    window.addEventListener("bf-resume-background-load", onResume);
     return () => {
       active = false;
-      window.clearTimeout(t);
+      window.removeEventListener("bf-resume-background-load", onResume);
     };
   }, [user?.id]);
 

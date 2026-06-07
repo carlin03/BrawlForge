@@ -29,7 +29,7 @@ export function isPickemTemplateId(id: string): boolean {
 
 export function isPickemTemplateMatch(m: EsportsMatch): boolean {
   const meta = parseMatchMeta(m.meta);
-  if (meta.schedule_trust === "confirmed") return false;
+  if (meta.schedule_trust === "confirmed" || meta.pickem_only === false) return false;
   if (meta.schedule_trust === "template") return true;
   if (meta.pickem_only === true) return true;
   return isPickemTemplateId(m.id);
@@ -43,10 +43,10 @@ export function isGeneratedBracketMatch(m: EsportsMatch): boolean {
 export function isConfirmedScheduleMatch(m: EsportsMatch): boolean {
   if (isPickemTemplateMatch(m)) return false;
   const meta = parseMatchMeta(m.meta);
-  if (meta.schedule_trust === "confirmed") return true;
-  if (m.id.startsWith("lp-")) return true;
-  if (meta.schedule_trust === "generated") return false;
   const status = getEffectiveMatchStatus(m);
+  if (meta.schedule_trust === "confirmed") return true;
+  if (m.id.startsWith("lp-") && (status === "finished" || status === "live")) return true;
+  if (meta.schedule_trust === "generated") return false;
   if (status === "finished" || status === "live") return true;
   if ((m.scoreA > 0 || m.scoreB > 0) && m.scoreA !== m.scoreB) return true;
   return false;

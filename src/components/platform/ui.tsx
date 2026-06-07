@@ -7,6 +7,7 @@ import { getMatchEnrichment } from "@/lib/data/match-meta";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { TournamentLogo } from "@/components/ui/TournamentLogo";
 import { MatchCountdown } from "@/components/platform/MatchCountdown";
+import { MatchSourceBadge } from "@/components/platform/MatchSourceBadge";
 
 function tag(slug: string) {
   return getTeam(slug)?.tag ?? teamName(slug).slice(0, 3).toUpperCase();
@@ -153,6 +154,7 @@ export function FeaturedMatch({ match, tag: tagLabel }: { match: EsportsMatch; t
         {live && <span className="bp-chip bp-chip-live"><span className="bp-live-dot" /> En directo</span>}
         {!live && upcoming && <MatchCountdown dateStr={match.date} className="bp-match-featured-countdown" />}
         <TournamentLogo slug={match.tournamentSlug} name={tournamentName(match.tournamentSlug)} size={24} />
+        <MatchSourceBadge match={match} />
         <span className="bp-match-featured-meta">{match.stage}</span>
       </div>
       <div className="bp-match-featured-body">

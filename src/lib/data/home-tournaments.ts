@@ -1,7 +1,7 @@
-import { getBscCircuitTournaments } from "./matches";
+import { getTierBPlusTournaments } from "./matches";
 import type { EsportsTournament } from "./matches";
 
-/** Todos los eventos BSC 2026 curados para el home (enriquecidos, sin catálogo Liquipedia) */
+/** Eventos tier B+ (S/A/B) con partidos en 2026 — BSC + Liquipedia. */
 export function getHomeTournaments(limit?: number): EsportsTournament[] {
-  return getBscCircuitTournaments(limit);
+  return getTierBPlusTournaments(limit);
 }

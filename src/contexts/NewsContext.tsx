@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { NewsArticle } from "@/lib/data/news";
 import { getLatestNews } from "@/lib/data/news";
+import { getPrefetched, prefetchJson } from "@/lib/prefetch-cache";
 
 type NewsState = {
   ready: boolean;
@@ -33,9 +34,10 @@ export function NewsProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("/api/news", { cache: "no-store" });
-      const data = await res.json();
-      if (data.ok && Array.isArray(data.articles)) {
+      const data =
+        getPrefetched<{ ok?: boolean; articles?: NewsArticle[] }>("/api/news") ??
+        ((await prefetchJson("/api/news")) as { ok?: boolean; articles?: NewsArticle[] });
+      if (data?.ok && Array.isArray(data.articles)) {
         setArticles(data.articles);
         setFromDb(true);
       }
@@ -47,13 +49,10 @@ export function NewsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const run = () => void refresh();
-    if (typeof requestIdleCallback === "function") {
-      const id = requestIdleCallback(run, { timeout: 2500 });
-      return () => cancelIdleCallback(id);
-    }
-    const t = window.setTimeout(run, 2000);
-    return () => window.clearTimeout(t);
+    void refresh();
+    const onResume = () => void refresh();
+    window.addEventListener("bf-resume-background-load", onResume);
+    return () => window.removeEventListener("bf-resume-background-load", onResume);
   }, [refresh]);
 
   const value = useMemo(

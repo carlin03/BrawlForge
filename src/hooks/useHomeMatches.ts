@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { EsportsMatch } from "@/lib/data/esports-match-types";
+import { getPrefetched, prefetchJson } from "@/lib/prefetch-cache";
 
 type HomeMatchesState = {
   ready: boolean;
@@ -27,10 +28,13 @@ export function useHomeMatches(): HomeMatchesState {
 
     async function load() {
       try {
-        const res = await fetch("/api/home/matches", { cache: "no-store" });
-        if (!res.ok || cancelled) return;
-        const data = await res.json();
-        if (cancelled) return;
+        const data = (await prefetchJson("/api/home/matches")) as {
+          live?: EsportsMatch[];
+          upcoming?: EsportsMatch[];
+          results?: EsportsMatch[];
+          liveCount?: number;
+        } | null;
+        if (cancelled || !data) return;
         setState({
           ready: true,
           live: data.live ?? [],
@@ -43,9 +47,27 @@ export function useHomeMatches(): HomeMatchesState {
       }
     }
 
+    const cached = getPrefetched<{
+      live?: EsportsMatch[];
+      upcoming?: EsportsMatch[];
+      results?: EsportsMatch[];
+      liveCount?: number;
+    }>("/api/home/matches");
+    if (cached) {
+      setState({
+        ready: true,
+        live: cached.live ?? [],
+        upcoming: cached.upcoming ?? [],
+        results: cached.results ?? [],
+        liveCount: cached.liveCount ?? cached.live?.length ?? 0,
+      });
+    }
     void load();
+    const onResume = () => void load();
+    window.addEventListener("bf-resume-background-load", onResume);
     return () => {
       cancelled = true;
+      window.removeEventListener("bf-resume-background-load", onResume);
     };
   }, []);
 

@@ -14,10 +14,13 @@ import type {
   CatalogPlayerRow,
   CatalogSnapshot,
   CatalogTeamRow,
+  CatalogTournamentRow,
 } from "@/lib/supabase/catalog-types";
+import { isTierBPlus } from "@/lib/data/catalog";
 import { buildMarketMap } from "@/lib/catalog-merge";
 import { isHiddenTeam } from "@/lib/data/blocked-team-slugs";
 import { syncCatalogTeamsCache } from "@/lib/data/circuit-roster";
+import { getPrefetched, prefetchJson } from "@/lib/prefetch-cache";
 
 type CatalogState = {
   ready: boolean;
@@ -25,8 +28,10 @@ type CatalogState = {
   syncedAt: string | null;
   teamCount: number;
   playerCount: number;
+  tournamentCount: number;
   teamsBySlug: Map<string, CatalogTeamRow>;
   playersBySlug: Map<string, CatalogPlayerRow>;
+  tournamentsBySlug: Map<string, CatalogTournamentRow>;
   marketByKey: Map<string, CatalogMarketRow>;
 };
 
@@ -36,8 +41,10 @@ const CatalogContext = createContext<CatalogState>({
   syncedAt: null,
   teamCount: 0,
   playerCount: 0,
+  tournamentCount: 0,
   teamsBySlug: new Map(),
   playersBySlug: new Map(),
+  tournamentsBySlug: new Map(),
   marketByKey: new Map(),
 });
 
@@ -47,9 +54,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch("/api/catalog");
-      const data = await res.json();
-      if (data.ok && data.teams?.length) {
+      const data =
+        getPrefetched<CatalogSnapshot & { ok?: boolean }>("/api/catalog") ??
+        ((await prefetchJson("/api/catalog")) as CatalogSnapshot & { ok?: boolean });
+      if (data?.ok && data.teams?.length) {
         setSnapshot({
           teams: data.teams,
           players: data.players,
@@ -66,8 +74,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const t = window.setTimeout(() => void load(), 900);
-    return () => window.clearTimeout(t);
+    void load();
+    const onResume = () => void load();
+    window.addEventListener("bf-resume-background-load", onResume);
+    return () => window.removeEventListener("bf-resume-background-load", onResume);
   }, [load]);
 
   useEffect(() => {
@@ -81,6 +91,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CatalogState>(() => {
     const teamsBySlug = new Map<string, CatalogTeamRow>();
     const playersBySlug = new Map<string, CatalogPlayerRow>();
+    const tournamentsBySlug = new Map<string, CatalogTournamentRow>();
     if (snapshot) {
       syncCatalogTeamsCache(snapshot.teams);
       for (const t of snapshot.teams) {
@@ -88,6 +99,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         teamsBySlug.set(t.slug, t);
       }
       for (const p of snapshot.players) playersBySlug.set(p.slug, p);
+      for (const tour of snapshot.tournaments ?? []) {
+        if (!isTierBPlus({ tier: tour.tier ?? undefined })) continue;
+        tournamentsBySlug.set(tour.slug, tour);
+      }
     } else {
       syncCatalogTeamsCache([]);
     }
@@ -98,8 +113,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       syncedAt: snapshot?.syncedAt ?? null,
       teamCount: teamsBySlug.size,
       playerCount: playersBySlug.size,
+      tournamentCount: tournamentsBySlug.size,
       teamsBySlug,
       playersBySlug,
+      tournamentsBySlug,
       marketByKey,
     };
   }, [snapshot, ready]);

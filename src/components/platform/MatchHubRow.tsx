@@ -9,6 +9,7 @@ import { getEffectiveMatchStatus } from "@/lib/data/match-effective-status";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { MatchCountdown } from "@/components/platform/MatchCountdown";
 import { FormDots } from "@/components/platform/ui";
+import { MatchSourceBadge } from "@/components/platform/MatchSourceBadge";
 
 function displayTeamName(match: EsportsMatch, side: "A" | "B"): string {
   const slug = side === "A" ? match.teamASlug : match.teamBSlug;
@@ -90,6 +91,7 @@ export function MatchHubRow({ match }: { match: EsportsMatch }) {
       </div>
 
       <div className="bf-match-row-meta">
+        <MatchSourceBadge match={match} />
         <span className="bf-match-row-stage">{match.stage}</span>
         <span className="bf-match-row-stat">{enrich.quickStat}</span>
       </div>

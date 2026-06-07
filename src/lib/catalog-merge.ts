@@ -2,7 +2,9 @@ import type { EsportsPlayer } from "@/lib/data/players";
 import type { EsportsTeam } from "@/lib/data/teams";
 import { getPlayer } from "@/lib/data/players";
 import { getTeam } from "@/lib/data/teams";
-import type { CatalogPlayerRow, CatalogTeamRow, CatalogMarketRow } from "@/lib/supabase/catalog-types";
+import type { CatalogPlayerRow, CatalogTeamRow, CatalogMarketRow, CatalogTournamentRow } from "@/lib/supabase/catalog-types";
+import type { EsportsTournament } from "@/lib/data/matches";
+import { getTournament } from "@/lib/data/matches";
 import type { Region } from "@/lib/types";
 import { parseAchievements } from "@/lib/data/profile-wiki";
 import { sanitizePublicText, sanitizeSocialRecord } from "@/lib/sanitize-liquipedia";
@@ -156,6 +158,55 @@ export function resolvePlayer(slug: string, row?: CatalogPlayerRow): (EsportsPla
 
 export function resolveTeam(slug: string, row?: CatalogTeamRow): (EsportsTeam & TeamExtras) | undefined {
   return mergeCatalogTeam(getTeam(slug), row);
+}
+
+const TOUR_STATUSES = new Set(["live", "upcoming", "finished"]);
+
+export function mergeCatalogTournament(
+  local: EsportsTournament | undefined,
+  row: CatalogTournamentRow | undefined,
+): EsportsTournament | undefined {
+  if (!local && !row) return undefined;
+  const base: EsportsTournament = local ?? {
+    slug: row!.slug,
+    name: row!.name,
+    shortName: row!.short_name?.trim() || row!.name,
+    region: (row!.region as EsportsTournament["region"]) || "GLOBAL",
+    prizePool: row!.prize_pool?.trim() || "TBA",
+    teams: row!.teams_count || row!.participant_slugs?.length || 0,
+    status: TOUR_STATUSES.has(row!.status) ? (row!.status as EsportsTournament["status"]) : "upcoming",
+    startDate: row!.start_date?.trim() || "",
+    endDate: row!.end_date?.trim() || row!.start_date?.trim() || "",
+    location: row!.location?.trim() || "Online",
+    stage: row!.stage?.trim() || "",
+    tier: row!.tier ?? undefined,
+    participantSlugs: row!.participant_slugs ?? [],
+    logoFile: row!.logo_file ?? null,
+    featured: row!.tier != null ? row!.tier <= 3 : true,
+  };
+  if (!row) return base;
+  const status = TOUR_STATUSES.has(row.status) ? (row.status as EsportsTournament["status"]) : base.status;
+  return {
+    ...base,
+    name: row.name?.trim() || base.name,
+    shortName: row.short_name?.trim() || base.shortName,
+    region: (row.region as EsportsTournament["region"]) || base.region,
+    prizePool: row.prize_pool?.trim() || base.prizePool,
+    teams: row.teams_count || row.participant_slugs?.length || base.teams,
+    status,
+    startDate: row.start_date?.trim() || base.startDate,
+    endDate: row.end_date?.trim() || row.start_date?.trim() || base.endDate,
+    location: row.location?.trim() || base.location,
+    stage: row.stage?.trim() || base.stage,
+    tier: row.tier ?? base.tier,
+    participantSlugs: row.participant_slugs?.length ? row.participant_slugs : base.participantSlugs,
+    logoFile: row.logo_file ?? base.logoFile,
+    featured: row.tier != null ? row.tier <= 3 : base.featured,
+  };
+}
+
+export function resolveTournament(slug: string, row?: CatalogTournamentRow): EsportsTournament | undefined {
+  return mergeCatalogTournament(getTournament(slug), row);
 }
 
 export function marketKey(tournament: string, playerSlug: string): string {

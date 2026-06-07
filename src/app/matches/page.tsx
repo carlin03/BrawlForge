@@ -1,5 +1,5 @@
-import { LazyMatchesView } from "@/components/platform/LazyMatchesView";
+import { MatchesView } from "@/components/platform/MatchesView";
 
 export default function MatchesPage() {
-  return <LazyMatchesView />;
+  return <MatchesView />;
 }

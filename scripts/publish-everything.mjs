@@ -9,6 +9,9 @@ import { resolve } from "path";
 import { spawnSync } from "child_process";
 import { loadEnv, root } from "./lib/load-env.mjs";
 import { upsert } from "./lib/supabase-rest.mjs";
+import { deleteMatchesNotIn } from "./lib/supabase-delete.mjs";
+import { shouldPublishMatch, matchScheduleTrust, isBscCircuitSlug } from "./lib/match-publish-filter.mjs";
+import { loadBscUpcomingCalendar } from "./lib/parse-bsc-upcoming-ts.mjs";
 
 loadEnv();
 
@@ -24,7 +27,12 @@ function runStep(label, cmd, args) {
 }
 
 function matchToRow(m) {
-  const meta = { schedule_trust: "confirmed", ...(m.meta || {}) };
+  const trust = matchScheduleTrust(m);
+  const meta = { schedule_trust: trust, pickem_only: trust === "template", ...(m.meta || {}) };
+  if (isBscCircuitSlug(m.tournamentSlug)) {
+    meta.schedule_trust = "confirmed";
+    meta.pickem_only = false;
+  }
   return {
     id: m.id,
     tournament_slug: m.tournamentSlug,
@@ -70,12 +78,35 @@ function dedupeById(rows) {
   return [...map.values()];
 }
 
+function buildPublishMatchPool() {
+  const fromJson = JSON.parse(readFileSync(resolve(gen, "matches-2026.json"), "utf8"));
+  const enrichedPath = resolve(gen, "bsc-tournaments-enriched.json");
+  const enriched = JSON.parse(readFileSync(enrichedPath, "utf8")).matches ?? [];
+  let bscUpcoming = [];
+  try {
+    bscUpcoming = loadBscUpcomingCalendar().map((m) => ({
+      ...m,
+      meta: { schedule_trust: "confirmed", pickem_only: false },
+    }));
+  } catch (e) {
+    console.warn("  (calendario BSC upcoming no cargado:", e.message, ")");
+  }
+
+  const byId = new Map();
+  for (const m of [...fromJson, ...enriched, ...bscUpcoming]) {
+    if (!shouldPublishMatch(m)) continue;
+    byId.set(m.id, m);
+  }
+  return [...byId.values()];
+}
+
 async function seedMatches() {
-  const matches = JSON.parse(readFileSync(resolve(gen, "matches-2026.json"), "utf8"));
+  const matches = buildPublishMatchPool();
   const rows = dedupeById(matches.map(matchToRow));
-  console.log(`\n▶ Partidos tier B+ → matches_catalog (${rows.length})`);
+  console.log(`\n▶ Partidos publicables → matches_catalog (${rows.length})`);
   const n = await upsert("matches_catalog", rows);
-  console.log(`  Subidos: ${n} partidos`);
+  const deleted = await deleteMatchesNotIn(rows.map((r) => r.id));
+  console.log(`  Subidos: ${n} partidos · eliminados obsoletos: ${deleted}`);
   return n;
 }
 
@@ -92,6 +123,7 @@ console.log("══════════════════════�
 console.log(" BrawlForge — publicación 100% a Supabase");
 console.log("═══════════════════════════════════════════");
 
+runStep("Purgar próximos Liquipedia falsos", "node", ["scripts/purge-lp-upcoming.mjs", "--write"]);
 runStep("Catálogo BSC (equipos, jugadores, torneos fantasy)", "npm", ["run", "supabase:seed:catalog"]);
 runStep("Tier B+ descubierto (equipos + torneos Liquipedia)", "npm", ["run", "supabase:seed:discovered"]);
 

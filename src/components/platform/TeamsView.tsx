@@ -20,8 +20,7 @@ const REGIONS: (Region | "all")[] = ["all", "EMEA", "NA", "SA", "EA"];
 
 export function TeamsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
   const { teamsBySlug, playersBySlug } = useCatalog();
-  const { complete } = usePublicCircuitTeams(staticTeams);
-  const teams = complete;
+  const { all: teams } = usePublicCircuitTeams(staticTeams);
   const teamCount = useCatalogTeamCount();
   const [region, setRegion] = useState<Region | "all">("all");
   const [query, setQuery] = useState("");
@@ -36,7 +35,9 @@ export function TeamsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
           t.slug.includes(q),
       );
     }
-    return [...filtered].sort((a, b) => a.rank - b.rank);
+    return [...filtered].sort(
+      (a, b) => (a.rank || 99999) - (b.rank || 99999) || a.name.localeCompare(b.name),
+    );
   }, [teams, region, query]);
 
   const spotlight = query.trim() ? [] : sorted.slice(0, 3);
@@ -57,7 +58,7 @@ export function TeamsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
             Clubes <em>pro</em>
           </>
         }
-        lead={`${teamCount} equipos en circuito · ${sorted.length} en vista · busca por nombre, tag o región`}
+        lead={`${teamCount} equipos tier B+ en 2026 · ${sorted.length} en vista · busca por nombre, tag o región`}
         stats={
           <div className="fu-stats" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
             <div className="fu-stat">

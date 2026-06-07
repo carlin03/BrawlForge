@@ -6,6 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isBscCircuitSlug, shouldPublishMatch } from "./lib/match-publish-filter.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outDir = path.join(__dirname, "..", "src", "lib", "data", "generated");
@@ -13,7 +14,6 @@ const WRITE = process.argv.includes("--write");
 
 const MAX_DISPLAY_TIER = 3;
 const INVALID = new Set(["tbd", "team", ""]);
-const BSC_RE = /^bsc-2026|^world-finals-2026|^brawl-stars-championship-/;
 const MIN_YEAR = 2025;
 const MAX_FUTURE_MS = 365 * 24 * 60 * 60 * 1000;
 
@@ -55,28 +55,9 @@ function isTierBPlusTournament(slug) {
 }
 
 function keepMatch(m) {
-  if (!okTeam(m.teamASlug) || !okTeam(m.teamBSlug)) return false;
-  if (m.teamASlug === m.teamBSlug) return false;
   if (!okDate(m.date)) return false;
-  const t = Date.parse(m.date);
-  const year = Number((m.date || "").slice(0, 4));
-  if (year < MIN_YEAR && t < Date.UTC(MIN_YEAR, 0, 1)) return false;
-
-  const isBsc = BSC_RE.test(m.tournamentSlug);
-  if (isBsc) {
-    if (m.status === "upcoming" && t > Date.now() + MAX_FUTURE_MS) return false;
-    return true;
-  }
-
-  if (!isTierBPlusTournament(m.tournamentSlug)) return false;
-
-  if (m.status === "finished") {
-    return year >= MIN_YEAR && m.scoreA !== m.scoreB;
-  }
-  if (m.status === "upcoming" || m.status === "live") {
-    return t > Date.now() - 7 * 24 * 60 * 60 * 1000 && t <= Date.now() + MAX_FUTURE_MS;
-  }
-  return false;
+  if (!isTierBPlusTournament(m.tournamentSlug) && !isBscCircuitSlug(m.tournamentSlug)) return false;
+  return shouldPublishMatch(m);
 }
 
 function inferTournamentStatus(dates) {
@@ -94,7 +75,7 @@ function buildDiscoveredTournaments(matches) {
   const bySlug = new Map();
   for (const m of matches) {
     const slug = m.tournamentSlug;
-    if (!slug || BSC_RE.test(slug)) continue;
+    if (!slug || isBscCircuitSlug(slug)) continue;
     if (!bySlug.has(slug)) {
       bySlug.set(slug, {
         slug,
@@ -164,22 +145,33 @@ function main() {
   const all = JSON.parse(fs.readFileSync(matchesPath, "utf8"));
   const kept = all.filter(keepMatch);
 
+  const catalogBySlug = new Map();
+  for (const file of ["teams.json", "teams-2026.json"]) {
+    const p = path.join(outDir, file);
+    if (!fs.existsSync(p)) continue;
+    for (const t of JSON.parse(fs.readFileSync(p, "utf8"))) catalogBySlug.set(t.slug, t);
+  }
+
   const teamMeta = new Map();
   for (const m of kept) {
     for (const slug of [m.teamASlug, m.teamBSlug]) {
-      if (!okTeam(slug) || knownTeams.has(slug)) continue;
-      if (!teamMeta.has(slug)) {
-        teamMeta.set(slug, {
-          slug,
-          name: slugToName(slug),
-          tag: slug
-            .split("-")
-            .map((p) => p[0])
-            .join("")
-            .slice(0, 3)
-            .toUpperCase(),
-          region: m.region || "GLOBAL",
-          source: "liquipedia-match-2026",
+      if (!okTeam(slug)) continue;
+      const key = slug.trim().toLowerCase();
+      if (!teamMeta.has(key)) {
+        const cat = catalogBySlug.get(key);
+        teamMeta.set(key, {
+          slug: key,
+          name: cat?.name || slugToName(key),
+          tag:
+            cat?.tag ||
+            key
+              .split("-")
+              .map((p) => p[0])
+              .join("")
+              .slice(0, 3)
+              .toUpperCase(),
+          region: cat?.region || m.region || "GLOBAL",
+          source: cat ? "liquipedia-catalog-match" : "liquipedia-match-2026",
         });
       }
     }
@@ -189,8 +181,8 @@ function main() {
   const discoveredTournaments = buildDiscoveredTournaments(kept);
   const tourSlugs = new Set(kept.map((m) => m.tournamentSlug));
 
-  const bsc = kept.filter((m) => BSC_RE.test(m.tournamentSlug)).length;
-  const tierB = kept.filter((m) => isTierBPlusTournament(m.tournamentSlug) && !BSC_RE.test(m.tournamentSlug)).length;
+  const bsc = kept.filter((m) => isBscCircuitSlug(m.tournamentSlug)).length;
+  const tierB = kept.filter((m) => isTierBPlusTournament(m.tournamentSlug) && !isBscCircuitSlug(m.tournamentSlug)).length;
   const upcoming = kept.filter((m) => m.status === "upcoming").length;
   const finished = kept.filter((m) => m.status === "finished").length;
 

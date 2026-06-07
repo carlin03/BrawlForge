@@ -19,6 +19,8 @@ export interface CatalogTeamRow {
   founded_year: number | null;
   social: Record<string, unknown>;
   meta: Record<string, unknown>;
+  circuit_status?: string | null;
+  bsc_qualified_2026?: boolean | null;
 }
 
 export interface CatalogPlayerRow {
@@ -55,7 +57,13 @@ export interface CatalogTournamentRow {
   prize_pool: string | null;
   teams_count: number;
   status: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  location?: string | null;
+  stage?: string | null;
+  logo_file?: string | null;
   participant_slugs: string[];
+  tier?: number | null;
   meta: Record<string, unknown>;
 }
 

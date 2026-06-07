@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { FeaturedMatch } from "@/components/platform/ui";
@@ -20,7 +19,7 @@ import {
 import { useCatalog } from "@/contexts/CatalogContext";
 import { useMergedCircuitTeams, useCatalogTeamCount, usePublicCircuitTeams } from "@/hooks/useMergedCatalog";
 import { useHomeMatches } from "@/hooks/useHomeMatches";
-import { useDeferredMount } from "@/hooks/useDeferredMount";
+import { HomePredictionsSection } from "@/components/platform/HomePredictionsSection";
 import {
   DEFAULT_FANTASY_TOURNAMENT,
   FANTASY_BUDGET,
@@ -34,16 +33,9 @@ import {
   teams,
 } from "@/lib/data";
 import { NewsCover } from "@/components/news/NewsCover";
-import { getHomeTournaments } from "@/lib/data/home-tournaments";
-import { hasTeamLogoSource } from "@/lib/data/png-logo-urls";
-import { useLogoConfig } from "@/contexts/LogoConfigContext";
+import { useMergedTournaments, useCatalogTournamentCount } from "@/hooks/useMergedTournaments";
 import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 import { HomeSiteHeader } from "@/components/platform/HomeSiteHeader";
-
-const HomePredictionsSection = dynamic(
-  () => import("@/components/platform/HomePredictionsSection").then((m) => m.HomePredictionsSection),
-  { ssr: false },
-);
 
 type MatchTab = "live" | "upcoming" | "results";
 
@@ -74,14 +66,12 @@ function cleanName(raw: string): string {
 }
 
 export function HomeView() {
-  const logoConfig = useLogoConfig();
   const homeMatches = useHomeMatches();
-  const showPredictions = useDeferredMount(1800);
-  const showMarquee = useDeferredMount(900);
-  const showTournaments = useDeferredMount(1100);
   const mergedTeams = useMergedCircuitTeams(teams);
   const circuitTeamCount = useCatalogTeamCount();
-  const { complete: completeClubs } = usePublicCircuitTeams(teams);
+  const tournamentCount = useCatalogTournamentCount();
+  const { all: circuitClubs } = usePublicCircuitTeams(teams);
+  const homeTournaments = useMergedTournaments(12);
   const [matchTab, setMatchTab] = useState<MatchTab>("results");
 
   const live = homeMatches.live;
@@ -89,17 +79,15 @@ export function HomeView() {
   const squad = getUserSquadDisplay(DEFAULT_FANTASY_TOURNAMENT);
   const budgetLeft = FANTASY_BUDGET - getSquadValue(squad, DEFAULT_FANTASY_TOURNAMENT);
   const fantasyProfile = getTournamentFantasyProfile(DEFAULT_FANTASY_TOURNAMENT);
-  const showHeroCards = useDeferredMount(600);
   const topPros = useMemo(() => {
-    if (!showHeroCards) return [];
     const pool = new Set(getTournamentPlayerPool(DEFAULT_FANTASY_TOURNAMENT));
     return getTopActivePlayers(24)
       .filter((p) => p.teamSlug && pool.has(p.slug))
       .slice(0, 3);
-  }, [showHeroCards]);
+  }, []);
 
   const homeClubs = useMemo(() => {
-    const bySlug = new Map(completeClubs.map((t) => [t.slug, t]));
+    const bySlug = new Map(circuitClubs.map((t) => [t.slug, t]));
     const ordered: typeof teams = [];
     const priority = [...BSC_CLUBS, ...getBsc2026CircuitTeamSlugs(), ...mergedTeams.map((t) => t.slug)];
     const seen = new Set<string>();
@@ -107,19 +95,18 @@ export function HomeView() {
       if (seen.has(slug)) continue;
       seen.add(slug);
       const t = bySlug.get(slug);
-      if (t && hasTeamLogoSource(slug, logoConfig)) ordered.push(t);
+      if (t) ordered.push(t);
     }
-    for (const t of completeClubs) {
-      if (!seen.has(t.slug) && hasTeamLogoSource(t.slug, logoConfig)) {
+    for (const t of circuitClubs) {
+      if (!seen.has(t.slug)) {
         seen.add(t.slug);
         ordered.push(t);
       }
     }
     return ordered;
-  }, [logoConfig, completeClubs, mergedTeams]);
+  }, [circuitClubs, mergedTeams]);
 
-  const marqueeClubs = useMemo(() => homeClubs.slice(0, 24), [homeClubs]);
-  const homeTournaments = useMemo(() => (showTournaments ? getHomeTournaments(12) : []), [showTournaments]);
+  const marqueeClubs = useMemo(() => homeClubs.slice(0, 36), [homeClubs]);
   const matchPool = useMemo(() => {
     if (matchTab === "live") return homeMatches.live;
     if (matchTab === "upcoming") return homeMatches.upcoming;
@@ -171,15 +158,15 @@ export function HomeView() {
             <div className="fu-stats">
               <div className="fu-stat">
                 <b>{circuitTeamCount}</b>
-                <span>Equipos 2026</span>
+                <span>Equipos tier B+</span>
               </div>
               <div className="fu-stat">
                 <b>{CATALOG_STATS.playersActive}</b>
                 <span>Pros activos</span>
               </div>
               <div className="fu-stat">
-                <b>{homeTournaments.length}</b>
-                <span>Eventos BSC</span>
+                <b>{tournamentCount}</b>
+                <span>Torneos tier B+</span>
               </div>
               <div className="fu-stat">
                 <b>{liveCount || "—"}</b>
@@ -235,10 +222,9 @@ export function HomeView() {
         </Link>
       )}
 
-      {showMarquee && (
-        <section className="fu-marquee-wrap">
+      <section className="fu-marquee-wrap">
           <div className="fu-marquee-head">
-            <h2>{circuitTeamCount} clubes del circuito 2026</h2>
+            <h2>{circuitTeamCount} clubes tier B+ · 2026</h2>
           </div>
           <div className="fu-marquee-track">
             {marqueeClubs.map((t, i) => (
@@ -249,16 +235,14 @@ export function HomeView() {
             ))}
           </div>
         </section>
-      )}
 
-      {showTournaments && (
       <section className="fu-panel fu-panel-tournaments">
         <div className="fu-panel-head">
           <div className="fu-tours-title-row">
             <TournamentLogo slug="bsc-2026-brawl-cup" name="BSC" size={36} glow={false} />
             <div>
-              <h2>Torneos BSC 2026</h2>
-              <p className="fu-panel-sub">Logos oficiales · calendario completo</p>
+              <h2>Torneos tier B+ · 2026</h2>
+              <p className="fu-panel-sub">S / A / B · {tournamentCount} eventos con partidos</p>
             </div>
           </div>
           <Link href="/tournaments">Ver todos</Link>
@@ -286,12 +270,14 @@ export function HomeView() {
           ))}
         </div>
       </section>
-      )}
 
       <div className="fu-bento">
         <section className="fu-panel fu-panel-glow fu-bento-matches">
           <div className="fu-panel-head">
-            <h2>Centro de partidos</h2>
+            <div>
+              <h2>Centro de partidos</h2>
+              <p className="fu-panel-sub">Próximos = BSC oficial · Resultados = BSC + Liquipedia (solo terminados)</p>
+            </div>
             <Link href="/matches">Ver todo</Link>
           </div>
           <div className="fu-tabs">
@@ -349,7 +335,7 @@ export function HomeView() {
           </div>
         </section>
 
-        {showPredictions && <HomePredictionsSection />}
+        <HomePredictionsSection />
 
         {topNews.length > 0 && (
           <section className="fu-panel fu-panel-glow fu-bento-news">

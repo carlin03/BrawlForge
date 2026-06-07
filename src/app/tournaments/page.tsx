@@ -1,5 +1,5 @@
-import { LazyTournamentsView } from "@/components/platform/LazyTournamentsView";
+import { TournamentsView } from "@/components/platform/TournamentsView";
 
 export default function TournamentsPage() {
-  return <LazyTournamentsView />;
+  return <TournamentsView />;
 }

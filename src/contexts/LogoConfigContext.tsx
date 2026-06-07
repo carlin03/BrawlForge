@@ -13,6 +13,7 @@ import { LOGO_CACHE_VERSION } from "@/lib/data/logo-manifest";
 import type { LogoOverrideEntry, LogoOverridesFile } from "@/lib/data/logo-overrides";
 import { isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import type { LogoRuntimeConfig } from "@/lib/data/png-logo-urls";
+import { getPrefetched, prefetchJson } from "@/lib/prefetch-cache";
 
 const DEFAULT: LogoRuntimeConfig = {
   cacheVersion: LOGO_CACHE_VERSION,
@@ -33,10 +34,14 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("/api/logos/config", { cache: "no-store" });
-      if (!res.ok) return;
-      const data = await res.json();
-      const raw = data.overrides ?? { teams: {}, tournaments: {} };
+      const data =
+        getPrefetched<{ cacheVersion?: string; overrides?: LogoOverridesFile }>("/api/logos/config") ??
+        ((await prefetchJson("/api/logos/config")) as {
+          cacheVersion?: string;
+          overrides?: LogoOverridesFile;
+        } | null);
+      if (!data) return;
+      const raw: LogoOverridesFile = data.overrides ?? { teams: {}, tournaments: {} };
       const teams: LogoOverridesFile["teams"] = {};
       for (const [slug, entry] of Object.entries(raw.teams ?? {})) {
         if (!isHiddenTeamSlug(slug)) teams[slug] = entry as LogoOverrideEntry;
@@ -53,7 +58,9 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const t = window.setTimeout(() => void refresh(), 1200);
+    void refresh();
+    const onResume = () => void refresh();
+    window.addEventListener("bf-resume-background-load", onResume);
     const onUpdate = (e: Event) => {
       const detail = (e as CustomEvent<{ slug?: string; logoUrl?: string; cacheVersion?: string; kind?: string }>)
         .detail;
@@ -75,7 +82,7 @@ export function LogoConfigProvider({ children }: { children: ReactNode }) {
     };
     window.addEventListener("bf-logos-updated", onUpdate);
     return () => {
-      window.clearTimeout(t);
+      window.removeEventListener("bf-resume-background-load", onResume);
       window.removeEventListener("bf-logos-updated", onUpdate);
     };
   }, [refresh]);

@@ -11,11 +11,11 @@ import { RegionBadge } from "@/components/ui/RegionBadge";
 import {
   tierBadgeClass,
   tierLabel,
-  getTierBPlusTournaments,
   getTournamentParticipantSlugs,
   teamName,
   isKnownTeamSlug,
 } from "@/lib/data";
+import { useMergedTournaments, useCatalogTournamentCount } from "@/hooks/useMergedTournaments";
 import { getMatchPool } from "@/lib/data/match-pool";
 import { useDeferredMount } from "@/hooks/useDeferredMount";
 import { PageLoadShell } from "@/components/platform/PageLoadShell";
@@ -41,7 +41,9 @@ export function TournamentsView() {
   const poolReady = useDeferredMount(500);
   const [status, setStatus] = useState<StatusFilter>("all");
   const [query, setQuery] = useState("");
-  const all = useMemo(() => (poolReady ? getTierBPlusTournaments() : []), [poolReady]);
+  const mergedTournaments = useMergedTournaments();
+  const catalogTourCount = useCatalogTournamentCount();
+  const all = useMemo(() => (poolReady ? mergedTournaments : []), [poolReady, mergedTournaments]);
   const matchCountsByTour = useMemo(() => {
     if (!poolReady) return new Map<string, number>();
     const counts = new Map<string, number>();
@@ -84,7 +86,9 @@ export function TournamentsView() {
           <h1>
             Torneos <em>2026</em>
           </h1>
-          <p>Premios, fechas, participantes verificados y partidos del circuito S / A / B.</p>
+          <p>
+            {catalogTourCount} eventos tier B+ en 2026 · premios, fechas, participantes y partidos S / A / B.
+          </p>
         </div>
         <div className="bf-tours-hub-hero-stats">
           <div>

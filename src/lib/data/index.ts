@@ -17,6 +17,11 @@ export type { EsportsPlayer, PlayerStatus } from "./players";
 export { CATALOG_STATS, catalogSyncedAt, isTierBPlus, tierLabel, tierBadgeClass } from "./catalog";
 export { hasPlayedBsc2026, getBsc2026PlayedTeamSlugs, getCompetitiveTeamSlugs } from "./bsc-teams-played-2026";
 export { getBsc2026CircuitTeamSlugs, BSC_2026_CIRCUIT_SLUGS, BSC_2026_CLUB_COUNT } from "./bsc-2026-circuit-teams";
+export {
+  TIER_BPLUS_TEAM_COUNT,
+  BSC_CORE_CLUB_COUNT,
+  TIER_BPLUS_TOURNAMENT_COUNT,
+} from "./tier-bplus-pool";
 export { BSC_2026_ROSTERS, BSC_2026_TEAM_SLUGS } from "./bsc-2026-rosters";
 export {
   tournaments,

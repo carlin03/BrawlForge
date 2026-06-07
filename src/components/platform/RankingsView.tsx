@@ -31,7 +31,7 @@ type RankTab = "teams" | "fantasy";
 
 export function RankingsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
   const { teamsBySlug, playersBySlug } = useCatalog();
-  const { complete, incomplete } = usePublicCircuitTeams(staticTeams);
+  const { all, complete, incomplete } = usePublicCircuitTeams(staticTeams);
   const teamCount = useCatalogTeamCount();
   const { isLoggedIn, profile } = useAuth();
   const { game } = useGame();
@@ -40,9 +40,11 @@ export function RankingsView({ teams: staticTeams }: { teams: EsportsTeam[] }) {
   const [fantasyBoard, setFantasyBoard] = useState<FantasyLeaderboardRow[]>([]);
 
   const ranked = useMemo(() => {
-    const filtered = region === "all" ? complete : complete.filter((t) => t.region === region);
-    return [...filtered].sort((a, b) => a.rank - b.rank);
-  }, [complete, region]);
+    const filtered = region === "all" ? all : all.filter((t) => t.region === region);
+    return [...filtered].sort(
+      (a, b) => (a.rank || 99999) - (b.rank || 99999) || a.name.localeCompare(b.name),
+    );
+  }, [all, region]);
 
   const incompleteRanked = useMemo(() => {
     const filtered = region === "all" ? incomplete : incomplete.filter((t) => t.region === region);

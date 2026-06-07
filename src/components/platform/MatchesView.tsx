@@ -103,7 +103,10 @@ export function MatchesView() {
             Partidos <em>pro</em>
           </h1>
           <p className="bf-matches-hero-lead">
-            Calendario y resultados reales (Liquipedia). Las predicciones están en su sección aparte.
+            <strong>Próximos:</strong> calendario oficial BSC 2026 (Monthly Finals, Challengers, Brawl Cup).
+            {" "}
+            <strong>Resultados:</strong> BSC + historial tier B+ terminado en Liquipedia — etiquetado en cada partido.
+            Sin próximos regionales LP (no fiables).
           </p>
         </div>
 

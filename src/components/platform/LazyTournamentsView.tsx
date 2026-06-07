@@ -5,7 +5,7 @@ import { PageLoadShell } from "@/components/platform/PageLoadShell";
 
 const TournamentsView = dynamic(
   () => import("@/components/platform/TournamentsView").then((m) => m.TournamentsView),
-  { ssr: false, loading: () => <PageLoadShell label="Cargando torneos…" /> },
+  { loading: () => <PageLoadShell label="Cargando torneos…" /> },
 );
 
 export function LazyTournamentsView() {

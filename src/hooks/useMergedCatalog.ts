@@ -6,7 +6,7 @@ import { mergeCatalogTeam, mergeCatalogPlayer } from "@/lib/catalog-merge";
 import type { EsportsTeam } from "@/lib/data/teams";
 import type { EsportsPlayer } from "@/lib/data/players";
 import { getPlayersWithTeam } from "@/lib/data/players";
-import { BSC_2026_CLUB_COUNT } from "@/lib/data/bsc-2026-circuit-teams";
+import { TIER_BPLUS_TEAM_COUNT } from "@/lib/data/tier-bplus-pool";
 import { isHiddenTeam } from "@/lib/data/blocked-team-slugs";
 import {
   partitionCircuitTeams,
@@ -28,11 +28,12 @@ export {
   getTeamRosterTier,
 };
 
-/** Equipos del circuito + filas extra en Supabase (p. ej. el 51.º club). */
+/** Equipos del circuito: núcleo BSC + pool tier B+ desde Supabase. */
 export function useMergedCircuitTeams(staticTeams: EsportsTeam[]): EsportsTeam[] {
   const { teamsBySlug, ready } = useCatalog();
   return useMemo(() => {
-    const bySlug = new Map(staticTeams.map((t) => [t.slug, t]));
+    const bySlug = new Map<string, EsportsTeam>();
+    for (const t of staticTeams) bySlug.set(t.slug, t);
     for (const row of teamsBySlug.values()) {
       if (isHiddenTeam(row)) continue;
       const merged = mergeCatalogTeam(bySlug.get(row.slug), row);
@@ -52,7 +53,7 @@ export function usePublicCircuitTeams(staticTeams: EsportsTeam[]) {
   );
 }
 
-export function useCatalogTeamCount(fallback = BSC_2026_CLUB_COUNT): number {
+export function useCatalogTeamCount(fallback = TIER_BPLUS_TEAM_COUNT): number {
   const { teamCount, fromDb } = useCatalog();
   return fromDb && teamCount > 0 ? teamCount : fallback;
 }

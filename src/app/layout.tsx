@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
-import { InstantBootShell, INSTANT_CRITICAL_CSS } from "@/components/layout/InstantBootShell";
-import { BootRelease } from "@/components/layout/BootRelease";
-import { DeferredApp } from "@/components/layout/DeferredApp";
+import { CRITICAL_BOOT_CSS } from "@/components/layout/critical-boot-css";
+import AppInner from "@/components/layout/AppInner";
 import { DEFAULT_LEGACY_CONFIG } from "@/lib/cms/defaults";
 import { SITE_URL } from "@/lib/site-url";
 
@@ -40,20 +38,20 @@ export const viewport = {
   themeColor: "#0a0c12",
 };
 
+const PREFETCH_BOOT = `(function(){var u=["/api/home/matches","/api/catalog","/api/cms/runtime","/api/news","/api/logos/config"];var d=window.__bfPrefetchData=window.__bfPrefetchData||{};var f=window.__bfPrefetchInflight=window.__bfPrefetchInflight||{};for(var i=0;i<u.length;i++){(function(url){if(d[url]||f[url])return;f[url]=fetch(url,{cache:"no-store",credentials:"same-origin"}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j!=null)d[url]=j;return j}).catch(function(){return null}).finally(function(){delete f[url]});})(u[i]);}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="h-full bf-boot-loading" style={{ background: "#0a0c12", color: "#f4f4f5" }}>
+    <html lang="es" className="h-full" style={{ background: "#0a0c12", color: "#f4f4f5" }}>
       <head>
-        <style id="bf-critical-boot" dangerouslySetInnerHTML={{ __html: INSTANT_CRITICAL_CSS }} />
-        <Script src="/bf-boot.js" strategy="beforeInteractive" />
+        <style id="bf-critical-boot" dangerouslySetInnerHTML={{ __html: CRITICAL_BOOT_CSS }} />
+        <script dangerouslySetInnerHTML={{ __html: PREFETCH_BOOT }} />
       </head>
       <body
         className="min-h-full antialiased"
         style={{ background: "#0a0c12", color: "#f4f4f5", margin: 0, minHeight: "100%" }}
       >
-        <InstantBootShell />
-        <BootRelease />
-        <DeferredApp>{children}</DeferredApp>
+        <AppInner>{children}</AppInner>
       </body>
     </html>
   );

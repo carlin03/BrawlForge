@@ -6,14 +6,15 @@ import type {
   CatalogPlayerRow,
   CatalogTournamentRow,
 } from "@/lib/supabase/catalog-types";
-import { isBscCircuitSlug } from "@/lib/data/bsc-tournaments";
+import { isTierBPlus } from "@/lib/data/catalog";
 import { purgePhantomTeamsFromDb } from "@/lib/admin/purge-phantom-teams";
 import { filterVisibleTeams, isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import { stripLiquipediaFields } from "@/lib/sanitize-liquipedia";
+import { fetchAllRows } from "@/lib/supabase/fetch-all-rows";
 
 export const dynamic = "force-dynamic";
 
-/** Catálogo público desde Supabase (equipos, jugadores, torneos, mercado fantasy). */
+/** Catálogo público desde Supabase (equipos tier B+, jugadores, torneos, mercado fantasy). */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const tournament = searchParams.get("tournament");
@@ -23,9 +24,13 @@ export async function GET(request: Request) {
   }
 
   const [teamsRes, playersRes, toursRes, marketRes] = await Promise.all([
-    supabase.from("teams_catalog").select("*").order("rank", { ascending: true, nullsFirst: false }),
-    supabase.from("players_catalog").select("*").order("fantasy_points", { ascending: false }),
-    supabase.from("tournaments_catalog").select("*"),
+    fetchAllRows<Record<string, unknown>>(supabase, "teams_catalog", {
+      order: { column: "rank", ascending: true, nullsFirst: false },
+    }),
+    fetchAllRows<Record<string, unknown>>(supabase, "players_catalog", {
+      order: { column: "fantasy_points", ascending: false },
+    }),
+    fetchAllRows<Record<string, unknown>>(supabase, "tournaments_catalog"),
     tournament
       ? supabase.from("fantasy_market_catalog").select("*").eq("tournament_slug", tournament)
       : supabase.from("fantasy_market_catalog").select("*").limit(500),
@@ -33,7 +38,11 @@ export async function GET(request: Request) {
 
   if (teamsRes.error?.code === "42P01" || playersRes.error?.code === "42P01") {
     return NextResponse.json(
-      { ok: false, error: "catalog_tables_missing", message: "Ejecuta la migración 20260529200000_catalog.sql en Supabase" },
+      {
+        ok: false,
+        error: "catalog_tables_missing",
+        message: "Ejecuta la migración 20260529200000_catalog.sql en Supabase",
+      },
       { status: 503 },
     );
   }
@@ -46,25 +55,23 @@ export async function GET(request: Request) {
   await purgePhantomTeamsFromDb(supabase);
 
   const syncedAt =
-    teamsRes.data?.[0]?.synced_at ??
-    playersRes.data?.[0]?.synced_at ??
+    (teamsRes.data[0]?.synced_at as string | undefined) ??
+    (playersRes.data[0]?.synced_at as string | undefined) ??
     null;
 
   const body: CatalogSnapshot & { ok: true } = {
     ok: true,
     teams: filterVisibleTeams(
-      (teamsRes.data ?? []).map((r) =>
-        stripLiquipediaFields(r as Record<string, unknown>),
-      ) as unknown as CatalogTeamRow[],
+      teamsRes.data.map((r) => stripLiquipediaFields(r) as unknown as CatalogTeamRow),
     ),
-    players: (playersRes.data ?? [])
-      .map((r) => stripLiquipediaFields(r as Record<string, unknown>) as unknown as CatalogPlayerRow)
+    players: playersRes.data
+      .map((r) => stripLiquipediaFields(r) as unknown as CatalogPlayerRow)
       .map((p) =>
         p.team_slug && isHiddenTeamSlug(p.team_slug) ? { ...p, team_slug: null } : p,
       ),
-    tournaments: (toursRes.data ?? [])
-      .filter((t) => isBscCircuitSlug(t.slug))
-      .map((r) => stripLiquipediaFields(r as Record<string, unknown>)) as unknown as CatalogTournamentRow[],
+    tournaments: toursRes.data
+      .filter((t) => isTierBPlus({ tier: t.tier as number | undefined }))
+      .map((r) => stripLiquipediaFields(r) as unknown as CatalogTournamentRow),
     market: marketRes.data ?? [],
     syncedAt,
   };

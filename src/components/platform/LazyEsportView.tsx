@@ -5,7 +5,7 @@ import { PageLoadShell } from "@/components/platform/PageLoadShell";
 
 const EsportView = dynamic(
   () => import("@/components/platform/EsportView").then((m) => m.EsportView),
-  { ssr: false, loading: () => <PageLoadShell label="Cargando estadísticas…" /> },
+  { loading: () => <PageLoadShell label="Cargando estadísticas…" /> },
 );
 
 export function LazyEsportView() {
