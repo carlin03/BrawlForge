@@ -138,7 +138,7 @@ export function EsportView() {
     <PageUltraShell className="bf-esport-page">
       <header className="bf-esport-hero">
         <p className="bf-esport-kicker">
-          <BarChart3 size={14} aria-hidden /> Datos reales · BSC 2026 · Liquipedia · regionales
+          <BarChart3 size={14} aria-hidden /> Estadísticas · BSC 2026 · regionales
         </p>
         <h1>
           Esports <em>stats</em>

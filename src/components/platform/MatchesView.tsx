@@ -97,16 +97,13 @@ export function MatchesView() {
       <header className="bf-matches-hero">
         <div className="bf-matches-hero-text">
           <p className="bf-matches-hero-kicker">
-            <CalendarDays size={14} aria-hidden /> BSC 2026 · Calendario
+            <CalendarDays size={14} aria-hidden /> Calendario esports
           </p>
           <h1>
             Partidos <em>pro</em>
           </h1>
           <p className="bf-matches-hero-lead">
-            <strong>Próximos:</strong> calendario oficial BSC 2026 (Monthly Finals, Challengers, Brawl Cup).
-            {" "}
-            <strong>Resultados:</strong> BSC + historial tier B+ terminado en Liquipedia — etiquetado en cada partido.
-            Sin próximos regionales LP (no fiables).
+            Próximos, partidos en directo y resultados de BSC 2026, Challengers y ligas tier B+.
           </p>
         </div>
 

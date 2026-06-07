@@ -276,7 +276,7 @@ export function HomeView() {
           <div className="fu-panel-head">
             <div>
               <h2>Centro de partidos</h2>
-              <p className="fu-panel-sub">Próximos = BSC oficial · Resultados = BSC + Liquipedia (solo terminados)</p>
+              <p className="fu-panel-sub">Próximos, en directo y resultados del circuito competitivo</p>
             </div>
             <Link href="/matches">Ver todo</Link>
           </div>

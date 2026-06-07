@@ -6,7 +6,6 @@ import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltra
 import { MatchEsportsExperience } from "@/components/match-esports/MatchEsportsExperience";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import {
-  getLiquipediaMatchUrl,
   getMatch,
   teamName,
 } from "@/lib/data";
@@ -39,8 +38,6 @@ export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch
   const winA = match.status === "finished" && match.scoreA > match.scoreB;
   const winB = match.status === "finished" && match.scoreB > match.scoreA;
   const statusLabel = displayStatusLabel(meta.display_status, match.status);
-  const liquipediaUrl = getLiquipediaMatchUrl(match);
-
   const scoreBlock =
     match.status === "upcoming" ? (
       <span className="fu-duel-vs">VS</span>
@@ -104,16 +101,9 @@ export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch
           </div>
         }
         actions={
-          <>
-            <a href="#match-predictions" className="fu-btn fu-btn-red">
-              Ir a predicciones
-            </a>
-            {liquipediaUrl && (
-              <a href={liquipediaUrl} target="_blank" rel="noopener noreferrer" className="fu-btn fu-btn-ghost">
-                Ver en Liquipedia
-              </a>
-            )}
-          </>
+          <a href="#match-predictions" className="fu-btn fu-btn-red">
+            Ir a predicciones
+          </a>
         }
       />
 

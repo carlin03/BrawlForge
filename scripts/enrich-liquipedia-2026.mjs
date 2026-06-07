@@ -17,7 +17,9 @@ import {
   cleanLabel,
   parseParticipantTeams,
   parseMatchesFromWikitext,
+  parseLeagueInfobox,
   buildTeamResolver,
+  tournamentStatus,
 } from "./liquipedia-api.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -80,6 +82,7 @@ async function main() {
       const wikitext = texts[t.liquipediaPage] || "";
       const participantNames = parseParticipantTeams(wikitext);
       const participantSlugs = [...new Set(participantNames.map(resolveTeam).filter(Boolean))];
+      const info = parseLeagueInfobox(wikitext);
       const parsed = parseMatchesFromWikitext(
         wikitext,
         t.slug,
@@ -88,11 +91,28 @@ async function main() {
         t.liquipediaPage?.replace(/ /g, "_"),
       );
       allMatches.push(...parsed);
+      const lpStatus = tournamentStatus(info.startDate || t.startDate, info.endDate || t.endDate);
       enriched.push({
         ...t,
-        name: cleanLabel(t.name),
-        shortName: cleanLabel(t.shortName),
+        name: cleanLabel(info.name || t.name),
+        shortName: cleanLabel(info.shortName || t.shortName),
+        prizePool: info.prizePool || t.prizePool,
+        startDate: info.startDate || t.startDate,
+        endDate: info.endDate || t.endDate,
+        location: info.location || t.location,
+        teams: info.teamCount || participantSlugs.length || t.teams,
+        status: lpStatus || t.status,
+        tier: info.liquipediaTier ?? t.tier,
+        organizer: info.organizer || undefined,
+        venue: info.venue || undefined,
+        eventType: info.type || undefined,
+        series: info.series || undefined,
+        website: info.website || undefined,
+        format: info.format || undefined,
+        winnerSlug: info.winnerPage ? resolveTeam(info.winnerPage) : undefined,
+        prizeBreakdown: info.prizeBreakdown?.length ? info.prizeBreakdown : undefined,
         participantSlugs,
+        matchCount: parsed.length,
       });
       if (participantSlugs.length) parts++;
     }

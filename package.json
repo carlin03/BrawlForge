@@ -50,6 +50,7 @@
     "data:discover:bsc-circuit": "node scripts/discover-bsc-2026-circuit.mjs --write",
     "data:sync:bsc-tournaments": "node scripts/sync-bsc-tournaments-liquipedia.mjs --write",
     "data:refresh:lp-vs": "node scripts/sync-bsc-tournaments-liquipedia.mjs --write && node scripts/publish-everything.mjs",
+    "data:audit:lp-vs": "node scripts/audit-liquipedia-vs.mjs",
     "data:rebuild:bsc-teams": "node scripts/rebuild-teams-2026-circuit.mjs --write",
     "data:rebuild:bsc-players": "node scripts/rebuild-bsc-players-2026.mjs --write",
     "data:rebuild:bsc": "node scripts/rebuild-teams-2026-circuit.mjs --write && node scripts/rebuild-bsc-players-2026.mjs --write",

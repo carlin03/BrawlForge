@@ -20,7 +20,7 @@ import { sortHubMatchList } from "@/lib/data/matches-hub";
 import { formatTournamentDates, getTournamentStats } from "@/lib/data/tournament-stats";
 import { getFantasyPlayersForTournament, getFantasyTeamsForTournament } from "@/lib/data/fantasy-rosters";
 import { getPlayer, getPlayerPrice } from "@/lib/data";
-import { getBscTournamentEnrichment, getBscEnrichmentSyncedAt } from "@/lib/data/bsc-tournaments-enriched";
+import { getBscTournamentEnrichment } from "@/lib/data/bsc-tournaments-enriched";
 import { isLiquipediaReference } from "@/lib/sanitize-liquipedia";
 import { PlayerCard } from "@/components/platform/PlayerCard";
 
@@ -51,7 +51,8 @@ export function TournamentDetailView({ slug }: { slug: string }) {
   const fantasyPool = getFantasyPlayersForTournament(slug).slice(0, 8);
   const dateLabel = formatTournamentDates(tournament.startDate, tournament.endDate);
   const wiki = getBscTournamentEnrichment(slug);
-  const wikiSynced = getBscEnrichmentSyncedAt();
+  const bracketFormat = tournament.format || wiki?.format;
+  const formatsPlayed = stats.formats.length ? stats.formats.join(" · ") : null;
 
   const liveMatches = matches.filter((m) => m.status === "live");
   const upcoming = sortHubMatchList(
@@ -63,6 +64,15 @@ export function TournamentDetailView({ slug }: { slug: string }) {
     "results",
   ).slice(0, 10);
   const spotlight = liveMatches[0] ?? upcoming[0] ?? finished[0];
+
+  const hasEventInfo =
+    tournament.organizer ||
+    tournament.series ||
+    tournament.eventType ||
+    tournament.venue ||
+    bracketFormat ||
+    formatsPlayed ||
+    tournament.website;
 
   return (
     <PageUltraShell className="bf-tour-page-ultra">
@@ -123,10 +133,10 @@ export function TournamentDetailView({ slug }: { slug: string }) {
           spotlight ? (
             <Link href={`/matches/${spotlight.id}`} style={{ textDecoration: "none" }}>
               <DuelLogoShowcase
-                teamA={<TeamLogo slug={spotlight.teamASlug} name={teamName(spotlight.teamASlug)} size={96} glow />}
-                teamB={<TeamLogo slug={spotlight.teamBSlug} name={teamName(spotlight.teamBSlug)} size={96} glow />}
-                labelA={teamName(spotlight.teamASlug)}
-                labelB={teamName(spotlight.teamBSlug)}
+                teamA={<TeamLogo slug={spotlight.teamASlug} name={teamName(spotlight.teamASlug, spotlight)} size={96} glow />}
+                teamB={<TeamLogo slug={spotlight.teamBSlug} name={teamName(spotlight.teamBSlug, spotlight)} size={96} glow />}
+                labelA={teamName(spotlight.teamASlug, spotlight)}
+                labelB={teamName(spotlight.teamBSlug, spotlight)}
               />
             </Link>
           ) : (
@@ -140,62 +150,85 @@ export function TournamentDetailView({ slug }: { slug: string }) {
         }
       />
 
-      {(tournament.organizer || tournament.venue || tournament.eventType || tournament.series || wiki?.matchCount) && (
-        <section className="fu-panel fu-panel-glow bf-tour-wiki-meta">
-          <div className="fu-panel-head">
-            <h2>Info del evento</h2>
-            {wikiSynced && (
-              <span className="bf-admin-field-hint" style={{ margin: 0 }}>
-                Actualizado · {new Date(wikiSynced).toLocaleDateString("es-ES")}
-              </span>
-            )}
-          </div>
-          <dl className="bf-tour-wiki-grid">
-            {tournament.organizer && (
-              <>
-                <dt>Organiza</dt>
-                <dd>{tournament.organizer}</dd>
-              </>
-            )}
-            {tournament.series && (
-              <>
-                <dt>Circuito</dt>
-                <dd>{tournament.series}</dd>
-              </>
-            )}
-            {tournament.eventType && (
-              <>
-                <dt>Formato presencial</dt>
-                <dd>{tournament.eventType}</dd>
-              </>
-            )}
-            {tournament.venue && (
-              <>
-                <dt>Sede</dt>
-                <dd>{tournament.venue}</dd>
-              </>
-            )}
-            {wiki?.format && (
-              <>
-                <dt>Bracket</dt>
-                <dd>{wiki.format}</dd>
-              </>
-            )}
-            {wiki?.matchCount != null && wiki.matchCount > 0 && (
-              <>
-                <dt>Partidos registrados</dt>
-                <dd>{wiki.matchCount}</dd>
-              </>
-            )}
-            {tournament.website && !isLiquipediaReference(tournament.website) && (
-              <>
-                <dt>Web oficial</dt>
-                <dd>{tournament.website.replace(/^https?:\/\//, "")}</dd>
-              </>
-            )}
-          </dl>
-        </section>
-      )}
+      <section className="fu-panel fu-panel-glow bf-tour-wiki-meta">
+        <div className="fu-panel-head">
+          <h2>Info del evento</h2>
+        </div>
+        <dl className="bf-tour-wiki-grid">
+          <dt>Estado</dt>
+          <dd>
+            {tournament.status === "live"
+              ? "En directo"
+              : tournament.status === "upcoming"
+                ? "Próximo"
+                : "Finalizado"}
+          </dd>
+          <dt>Fechas</dt>
+          <dd>{dateLabel}</dd>
+          <dt>Premio</dt>
+          <dd>{tournament.prizePool || "TBA"}</dd>
+          <dt>Ubicación</dt>
+          <dd>{tournament.location}</dd>
+          {tournament.organizer && (
+            <>
+              <dt>Organiza</dt>
+              <dd>{tournament.organizer}</dd>
+            </>
+          )}
+          {tournament.series && (
+            <>
+              <dt>Circuito</dt>
+              <dd>{tournament.series}</dd>
+            </>
+          )}
+          {tournament.eventType && (
+            <>
+              <dt>Modalidad</dt>
+              <dd>{tournament.eventType}</dd>
+            </>
+          )}
+          {tournament.venue && (
+            <>
+              <dt>Sede</dt>
+              <dd>{tournament.venue}</dd>
+            </>
+          )}
+          {bracketFormat && (
+            <>
+              <dt>Bracket</dt>
+              <dd>{bracketFormat}</dd>
+            </>
+          )}
+          {formatsPlayed && (
+            <>
+              <dt>Series jugadas</dt>
+              <dd>{formatsPlayed}</dd>
+            </>
+          )}
+          {stats.totalMatches > 0 && (
+            <>
+              <dt>Partidos en calendario</dt>
+              <dd>{stats.totalMatches}</dd>
+            </>
+          )}
+          {tournament.website && !isLiquipediaReference(tournament.website) && (
+            <>
+              <dt>Web oficial</dt>
+              <dd>
+                <a href={tournament.website.startsWith("http") ? tournament.website : `https://${tournament.website}`} target="_blank" rel="noopener noreferrer">
+                  {tournament.website.replace(/^https?:\/\//, "")}
+                </a>
+              </dd>
+            </>
+          )}
+          {!hasEventInfo && stats.totalMatches === 0 && (
+            <>
+              <dt>Notas</dt>
+              <dd>Calendario y plantilla en actualización.</dd>
+            </>
+          )}
+        </dl>
+      </section>
 
       {tournament.winnerSlug && (
         <div className="bf-tour-champion fu-panel-glow">

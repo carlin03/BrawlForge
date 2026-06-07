@@ -94,12 +94,15 @@ export function getTournamentStats(slug: string): TournamentStats {
   const formats = [...new Set(matches.map((m) => m.format).filter(Boolean))];
   const finished = matches.filter((m) => m.status === "finished");
   const wiki = getBscTournamentEnrichment(slug);
+  const genBreakdown = t?.prizeBreakdown;
   const prizeBreakdown =
     wiki?.prizeBreakdown?.length
       ? wiki.prizeBreakdown
-      : t?.prizePool
-        ? parsePrizeBreakdown(t.prizePool)
-        : [{ place: "1º", prize: "TBD" }];
+      : genBreakdown?.length
+        ? genBreakdown
+        : t?.prizePool
+          ? parsePrizeBreakdown(t.prizePool)
+          : [{ place: "1º", prize: "TBD" }];
 
   return {
     slug,

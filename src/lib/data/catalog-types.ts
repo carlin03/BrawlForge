@@ -30,6 +30,8 @@ export interface GeneratedPlayer {
   rating: number;
 }
 
+export type TournamentPrizeRow = { place: string; prize: string };
+
 export interface GeneratedTournament {
   slug: string;
   name: string;
@@ -45,4 +47,14 @@ export interface GeneratedTournament {
   liquipediaPage: string;
   tier?: number;
   logoFile: string | null;
+  participantSlugs?: string[];
+  organizer?: string;
+  venue?: string;
+  eventType?: string;
+  series?: string;
+  website?: string;
+  format?: string;
+  winnerSlug?: string;
+  prizeBreakdown?: TournamentPrizeRow[];
+  matchCount?: number;
 }

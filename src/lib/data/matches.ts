@@ -51,6 +51,8 @@ export interface EsportsTournament {
   eventType?: string;
   series?: string;
   website?: string;
+  format?: string;
+  prizeBreakdown?: { place: string; prize: string }[];
 }
 
 const PRIORITY_TOURNAMENTS: EsportsTournament[] = [
@@ -189,7 +191,7 @@ function mapGeneratedTournament(t: ReturnType<typeof getGeneratedTournaments>[nu
     shortName: t.shortName,
     region: t.region,
     prizePool: t.prizePool,
-    teams: t.teams,
+    teams: t.participantSlugs?.length || t.teams,
     status: t.status,
     startDate: t.startDate,
     endDate: t.endDate,
@@ -199,6 +201,14 @@ function mapGeneratedTournament(t: ReturnType<typeof getGeneratedTournaments>[nu
     featured: isFeaturedTournament(t),
     participantSlugs: t.participantSlugs,
     logoFile: t.logoFile,
+    organizer: t.organizer,
+    venue: t.venue,
+    eventType: t.eventType,
+    series: t.series,
+    website: sanitizePublicWebsite(t.website),
+    winnerSlug: t.winnerSlug,
+    format: t.format,
+    prizeBreakdown: t.prizeBreakdown,
   };
 }
 
