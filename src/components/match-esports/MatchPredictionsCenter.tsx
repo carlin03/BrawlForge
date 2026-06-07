@@ -192,8 +192,8 @@ export function MatchPredictionsCenter({
                     format={match.format}
                     teamASlug={match.teamASlug}
                     teamBSlug={match.teamBSlug}
-                    teamAName={teamName(match.teamASlug)}
-                    teamBName={teamName(match.teamBSlug)}
+                    teamAName={teamName(match.teamASlug, match)}
+                    teamBName={teamName(match.teamBSlug, match)}
                     initialScore={exactForMaps}
                     disabled={closed}
                     pointsReward={points.exact_score}

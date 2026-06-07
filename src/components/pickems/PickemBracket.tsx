@@ -12,16 +12,16 @@ function BracketMatch({ match }: { match: PickemMatch }) {
         href={`/teams/${match.teamASlug}`}
         className={`bf-pickem-team ${winner === match.teamASlug ? "bf-pickem-team-winner" : ""}`}
       >
-        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={28} />
-        <span className="truncate font-semibold">{teamName(match.teamASlug)}</span>
+        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={28} />
+        <span className="truncate font-semibold">{teamName(match.teamASlug, match)}</span>
         <span className="bf-pickem-score">{match.scoreA}</span>
       </Link>
       <Link
         href={`/teams/${match.teamBSlug}`}
         className={`bf-pickem-team ${winner === match.teamBSlug ? "bf-pickem-team-winner" : ""}`}
       >
-        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={28} />
-        <span className="truncate font-semibold">{teamName(match.teamBSlug)}</span>
+        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={28} />
+        <span className="truncate font-semibold">{teamName(match.teamBSlug, match)}</span>
         <span className="bf-pickem-score">{match.scoreB}</span>
       </Link>
     </div>

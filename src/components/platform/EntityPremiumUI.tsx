@@ -111,7 +111,7 @@ export function CompactMatchCard({
         )}
       </div>
       <div className="bf-compact-match-teams">
-        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={28} />
+        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={28} />
         {finished ? (
           <span className="bf-compact-match-score">
             {match.scoreA} – {match.scoreB}
@@ -119,7 +119,7 @@ export function CompactMatchCard({
         ) : (
           <span className="bf-compact-match-vs">vs</span>
         )}
-        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={28} />
+        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={28} />
       </div>
       {!finished && match.status === "upcoming" && (
         <MatchCountdown dateStr={match.date} className="bf-compact-match-time" prefix="" />

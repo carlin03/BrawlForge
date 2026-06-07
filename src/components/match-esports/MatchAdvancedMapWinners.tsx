@@ -87,8 +87,8 @@ export function MatchAdvancedMapWinners({
                 label=""
                 teamASlug={match.teamASlug}
                 teamBSlug={match.teamBSlug}
-                teamAName={teamName(match.teamASlug)}
-                teamBName={teamName(match.teamBSlug)}
+                teamAName={teamName(match.teamASlug, match)}
+                teamBName={teamName(match.teamBSlug, match)}
                 value={ext.mapWinners?.[slot.index] ?? null}
                 onChange={(v) => v && setMapWinner(slot.index, v)}
               />

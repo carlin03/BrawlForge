@@ -51,14 +51,14 @@ export function MatchFinishedSeriesStats({
 
       <div className="bf-series-score-strip">
         <div className="bf-series-score-team">
-          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={40} />
-          <span>{teamName(match.teamASlug)}</span>
+          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={40} />
+          <span>{teamName(match.teamASlug, match)}</span>
           <strong>{match.scoreA}</strong>
         </div>
         <span className="bf-series-score-mid">Serie · {match.format}</span>
         <div className="bf-series-score-team">
-          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={40} />
-          <span>{teamName(match.teamBSlug)}</span>
+          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={40} />
+          <span>{teamName(match.teamBSlug, match)}</span>
           <strong>{match.scoreB}</strong>
         </div>
       </div>
@@ -108,7 +108,7 @@ export function MatchFinishedSeriesStats({
 
                 <div className="bf-series-map-picks">
                   <div className="bf-series-pick-col">
-                    <span className="bf-series-pick-label">{teamName(match.teamASlug)}</span>
+                    <span className="bf-series-pick-label">{teamName(match.teamASlug, match)}</span>
                     <BrawlerChipList items={row?.picks_a ?? []} />
                     {row?.team_bans_a?.length ? (
                       <div className="bf-series-team-bans">
@@ -126,7 +126,7 @@ export function MatchFinishedSeriesStats({
                     ) : null}
                   </div>
                   <div className="bf-series-pick-col">
-                    <span className="bf-series-pick-label">{teamName(match.teamBSlug)}</span>
+                    <span className="bf-series-pick-label">{teamName(match.teamBSlug, match)}</span>
                     <BrawlerChipList items={row?.picks_b ?? []} />
                     {row?.team_bans_b?.length ? (
                       <div className="bf-series-team-bans">
@@ -186,7 +186,7 @@ export function MatchFinishedSeriesStats({
           <h3>Baneos de mapas (serie)</h3>
           <div className="bf-series-map-bans-row">
             <div>
-              <span>{teamName(match.teamASlug)}</span>
+              <span>{teamName(match.teamASlug, match)}</span>
               <div className="bf-map-asset-grid is-ban">
                 {(meta.bans?.maps_a ?? []).map((n) => (
                   <MapAssetCard key={n} name={n} variant="ban" />
@@ -194,7 +194,7 @@ export function MatchFinishedSeriesStats({
               </div>
             </div>
             <div>
-              <span>{teamName(match.teamBSlug)}</span>
+              <span>{teamName(match.teamBSlug, match)}</span>
               <div className="bf-map-asset-grid is-ban">
                 {(meta.bans?.maps_b ?? []).map((n) => (
                   <MapAssetCard key={n} name={n} variant="ban" />

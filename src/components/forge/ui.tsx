@@ -73,8 +73,8 @@ export function MatchRow({ match, compact }: { match: EsportsMatch; compact?: bo
         )}
       </div>
       <div className="fg-match-team">
-        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={compact ? 24 : 28} />
-        <span className={winA ? "fg-match-win" : ""}>{teamName(match.teamASlug)}</span>
+        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={compact ? 24 : 28} />
+        <span className={winA ? "fg-match-win" : ""}>{teamName(match.teamASlug, match)}</span>
       </div>
       <div className="fg-match-score">
         {match.status === "upcoming" ? (
@@ -88,8 +88,8 @@ export function MatchRow({ match, compact }: { match: EsportsMatch; compact?: bo
         )}
       </div>
       <div className="fg-match-team right">
-        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={compact ? 24 : 28} />
-        <span className={winB ? "fg-match-win" : ""}>{teamName(match.teamBSlug)}</span>
+        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={compact ? 24 : 28} />
+        <span className={winB ? "fg-match-win" : ""}>{teamName(match.teamBSlug, match)}</span>
       </div>
       {!compact && (
         <div className="fg-match-meta">

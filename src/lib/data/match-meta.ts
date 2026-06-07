@@ -174,6 +174,9 @@ export type MatchMeta = {
   schedule_trust?: "confirmed" | "template" | "generated";
   /** Nombres Liquipedia cuando el slug aún no está en catálogo. */
   team_display?: { a?: string; b?: string };
+  /** Página Liquipedia del torneo/partido (sincronizado desde wiki). */
+  liquipedia_page?: string;
+  liquipedia_url?: string;
   /** Si true, no aparece en /matches ni home. */
   pickem_only?: boolean;
   importance?: MatchImportance;

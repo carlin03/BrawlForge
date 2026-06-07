@@ -70,8 +70,8 @@ export function MapPredictionLane({
       : { a: [], b: [] });
   const mapWinner =
     ext.mapWinners?.[slot.index] ?? official?.winner ?? null;
-  const teamA = teamName(match.teamASlug);
-  const teamB = teamName(match.teamBSlug);
+  const teamA = teamName(match.teamASlug, match);
+  const teamB = teamName(match.teamBSlug, match);
 
   return (
     <article

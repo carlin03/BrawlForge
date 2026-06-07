@@ -28,7 +28,9 @@ export function slugToDisplayName(slug: string): string {
 export function getTeamDisplayName(slug: string, liquipediaName?: string | null): string {
   const key = slug.trim().toLowerCase();
   if (isPendingTeamSlug(key)) return liquipediaName?.trim() || "Por definir";
-  return getTeam(key)?.name ?? liquipediaName?.trim() ?? slugToDisplayName(key);
+  // Nombre Liquipedia gana cuando viene del parser (paridad VS con liquipedia.net)
+  if (liquipediaName?.trim()) return liquipediaName.trim();
+  return getTeam(key)?.name ?? slugToDisplayName(key);
 }
 
 export function isTeamInCatalog(slug: string): boolean {

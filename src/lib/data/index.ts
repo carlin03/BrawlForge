@@ -49,6 +49,7 @@ export {
   isSchedulableTeamSlug,
   slugToDisplayName,
 } from "./team-display-resolve";
+export { formatLiquipediaScore, getLiquipediaMatchUrl } from "./match-display";
 export { getCuratedHomeMatches } from "./home-matches";
 export {
   isPublicScheduleMatch,
@@ -137,12 +138,17 @@ export type {
   TeamPlatformMeta,
 } from "./home-widgets";
 
+import type { EsportsMatch } from "./esports-match-types";
 import { getTeam } from "./teams";
 import { getTournament } from "./matches";
-import { getTeamDisplayName } from "./team-display-resolve";
+import { getTeamDisplayName, resolveMatchTeamName } from "./team-display-resolve";
 
-/** Resolve team slug → display name, safe fallback */
-export function teamName(slug: string): string {
+/** Resolve team slug → display name; con `match` usa nombres Liquipedia del VS. */
+export function teamName(slug: string, match?: Pick<EsportsMatch, "teamASlug" | "teamBSlug" | "meta"> | null): string {
+  if (match) {
+    if (match.teamASlug === slug) return resolveMatchTeamName(match, "A");
+    if (match.teamBSlug === slug) return resolveMatchTeamName(match, "B");
+  }
   return getTeamDisplayName(slug);
 }
 

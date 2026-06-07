@@ -27,8 +27,8 @@ export function MatchLine({ match }: MatchLineProps) {
       </div>
 
       <div className="es-match-team">
-        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={24} />
-        <span className={`es-match-team-name ${winA ? "is-win" : ""}`}>{teamName(match.teamASlug)}</span>
+        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={24} />
+        <span className={`es-match-team-name ${winA ? "is-win" : ""}`}>{teamName(match.teamASlug, match)}</span>
       </div>
 
       <div className="es-match-score">
@@ -44,8 +44,8 @@ export function MatchLine({ match }: MatchLineProps) {
       </div>
 
       <div className="es-match-team end">
-        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={24} />
-        <span className={`es-match-team-name ${winB ? "is-win" : ""}`}>{teamName(match.teamBSlug)}</span>
+        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={24} />
+        <span className={`es-match-team-name ${winB ? "is-win" : ""}`}>{teamName(match.teamBSlug, match)}</span>
       </div>
 
       <div className="es-match-meta">{tournamentName(match.tournamentSlug)}</div>

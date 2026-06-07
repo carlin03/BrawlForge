@@ -26,8 +26,8 @@ export function LiveTicker() {
         <div className="es-ticker-track">
           {doubled.map((match, i) => (
             <Link key={`${match.id}-${i}`} href={`/matches/${match.id}`} className="es-ticker-item">
-              <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={16} />
-              <span>{teamName(match.teamASlug)}</span>
+              <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={16} />
+              <span>{teamName(match.teamASlug, match)}</span>
               {match.status === "finished" || match.status === "live" ? (
                 <span className="es-ticker-score">
                   {match.scoreA}–{match.scoreB}
@@ -35,8 +35,8 @@ export function LiveTicker() {
               ) : (
                 <span>vs</span>
               )}
-              <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={16} />
-              <span>{teamName(match.teamBSlug)}</span>
+              <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={16} />
+              <span>{teamName(match.teamBSlug, match)}</span>
             </Link>
           ))}
         </div>

@@ -301,7 +301,7 @@ function countSeriesWinsFromMaps(chunk) {
 }
 
 /** Parse {{Match}} rows (Liquipedia BSC 2026 — opponent1/opponent2 + map scores). */
-export function parseMatchesFromWikitext(wikitext, tournamentSlug, region, resolveTeam) {
+export function parseMatchesFromWikitext(wikitext, tournamentSlug, region, resolveTeam, liquipediaPage) {
   const out = [];
   const today = new Date().toISOString().slice(0, 10);
   const chunks = wikitext.split(/\{\{Match\b/i).slice(1);
@@ -345,9 +345,13 @@ export function parseMatchesFromWikitext(wikitext, tournamentSlug, region, resol
     const finished = fields.finished === "true" || hasResult;
     const status = finished ? "finished" : date.slice(0, 10) > today ? "upcoming" : scoreA + scoreB > 0 ? "finished" : "upcoming";
 
-    const stage = cleanLabel(fields.round || fields.stage || fields.tab || fields.title || "Match");
+    const stage = cleanLabel(
+      fields.round || fields.roundname || fields.stage || fields.tab || fields.title || "Match",
+    );
     const bestof = fields.bestof || fields.bo || "";
     const id = `lp-${tournamentSlug}-${teamASlug}-vs-${teamBSlug}-${date.slice(0, 10)}`.replace(/[^a-z0-9-]/gi, "-");
+    const lpPage = liquipediaPage ? String(liquipediaPage).replace(/^\/+/, "") : null;
+    const lpUrl = lpPage ? `https://liquipedia.net/brawlstars/${lpPage}` : null;
 
     out.push({
       id,
@@ -364,6 +368,7 @@ export function parseMatchesFromWikitext(wikitext, tournamentSlug, region, resol
       meta: {
         schedule_trust: "confirmed",
         team_display: { a: t1, b: t2 },
+        ...(lpPage ? { liquipedia_page: lpPage, liquipedia_url: lpUrl, data_source: "liquipedia" } : {}),
       },
     });
   }

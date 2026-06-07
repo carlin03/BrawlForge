@@ -44,8 +44,8 @@ export function ArenaMatchLine({ match, showMeta = true }: { match: EsportsMatch
   const finished = match.status === "finished";
   const winA = finished && match.scoreA > match.scoreB;
   const winB = finished && match.scoreB > match.scoreA;
-  const a = teamName(match.teamASlug);
-  const b = teamName(match.teamBSlug);
+  const a = teamName(match.teamASlug, match);
+  const b = teamName(match.teamBSlug, match);
   const date = new Date(match.date);
   const important = match.stage.toLowerCase().includes("final") || match.stage.toLowerCase().includes("semi");
 

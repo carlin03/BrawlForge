@@ -94,11 +94,11 @@ export function MatchDetailExtras({ match }: { match: EsportsMatch }) {
           <h2 className="bf-match-detail-h2">Bans de mapas</h2>
           <div className="bf-match-detail-bans">
             <div>
-              <span className="bf-match-detail-ban-label">{teamName(match.teamASlug)}</span>
+              <span className="bf-match-detail-ban-label">{teamName(match.teamASlug, match)}</span>
               <p>{meta.bans?.maps_a?.join(", ") || "—"}</p>
             </div>
             <div>
-              <span className="bf-match-detail-ban-label">{teamName(match.teamBSlug)}</span>
+              <span className="bf-match-detail-ban-label">{teamName(match.teamBSlug, match)}</span>
               <p>{meta.bans?.maps_b?.join(", ") || "—"}</p>
             </div>
           </div>
@@ -131,7 +131,7 @@ export function MatchDetailExtras({ match }: { match: EsportsMatch }) {
         <h2 className="bf-match-detail-h2">Últimos partidos</h2>
         <div className="bf-match-detail-recent-grid">
           <div>
-            <h3>{teamName(match.teamASlug)}</h3>
+            <h3>{teamName(match.teamASlug, match)}</h3>
             <ul className="bf-match-detail-list">
               {recentA.map((m) => (
                 <li key={m.id}>
@@ -143,7 +143,7 @@ export function MatchDetailExtras({ match }: { match: EsportsMatch }) {
             </ul>
           </div>
           <div>
-            <h3>{teamName(match.teamBSlug)}</h3>
+            <h3>{teamName(match.teamBSlug, match)}</h3>
             <ul className="bf-match-detail-list">
               {recentB.map((m) => (
                 <li key={m.id}>

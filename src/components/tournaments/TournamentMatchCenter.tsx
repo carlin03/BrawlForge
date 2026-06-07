@@ -32,8 +32,8 @@ function MatchClashCard({ match }: { match: EsportsMatch }) {
 
       <div className="tn-clash-teams">
         <div className={`tn-clash-side ${winnerA ? "tn-clash-winner" : ""}`}>
-          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={56} />
-          <span className="tn-clash-name">{teamName(match.teamASlug)}</span>
+          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={56} />
+          <span className="tn-clash-name">{teamName(match.teamASlug, match)}</span>
         </div>
 
         <div className="tn-clash-center">
@@ -49,8 +49,8 @@ function MatchClashCard({ match }: { match: EsportsMatch }) {
         </div>
 
         <div className={`tn-clash-side tn-clash-side-b ${winnerB ? "tn-clash-winner" : ""}`}>
-          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={56} />
-          <span className="tn-clash-name">{teamName(match.teamBSlug)}</span>
+          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={56} />
+          <span className="tn-clash-name">{teamName(match.teamBSlug, match)}</span>
         </div>
       </div>
     </Link>

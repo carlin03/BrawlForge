@@ -78,10 +78,54 @@ function dedupeById(rows) {
   return [...map.values()];
 }
 
+function buildLpTeamDisplayIndex(matches) {
+  const bySlug = new Map();
+  for (const m of matches) {
+    const td = m.meta?.team_display;
+    if (!td) continue;
+    if (td.a && m.teamASlug) bySlug.set(m.teamASlug, td.a);
+    if (td.b && m.teamBSlug) bySlug.set(m.teamBSlug, td.b);
+  }
+  return bySlug;
+}
+
+function fillTeamDisplay(m, bySlug) {
+  const td = m.meta?.team_display ?? {};
+  const a = td.a || bySlug.get(m.teamASlug);
+  const b = td.b || bySlug.get(m.teamBSlug);
+  if (!a && !b) return m;
+  return {
+    ...m,
+    meta: {
+      ...(m.meta || {}),
+      team_display: { a: a || td.a, b: b || td.b },
+    },
+  };
+}
+
+function attachLiquipediaTournamentMeta(m, tourUrls) {
+  const url = tourUrls.get(m.tournamentSlug);
+  if (!url || m.meta?.liquipedia_url) return m;
+  const page = url.replace("https://liquipedia.net/brawlstars/", "");
+  return {
+    ...m,
+    meta: {
+      ...(m.meta || {}),
+      liquipedia_url: url,
+      liquipedia_page: page,
+    },
+  };
+}
+
 function buildPublishMatchPool() {
   const fromJson = JSON.parse(readFileSync(resolve(gen, "matches-2026.json"), "utf8"));
   const enrichedPath = resolve(gen, "bsc-tournaments-enriched.json");
-  const enriched = JSON.parse(readFileSync(enrichedPath, "utf8")).matches ?? [];
+  const enrichedBundle = JSON.parse(readFileSync(enrichedPath, "utf8"));
+  const enriched = enrichedBundle.matches ?? [];
+  const tourUrls = new Map();
+  for (const t of Object.values(enrichedBundle.tournaments ?? {})) {
+    if (t?.slug && t?.liquipediaUrl) tourUrls.set(t.slug, t.liquipediaUrl);
+  }
   let bscUpcoming = [];
   try {
     bscUpcoming = loadBscUpcomingCalendar().map((m) => ({
@@ -93,11 +137,24 @@ function buildPublishMatchPool() {
   }
 
   const byId = new Map();
-  for (const m of [...fromJson, ...enriched, ...bscUpcoming]) {
+  for (const m of fromJson) {
     if (!shouldPublishMatch(m)) continue;
     byId.set(m.id, m);
   }
-  return [...byId.values()];
+  for (const m of bscUpcoming) {
+    if (!shouldPublishMatch(m)) continue;
+    byId.set(m.id, m);
+  }
+  // Liquipedia BSC enriquecido gana (nombres VS, marcadores, rondas)
+  for (const m of enriched) {
+    if (!shouldPublishMatch(m)) continue;
+    byId.set(m.id, m);
+  }
+  const pool = [...byId.values()];
+  const displayIndex = buildLpTeamDisplayIndex([...fromJson, ...enriched]);
+  return pool
+    .map((m) => fillTeamDisplay(m, displayIndex))
+    .map((m) => attachLiquipediaTournamentMeta(m, tourUrls));
 }
 
 async function seedMatches() {

@@ -39,9 +39,9 @@ export function MatchRow({ match, compact, rich = true }: MatchRowProps) {
 
       <div className={`bf-match-team ${winnerA ? "font-bold" : ""}`}>
         <span className={`truncate text-sm ${winnerA ? "text-[var(--bf-yellow)]" : "text-[var(--bf-muted)]"}`}>
-          {teamName(match.teamASlug)}
+          {teamName(match.teamASlug, match)}
         </span>
-        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={rich && !compact ? 40 : 32} />
+        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={rich && !compact ? 40 : 32} />
       </div>
 
       <div className="bf-match-score">
@@ -57,9 +57,9 @@ export function MatchRow({ match, compact, rich = true }: MatchRowProps) {
       </div>
 
       <div className={`bf-match-team end ${winnerB ? "font-bold" : ""}`}>
-        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={rich && !compact ? 40 : 32} />
+        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={rich && !compact ? 40 : 32} />
         <span className={`truncate text-sm ${winnerB ? "text-[var(--bf-yellow)]" : "text-[var(--bf-muted)]"}`}>
-          {teamName(match.teamBSlug)}
+          {teamName(match.teamBSlug, match)}
         </span>
       </div>
 

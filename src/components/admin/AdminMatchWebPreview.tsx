@@ -39,9 +39,9 @@ function MatchListRowPreview({ match }: { match: ReturnType<typeof adminMatchFor
 
       <div className={`bf-match-team ${winnerA ? "font-bold" : ""}`}>
         <span className={`truncate text-sm ${winnerA ? "text-[var(--bf-yellow)]" : "text-[var(--bf-muted)]"}`}>
-          {teamName(match.teamASlug)}
+          {teamName(match.teamASlug, match)}
         </span>
-        <TeamLogo key={`a-${match.teamASlug}`} slug={match.teamASlug} name={teamName(match.teamASlug)} size={40} />
+        <TeamLogo key={`a-${match.teamASlug}`} slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={40} />
       </div>
 
       <div className="bf-match-score">
@@ -57,9 +57,9 @@ function MatchListRowPreview({ match }: { match: ReturnType<typeof adminMatchFor
       </div>
 
       <div className={`bf-match-team end ${winnerB ? "font-bold" : ""}`}>
-        <TeamLogo key={`b-${match.teamBSlug}`} slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={40} />
+        <TeamLogo key={`b-${match.teamBSlug}`} slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={40} />
         <span className={`truncate text-sm ${winnerB ? "text-[var(--bf-yellow)]" : "text-[var(--bf-muted)]"}`}>
-          {teamName(match.teamBSlug)}
+          {teamName(match.teamBSlug, match)}
         </span>
       </div>
 
@@ -101,8 +101,8 @@ function MatchDetailHeroPreview({ match }: { match: NonNullable<ReturnType<typeo
       </p>
       <div className="fu-duel-showcase bf-admin-match-duel">
         <div className="fu-duel-logo">
-          <TeamLogo key={`hero-a-${match.teamASlug}`} slug={match.teamASlug} name={teamName(match.teamASlug)} size={72} glow />
-          <span>{teamName(match.teamASlug)}</span>
+          <TeamLogo key={`hero-a-${match.teamASlug}`} slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={72} glow />
+          <span>{teamName(match.teamASlug, match)}</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, zIndex: 2 }}>
           {scoreBlock}
@@ -113,8 +113,8 @@ function MatchDetailHeroPreview({ match }: { match: NonNullable<ReturnType<typeo
           )}
         </div>
         <div className="fu-duel-logo">
-          <TeamLogo key={`hero-b-${match.teamBSlug}`} slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={72} glow />
-          <span>{teamName(match.teamBSlug)}</span>
+          <TeamLogo key={`hero-b-${match.teamBSlug}`} slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={72} glow />
+          <span>{teamName(match.teamBSlug, match)}</span>
         </div>
       </div>
     </div>
@@ -126,13 +126,13 @@ function MatchPredictRowPreview({ match }: { match: NonNullable<ReturnType<typeo
   return (
     <div className="bf-predict-match-row bf-admin-match-preview-predict" aria-hidden>
       <div className="bf-predict-row-logos">
-        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={40} glow={false} />
+        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={40} glow={false} />
         <span className="bf-predict-row-vs">vs</span>
-        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={40} glow={false} />
+        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={40} glow={false} />
       </div>
       <div className="bf-predict-row-copy">
         <p className="bf-predict-row-title">
-          {teamName(match.teamASlug)} <span>vs</span> {teamName(match.teamBSlug)}
+          {teamName(match.teamASlug, match)} <span>vs</span> {teamName(match.teamBSlug, match)}
         </p>
         <p className="bf-predict-row-sub">
           {tournamentName(match.tournamentSlug)} · {stageLabel}

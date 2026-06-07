@@ -47,8 +47,8 @@ export function ForgeMatchDetail({ id }: { id: string }) {
       <div className="fg-detail-hero">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
           <Link href={`/teams/${match.teamASlug}`} style={{ textAlign: "center", textDecoration: "none", color: "inherit" }}>
-            <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={56} />
-            <div style={{ fontWeight: 700, marginTop: 8, color: winA ? "var(--fg-gold)" : undefined }}>{teamName(match.teamASlug)}</div>
+            <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={56} />
+            <div style={{ fontWeight: 700, marginTop: 8, color: winA ? "var(--fg-gold)" : undefined }}>{teamName(match.teamASlug, match)}</div>
             {teamA && <FormDots form={teamA.form} />}
           </Link>
           <div style={{ textAlign: "center" }}>
@@ -66,8 +66,8 @@ export function ForgeMatchDetail({ id }: { id: string }) {
             </div>
           </div>
           <Link href={`/teams/${match.teamBSlug}`} style={{ textAlign: "center", textDecoration: "none", color: "inherit" }}>
-            <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={56} />
-            <div style={{ fontWeight: 700, marginTop: 8, color: winB ? "var(--fg-gold)" : undefined }}>{teamName(match.teamBSlug)}</div>
+            <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={56} />
+            <div style={{ fontWeight: 700, marginTop: 8, color: winB ? "var(--fg-gold)" : undefined }}>{teamName(match.teamBSlug, match)}</div>
             {teamB && <FormDots form={teamB.form} />}
           </Link>
         </div>
@@ -83,7 +83,7 @@ export function ForgeMatchDetail({ id }: { id: string }) {
             {[rosterA, rosterB].map((roster, side) => (
               <div key={side} style={{ background: "var(--fg-surface)" }}>
                 <div style={{ padding: "8px 14px", fontSize: 11, fontWeight: 700, borderBottom: "1px solid var(--fg-line)" }}>
-                  {side === 0 ? teamName(match.teamASlug) : teamName(match.teamBSlug)}
+                  {side === 0 ? teamName(match.teamASlug, match) : teamName(match.teamBSlug, match)}
                 </div>
                 {roster.map((p) => p && (
                   <Link key={p.slug} href={`/players/${p.slug}`} className="fg-row">

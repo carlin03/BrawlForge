@@ -80,7 +80,13 @@ async function main() {
       const wikitext = texts[t.liquipediaPage] || "";
       const participantNames = parseParticipantTeams(wikitext);
       const participantSlugs = [...new Set(participantNames.map(resolveTeam).filter(Boolean))];
-      const parsed = parseMatchesFromWikitext(wikitext, t.slug, t.region, resolveTeam);
+      const parsed = parseMatchesFromWikitext(
+        wikitext,
+        t.slug,
+        t.region,
+        resolveTeam,
+        t.liquipediaPage?.replace(/ /g, "_"),
+      );
       allMatches.push(...parsed);
       enriched.push({
         ...t,

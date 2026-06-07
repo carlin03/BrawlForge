@@ -116,8 +116,8 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
               format={match.format}
               teamASlug={match.teamASlug}
               teamBSlug={match.teamBSlug}
-              teamAName={teamName(match.teamASlug)}
-              teamBName={teamName(match.teamBSlug)}
+              teamAName={teamName(match.teamASlug, match)}
+              teamBName={teamName(match.teamBSlug, match)}
               initialScore={exactScores[match.id] ?? null}
             />
           )}
@@ -157,8 +157,8 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
           <h2 className="bf-match-pro-h2">Baneos de mapas</h2>
           <div className="bf-match-pro-bans">
             <div className="bf-match-pro-ban-col">
-              <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={36} />
-              <span className="bf-match-pro-ban-team">{teamName(match.teamASlug)}</span>
+              <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={36} />
+              <span className="bf-match-pro-ban-team">{teamName(match.teamASlug, match)}</span>
               <ul className="bf-match-pro-ban-chips">
                 {(meta.bans?.maps_a ?? []).map((m) => (
                   <li key={m} className="is-banned">
@@ -171,8 +171,8 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
               VS
             </div>
             <div className="bf-match-pro-ban-col">
-              <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={36} />
-              <span className="bf-match-pro-ban-team">{teamName(match.teamBSlug)}</span>
+              <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={36} />
+              <span className="bf-match-pro-ban-team">{teamName(match.teamBSlug, match)}</span>
               <ul className="bf-match-pro-ban-chips">
                 {(meta.bans?.maps_b ?? []).map((m) => (
                   <li key={m} className="is-banned">
@@ -238,7 +238,7 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
           {(meta.bans?.brawlers_a?.length || meta.bans?.brawlers_b?.length) && (
             <div className="bf-match-pro-brawler-bans">
               <div>
-                <span>{teamName(match.teamASlug)}</span>
+                <span>{teamName(match.teamASlug, match)}</span>
                 <ul className="bf-match-pro-chips is-ban">
                   {(meta.bans?.brawlers_a ?? []).map((b) => (
                     <li key={b}>{b}</li>
@@ -246,7 +246,7 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
                 </ul>
               </div>
               <div>
-                <span>{teamName(match.teamBSlug)}</span>
+                <span>{teamName(match.teamBSlug, match)}</span>
                 <ul className="bf-match-pro-chips is-ban">
                   {(meta.bans?.brawlers_b ?? []).map((b) => (
                     <li key={b}>{b}</li>
@@ -262,8 +262,8 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
         <h2 className="bf-match-pro-h2">Estadísticas</h2>
         <div className="bf-match-pro-stats-compare">
           <div className="bf-match-pro-team-stat">
-            <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={48} />
-            <strong>{teamName(match.teamASlug)}</strong>
+            <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={48} />
+            <strong>{teamName(match.teamASlug, match)}</strong>
             {teamA && <FormDots form={teamA.form} />}
             <dl>
               <div>
@@ -293,8 +293,8 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
             )}
           </div>
           <div className="bf-match-pro-team-stat">
-            <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={48} />
-            <strong>{teamName(match.teamBSlug)}</strong>
+            <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={48} />
+            <strong>{teamName(match.teamBSlug, match)}</strong>
             {teamB && <FormDots form={teamB.form} />}
             <dl>
               <div>
@@ -330,7 +330,7 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
 
         <div className="bf-match-pro-recent">
           <div>
-            <h3>Forma · {teamName(match.teamASlug)}</h3>
+            <h3>Forma · {teamName(match.teamASlug, match)}</h3>
             <ul>
               {statsA.recent.slice(0, 4).map((m) => (
                 <li key={m.id}>
@@ -340,7 +340,7 @@ export function MatchDetailPro({ match }: { match: EsportsMatch }) {
             </ul>
           </div>
           <div>
-            <h3>Forma · {teamName(match.teamBSlug)}</h3>
+            <h3>Forma · {teamName(match.teamBSlug, match)}</h3>
             <ul>
               {statsB.recent.slice(0, 4).map((m) => (
                 <li key={m.id}>

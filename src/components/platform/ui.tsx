@@ -159,8 +159,8 @@ export function FeaturedMatch({ match, tag: tagLabel }: { match: EsportsMatch; t
       </div>
       <div className="bp-match-featured-body">
         <div className={`bp-match-featured-team ${winA ? "winner" : ""}`}>
-          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={56} />
-          <span className="bp-match-featured-name">{teamName(match.teamASlug)}</span>
+          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={56} />
+          <span className="bp-match-featured-name">{teamName(match.teamASlug, match)}</span>
           {teamA?.form && <FormDots form={teamA.form} />}
           {finished && <span className="bp-match-featured-score">{match.scoreA}</span>}
         </div>
@@ -177,8 +177,8 @@ export function FeaturedMatch({ match, tag: tagLabel }: { match: EsportsMatch; t
           )}
         </div>
         <div className={`bp-match-featured-team ${winB ? "winner" : ""}`}>
-          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={56} />
-          <span className="bp-match-featured-name">{teamName(match.teamBSlug)}</span>
+          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={56} />
+          <span className="bp-match-featured-name">{teamName(match.teamBSlug, match)}</span>
           {teamB?.form && <FormDots form={teamB.form} />}
           {finished && <span className="bp-match-featured-score">{match.scoreB}</span>}
         </div>
@@ -230,9 +230,9 @@ export function MatchLine({ match, compact, rich }: { match: EsportsMatch; compa
         )}
       </div>
       <div className="bp-match-side">
-        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={rich ? 24 : 28} />
+        <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={rich ? 24 : 28} />
         <div>
-          <div className={`bp-match-name ${winA ? "bp-match-win" : ""}`}>{teamName(match.teamASlug)}</div>
+          <div className={`bp-match-name ${winA ? "bp-match-win" : ""}`}>{teamName(match.teamASlug, match)}</div>
           {!compact && <div className="bp-match-tag">{tag(match.teamASlug)}</div>}
           {rich && teamA?.form && <FormDots form={teamA.form} />}
         </div>
@@ -243,15 +243,15 @@ export function MatchLine({ match, compact, rich }: { match: EsportsMatch; compa
         ) : (
           <>
             <span className={winA ? "bp-match-win" : ""}>{match.scoreA}</span>
-            <span style={{ color: "var(--bp-dim)", margin: "0 2px" }}>–</span>
+            <span className="bp-match-score-sep">:</span>
             <span className={winB ? "bp-match-win" : ""}>{match.scoreB}</span>
           </>
         )}
       </div>
       <div className="bp-match-side right">
-        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={rich ? 24 : 28} />
+        <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={rich ? 24 : 28} />
         <div>
-          <div className={`bp-match-name ${winB ? "bp-match-win" : ""}`}>{teamName(match.teamBSlug)}</div>
+          <div className={`bp-match-name ${winB ? "bp-match-win" : ""}`}>{teamName(match.teamBSlug, match)}</div>
           {!compact && <div className="bp-match-tag">{tag(match.teamBSlug)}</div>}
           {rich && teamB?.form && <FormDots form={teamB.form} />}
         </div>

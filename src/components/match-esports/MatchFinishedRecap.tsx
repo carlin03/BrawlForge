@@ -60,8 +60,8 @@ export function MatchFinishedRecap({
 
       <div className="bf-finished-hero">
         <div className="bf-finished-team">
-          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={64} />
-          <span>{teamName(match.teamASlug)}</span>
+          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={64} />
+          <span>{teamName(match.teamASlug, match)}</span>
         </div>
         <div className="bf-finished-score">
           <strong>
@@ -70,8 +70,8 @@ export function MatchFinishedRecap({
           <span>Resultado oficial</span>
         </div>
         <div className="bf-finished-team">
-          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={64} />
-          <span>{teamName(match.teamBSlug)}</span>
+          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={64} />
+          <span>{teamName(match.teamBSlug, match)}</span>
         </div>
       </div>
 

@@ -48,8 +48,8 @@ export function MatchWinnerDuel({
     }
   }
 
-  const nameA = teamName(match.teamASlug);
-  const nameB = teamName(match.teamBSlug);
+  const nameA = teamName(match.teamASlug, match);
+  const nameB = teamName(match.teamBSlug, match);
 
   return (
     <div className="bf-match-winner-duel">

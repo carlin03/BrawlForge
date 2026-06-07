@@ -30,7 +30,7 @@ function buildRecapText(
     "BrawlForge — Predicción",
     `Usuario: ${displayName} (@${userId.slice(0, 8)})`,
     "",
-    `${teamName(match.teamASlug)} vs ${teamName(match.teamBSlug)}`,
+    `${teamName(match.teamASlug, match)} vs ${teamName(match.teamBSlug, match)}`,
     `Formato: ${match.format}`,
   ];
   if (winnerPick) {
@@ -166,8 +166,8 @@ export function MatchPredictionRecapCard({
           <div
             className={`bf-prediction-recap-team is-a ${winnerPick === "A" ? "is-winner-pick" : ""}`}
           >
-            <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={52} />
-            <span>{teamName(match.teamASlug)}</span>
+            <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={52} />
+            <span>{teamName(match.teamASlug, match)}</span>
             {winnerPick === "A" && (
               <span className="bf-prediction-recap-winner-tag">
                 <Trophy size={12} aria-hidden />
@@ -184,8 +184,8 @@ export function MatchPredictionRecapCard({
           <div
             className={`bf-prediction-recap-team is-b ${winnerPick === "B" ? "is-winner-pick" : ""}`}
           >
-            <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={52} />
-            <span>{teamName(match.teamBSlug)}</span>
+            <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={52} />
+            <span>{teamName(match.teamBSlug, match)}</span>
             {winnerPick === "B" && (
               <span className="bf-prediction-recap-winner-tag">
                 <Trophy size={12} aria-hidden />
@@ -271,7 +271,7 @@ export function MatchPredictionRecapCard({
                     <div className="bf-prediction-recap-map-draft">
                       {picks?.a?.length ? (
                         <div className="bf-prediction-recap-draft-col">
-                          <span>{teamName(match.teamASlug)}</span>
+                          <span>{teamName(match.teamASlug, match)}</span>
                           <div className="bf-prediction-recap-icons">
                             {picks.a.map((n) => (
                               <BrawlerAssetIcon key={n} name={n} size={36} hideName />
@@ -291,7 +291,7 @@ export function MatchPredictionRecapCard({
                       )}
                       {picks?.b?.length ? (
                         <div className="bf-prediction-recap-draft-col">
-                          <span>{teamName(match.teamBSlug)}</span>
+                          <span>{teamName(match.teamBSlug, match)}</span>
                           <div className="bf-prediction-recap-icons">
                             {picks.b.map((n) => (
                               <BrawlerAssetIcon key={n} name={n} size={36} hideName />

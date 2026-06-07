@@ -48,8 +48,8 @@ export function MatchSpotlightCard({ match }: { match: EsportsMatch }) {
 
       <div className="bf-match-spotlight-duel">
         <div className={`bf-match-spotlight-side ${winA ? "is-winner" : ""}`}>
-          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={72} glow />
-          <span className="bf-match-spotlight-name">{teamName(match.teamASlug)}</span>
+          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={72} glow />
+          <span className="bf-match-spotlight-name">{teamName(match.teamASlug, match)}</span>
           {teamA?.form && <FormDots form={teamA.form} />}
           {finished && <span className="bf-match-spotlight-score">{match.scoreA}</span>}
         </div>
@@ -76,8 +76,8 @@ export function MatchSpotlightCard({ match }: { match: EsportsMatch }) {
         </div>
 
         <div className={`bf-match-spotlight-side ${winB ? "is-winner" : ""}`}>
-          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={72} glow />
-          <span className="bf-match-spotlight-name">{teamName(match.teamBSlug)}</span>
+          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={72} glow />
+          <span className="bf-match-spotlight-name">{teamName(match.teamBSlug, match)}</span>
           {teamB?.form && <FormDots form={teamB.form} />}
           {finished && <span className="bf-match-spotlight-score">{match.scoreB}</span>}
         </div>

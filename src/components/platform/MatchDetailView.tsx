@@ -6,6 +6,7 @@ import { DuelLogoShowcase, PageUltraHero } from "@/components/platform/PageUltra
 import { MatchEsportsExperience } from "@/components/match-esports/MatchEsportsExperience";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import {
+  getLiquipediaMatchUrl,
   getMatch,
   teamName,
 } from "@/lib/data";
@@ -38,14 +39,15 @@ export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch
   const winA = match.status === "finished" && match.scoreA > match.scoreB;
   const winB = match.status === "finished" && match.scoreB > match.scoreA;
   const statusLabel = displayStatusLabel(meta.display_status, match.status);
+  const liquipediaUrl = getLiquipediaMatchUrl(match);
 
   const scoreBlock =
     match.status === "upcoming" ? (
       <span className="fu-duel-vs">VS</span>
     ) : (
-      <div className="fu-match-score-hero">
+      <div className="fu-match-score-hero fu-match-score-lp">
         <span className={winA ? "is-win" : ""}>{match.scoreA}</span>
-        <span style={{ color: "var(--bp-dim)", margin: "0 12px" }}>–</span>
+        <span className="fu-match-score-sep">:</span>
         <span className={winB ? "is-win" : ""}>{match.scoreB}</span>
       </div>
     );
@@ -67,7 +69,7 @@ export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch
         }
         title={
           <>
-            {teamName(match.teamASlug)} <em>vs</em> {teamName(match.teamBSlug)}
+            {teamName(match.teamASlug, match)} <em>vs</em> {teamName(match.teamBSlug, match)}
           </>
         }
         lead={
@@ -87,24 +89,31 @@ export function MatchDetailView({ match: matchProp, id }: { match?: EsportsMatch
         showcase={
           <div className="fu-duel-showcase">
             <Link href={`/teams/${match.teamASlug}`} className="fu-duel-logo fu-card-float fu-card-float-1">
-              <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={96} glow />
-              <span>{teamName(match.teamASlug)}</span>
+              <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={96} glow />
+              <span>{teamName(match.teamASlug, match)}</span>
               {teamA && <FormDots form={teamA.form} />}
             </Link>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, zIndex: 2 }}>
               {scoreBlock}
             </div>
             <Link href={`/teams/${match.teamBSlug}`} className="fu-duel-logo fu-card-float fu-card-float-3">
-              <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={96} glow />
-              <span>{teamName(match.teamBSlug)}</span>
+              <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={96} glow />
+              <span>{teamName(match.teamBSlug, match)}</span>
               {teamB && <FormDots form={teamB.form} />}
             </Link>
           </div>
         }
         actions={
-          <a href="#match-predictions" className="fu-btn fu-btn-red">
-            Ir a predicciones
-          </a>
+          <>
+            <a href="#match-predictions" className="fu-btn fu-btn-red">
+              Ir a predicciones
+            </a>
+            {liquipediaUrl && (
+              <a href={liquipediaUrl} target="_blank" rel="noopener noreferrer" className="fu-btn fu-btn-ghost">
+                Ver en Liquipedia
+              </a>
+            )}
+          </>
         }
       />
 

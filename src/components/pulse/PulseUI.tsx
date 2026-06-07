@@ -12,8 +12,8 @@ export function PulseMatchRow({ match }: { match: EsportsMatch }) {
   const finished = match.status === "finished";
   const winA = finished && match.scoreA > match.scoreB;
   const winB = finished && match.scoreB > match.scoreA;
-  const a = teamName(match.teamASlug);
-  const b = teamName(match.teamBSlug);
+  const a = teamName(match.teamASlug, match);
+  const b = teamName(match.teamBSlug, match);
 
   return (
     <Link href={`/matches/${match.id}`} className={`pl-match ${live ? "pl-match-live" : ""}`}>

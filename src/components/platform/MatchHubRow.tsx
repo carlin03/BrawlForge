@@ -74,11 +74,11 @@ export function MatchHubRow({ match }: { match: EsportsMatch }) {
             <span className="bf-match-row-dash">—</span>
           </>
         ) : (
-          <>
+          <span className="bf-match-row-score-lp">
             <span className={winA ? "is-win" : ""}>{match.scoreA}</span>
-            <span className="bf-match-row-sep">–</span>
+            <span className="bf-match-row-sep">:</span>
             <span className={winB ? "is-win" : ""}>{match.scoreB}</span>
-          </>
+          </span>
         )}
       </div>
 

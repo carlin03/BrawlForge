@@ -117,7 +117,7 @@ async function main() {
                 ? "SA"
                 : "GLOBAL";
       const participantNames = parseParticipantTeams(wikitext);
-      const parsedMatches = parseMatchesFromWikitext(wikitext, slug, mapRegion(region), resolveTeam);
+      const parsedMatches = parseMatchesFromWikitext(wikitext, slug, mapRegion(region), resolveTeam, page);
       const fromNames = participantNames.map(resolveTeam).filter(Boolean);
       const fromMatches = parsedMatches.flatMap((m) => [m.teamASlug, m.teamBSlug]);
       const participantSlugs = [...new Set([...fromNames, ...fromMatches])];

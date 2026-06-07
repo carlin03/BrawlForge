@@ -21,8 +21,8 @@ export function MatchStatsVisual({ match }: { match: EsportsMatch }) {
 
       <div className="bf-stats-h2h-hero">
         <div className="bf-stats-h2h-team">
-          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug)} size={52} />
-          <span>{teamName(match.teamASlug)}</span>
+          <TeamLogo slug={match.teamASlug} name={teamName(match.teamASlug, match)} size={52} />
+          <span>{teamName(match.teamASlug, match)}</span>
         </div>
         <div className="bf-stats-h2h-score">
           <strong>
@@ -31,8 +31,8 @@ export function MatchStatsVisual({ match }: { match: EsportsMatch }) {
           <span>H2H · {h2h.total} partidos</span>
         </div>
         <div className="bf-stats-h2h-team">
-          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug)} size={52} />
-          <span>{teamName(match.teamBSlug)}</span>
+          <TeamLogo slug={match.teamBSlug} name={teamName(match.teamBSlug, match)} size={52} />
+          <span>{teamName(match.teamBSlug, match)}</span>
         </div>
       </div>
 
@@ -76,11 +76,11 @@ export function MatchStatsVisual({ match }: { match: EsportsMatch }) {
 
       <div className="bf-stats-form-row">
         <div>
-          <span>Forma · {teamName(match.teamASlug)}</span>
+          <span>Forma · {teamName(match.teamASlug, match)}</span>
           {teamA && <FormDots form={teamA.form} />}
         </div>
         <div>
-          <span>Forma · {teamName(match.teamBSlug)}</span>
+          <span>Forma · {teamName(match.teamBSlug, match)}</span>
           {teamB && <FormDots form={teamB.form} />}
         </div>
       </div>
