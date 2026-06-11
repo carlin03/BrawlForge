@@ -48,6 +48,7 @@
     "data:purge:lp-upcoming": "node scripts/purge-lp-upcoming.mjs --write",
     "data:purge:teams-no-matches": "node scripts/purge-teams-without-matches.mjs --write",
     "data:purge:non-bsc-tours": "node scripts/purge-non-curated-tournaments.mjs --write",
+    "data:sync:tournament-logos": "node scripts/sync-tournament-logo-slugs.mjs --write",
     "data:sync:bsc2026-players": "node scripts/sync-bsc-2026-rosters.mjs --write",
     "data:discover:bsc-circuit": "node scripts/discover-bsc-2026-circuit.mjs --write",
     "data:sync:bsc-tournaments": "node scripts/sync-bsc-tournaments-liquipedia.mjs --write",

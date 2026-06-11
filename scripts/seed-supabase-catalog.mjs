@@ -8,6 +8,7 @@ import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { buildBscCatalogEnriched } from "./build-bsc-catalog-enriched.mjs";
+import { loadUserLogoTournamentSlugs } from "./lib/tournament-logo-slugs.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const envPath = resolve(root, ".env.local");
@@ -213,7 +214,11 @@ function regionFromSlug(slug) {
   return "GLOBAL";
 }
 
-const tournamentRows = Object.entries(participants).map(([slug, teamList]) => {
+const logoSlugs = loadUserLogoTournamentSlugs();
+
+const tournamentRows = Object.entries(participants)
+  .filter(([slug]) => logoSlugs.has(slug))
+  .map(([slug, teamList]) => {
   const wiki = wikiBySlug[slug] ?? {};
   const uniqueTeams = [...new Set(teamList)].filter((s) => catalogTeamSlugs.has(s));
   const participantSlugs = wiki.participantSlugs?.length
@@ -267,7 +272,10 @@ await upsert("tournaments_catalog", tournamentRows);
 const rosterRows = [];
 const marketRows = [];
 
+const seededTourSlugs = new Set(tournamentRows.map((t) => t.slug));
+
 for (const [tournamentSlug, teamList] of Object.entries(participants)) {
+  if (!seededTourSlugs.has(tournamentSlug)) continue;
   const seenTeams = new Set();
   for (const teamSlug of teamList) {
     if (seenTeams.has(teamSlug)) continue;

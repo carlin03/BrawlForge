@@ -21,13 +21,6 @@
     "source": "liquipedia-match-2026"
   },
   {
-    "slug": "accept",
-    "name": "Accept",
-    "tag": "A",
-    "region": "EMEA",
-    "source": "liquipedia-match-2026"
-  },
-  {
     "slug": "ace-xero",
     "name": "Ace Xero",
     "tag": "AX",
@@ -259,13 +252,6 @@
     "source": "liquipedia-catalog-match"
   },
   {
-    "slug": "kaioperro",
-    "name": "KaioPerro",
-    "tag": "KAI",
-    "region": "SA",
-    "source": "liquipedia-catalog-match"
-  },
-  {
     "slug": "kcn",
     "name": "KCN",
     "tag": "K",
@@ -290,13 +276,6 @@
     "slug": "legacy-esports",
     "name": "Legacy Esports",
     "tag": "LE",
-    "region": "EMEA",
-    "source": "liquipedia-match-2026"
-  },
-  {
-    "slug": "legend-ken-g",
-    "name": "Legend KEN G",
-    "tag": "LKG",
     "region": "EMEA",
     "source": "liquipedia-match-2026"
   },

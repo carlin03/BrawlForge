@@ -235,9 +235,11 @@ function sortCircuitTournaments(list: EsportsTournament[]): EsportsTournament[] 
   });
 }
 
-/** Calendario BSC 2026 curado (Monthly Finals, Challengers, RTBC, WF…) — sin torneos genéricos Liquipedia */
+/** Calendario BSC 2026 — solo torneos con logo manual del usuario */
 export function getBscCircuitTournaments(limit?: number): EsportsTournament[] {
-  const list = sortCircuitTournaments(tournaments.filter((t) => isBscCircuitSlug(t.slug)));
+  const list = sortCircuitTournaments(
+    tournaments.filter((t) => isCuratedPublicTournamentSlug(t.slug)),
+  );
   return limit ? list.slice(0, limit) : list;
 }
 

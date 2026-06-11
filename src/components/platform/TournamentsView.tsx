@@ -87,7 +87,7 @@ export function TournamentsView() {
             Torneos <em>2026</em>
           </h1>
           <p>
-            {catalogTourCount} eventos BSC 2026 · premios, sedes, participantes y bracket desde Liquipedia.
+            {catalogTourCount} eventos BSC con logo · fechas, sedes y participantes.
           </p>
         </div>
         <div className="bf-tours-hub-hero-stats">

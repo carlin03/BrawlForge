@@ -11,6 +11,7 @@ import { loadEnv, root } from "./lib/load-env.mjs";
 import { upsert } from "./lib/supabase-rest.mjs";
 import { deleteMatchesNotIn, deletePlayersNotIn, deletePlayersWithOrphanTeam, deleteTournamentsNotIn } from "./lib/supabase-delete.mjs";
 import { listCuratedTournamentSlugs } from "./lib/curated-tournament-slugs.mjs";
+import { syncUserLogoSlugsToCache } from "./lib/tournament-logo-slugs.mjs";
 import {
   shouldPublishMatch,
   matchScheduleTrust,
@@ -193,7 +194,12 @@ console.log("══════════════════════�
 console.log(" BrawlForge — publicación 100% a Supabase");
 console.log("═══════════════════════════════════════════");
 
-runStep("Purgar torneos fuera de BSC 2026", "node", [
+runStep("Sincronizar torneos con logo (usuario)", "node", [
+  "scripts/sync-tournament-logo-slugs.mjs",
+  "--write",
+]);
+
+runStep("Purgar torneos sin logo manual", "node", [
   "scripts/purge-non-curated-tournaments.mjs",
   "--write",
 ]);
