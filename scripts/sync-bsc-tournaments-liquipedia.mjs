@@ -72,6 +72,14 @@ function buildSlugPageMap() {
   return map;
 }
 
+function mfDisplayName(slug) {
+  const m = slug.match(/^bsc-2026-(february|march|april|may|june|july|august)-(emea|ea|na|sa)-mf$/);
+  if (!m) return null;
+  const month = m[1].charAt(0).toUpperCase() + m[1].slice(1);
+  const region = { emea: "EMEA", ea: "East Asia", na: "North America", sa: "South America" }[m[2]];
+  return `Brawl Stars Championship 2026: ${month} ${region} Monthly Finals`;
+}
+
 async function main() {
   const teamsPath = path.join(outDir, "teams.json");
   if (!fs.existsSync(teamsPath)) {
@@ -124,11 +132,12 @@ async function main() {
       allMatches.push(...parsedMatches);
 
       const status = tournamentStatus(info.startDate, info.endDate);
+      const slugName = mfDisplayName(slug);
       enriched[slug] = {
         slug,
         liquipediaPage: page,
         liquipediaUrl: `https://liquipedia.net/brawlstars/${page}`,
-        name: info.name ? cleanLabel(info.name) : undefined,
+        name: slugName ?? (info.name ? cleanLabel(info.name) : undefined),
         shortName: info.shortName ? cleanLabel(info.shortName) : undefined,
         prizePool: info.prizePool,
         startDate: info.startDate || undefined,

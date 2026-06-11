@@ -134,6 +134,14 @@ function buildPublishMatchPool() {
   const enrichedPath = resolve(gen, "bsc-tournaments-enriched.json");
   const enrichedBundle = JSON.parse(readFileSync(enrichedPath, "utf8"));
   const enriched = enrichedBundle.matches ?? [];
+  const supercellPath = resolve(gen, "supercell-bracket-matches.json");
+  let supercellMatches = [];
+  try {
+    const sc = JSON.parse(readFileSync(supercellPath, "utf8"));
+    supercellMatches = sc.matches ?? [];
+  } catch {
+    /* opcional */
+  }
   const tourUrls = new Map();
   for (const t of Object.values(enrichedBundle.tournaments ?? {})) {
     if (t?.slug && t?.liquipediaUrl) tourUrls.set(t.slug, t.liquipediaUrl);
@@ -154,6 +162,11 @@ function buildPublishMatchPool() {
     byId.set(m.id, m);
   }
   for (const m of bscUpcoming) {
+    if (!shouldPublishMatch(m)) continue;
+    byId.set(m.id, m);
+  }
+  // Supercell BSC (cuadros oficiales activos)
+  for (const m of supercellMatches) {
     if (!shouldPublishMatch(m)) continue;
     byId.set(m.id, m);
   }
@@ -198,6 +211,16 @@ runStep("Sincronizar torneos con logo (usuario)", "node", [
   "scripts/sync-tournament-logo-slugs.mjs",
   "--write",
 ]);
+
+runStep("Sincronizar cuadros Supercell BSC", "node", ["scripts/sync-supercell-brackets.mjs", "--write"]);
+try {
+  runStep("Enriquecer torneos BSC (Liquipedia)", "node", [
+    "scripts/sync-bsc-tournaments-liquipedia.mjs",
+    "--write",
+  ]);
+} catch (e) {
+  console.warn("  (Liquipedia omitido:", e.message, "— usando cache local)");
+}
 
 runStep("Purgar torneos sin logo manual", "node", [
   "scripts/purge-non-curated-tournaments.mjs",

@@ -3,6 +3,7 @@ import {
   fetchSupercellBracket,
   fetchSupercellEvents,
   slugFromSupercellContestantId,
+  SUPERCELL_EVENT_TOURNAMENT,
   type SupercellBracket,
   type SupercellBracketMatch,
   type SupercellEvent,
@@ -16,12 +17,6 @@ import { parseMatchMeta } from "@/lib/data/match-meta";
 import { hasPremiumManualMeta, mergeMetaForSync } from "./merge-sync-match";
 
 const SETTINGS_KEY = "playoff_brackets";
-
-/** eventId Supercell → slug torneo BrawlForge */
-export const SUPERCELL_EVENT_TOURNAMENT: Record<string, string> = {
-  /** Brawl Cup 2026 (global, mayo) — no World Finals Tokyo. */
-  w4Lu1Ua9yIKv2ZBABn6oP: "bsc-2026-brawl-cup",
-};
 
 export type SupercellSyncResult = {
   ok: boolean;

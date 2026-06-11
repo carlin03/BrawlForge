@@ -64,6 +64,7 @@
     "data:fetch:player-countries": "node scripts/fetch-bsc-player-countries.mjs --regions=EMEA,EA --write",
     "data:sync:logos": "node scripts/sync-liquipedia-full.mjs --logos-only",
     "bsc:sync": "node scripts/sync-supercell-bsc.mjs",
+    "bsc:sync:brackets": "node scripts/sync-supercell-brackets.mjs --write",
     "postinstall": "node scripts/postinstall.mjs"
   },
   "dependencies": {

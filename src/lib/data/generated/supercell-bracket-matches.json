@@ -1,0 +1,525 @@
+{
+  "syncedAt": "2026-06-11T07:30:12.261Z",
+  "events": [
+    {
+      "eventId": "57UicBDQiZW3rOEycvUM7P",
+      "region": "emea",
+      "status": "published",
+      "start": "2026-06-14T11:45:00.000Z",
+      "tournamentSlug": "bsc-2026-june-emea-mf"
+    },
+    {
+      "eventId": "fUOdC0IqHXuBhtoegWFeO",
+      "region": "ea",
+      "status": "active",
+      "start": "2026-06-13T06:45:00.000Z",
+      "tournamentSlug": "bsc-2026-june-ea-mf"
+    },
+    {
+      "eventId": "6iVR4E1YiJiezETVwcqn6f",
+      "region": "na",
+      "status": "published",
+      "start": "2026-06-21T18:45:00.000Z",
+      "tournamentSlug": "bsc-2026-june-na-mf"
+    },
+    {
+      "eventId": "5HIWv7rJuTye6PouIyTGDw",
+      "region": "sa",
+      "status": "published",
+      "start": "2026-06-20T18:45:00.000Z",
+      "tournamentSlug": "bsc-2026-june-sa-mf"
+    }
+  ],
+  "contestantMaps": {
+    "bsc-2026-june-emea-mf": {
+      "2": "team-heretics",
+      "4": "fut-esports",
+      "5": "natus-vincere",
+      "6": "crazy-raccoon",
+      "8": "rival-esports",
+      "11": "reject",
+      "13": "feasible-gaming",
+      "15": "novo-esports",
+      "21": "hmble",
+      "23": "wwl-esports",
+      "24": "sk-gaming",
+      "25": "totem-esports",
+      "27": "skcalalas-ea",
+      "33": "fut-esports",
+      "47": "zeta-division",
+      "51": "loud",
+      "52": "totem-esports",
+      "55": "frenzy-esports",
+      "56": "zeta-division",
+      "57": "big"
+    },
+    "bsc-2026-june-ea-mf": {
+      "2": "team-heretics",
+      "4": "fut-esports",
+      "5": "natus-vincere",
+      "6": "crazy-raccoon",
+      "8": "rival-esports",
+      "11": "reject",
+      "13": "feasible-gaming",
+      "15": "novo-esports",
+      "21": "hmble",
+      "23": "wwl-esports",
+      "24": "sk-gaming",
+      "25": "totem-esports",
+      "27": "skcalalas-ea",
+      "33": "fut-esports",
+      "47": "zeta-division",
+      "51": "loud",
+      "52": "totem-esports",
+      "55": "frenzy-esports",
+      "56": "zeta-division",
+      "57": "big"
+    },
+    "bsc-2026-june-na-mf": {
+      "2": "team-heretics",
+      "4": "fut-esports",
+      "5": "natus-vincere",
+      "6": "crazy-raccoon",
+      "8": "rival-esports",
+      "11": "reject",
+      "13": "feasible-gaming",
+      "15": "novo-esports",
+      "21": "hmble",
+      "23": "wwl-esports",
+      "24": "sk-gaming",
+      "25": "totem-esports",
+      "27": "skcalalas-ea",
+      "33": "fut-esports",
+      "47": "zeta-division",
+      "51": "loud",
+      "52": "totem-esports",
+      "55": "frenzy-esports",
+      "56": "zeta-division",
+      "57": "big"
+    },
+    "bsc-2026-june-sa-mf": {
+      "2": "team-heretics",
+      "4": "fut-esports",
+      "5": "natus-vincere",
+      "6": "crazy-raccoon",
+      "8": "rival-esports",
+      "11": "reject",
+      "13": "feasible-gaming",
+      "15": "novo-esports",
+      "21": "hmble",
+      "23": "wwl-esports",
+      "24": "sk-gaming",
+      "25": "totem-esports",
+      "27": "skcalalas-ea",
+      "33": "fut-esports",
+      "47": "zeta-division",
+      "51": "loud",
+      "52": "totem-esports",
+      "55": "frenzy-esports",
+      "56": "zeta-division",
+      "57": "big"
+    }
+  },
+  "matches": [
+    {
+      "id": "sc-57UicBDQiZW3rOEycvUM7P-1",
+      "teamASlug": "fut-esports",
+      "teamBSlug": "big",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-emea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-14T11:45:00.000Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "57UicBDQiZW3rOEycvUM7P",
+        "supercell_match_id": 1
+      }
+    },
+    {
+      "id": "sc-57UicBDQiZW3rOEycvUM7P-2",
+      "teamASlug": "sk-gaming",
+      "teamBSlug": "novo-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-emea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-14T13:15:00.000Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "57UicBDQiZW3rOEycvUM7P",
+        "supercell_match_id": 2
+      }
+    },
+    {
+      "id": "sc-57UicBDQiZW3rOEycvUM7P-3",
+      "teamASlug": "team-heretics",
+      "teamBSlug": "totem-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-emea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-14T14:45:00.000Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "57UicBDQiZW3rOEycvUM7P",
+        "supercell_match_id": 3
+      }
+    },
+    {
+      "id": "sc-57UicBDQiZW3rOEycvUM7P-4",
+      "teamASlug": "hmble",
+      "teamBSlug": "natus-vincere",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-emea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-14T16:15:00.000Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "57UicBDQiZW3rOEycvUM7P",
+        "supercell_match_id": 4
+      }
+    },
+    {
+      "id": "sc-57UicBDQiZW3rOEycvUM7P-5",
+      "teamASlug": "winner-m-2",
+      "teamBSlug": "winner-m-1",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-emea-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-14T17:45:00.000Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "57UicBDQiZW3rOEycvUM7P",
+        "supercell_match_id": 5
+      }
+    },
+    {
+      "id": "sc-57UicBDQiZW3rOEycvUM7P-6",
+      "teamASlug": "winner-m-4",
+      "teamBSlug": "winner-m-3",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-emea-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-14T19:15:00.000Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "57UicBDQiZW3rOEycvUM7P",
+        "supercell_match_id": 6
+      }
+    },
+    {
+      "id": "sc-57UicBDQiZW3rOEycvUM7P-7",
+      "teamASlug": "winner-m-6",
+      "teamBSlug": "winner-m-5",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-emea-mf",
+      "stage": "Grand Final",
+      "date": "2026-06-14T20:45:00.000Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "57UicBDQiZW3rOEycvUM7P",
+        "supercell_match_id": 7
+      }
+    },
+    {
+      "id": "sc-fUOdC0IqHXuBhtoegWFeO-1",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "frenzy-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-ea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-13T06:45:00.000Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "fUOdC0IqHXuBhtoegWFeO",
+        "supercell_match_id": 1
+      }
+    },
+    {
+      "id": "sc-fUOdC0IqHXuBhtoegWFeO-2",
+      "teamASlug": "zeta-division",
+      "teamBSlug": "feasible-gaming",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-ea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-13T08:15:00.000Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "fUOdC0IqHXuBhtoegWFeO",
+        "supercell_match_id": 2
+      }
+    },
+    {
+      "id": "sc-fUOdC0IqHXuBhtoegWFeO-3",
+      "teamASlug": "reject",
+      "teamBSlug": "wwl-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-ea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-13T09:45:00.000Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "fUOdC0IqHXuBhtoegWFeO",
+        "supercell_match_id": 3
+      }
+    },
+    {
+      "id": "sc-fUOdC0IqHXuBhtoegWFeO-4",
+      "teamASlug": "skcalalas-ea",
+      "teamBSlug": "rival-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-ea-mf",
+      "stage": "Quarterfinal",
+      "date": "2026-06-13T11:15:00.000Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "fUOdC0IqHXuBhtoegWFeO",
+        "supercell_match_id": 4
+      }
+    },
+    {
+      "id": "sc-fUOdC0IqHXuBhtoegWFeO-5",
+      "teamASlug": "winner-m-2",
+      "teamBSlug": "winner-m-1",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-ea-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-13T12:45:00.000Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "fUOdC0IqHXuBhtoegWFeO",
+        "supercell_match_id": 5
+      }
+    },
+    {
+      "id": "sc-fUOdC0IqHXuBhtoegWFeO-6",
+      "teamASlug": "winner-m-4",
+      "teamBSlug": "winner-m-3",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-ea-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-13T14:15:00.000Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "fUOdC0IqHXuBhtoegWFeO",
+        "supercell_match_id": 6
+      }
+    },
+    {
+      "id": "sc-fUOdC0IqHXuBhtoegWFeO-7",
+      "teamASlug": "winner-m-6",
+      "teamBSlug": "winner-m-5",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-ea-mf",
+      "stage": "Grand Final",
+      "date": "2026-06-13T15:45:00.000Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "fUOdC0IqHXuBhtoegWFeO",
+        "supercell_match_id": 7
+      }
+    },
+    {
+      "id": "sc-6iVR4E1YiJiezETVwcqn6f-5",
+      "teamASlug": "winner-m-2",
+      "teamBSlug": "winner-m-1",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-na-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-22T00:45:00.000Z",
+      "status": "upcoming",
+      "region": "NA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "6iVR4E1YiJiezETVwcqn6f",
+        "supercell_match_id": 5
+      }
+    },
+    {
+      "id": "sc-6iVR4E1YiJiezETVwcqn6f-6",
+      "teamASlug": "winner-m-4",
+      "teamBSlug": "winner-m-3",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-na-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-22T02:15:00.000Z",
+      "status": "upcoming",
+      "region": "NA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "6iVR4E1YiJiezETVwcqn6f",
+        "supercell_match_id": 6
+      }
+    },
+    {
+      "id": "sc-6iVR4E1YiJiezETVwcqn6f-7",
+      "teamASlug": "winner-m-6",
+      "teamBSlug": "winner-m-5",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-na-mf",
+      "stage": "Grand Final",
+      "date": "2026-06-22T03:45:00.000Z",
+      "status": "upcoming",
+      "region": "NA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "6iVR4E1YiJiezETVwcqn6f",
+        "supercell_match_id": 7
+      }
+    },
+    {
+      "id": "sc-5HIWv7rJuTye6PouIyTGDw-5",
+      "teamASlug": "winner-m-2",
+      "teamBSlug": "winner-m-1",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-sa-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-21T00:45:00.000Z",
+      "status": "upcoming",
+      "region": "SA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "5HIWv7rJuTye6PouIyTGDw",
+        "supercell_match_id": 5
+      }
+    },
+    {
+      "id": "sc-5HIWv7rJuTye6PouIyTGDw-6",
+      "teamASlug": "winner-m-4",
+      "teamBSlug": "winner-m-3",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-sa-mf",
+      "stage": "Semifinal",
+      "date": "2026-06-21T02:15:00.000Z",
+      "status": "upcoming",
+      "region": "SA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "5HIWv7rJuTye6PouIyTGDw",
+        "supercell_match_id": 6
+      }
+    },
+    {
+      "id": "sc-5HIWv7rJuTye6PouIyTGDw-7",
+      "teamASlug": "winner-m-6",
+      "teamBSlug": "winner-m-5",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-june-sa-mf",
+      "stage": "Grand Final",
+      "date": "2026-06-21T03:45:00.000Z",
+      "status": "upcoming",
+      "region": "SA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "pickem_only": false,
+        "data_source": "supercell",
+        "supercell_event_id": "5HIWv7rJuTye6PouIyTGDw",
+        "supercell_match_id": 7
+      }
+    }
+  ]
+}

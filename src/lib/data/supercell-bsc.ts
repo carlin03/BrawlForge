@@ -64,17 +64,41 @@ export interface SupercellBracket {
   ranges: { rangeId: number; matches: SupercellBracketMatch[] }[];
 }
 
-/** Mapeo contestant ID → slug BrawlForge (World Championship / eventos globales) */
+/** Mapeo contestant ID → slug BrawlForge (cuadros BSC 2026, inferido de brackets oficiales). */
 export const SUPERCELL_CONTESTANT_SLUGS: Record<number, string> = {
-  4: "crazy-raccoon",
-  6: "sk-gaming",
-  8: "hmble",
+  2: "team-heretics",
+  4: "fut-esports",
+  5: "natus-vincere",
+  6: "crazy-raccoon",
+  8: "rival-esports",
+  11: "reject",
+  13: "feasible-gaming",
+  15: "novo-esports",
   20: "tribe-gaming",
+  21: "hmble",
+  23: "wwl-esports",
+  24: "sk-gaming",
+  25: "totem-esports",
+  27: "skcalalas-ea",
   33: "fut-esports",
   47: "zeta-division",
   51: "loud",
   52: "totem-esports",
   54: "revenant-xspark",
+  55: "frenzy-esports",
+  56: "zeta-division",
+  57: "big",
+};
+
+/** eventId Supercell → slug torneo BrawlForge */
+export const SUPERCELL_EVENT_TOURNAMENT: Record<string, string> = {
+  /** Brawl Cup 2026 (mayo). */
+  w4Lu1Ua9yIKv2ZBABn6oP: "bsc-2026-brawl-cup",
+  /** June 2026 Monthly Finals por región. */
+  "57UicBDQiZW3rOEycvUM7P": "bsc-2026-june-emea-mf",
+  fUOdC0IqHXuBhtoegWFeO: "bsc-2026-june-ea-mf",
+  "6iVR4E1YiJiezETVwcqn6f": "bsc-2026-june-na-mf",
+  "5HIWv7rJuTye6PouIyTGDw": "bsc-2026-june-sa-mf",
 };
 
 export function supercellContestantLogoUrl(contestantId: number): string {
