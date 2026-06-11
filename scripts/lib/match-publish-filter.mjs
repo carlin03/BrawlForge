@@ -4,6 +4,7 @@
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { isCuratedPublicTournamentSlug } from "./curated-tournament-slugs.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -100,6 +101,7 @@ function isBracketSlotSlug(slug) {
 export function shouldPublishMatch(m) {
   if (!hasPublishableDate(m.date)) return false;
   if (m.teamASlug === m.teamBSlug) return false;
+  if (!isCuratedPublicTournamentSlug(m.tournamentSlug)) return false;
 
   const isBsc = isBscCircuitSlug(m.tournamentSlug);
   const status = m.status || "upcoming";

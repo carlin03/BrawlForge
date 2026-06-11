@@ -206,10 +206,8 @@ const tournamentRows = [...tourBySlug.values()];
 
 console.log("Guardando tier B+ en Supabase…");
 console.log(`  Equipos (discovered + partidos): ${teamRows.length} (json ${discoveredTeams.length})`);
-console.log(`  Torneos tier B+ (con partidos): ${tournamentRows.length}`);
+console.log(`  Torneos: omitidos (solo circuito BSC en seed:catalog)`);
 
 const teamsN = await upsert("teams_catalog", teamRows);
-const toursN = await upsert("tournaments_catalog", tournamentRows);
-
-console.log(`Subidos: ${teamsN} equipos, ${toursN} torneos.`);
-console.log("Guardado completo en Supabase.");
+console.log(`Subidos: ${teamsN} equipos (torneos solo vía supabase:seed:catalog).`);
+console.log("Equipos tier B+ guardados en Supabase.");

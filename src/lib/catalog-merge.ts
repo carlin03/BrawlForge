@@ -186,6 +186,7 @@ export function mergeCatalogTournament(
   };
   if (!row) return base;
   const status = TOUR_STATUSES.has(row.status) ? (row.status as EsportsTournament["status"]) : base.status;
+  const meta = (row.meta ?? {}) as Record<string, unknown>;
   return {
     ...base,
     name: row.name?.trim() || base.name,
@@ -202,6 +203,16 @@ export function mergeCatalogTournament(
     participantSlugs: row.participant_slugs?.length ? row.participant_slugs : base.participantSlugs,
     logoFile: row.logo_file ?? base.logoFile,
     featured: row.tier != null ? row.tier <= 3 : base.featured,
+    organizer: (meta.organizer as string) || base.organizer,
+    venue: (meta.venue as string) || base.venue,
+    eventType: (meta.event_type as string) || base.eventType,
+    series: (meta.series as string) || base.series,
+    website: (meta.website as string) || base.website,
+    format: (meta.format as string) || base.format,
+    prizeBreakdown: Array.isArray(meta.prize_breakdown)
+      ? (meta.prize_breakdown as { place: string; prize: string }[])
+      : base.prizeBreakdown,
+    winnerSlug: (meta.winner_slug as string) || base.winnerSlug,
   };
 }
 

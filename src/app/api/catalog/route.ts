@@ -6,7 +6,7 @@ import type {
   CatalogPlayerRow,
   CatalogTournamentRow,
 } from "@/lib/supabase/catalog-types";
-import { isTierBPlus } from "@/lib/data/catalog";
+import { isCuratedPublicTournamentSlug } from "@/lib/data/curated-tournaments";
 import { purgePhantomTeamsFromDb } from "@/lib/admin/purge-phantom-teams";
 import { filterVisibleTeams, isHiddenTeamSlug } from "@/lib/data/blocked-team-slugs";
 import { stripLiquipediaFields } from "@/lib/sanitize-liquipedia";
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
         p.team_slug && isHiddenTeamSlug(p.team_slug) ? { ...p, team_slug: null } : p,
       ),
     tournaments: toursRes.data
-      .filter((t) => isTierBPlus({ tier: t.tier as number | undefined }))
+      .filter((t) => isCuratedPublicTournamentSlug(String(t.slug ?? "")))
       .map((r) => stripLiquipediaFields(r) as unknown as CatalogTournamentRow),
     market: marketRes.data ?? [],
     syncedAt,

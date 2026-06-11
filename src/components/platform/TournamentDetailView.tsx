@@ -53,6 +53,10 @@ export function TournamentDetailView({ slug }: { slug: string }) {
   const wiki = getBscTournamentEnrichment(slug);
   const bracketFormat = tournament.format || wiki?.format;
   const formatsPlayed = stats.formats.length ? stats.formats.join(" · ") : null;
+  const prizeRows =
+    stats.prizeBreakdown.length > 0
+      ? stats.prizeBreakdown
+      : (tournament.prizeBreakdown ?? wiki?.prizeBreakdown ?? []);
 
   const liveMatches = matches.filter((m) => m.status === "live");
   const upcoming = sortHubMatchList(
@@ -342,13 +346,13 @@ export function TournamentDetailView({ slug }: { slug: string }) {
         </section>
       )}
 
-      {stats.prizeBreakdown.length > 0 && (
+      {prizeRows.length > 0 && (
         <section className="fu-panel fu-panel-glow">
           <div className="fu-panel-head">
             <h2>Premios</h2>
           </div>
           <div className="bf-tour-prizes">
-            {stats.prizeBreakdown.map((p) => (
+            {prizeRows.map((p) => (
               <div key={p.place} className="bf-tour-prize-row">
                 <span>{p.place}</span>
                 <strong>{p.prize}</strong>

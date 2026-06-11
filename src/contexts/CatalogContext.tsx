@@ -16,7 +16,7 @@ import type {
   CatalogTeamRow,
   CatalogTournamentRow,
 } from "@/lib/supabase/catalog-types";
-import { isTierBPlus } from "@/lib/data/catalog";
+import { isCuratedPublicTournamentSlug } from "@/lib/data/curated-tournaments";
 import { buildMarketMap } from "@/lib/catalog-merge";
 import { isHiddenTeam } from "@/lib/data/blocked-team-slugs";
 import { syncCatalogTeamsCache } from "@/lib/data/circuit-roster";
@@ -100,7 +100,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       }
       for (const p of snapshot.players) playersBySlug.set(p.slug, p);
       for (const tour of snapshot.tournaments ?? []) {
-        if (!isTierBPlus({ tier: tour.tier ?? undefined })) continue;
+        if (!isCuratedPublicTournamentSlug(tour.slug)) continue;
         tournamentsBySlug.set(tour.slug, tour);
       }
     } else {

@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-06-07T05:34:51.692Z",
+  "syncedAt": "2026-06-11T06:38:31.568Z",
   "source": "liquipedia.net/brawlstars",
   "tournaments": {
     "bsc-2026-brawl-cup": {
@@ -38,7 +38,7 @@
       ],
       "matchCount": 19,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:47.137Z"
+      "syncedAt": "2026-06-11T06:38:27.036Z"
     },
     "bsc-2026-rtbc-sa-west": {
       "slug": "bsc-2026-rtbc-sa-west",
@@ -73,7 +73,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:47.138Z"
+      "syncedAt": "2026-06-11T06:38:27.036Z"
     },
     "bsc-2026-challengers-dach": {
       "slug": "bsc-2026-challengers-dach",
@@ -157,7 +157,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:47.139Z"
+      "syncedAt": "2026-06-11T06:38:27.037Z"
     },
     "bsc-2026-psi-emea": {
       "slug": "bsc-2026-psi-emea",
@@ -188,7 +188,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:47.140Z"
+      "syncedAt": "2026-06-11T06:38:27.037Z"
     },
     "bsc-2026-psi-ea": {
       "slug": "bsc-2026-psi-ea",
@@ -219,7 +219,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:47.140Z"
+      "syncedAt": "2026-06-11T06:38:27.038Z"
     },
     "bsc-2026-psi-na": {
       "slug": "bsc-2026-psi-na",
@@ -251,7 +251,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:47.141Z"
+      "syncedAt": "2026-06-11T06:38:27.038Z"
     },
     "bsc-2026-psi-sa": {
       "slug": "bsc-2026-psi-sa",
@@ -282,7 +282,7 @@
       ],
       "matchCount": 3,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:47.142Z"
+      "syncedAt": "2026-06-11T06:38:27.038Z"
     },
     "bsc-2026-cn-february-mf": {
       "slug": "bsc-2026-cn-february-mf",
@@ -346,7 +346,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.431Z"
+      "syncedAt": "2026-06-11T06:38:29.309Z"
     },
     "bsc-2026-february-ea-mf": {
       "slug": "bsc-2026-february-ea-mf",
@@ -385,7 +385,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.431Z"
+      "syncedAt": "2026-06-11T06:38:29.310Z"
     },
     "bsc-2026-february-na-mf": {
       "slug": "bsc-2026-february-na-mf",
@@ -424,7 +424,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.432Z"
+      "syncedAt": "2026-06-11T06:38:29.310Z"
     },
     "bsc-2026-february-sa-mf": {
       "slug": "bsc-2026-february-sa-mf",
@@ -463,7 +463,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.432Z"
+      "syncedAt": "2026-06-11T06:38:29.311Z"
     },
     "bsc-2026-march-emea-mf": {
       "slug": "bsc-2026-march-emea-mf",
@@ -502,7 +502,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.433Z"
+      "syncedAt": "2026-06-11T06:38:29.311Z"
     },
     "bsc-2026-march-ea-mf": {
       "slug": "bsc-2026-march-ea-mf",
@@ -541,7 +541,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.433Z"
+      "syncedAt": "2026-06-11T06:38:29.312Z"
     },
     "bsc-2026-march-na-mf": {
       "slug": "bsc-2026-march-na-mf",
@@ -581,7 +581,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.434Z"
+      "syncedAt": "2026-06-11T06:38:29.313Z"
     },
     "bsc-2026-march-sa-mf": {
       "slug": "bsc-2026-march-sa-mf",
@@ -620,7 +620,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.435Z"
+      "syncedAt": "2026-06-11T06:38:29.313Z"
     },
     "bsc-2026-april-emea-mf": {
       "slug": "bsc-2026-april-emea-mf",
@@ -651,7 +651,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.435Z"
+      "syncedAt": "2026-06-11T06:38:29.313Z"
     },
     "bsc-2026-april-ea-mf": {
       "slug": "bsc-2026-april-ea-mf",
@@ -682,7 +682,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.435Z"
+      "syncedAt": "2026-06-11T06:38:29.314Z"
     },
     "bsc-2026-april-na-mf": {
       "slug": "bsc-2026-april-na-mf",
@@ -713,7 +713,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.436Z"
+      "syncedAt": "2026-06-11T06:38:29.314Z"
     },
     "bsc-2026-april-sa-mf": {
       "slug": "bsc-2026-april-sa-mf",
@@ -744,7 +744,7 @@
       ],
       "matchCount": 7,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.436Z"
+      "syncedAt": "2026-06-11T06:38:29.315Z"
     },
     "bsc-2026-may-emea-mf": {
       "slug": "bsc-2026-may-emea-mf",
@@ -763,10 +763,19 @@
       "series": "Brawl Stars Championship 2026",
       "website": "https://event.brawlstars.com",
       "status": "upcoming",
-      "participantSlugs": [],
-      "matchCount": 0,
+      "participantSlugs": [
+        "hmble",
+        "kumalazawesta",
+        "big",
+        "fut-esports",
+        "totem",
+        "metizport",
+        "novo-esports",
+        "natus-vincere"
+      ],
+      "matchCount": 4,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.436Z"
+      "syncedAt": "2026-06-11T06:38:29.315Z"
     },
     "bsc-2026-may-ea-mf": {
       "slug": "bsc-2026-may-ea-mf",
@@ -785,10 +794,19 @@
       "series": "Brawl Stars Championship 2026",
       "website": "https://event.brawlstars.com",
       "status": "upcoming",
-      "participantSlugs": [],
-      "matchCount": 0,
+      "participantSlugs": [
+        "crazy-raccoon",
+        "ignum",
+        "faze-zero",
+        "rival-esports",
+        "skcalalas-ea",
+        "insomnia",
+        "fennel",
+        "zeta-division"
+      ],
+      "matchCount": 4,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.437Z"
+      "syncedAt": "2026-06-11T06:38:29.316Z"
     },
     "bsc-2026-may-na-mf": {
       "slug": "bsc-2026-may-na-mf",
@@ -807,10 +825,19 @@
       "series": "Brawl Stars Championship 2026",
       "website": "https://event.brawlstars.com",
       "status": "upcoming",
-      "participantSlugs": [],
-      "matchCount": 0,
+      "participantSlugs": [
+        "tribe-gaming",
+        "nova-esports-north-america-team",
+        "vic-day",
+        "only-realm",
+        "team-elektros",
+        "only-realm-academy",
+        "vatic-esports",
+        "legacy-esports"
+      ],
+      "matchCount": 4,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.437Z"
+      "syncedAt": "2026-06-11T06:38:29.316Z"
     },
     "bsc-2026-may-sa-mf": {
       "slug": "bsc-2026-may-sa-mf",
@@ -829,10 +856,19 @@
       "series": "Brawl Stars Championship 2026",
       "website": "https://event.brawlstars.com",
       "status": "upcoming",
-      "participantSlugs": [],
-      "matchCount": 0,
+      "participantSlugs": [
+        "bounty-hunters-esports",
+        "ocx-division",
+        "topa-tudo-por-dinheiro",
+        "skcalalas",
+        "pizza-congelada-f-a",
+        "acre-lovers",
+        "olimpo-squad",
+        "loud"
+      ],
+      "matchCount": 4,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.437Z"
+      "syncedAt": "2026-06-11T06:38:29.317Z"
     },
     "bsc-2026-june-emea-mf": {
       "slug": "bsc-2026-june-emea-mf",
@@ -854,7 +890,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:49.438Z"
+      "syncedAt": "2026-06-11T06:38:29.317Z"
     },
     "bsc-2026-june-ea-mf": {
       "slug": "bsc-2026-june-ea-mf",
@@ -876,7 +912,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:51.691Z"
+      "syncedAt": "2026-06-11T06:38:31.567Z"
     },
     "bsc-2026-june-na-mf": {
       "slug": "bsc-2026-june-na-mf",
@@ -898,7 +934,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:51.691Z"
+      "syncedAt": "2026-06-11T06:38:31.567Z"
     },
     "bsc-2026-june-sa-mf": {
       "slug": "bsc-2026-june-sa-mf",
@@ -920,7 +956,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:51.691Z"
+      "syncedAt": "2026-06-11T06:38:31.567Z"
     },
     "bsc-2026-july-emea-mf": {
       "slug": "bsc-2026-july-emea-mf",
@@ -942,7 +978,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:51.692Z"
+      "syncedAt": "2026-06-11T06:38:31.567Z"
     },
     "bsc-2026-july-ea-mf": {
       "slug": "bsc-2026-july-ea-mf",
@@ -964,7 +1000,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:51.692Z"
+      "syncedAt": "2026-06-11T06:38:31.567Z"
     },
     "bsc-2026-july-na-mf": {
       "slug": "bsc-2026-july-na-mf",
@@ -986,7 +1022,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:51.692Z"
+      "syncedAt": "2026-06-11T06:38:31.567Z"
     },
     "bsc-2026-july-sa-mf": {
       "slug": "bsc-2026-july-sa-mf",
@@ -1008,7 +1044,7 @@
       "participantSlugs": [],
       "matchCount": 0,
       "prizeBreakdown": [],
-      "syncedAt": "2026-06-07T05:34:51.692Z"
+      "syncedAt": "2026-06-11T06:38:31.567Z"
     },
     "bsc-2026-august-emea-mf": {
       "slug": "bsc-2026-august-emea-mf",
@@ -3678,6 +3714,374 @@
         },
         "liquipedia_page": "Brawl_Stars_Championship/2026/Season_3/South_America/Monthly_Finals",
         "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_3/South_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-emea-mf-hmble-vs-kumalazawesta-2026-06-14",
+      "teamASlug": "hmble",
+      "teamBSlug": "kumalazawesta",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-emea-mf",
+      "stage": "Match",
+      "date": "2026-06-14T12:00Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "HMBLE",
+          "b": "Kumalazawesta"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-emea-mf-big-vs-fut-esports-2026-06-14",
+      "teamASlug": "big",
+      "teamBSlug": "fut-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-emea-mf",
+      "stage": "Match",
+      "date": "2026-06-14T13:00Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "BIG",
+          "b": "FUT Esports"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-emea-mf-totem-vs-metizport-2026-06-14",
+      "teamASlug": "totem",
+      "teamBSlug": "metizport",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-emea-mf",
+      "stage": "Match",
+      "date": "2026-06-14T14:00Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Totem",
+          "b": "Metizport"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-emea-mf-novo-esports-vs-natus-vincere-2026-06-14",
+      "teamASlug": "novo-esports",
+      "teamBSlug": "natus-vincere",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-emea-mf",
+      "stage": "Match",
+      "date": "2026-06-14T15:00Z",
+      "status": "upcoming",
+      "region": "EMEA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "NOVO Esports",
+          "b": "NAVI"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/EMEA/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-ea-mf-crazy-raccoon-vs-ignum-2026-06-13",
+      "teamASlug": "crazy-raccoon",
+      "teamBSlug": "ignum",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-ea-mf",
+      "stage": "Match",
+      "date": "2026-06-13T16:00Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Crazy Raccoon",
+          "b": "IGNUM"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-ea-mf-faze-zero-vs-rival-esports-2026-06-13",
+      "teamASlug": "faze-zero",
+      "teamBSlug": "rival-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-ea-mf",
+      "stage": "Match",
+      "date": "2026-06-13T17:00Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Faze Zero",
+          "b": "Rival Esports"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-ea-mf-skcalalas-ea-vs-insomnia-2026-06-13",
+      "teamASlug": "skcalalas-ea",
+      "teamBSlug": "insomnia",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-ea-mf",
+      "stage": "Match",
+      "date": "2026-06-13T18:00Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "SKCalalas EA",
+          "b": "INSOMNIA"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-ea-mf-fennel-vs-zeta-division-2026-06-13",
+      "teamASlug": "fennel",
+      "teamBSlug": "zeta-division",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-ea-mf",
+      "stage": "Match",
+      "date": "2026-06-13T19:00Z",
+      "status": "upcoming",
+      "region": "EA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Fennel",
+          "b": "ZETA Division"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/East_Asia/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-na-mf-tribe-gaming-vs-nova-esports-north-america-team-2026-06-21",
+      "teamASlug": "tribe-gaming",
+      "teamBSlug": "nova-esports-north-america-team",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-na-mf",
+      "stage": "Match",
+      "date": "2026-06-21T19:00Z",
+      "status": "upcoming",
+      "region": "NA",
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Tribe Gaming",
+          "b": "Nova Esports (North America Team)"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-na-mf-vic-day-vs-only-realm-2026-06-21",
+      "teamASlug": "vic-day",
+      "teamBSlug": "only-realm",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-na-mf",
+      "stage": "Match",
+      "date": "2026-06-21T20:00Z",
+      "status": "upcoming",
+      "region": "NA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Vic Day",
+          "b": "Only Realm"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-na-mf-team-elektros-vs-only-realm-academy-2026-06-21",
+      "teamASlug": "team-elektros",
+      "teamBSlug": "only-realm-academy",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-na-mf",
+      "stage": "Match",
+      "date": "2026-06-21T21:00Z",
+      "status": "upcoming",
+      "region": "NA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Team Elektros",
+          "b": "Only Realm Academy"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-na-mf-vatic-esports-vs-legacy-esports-2026-06-21",
+      "teamASlug": "vatic-esports",
+      "teamBSlug": "legacy-esports",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-na-mf",
+      "stage": "Match",
+      "date": "2026-06-21T22:00Z",
+      "status": "upcoming",
+      "region": "NA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Vatic Esports",
+          "b": "Legacy Esports"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/North_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-sa-mf-bounty-hunters-esports-vs-ocx-division-2026-06-21",
+      "teamASlug": "bounty-hunters-esports",
+      "teamBSlug": "ocx-division",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-sa-mf",
+      "stage": "Match",
+      "date": "2026-06-21T16:00Z",
+      "status": "upcoming",
+      "region": "SA",
+      "format": "Bo3",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Bounty Hunters Esports",
+          "b": "OCX Division"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-sa-mf-topa-tudo-por-dinheiro-vs-skcalalas-2026-06-21",
+      "teamASlug": "topa-tudo-por-dinheiro",
+      "teamBSlug": "skcalalas",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-sa-mf",
+      "stage": "Match",
+      "date": "2026-06-21T17:00Z",
+      "status": "upcoming",
+      "region": "SA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Topa Tudo Por Dinheiro",
+          "b": "SKCalalas"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-sa-mf-pizza-congelada-f-a-vs-acre-lovers-2026-06-21",
+      "teamASlug": "pizza-congelada-f-a",
+      "teamBSlug": "acre-lovers",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-sa-mf",
+      "stage": "Match",
+      "date": "2026-06-21T18:00Z",
+      "status": "upcoming",
+      "region": "SA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Pizza Congelada F/A",
+          "b": "Acre Lovers"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
+        "data_source": "liquipedia"
+      }
+    },
+    {
+      "id": "lp-bsc-2026-may-sa-mf-olimpo-squad-vs-loud-2026-06-21",
+      "teamASlug": "olimpo-squad",
+      "teamBSlug": "loud",
+      "scoreA": 0,
+      "scoreB": 0,
+      "tournamentSlug": "bsc-2026-may-sa-mf",
+      "stage": "Match",
+      "date": "2026-06-21T19:00Z",
+      "status": "upcoming",
+      "region": "SA",
+      "format": "Bo5",
+      "meta": {
+        "schedule_trust": "confirmed",
+        "team_display": {
+          "a": "Olimpo Squad",
+          "b": "LOUD"
+        },
+        "liquipedia_page": "Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
+        "liquipedia_url": "https://liquipedia.net/brawlstars/Brawl_Stars_Championship/2026/Season_4/South_America/Monthly_Finals",
         "data_source": "liquipedia"
       }
     }

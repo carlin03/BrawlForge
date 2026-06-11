@@ -23,6 +23,8 @@ import { isPublicScheduleMatch, isPublicUpcomingCalendarMatch } from "./match-sc
 import { getEffectiveMatchStatus } from "./match-effective-status";
 import { isPendingTeamSlug } from "./match-meta";
 import { getMatchStageMeta } from "./match-stage-meta";
+import { isCuratedPublicTournamentSlug } from "./curated-tournaments";
+import { TOURNAMENT_SLUG_ALIASES } from "./catalog";
 
 import type { MatchMeta } from "./match-meta";
 import type { EsportsMatch } from "./esports-match-types";
@@ -145,6 +147,8 @@ function mergeBscTournamentDef(t: (typeof bsc2026Tournaments)[number]): EsportsT
     eventType: wiki?.type,
     series: wiki?.series,
     website: sanitizePublicWebsite(wiki?.website),
+    format: wiki?.format,
+    prizeBreakdown: wiki?.prizeBreakdown,
     tier: wiki?.tier ?? 1,
     featured: true,
     logoFile: t.logoFile,
@@ -260,28 +264,10 @@ export function getFeaturedTournaments(limit = 24): EsportsTournament[] {
 }
 
 function buildTierBPlusTournamentList(): EsportsTournament[] {
-  const map = new Map<string, EsportsTournament>();
-  const matchSlugs = new Set(getGeneratedMatches().map((m) => m.tournamentSlug));
-
-  for (const t of tournaments) {
-    if (isBscCircuitSlug(t.slug) || matchSlugs.has(t.slug)) map.set(t.slug, t);
-  }
-
-  for (const t of getGeneratedTournaments()) {
-    if (!isTierBPlus(t)) continue;
-    if (matchSlugs.size && !matchSlugs.has(t.slug)) continue;
-    if (!map.has(t.slug)) map.set(t.slug, mapGeneratedTournament(t));
-  }
-
-  for (const t of getDiscoveredTournaments()) {
-    if (matchSlugs.size && !matchSlugs.has(t.slug)) continue;
-    if (!map.has(t.slug)) map.set(t.slug, t);
-  }
-
-  return sortCircuitTournaments([...map.values()]);
+  return sortCircuitTournaments(tournaments.filter((t) => isBscCircuitSlug(t.slug)));
 }
 
-/** Listados públicos de torneos (hub / partidos) — BSC + tier B+ Liquipedia con partidos */
+/** Listados públicos de torneos — solo circuito BSC 2026 curado (~52 eventos). */
 export function getTierBPlusTournaments(limit?: number): EsportsTournament[] {
   const list = buildTierBPlusTournamentList();
   return limit ? list.slice(0, limit) : list;
@@ -298,6 +284,11 @@ export function expandTournamentSlugFilter(tournamentSlug: string): string[] {
   if (alias) set.add(alias);
   for (const [a, canonical] of Object.entries(BSC_TOURNAMENT_ALIASES)) {
     if (canonical === tournamentSlug) set.add(a);
+  }
+  const lpAlias = TOURNAMENT_SLUG_ALIASES[tournamentSlug];
+  if (lpAlias) set.add(lpAlias);
+  for (const [canonical, lp] of Object.entries(TOURNAMENT_SLUG_ALIASES)) {
+    if (lp === tournamentSlug) set.add(canonical);
   }
   return [...set];
 }

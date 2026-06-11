@@ -9,7 +9,8 @@ import { resolve } from "path";
 import { spawnSync } from "child_process";
 import { loadEnv, root } from "./lib/load-env.mjs";
 import { upsert } from "./lib/supabase-rest.mjs";
-import { deleteMatchesNotIn, deletePlayersNotIn, deletePlayersWithOrphanTeam } from "./lib/supabase-delete.mjs";
+import { deleteMatchesNotIn, deletePlayersNotIn, deletePlayersWithOrphanTeam, deleteTournamentsNotIn } from "./lib/supabase-delete.mjs";
+import { listCuratedTournamentSlugs } from "./lib/curated-tournament-slugs.mjs";
 import {
   shouldPublishMatch,
   matchScheduleTrust,
@@ -192,6 +193,10 @@ console.log("══════════════════════�
 console.log(" BrawlForge — publicación 100% a Supabase");
 console.log("═══════════════════════════════════════════");
 
+runStep("Purgar torneos fuera de BSC 2026", "node", [
+  "scripts/purge-non-curated-tournaments.mjs",
+  "--write",
+]);
 runStep("Purgar próximos Liquipedia falsos", "node", ["scripts/purge-lp-upcoming.mjs", "--write"]);
 runStep("Purgar equipos sin partidos (JSON + Supabase)", "node", [
   "scripts/purge-teams-without-matches.mjs",
@@ -202,6 +207,13 @@ runStep("Tier B+ descubierto (equipos + torneos Liquipedia)", "npm", ["run", "su
 
 const matchesN = await seedMatches();
 const playersN = await seedPlayers();
+
+try {
+  const tourDeleted = await deleteTournamentsNotIn(listCuratedTournamentSlugs());
+  if (tourDeleted) console.log(`\n▶ Torneos obsoletos eliminados: ${tourDeleted}`);
+} catch (e) {
+  console.warn("  (purge torneos opcional:", e.message, ")");
+}
 
 try {
   runStep("Exportar CSVs de respaldo", "npm", ["run", "supabase:export:csv"]);

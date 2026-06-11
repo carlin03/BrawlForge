@@ -194,33 +194,63 @@ const playerBySlug = new Map(playerRows.map((p) => [p.slug, p]));
 
 const catalogTeamSlugs = new Set(teamRows.map((t) => t.slug));
 
+let wikiBySlug = {};
+try {
+  wikiBySlug =
+    JSON.parse(
+      readFileSync(resolve(root, "src/lib/data/generated/bsc-tournaments-enriched.json"), "utf8"),
+    ).tournaments ?? {};
+} catch {
+  /* enriched opcional */
+}
+
+function regionFromSlug(slug) {
+  if (slug.includes("-emea-") || slug.endsWith("-emea-mf")) return "EMEA";
+  if (slug.includes("-ea-") || slug.endsWith("-ea-mf") || slug.includes("sesa") || slug.includes("cn-"))
+    return "EA";
+  if (slug.includes("-na-")) return "NA";
+  if (slug.includes("-sa-")) return "SA";
+  return "GLOBAL";
+}
+
 const tournamentRows = Object.entries(participants).map(([slug, teamList]) => {
+  const wiki = wikiBySlug[slug] ?? {};
   const uniqueTeams = [...new Set(teamList)].filter((s) => catalogTeamSlugs.has(s));
+  const participantSlugs = wiki.participantSlugs?.length
+    ? wiki.participantSlugs.filter((s) => catalogTeamSlugs.has(s))
+    : uniqueTeams;
+  const status = wiki.status ?? "finished";
   return {
     slug,
-    name: slug.replace(/^bsc-2026-/, "BSC 2026 · ").replace(/-/g, " "),
-    short_name: slug.split("-").slice(-2).join(" ").toUpperCase(),
-    region: slug.includes("ea")
-      ? "EA"
-      : slug.includes("emea")
-        ? "EMEA"
-        : slug.includes("na")
-          ? "NA"
-          : slug.includes("sa")
-            ? "SA"
-            : "GLOBAL",
-    prize_pool: null,
-    teams_count: uniqueTeams.length,
-    status: "finished",
-    start_date: null,
-    end_date: null,
-    location: "Online",
-    stage: "Completed",
-    tier: 1,
-    liquipedia_page: null,
+    name: wiki.name ?? slug.replace(/^bsc-2026-/, "BSC 2026 · ").replace(/-/g, " "),
+    short_name: wiki.shortName ?? slug.split("-").slice(-2).join(" ").toUpperCase(),
+    region: regionFromSlug(slug),
+    prize_pool: wiki.prizePool ?? null,
+    teams_count: wiki.teamCount ?? participantSlugs.length,
+    status,
+    start_date: wiki.startDate ?? null,
+    end_date: wiki.endDate ?? null,
+    location: wiki.location ?? "Online",
+    stage:
+      status === "finished" ? "Completed" : status === "live" ? "In progress" : "Scheduled",
+    tier: wiki.liquipediaTier ?? 1,
+    liquipedia_page: wiki.liquipediaPage ?? null,
     logo_file: null,
-    participant_slugs: uniqueTeams,
-    meta: { source: "bsc-fantasy-participants", teams: uniqueTeams },
+    participant_slugs: participantSlugs,
+    meta: {
+      source: "bsc-liquipedia-enriched",
+      organizer: wiki.organizer ?? null,
+      venue: wiki.venue ?? null,
+      format: wiki.format ?? null,
+      series: wiki.series ?? null,
+      website: wiki.website ?? null,
+      event_type: wiki.type ?? null,
+      city: wiki.city ?? null,
+      country: wiki.country ?? null,
+      prize_breakdown: wiki.prizeBreakdown ?? [],
+      winner_slug: wiki.winnerSlug ?? null,
+      liquipedia_url: wiki.liquipediaUrl ?? null,
+    },
     synced_at: syncedAt,
   };
 });

@@ -117,3 +117,36 @@ export async function deletePlayersWithOrphanTeam() {
   }
   return n;
 }
+
+/** Borra torneos cuyo slug NO está en keepSlugs. */
+export async function deleteTournamentsNotIn(keepSlugs) {
+  const keep = new Set(keepSlugs);
+  const { url, headers } = getSupabaseRest();
+  const rows = [];
+  let offset = 0;
+  while (true) {
+    const res = await fetch(
+      `${url}/rest/v1/tournaments_catalog?select=slug&order=slug&limit=1000&offset=${offset}`,
+      { headers },
+    );
+    if (!res.ok) throw new Error(`list tournaments: ${res.status} ${await res.text()}`);
+    const batch = await res.json();
+    rows.push(...batch);
+    if (batch.length < 1000) break;
+    offset += 1000;
+  }
+  const toDelete = rows.map((r) => r.slug).filter((slug) => !keep.has(slug));
+  if (!toDelete.length) return 0;
+  let n = 0;
+  for (let i = 0; i < toDelete.length; i += 40) {
+    const batch = toDelete.slice(i, i + 40);
+    const inList = batch.map((s) => encodeURIComponent(s)).join(",");
+    const del = await fetch(`${url}/rest/v1/tournaments_catalog?slug=in.(${inList})`, {
+      method: "DELETE",
+      headers,
+    });
+    if (!del.ok) throw new Error(`delete tournaments: ${del.status} ${await del.text()}`);
+    n += batch.length;
+  }
+  return n;
+}

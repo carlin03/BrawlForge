@@ -8,6 +8,7 @@ import { enrichMatchForPool } from "./match-pool-enrich";
 import { fixMislabeledWorldFinalsSlug } from "./tournament-slug-sanitize";
 import { canonicalTournamentSlug } from "./playoff-pool-normalize";
 import { isValidLiquipediaUpcoming } from "./match-publish-rules";
+import { isCuratedPublicTournamentSlug } from "./curated-tournaments";
 import { isSchedulableMatch } from "./team-display-resolve";
 import { getMatchStageMeta } from "./match-stage-meta";
 import type { EsportsMatch } from "./esports-match-types";
@@ -131,6 +132,7 @@ export function buildPublicCalendarPool(basePool: EsportsMatch[]): EsportsMatch[
 export function isPublicScheduleMatch(m: EsportsMatch): boolean {
   if (isPickemTemplateMatch(m)) return false;
   if (isStaleTournamentUpcoming(m)) return false;
+  if (!isCuratedPublicTournamentSlug(m.tournamentSlug)) return false;
   if (isPendingTeamSlug(m.teamASlug) || isPendingTeamSlug(m.teamBSlug)) return false;
   if (isBracketPlaceholderSlug(m.teamASlug) || isBracketPlaceholderSlug(m.teamBSlug)) return false;
   return isSchedulableMatch(m);

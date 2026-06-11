@@ -87,7 +87,7 @@ export function TournamentsView() {
             Torneos <em>2026</em>
           </h1>
           <p>
-            {catalogTourCount} eventos tier B+ en 2026 · premios, fechas, participantes y partidos S / A / B.
+            {catalogTourCount} eventos BSC 2026 · premios, sedes, participantes y bracket desde Liquipedia.
           </p>
         </div>
         <div className="bf-tours-hub-hero-stats">
