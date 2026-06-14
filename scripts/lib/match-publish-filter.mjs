@@ -108,9 +108,9 @@ export function shouldPublishMatch(m) {
 
   if (isBsc) {
     if (status === "upcoming" && isPlaceholderLiquipediaDate(m.date)) return false;
-    const aOk = isBracketSlotSlug(m.teamASlug) || okTeamSlug(m.teamASlug);
-    const bOk = isBracketSlotSlug(m.teamBSlug) || okTeamSlug(m.teamBSlug);
-    if (!aOk || !bOk) return false;
+    if (status === "upcoming" && Date.parse(m.date) < Date.now() - LP_UPCOMING_PAST_GRACE_MS) return false;
+    // Solo equipos reales — no winner-m-*, winner-qf-* en calendario público
+    if (!okTeamSlug(m.teamASlug) || !okTeamSlug(m.teamBSlug)) return false;
     return true;
   }
 

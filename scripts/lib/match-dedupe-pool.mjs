@@ -70,6 +70,10 @@ export function pickBetterMatch(a, b) {
   const bLp = String(b.id || "").startsWith("lp-");
   if (aLp && !bLp) return mergeStage(a, b);
   if (bLp && !aLp) return mergeStage(b, a);
+  const aSc = String(a.id || "").startsWith("sc-");
+  const bSc = String(b.id || "").startsWith("sc-");
+  if (aSc && !bSc) return mergeStage(a, b);
+  if (bSc && !aSc) return mergeStage(b, a);
   const aSeed = /^(mf26-|chal-|bc26-)/.test(String(a.id || ""));
   const bSeed = /^(mf26-|chal-|bc26-)/.test(String(b.id || ""));
   if (aSeed && !bSeed) return mergeStage(b, a);

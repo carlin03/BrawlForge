@@ -156,22 +156,31 @@ function buildPublishMatchPool() {
     console.warn("  (calendario BSC upcoming no cargado:", e.message, ")");
   }
 
+  const supercellTourSlugs = new Set(
+    supercellMatches
+      .filter((m) => shouldPublishMatch(m))
+      .map((m) => m.tournamentSlug)
+      .filter(Boolean),
+  );
+
   const byId = new Map();
   for (const m of fromJson) {
     if (!shouldPublishMatch(m)) continue;
     byId.set(m.id, m);
   }
   for (const m of bscUpcoming) {
+    if (supercellTourSlugs.has(m.tournamentSlug)) continue;
     if (!shouldPublishMatch(m)) continue;
     byId.set(m.id, m);
   }
-  // Supercell BSC (cuadros oficiales activos)
-  for (const m of supercellMatches) {
-    if (!shouldPublishMatch(m)) continue;
-    byId.set(m.id, m);
-  }
-  // Liquipedia BSC enriquecido gana (nombres VS, marcadores, rondas)
+  // Liquipedia BSC enriquecido (histórico, nombres VS)
   for (const m of enriched) {
+    if (supercellTourSlugs.has(m.tournamentSlug)) continue;
+    if (!shouldPublishMatch(m)) continue;
+    byId.set(m.id, m);
+  }
+  // Supercell BSC gana sobre seeds/LP en torneos activos
+  for (const m of supercellMatches) {
     if (!shouldPublishMatch(m)) continue;
     byId.set(m.id, m);
   }
