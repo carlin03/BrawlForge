@@ -22,10 +22,9 @@ html[data-wf-theme="tokyo"] .bp-main {
 }
 
 html[data-bf-experience="worlds"] .bp-nav {
-  background: rgba(255, 249, 241, 0.92) !important;
+  background: #fff9f1 !important;
   border-bottom: 1px solid var(--wf-line) !important;
-  box-shadow: 0 8px 28px rgba(28, 20, 16, 0.06);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(28, 20, 16, 0.05);
 }
 
 html[data-bf-experience="worlds"] .bp-logo,
@@ -108,8 +107,7 @@ html[data-bf-experience="worlds"] .bp-nav-link.is-worlds-nav {
   font-weight: 800;
   font-size: 0.85rem;
   text-decoration: none;
-  box-shadow: 0 12px 32px rgba(196, 30, 58, 0.35);
-  animation: wf-pulse 2.8s ease-in-out infinite;
+  box-shadow: 0 8px 20px rgba(196, 30, 58, 0.28);
 }
 
 .wf-hub {
@@ -129,19 +127,15 @@ html[data-bf-experience="worlds"] .bp-nav-link.is-worlds-nav {
     radial-gradient(circle at 85% 15%, rgba(228, 184, 74, 0.45), transparent 40%),
     radial-gradient(circle at 10% 90%, rgba(196, 30, 58, 0.2), transparent 42%);
   border: 1px solid rgba(196, 30, 58, 0.16);
-  box-shadow:
-    0 24px 60px rgba(28, 20, 16, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  animation: wf-fade-up 0.55s ease both;
+  box-shadow: 0 12px 32px rgba(28, 20, 16, 0.06);
 }
 
 .wf-hero-shine {
   position: absolute;
   inset: -30% -10% auto 35%;
   height: 70%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), transparent 65%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.7), transparent 65%);
   pointer-events: none;
-  animation: wf-pulse 5s ease-in-out infinite;
 }
 
 .wf-hero-tori {
@@ -281,7 +275,6 @@ html[data-bf-experience="worlds"] .bp-nav-link.is-worlds-nav {
 
 .wf-section {
   margin-bottom: 1.75rem;
-  animation: wf-fade-up 0.6s ease both;
 }
 
 .wf-section-head {
@@ -326,8 +319,7 @@ html[data-bf-experience="worlds"] .bp-nav-link.is-worlds-nav {
   box-shadow: 0 10px 28px rgba(28, 20, 16, 0.05);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  animation: wf-fade-up 0.55s ease both;
+  transition: border-color 0.15s ease;
 }
 
 .wf-road-card:hover,
@@ -392,8 +384,7 @@ html[data-bf-experience="worlds"] .bp-nav-link.is-worlds-nav {
     linear-gradient(180deg, rgba(228, 184, 74, 0.14), transparent 45%),
     #fff;
   border: 1px solid rgba(184, 135, 15, 0.22);
-  box-shadow: 0 16px 40px rgba(28, 20, 16, 0.06);
-  animation: wf-fade-up 0.65s ease both;
+  box-shadow: 0 8px 24px rgba(28, 20, 16, 0.05);
 }
 
 .wf-quiz-head {
