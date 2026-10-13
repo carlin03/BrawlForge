@@ -1,26 +1,50 @@
-/* Worlds 2026 experience — championship gold on deep stadium black */
+/* Worlds 2026 — Tokio premium (claro, oro + carmesí hinomaru, no dark) */
 
 :root {
-  --wf-gold: #e8c56a;
-  --wf-gold-hot: #ffd978;
-  --wf-ink: #07090f;
-  --wf-panel: rgba(14, 18, 28, 0.92);
-  --wf-line: rgba(232, 197, 106, 0.28);
-  --wf-text: #f3efe4;
-  --wf-muted: rgba(243, 239, 228, 0.68);
+  --wf-gold: #b8870f;
+  --wf-gold-hot: #e4b84a;
+  --wf-crimson: #c41e3a;
+  --wf-ink: #1c1410;
+  --wf-paper: #fff8ef;
+  --wf-paper-2: #ffeeda;
+  --wf-panel: #ffffff;
+  --wf-line: rgba(196, 30, 58, 0.18);
+  --wf-text: #1c1410;
+  --wf-muted: rgba(28, 20, 16, 0.62);
 }
 
-html[data-bf-experience="worlds"] .bp-app {
-  --page-accent: var(--wf-gold);
+html[data-bf-experience="worlds"] .bp-app.is-worlds-mode,
+html[data-wf-theme="tokyo"] .bp-main {
+  background:
+    radial-gradient(ellipse 90% 60% at 100% 0%, rgba(228, 184, 74, 0.22), transparent 50%),
+    radial-gradient(ellipse 70% 50% at 0% 100%, rgba(196, 30, 58, 0.1), transparent 45%),
+    linear-gradient(180deg, #fff9f1 0%, #fff4e6 40%, #ffe8d2 100%) !important;
 }
 
 html[data-bf-experience="worlds"] .bp-nav {
-  border-bottom-color: var(--wf-line);
-  box-shadow: 0 0 40px rgba(232, 197, 106, 0.08);
+  background: rgba(255, 249, 241, 0.92) !important;
+  border-bottom: 1px solid var(--wf-line) !important;
+  box-shadow: 0 8px 28px rgba(28, 20, 16, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+html[data-bf-experience="worlds"] .bp-logo,
+html[data-bf-experience="worlds"] .bp-nav-link {
+  color: var(--wf-ink) !important;
 }
 
 html[data-bf-experience="worlds"] .bp-logo span {
-  color: var(--wf-gold-hot);
+  color: var(--wf-crimson) !important;
+}
+
+html[data-bf-experience="worlds"] .bp-nav-link.is-on,
+html[data-bf-experience="worlds"] .bp-nav-link.is-worlds-nav {
+  color: var(--wf-crimson) !important;
+}
+
+.wf-tokyo-root {
+  font-family: var(--wf-font-body), "Zen Maru Gothic", sans-serif;
+  color: var(--wf-text);
 }
 
 .wf-mode-toggle {
@@ -29,8 +53,8 @@ html[data-bf-experience="worlds"] .bp-logo span {
   gap: 4px;
   padding: 3px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(28, 20, 16, 0.06);
+  border: 1px solid rgba(28, 20, 16, 0.1);
   margin-right: 8px;
 }
 
@@ -40,54 +64,33 @@ html[data-bf-experience="worlds"] .bp-logo span {
   gap: 4px;
   border: 0;
   background: transparent;
-  color: rgba(244, 244, 245, 0.7);
+  color: rgba(28, 20, 16, 0.55);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 6px 10px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.wf-mode-btn:hover {
-  color: #fff;
 }
 
 .wf-mode-btn.is-on {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: #fff;
+  color: var(--wf-ink);
+  box-shadow: 0 2px 8px rgba(28, 20, 16, 0.08);
 }
 
 .wf-mode-btn.is-worlds.is-on {
-  background: linear-gradient(135deg, #c9a227, #f0d57a);
-  color: #1a1200;
+  background: linear-gradient(135deg, #c41e3a, #e0455c);
+  color: #fff;
 }
 
 .wf-mode-hub-link {
   font-size: 11px;
-  font-weight: 700;
-  color: var(--wf-gold);
+  font-weight: 800;
+  color: var(--wf-crimson);
   padding: 0 8px;
   text-decoration: none;
-}
-
-.bp-nav-link.is-worlds-nav {
-  color: #e8c56a;
-}
-
-.bp-nav-link.is-worlds-nav.is-on {
-  color: #ffd978;
-}
-
-.wf-mobile-toggle-wrap {
-  display: flex;
-  padding: 0.5rem 0.75rem 0.25rem;
-}
-
-.wf-mobile-toggle-wrap .wf-mode-toggle {
-  margin-right: 0;
 }
 
 .wf-float-cta {
@@ -100,91 +103,136 @@ html[data-bf-experience="worlds"] .bp-logo span {
   gap: 8px;
   padding: 12px 16px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #c9a227, #ffe08a);
-  color: #1a1200;
+  background: linear-gradient(135deg, #c41e3a, #e4b84a);
+  color: #fff;
   font-weight: 800;
   font-size: 0.85rem;
   text-decoration: none;
-  box-shadow: 0 10px 30px rgba(201, 162, 39, 0.45);
+  box-shadow: 0 12px 32px rgba(196, 30, 58, 0.35);
   animation: wf-pulse 2.8s ease-in-out infinite;
 }
 
-.wf-float-cta:hover {
-  transform: translateY(-2px);
-}
-
-@media (max-width: 720px) {
-  .wf-float-cta {
-    right: 12px;
-    bottom: 76px;
-    font-size: 0.78rem;
-    padding: 10px 14px;
-  }
-}
-
 .wf-hub {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 1.25rem 1rem 3rem;
-  color: var(--wf-text);
+  padding: 1.25rem 1rem 3.5rem;
 }
 
 .wf-hero {
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: 28px;
+  padding: clamp(1.75rem, 5vw, 3.4rem);
   margin-bottom: 1.75rem;
   background:
-    radial-gradient(ellipse 80% 70% at 15% 20%, rgba(232, 197, 106, 0.22), transparent 55%),
-    radial-gradient(ellipse 60% 50% at 90% 80%, rgba(56, 120, 255, 0.12), transparent 50%),
-    linear-gradient(160deg, #0c101c 0%, #121826 55%, #0a0d16 100%);
-  border: 1px solid var(--wf-line);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 236, 214, 0.88)),
+    radial-gradient(circle at 85% 15%, rgba(228, 184, 74, 0.45), transparent 40%),
+    radial-gradient(circle at 10% 90%, rgba(196, 30, 58, 0.2), transparent 42%);
+  border: 1px solid rgba(196, 30, 58, 0.16);
+  box-shadow:
+    0 24px 60px rgba(28, 20, 16, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   animation: wf-fade-up 0.55s ease both;
 }
 
-.wf-hero-glow {
+.wf-hero-shine {
   position: absolute;
-  inset: -20% auto auto 40%;
-  width: 50%;
-  height: 60%;
-  background: radial-gradient(circle, rgba(255, 217, 120, 0.18), transparent 70%);
+  inset: -30% -10% auto 35%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), transparent 65%);
   pointer-events: none;
-  animation: wf-pulse 4.5s ease-in-out infinite;
+  animation: wf-pulse 5s ease-in-out infinite;
+}
+
+.wf-hero-tori {
+  position: absolute;
+  right: -2%;
+  bottom: -18%;
+  width: min(42vw, 280px);
+  height: min(42vw, 280px);
+  border-radius: 50%;
+  border: 14px solid rgba(196, 30, 58, 0.12);
+  box-shadow: inset 0 0 0 8px rgba(228, 184, 74, 0.2);
+  pointer-events: none;
 }
 
 .wf-kicker {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin: 0 0 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  margin: 0 0 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--wf-gold);
+  color: var(--wf-crimson);
 }
 
 .wf-hero-title {
-  margin: 0 0 0.75rem;
-  font-family: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  font-size: clamp(2.2rem, 7vw, 3.6rem);
-  font-weight: 900;
+  margin: 0 0 0.9rem;
+  font-family: var(--wf-font-display), "Shippori Mincho", serif;
+  font-weight: 800;
   line-height: 0.95;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
-.wf-hero-title span {
-  color: var(--wf-gold-hot);
-  text-shadow: 0 0 28px rgba(232, 197, 106, 0.35);
+.wf-jp {
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
+  color: var(--wf-crimson);
+  letter-spacing: 0.28em;
+  font-weight: 700;
+}
+
+.wf-hero-line {
+  font-size: clamp(2.4rem, 8vw, 4.2rem);
+  color: var(--wf-ink);
+}
+
+.wf-year {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: var(--wf-gold);
+  background: linear-gradient(90deg, #b8870f, #e4b84a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .wf-hero-lead {
-  max-width: 42rem;
-  margin: 0 0 1.25rem;
+  max-width: 38rem;
+  margin: 0 0 1.1rem;
   color: var(--wf-muted);
-  font-size: 1.02rem;
+  font-size: 1.05rem;
   line-height: 1.55;
+}
+
+.wf-hero-lead strong {
+  color: var(--wf-crimson);
+}
+
+.wf-venue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1.25rem;
+  padding: 0.7rem 1rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(196, 30, 58, 0.14);
+  color: var(--wf-ink);
+}
+
+.wf-venue strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.wf-venue span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--wf-muted);
 }
 
 .wf-hero-cta,
@@ -199,37 +247,41 @@ html[data-bf-experience="worlds"] .bp-logo span {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  min-height: 42px;
-  padding: 0.55rem 1.1rem;
+  min-height: 44px;
+  padding: 0.55rem 1.2rem;
   border-radius: 999px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.9rem;
   text-decoration: none;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .wf-btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .wf-btn-gold {
-  background: linear-gradient(135deg, #d4af37, #f5e0a3);
-  color: #1a1200;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
+  background: linear-gradient(135deg, #d4a017, #f0d078);
+  color: #1c1410;
+  box-shadow: 0 10px 28px rgba(184, 135, 15, 0.28);
+}
+
+.wf-btn-ink {
+  background: var(--wf-ink);
+  color: #fff8ef;
 }
 
 .wf-btn-ghost {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.14);
-  color: var(--wf-text);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(28, 20, 16, 0.12);
+  color: var(--wf-ink);
 }
 
 .wf-section {
   margin-bottom: 1.75rem;
   animation: wf-fade-up 0.6s ease both;
-  animation-delay: 0.08s;
 }
 
 .wf-section-head {
@@ -237,19 +289,20 @@ html[data-bf-experience="worlds"] .bp-logo span {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.85rem;
-  color: var(--wf-gold);
+  color: var(--wf-crimson);
 }
 
 .wf-section-head h2 {
   margin: 0;
-  font-size: 1.15rem;
-  color: var(--wf-text);
+  font-family: var(--wf-font-display), "Shippori Mincho", serif;
+  font-size: 1.35rem;
+  color: var(--wf-ink);
 }
 
 .wf-muted {
   margin: 0 0 0.85rem;
   color: var(--wf-muted);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 
 .wf-roadmap {
@@ -257,7 +310,7 @@ html[data-bf-experience="worlds"] .bp-logo span {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.75rem;
+  gap: 0.85rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
@@ -266,27 +319,30 @@ html[data-bf-experience="worlds"] .bp-logo span {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding: 1rem 1.05rem;
-  border-radius: 14px;
+  padding: 1.1rem 1.15rem;
+  border-radius: 18px;
   background: var(--wf-panel);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(28, 20, 16, 0.08);
+  box-shadow: 0 10px 28px rgba(28, 20, 16, 0.05);
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.2s ease, transform 0.15s ease;
+  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  animation: wf-fade-up 0.55s ease both;
 }
 
 .wf-road-card:hover,
 .wf-quick-card:hover {
-  border-color: var(--wf-line);
-  transform: translateY(-2px);
+  border-color: rgba(196, 30, 58, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(196, 30, 58, 0.1);
 }
 
 .wf-road-when {
   font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-weight: 900;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--wf-gold);
+  color: var(--wf-crimson);
 }
 
 .wf-road-card span:last-child,
@@ -297,7 +353,7 @@ html[data-bf-experience="worlds"] .bp-logo span {
 
 .wf-quick-grid {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.85rem;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
 
@@ -307,35 +363,37 @@ html[data-bf-experience="worlds"] .bp-logo span {
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.55rem;
 }
 
 .wf-field a {
   display: inline-block;
-  padding: 0.4rem 0.75rem;
+  padding: 0.45rem 0.85rem;
   border-radius: 999px;
-  background: rgba(232, 197, 106, 0.08);
-  border: 1px solid var(--wf-line);
-  color: var(--wf-text);
+  background: #fff;
+  border: 1px solid rgba(196, 30, 58, 0.18);
+  color: var(--wf-ink);
   text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(28, 20, 16, 0.04);
 }
 
 .wf-field a:hover {
-  background: rgba(232, 197, 106, 0.16);
+  background: rgba(196, 30, 58, 0.08);
+  border-color: var(--wf-crimson);
 }
 
 .wf-quiz {
   margin: 2rem 0 1.5rem;
-  padding: 1.25rem;
-  border-radius: 18px;
+  padding: 1.35rem;
+  border-radius: 22px;
   background:
-    linear-gradient(180deg, rgba(232, 197, 106, 0.08), transparent 40%),
-    var(--wf-panel);
-  border: 1px solid var(--wf-line);
+    linear-gradient(180deg, rgba(228, 184, 74, 0.14), transparent 45%),
+    #fff;
+  border: 1px solid rgba(184, 135, 15, 0.22);
+  box-shadow: 0 16px 40px rgba(28, 20, 16, 0.06);
   animation: wf-fade-up 0.65s ease both;
-  animation-delay: 0.12s;
 }
 
 .wf-quiz-head {
@@ -348,13 +406,15 @@ html[data-bf-experience="worlds"] .bp-logo span {
 
 .wf-quiz-head h2 {
   margin: 0.2rem 0 0.35rem;
-  font-size: 1.35rem;
+  font-family: var(--wf-font-display), "Shippori Mincho", serif;
+  font-size: 1.45rem;
+  color: var(--wf-ink);
 }
 
 .wf-quiz-sub {
   margin: 0;
   color: var(--wf-muted);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
 }
 
 .wf-quiz-meta {
@@ -362,18 +422,19 @@ html[data-bf-experience="worlds"] .bp-logo span {
   gap: 0.5rem;
   flex-wrap: wrap;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .wf-quiz-meta span {
   padding: 0.3rem 0.55rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(28, 20, 16, 0.06);
+  color: var(--wf-ink);
 }
 
 .wf-streak {
-  color: #1a1200 !important;
-  background: var(--wf-gold-hot) !important;
+  color: #fff !important;
+  background: var(--wf-crimson) !important;
 }
 
 .wf-quiz-idle,
@@ -385,21 +446,22 @@ html[data-bf-experience="worlds"] .bp-logo span {
 }
 
 .wf-quiz-prompt {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 800;
   margin: 0.75rem 0 1rem;
+  color: var(--wf-ink);
 }
 
 .wf-quiz-bar {
-  height: 4px;
+  height: 5px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(28, 20, 16, 0.08);
   overflow: hidden;
 }
 
 .wf-quiz-bar > div {
   height: 100%;
-  background: linear-gradient(90deg, #c9a227, #ffe8a0);
+  background: linear-gradient(90deg, #c41e3a, #e4b84a);
   transition: width 0.25s ease;
 }
 
@@ -414,44 +476,44 @@ html[data-bf-experience="worlds"] .bp-logo span {
   gap: 0.7rem;
   width: 100%;
   text-align: left;
-  padding: 0.75rem 0.9rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.25);
-  color: var(--wf-text);
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(28, 20, 16, 0.1);
+  background: #fff8ef;
+  color: var(--wf-ink);
   cursor: pointer;
   font-size: 0.95rem;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  font-weight: 600;
 }
 
 .wf-quiz-opt:hover:not(:disabled) {
-  border-color: var(--wf-line);
+  border-color: rgba(196, 30, 58, 0.35);
 }
 
 .wf-quiz-opt.is-correct {
-  border-color: #3ecf8e;
-  background: rgba(62, 207, 142, 0.12);
+  border-color: #1f9d63;
+  background: rgba(31, 157, 99, 0.1);
 }
 
 .wf-quiz-opt.is-wrong {
-  border-color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.1);
+  border-color: #c41e3a;
+  background: rgba(196, 30, 58, 0.08);
 }
 
 .wf-quiz-opt.is-dim {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 .wf-quiz-letter {
   display: inline-flex;
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.65rem;
+  height: 1.65rem;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: rgba(232, 197, 106, 0.15);
-  color: var(--wf-gold);
-  font-weight: 800;
+  background: rgba(196, 30, 58, 0.12);
+  color: var(--wf-crimson);
+  font-weight: 900;
   font-size: 0.75rem;
   flex-shrink: 0;
 }
@@ -473,17 +535,19 @@ html[data-bf-experience="worlds"] .bp-logo span {
 .wf-quiz-score {
   font-size: 2rem;
   margin: 0;
+  color: var(--wf-ink);
 }
 
 .wf-quiz-score strong {
-  color: var(--wf-gold-hot);
-  font-size: 2.6rem;
+  color: var(--wf-crimson);
+  font-size: 2.7rem;
+  font-family: var(--wf-font-display), serif;
 }
 
 .wf-foot {
   margin: 2rem 0 0;
   color: var(--wf-muted);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   line-height: 1.45;
 }
 
@@ -494,28 +558,33 @@ html[data-bf-experience="worlds"] .bp-logo span {
   justify-content: space-between;
   gap: 0.75rem;
   margin: 0 0 1rem;
-  padding: 0.85rem 1rem;
-  border-radius: 14px;
-  background: linear-gradient(90deg, rgba(232, 197, 106, 0.16), rgba(12, 16, 28, 0.9));
-  border: 1px solid var(--wf-line);
-  animation: wf-fade-up 0.4s ease both;
+  padding: 0.9rem 1.1rem;
+  border-radius: 16px;
+  background: linear-gradient(90deg, rgba(196, 30, 58, 0.1), rgba(228, 184, 74, 0.18));
+  border: 1px solid rgba(196, 30, 58, 0.18);
+  color: var(--wf-ink);
 }
 
 .wf-home-banner p {
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .wf-home-banner a {
-  color: var(--wf-gold-hot);
-  font-weight: 800;
+  color: var(--wf-crimson);
+  font-weight: 900;
   text-decoration: none;
+}
+
+.wf-mobile-toggle-wrap {
+  display: flex;
+  padding: 0.5rem 0.75rem 0.25rem;
 }
 
 @keyframes wf-fade-up {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -526,22 +595,24 @@ html[data-bf-experience="worlds"] .bp-logo span {
 @keyframes wf-pulse {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.7;
     transform: scale(1);
   }
   50% {
-    opacity: 0.9;
-    transform: scale(1.05);
+    opacity: 1;
+    transform: scale(1.03);
   }
 }
 
 @media (max-width: 720px) {
-  .wf-mode-toggle {
-    margin-right: 4px;
-  }
   .wf-mode-btn {
     padding: 5px 8px;
     font-size: 10px;
+  }
+  .wf-float-cta {
+    right: 12px;
+    bottom: 76px;
+    font-size: 0.78rem;
   }
   .wf-quiz-head {
     flex-direction: column;
