@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { MAIN_NAV } from "@/lib/nav-config";
+import { ensureWorldsNavItem } from "@/lib/nav-worlds-inject";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 import { PlayerProfileMenu } from "@/components/platform/PlayerProfileMenu";
 import { AdminFab } from "@/components/admin/AdminFab";
 import { WorldsModeToggle } from "@/components/worlds/WorldsModeToggle";
+import { WorldsFloatingCta } from "@/components/worlds/WorldsFloatingCta";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWorldsMode } from "@/contexts/WorldsModeContext";
 
@@ -23,12 +25,13 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
   const { isAdmin, loading: authLoading, isLoggedIn } = useAuth();
   const { isWorlds } = useWorldsMode();
   const cms = useOptionalCmsRuntime();
-  const navItems =
+  const navItems = ensureWorldsNavItem(
     cms?.navigation?.map((item) => ({
       label: item.label,
       href: item.href,
       ...("accent" in item && item.accent ? { accent: item.accent } : {}),
-    })) ?? MAIN_NAV;
+    })) ?? [...MAIN_NAV],
+  );
 
   if (pathname.startsWith("/admin")) {
     return <>{children}</>;
@@ -108,6 +111,7 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="bp-main bf-game-main bf-page-enter bf-main-ultra">{children}</main>
+      <WorldsFloatingCta />
       <AdminFab />
     </div>
   );

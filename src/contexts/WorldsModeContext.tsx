@@ -12,7 +12,8 @@ import {
 
 export type SiteExperience = "classic" | "worlds";
 
-const STORAGE_KEY = "bf-site-experience";
+/** v2: fuerza Worlds como default de temporada (ignora preferencia classic antigua). */
+const STORAGE_KEY = "bf-site-experience-v2";
 
 type WorldsModeContextValue = {
   experience: SiteExperience;
@@ -24,22 +25,35 @@ type WorldsModeContextValue = {
 
 const WorldsModeContext = createContext<WorldsModeContextValue | null>(null);
 
+/** Temporada Worlds: por defecto Worlds (Classic sigue disponible). */
+const DEFAULT_EXPERIENCE: SiteExperience = "worlds";
+
 function readStored(): SiteExperience {
-  if (typeof window === "undefined") return "classic";
+  if (typeof window === "undefined") return DEFAULT_EXPERIENCE;
   try {
     const v = localStorage.getItem(STORAGE_KEY);
-    return v === "worlds" ? "worlds" : "classic";
+    if (v === "classic" || v === "worlds") return v;
+    return DEFAULT_EXPERIENCE;
   } catch {
-    return "classic";
+    return DEFAULT_EXPERIENCE;
   }
 }
 
 export function WorldsModeProvider({ children }: { children: ReactNode }) {
-  const [experience, setExperienceState] = useState<SiteExperience>("classic");
+  const [experience, setExperienceState] = useState<SiteExperience>(DEFAULT_EXPERIENCE);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setExperienceState(readStored());
+    const stored = readStored();
+    setExperienceState(stored);
+    try {
+      // Primera visita sin preferencia → Worlds 2026
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        localStorage.setItem(STORAGE_KEY, DEFAULT_EXPERIENCE);
+      }
+    } catch {
+      /* ignore */
+    }
     setReady(true);
   }, []);
 

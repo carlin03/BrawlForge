@@ -13,6 +13,7 @@ import {
 } from "../defaults";
 import { isCmsResolverActive, isFlagEnabled, mergeFlags } from "../flags";
 import type { ResolvedCmsConfig, ResolvedNavItem, ResolvedThemeTokens } from "../types";
+import { ensureWorldsNavItem } from "@/lib/nav-worlds-inject";
 
 /**
  * Resuelve configuración pública del CMS.
@@ -43,6 +44,7 @@ export async function resolveCmsConfig(): Promise<ResolvedCmsConfig> {
   if (isFlagEnabled(flags, "cms.nav.enabled")) {
     navigation = (await loadNavigationFromDb()) ?? DEFAULT_NAVIGATION;
   }
+  navigation = ensureWorldsNavItem(navigation);
 
   let theme: ResolvedThemeTokens = DEFAULT_THEME_TOKENS;
   if (isFlagEnabled(flags, "cms.theme.enabled")) {
