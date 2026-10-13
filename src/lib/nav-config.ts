@@ -1,6 +1,7 @@
 /** Navegación única — sin duplicar Torneos/Clubes/Noticias */
 export const MAIN_NAV = [
   { label: "Inicio", href: "/" },
+  { label: "Worlds 2026", href: "/worlds", accent: "worlds" as const },
   { label: "Fantasy", href: "/fantasy", accent: "fantasy" as const },
   { label: "Predicciones", href: "/predictions", accent: "predict" as const },
   { label: "Partidos", href: "/matches" },
@@ -12,4 +13,4 @@ export const MAIN_NAV = [
   { label: "Noticias", href: "/news" },
 ] as const;
 
-export type NavAccent = "fantasy" | "predict";
+export type NavAccent = "fantasy" | "predict" | "worlds";

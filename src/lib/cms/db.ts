@@ -66,8 +66,8 @@ export async function loadNavigationFromDb(): Promise<ResolvedNavItem[] | null> 
   return data.map((row) => ({
     label: row.label,
     href: row.href,
-    ...(row.accent === "fantasy" || row.accent === "predict"
-      ? { accent: row.accent as "fantasy" | "predict" }
+    ...(row.accent === "fantasy" || row.accent === "predict" || row.accent === "worlds"
+      ? { accent: row.accent as "fantasy" | "predict" | "worlds" }
       : {}),
   }));
 }

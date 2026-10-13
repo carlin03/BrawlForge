@@ -8,7 +8,9 @@ import { MAIN_NAV } from "@/lib/nav-config";
 import { useOptionalCmsRuntime } from "@/contexts/CmsRuntimeContext";
 import { PlayerProfileMenu } from "@/components/platform/PlayerProfileMenu";
 import { AdminFab } from "@/components/admin/AdminFab";
+import { WorldsModeToggle } from "@/components/worlds/WorldsModeToggle";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWorldsMode } from "@/contexts/WorldsModeContext";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -19,6 +21,7 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { isAdmin, loading: authLoading, isLoggedIn } = useAuth();
+  const { isWorlds } = useWorldsMode();
   const cms = useOptionalCmsRuntime();
   const navItems =
     cms?.navigation?.map((item) => ({
@@ -32,10 +35,16 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="bp-app bf-game-app bf-ultra-app bf-premium-app bf-motion-app">
+    <div
+      className={`bp-app bf-game-app bf-ultra-app bf-premium-app bf-motion-app ${isWorlds ? "is-worlds-mode" : ""}`}
+    >
       <header className="bp-nav bf-game-nav bf-premium-nav">
         <div className="bp-nav-inner">
-          <Link href="/" className="bp-logo bf-game-logo" onClick={() => setOpen(false)}>
+          <Link
+            href={isWorlds ? "/worlds" : "/"}
+            className="bp-logo bf-game-logo"
+            onClick={() => setOpen(false)}
+          >
             <svg className="bf-game-logo-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
               <path d="M12 2l2.9 6.9L22 9.8l-5.2 4.5L18.2 22 12 18.2 5.8 22l1.4-7.7L2 9.8l7.1-.9L12 2z" />
             </svg>
@@ -51,6 +60,7 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
                 on ? "is-on" : "",
                 accent === "fantasy" ? "is-fantasy" : "",
                 accent === "predict" ? "is-vote" : "",
+                accent === "worlds" ? "is-worlds-nav" : "",
               ]
                 .filter(Boolean)
                 .join(" ");
@@ -63,6 +73,7 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="bf-nav-actions">
+            <WorldsModeToggle />
             <PlayerProfileMenu />
             <button type="button" className="bp-nav-toggle" aria-label="Menú" onClick={() => setOpen(!open)}>
               {open ? <X size={18} /> : <Menu size={18} />}
@@ -71,6 +82,9 @@ export function PlatformShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav className={`bp-nav-mobile ${open ? "is-open" : ""}`} aria-label="Móvil">
+          <div className="wf-mobile-toggle-wrap">
+            <WorldsModeToggle />
+          </div>
           {navItems.map((item) => (
             <Link key={item.href} href={item.href} className="bp-nav-link" onClick={() => setOpen(false)}>
               {item.label}

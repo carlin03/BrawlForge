@@ -36,6 +36,7 @@ import { NewsCover } from "@/components/news/NewsCover";
 import { useMergedTournaments, useCatalogTournamentCount } from "@/hooks/useMergedTournaments";
 import { useLatestNewsMerged } from "@/hooks/useMergedNews";
 import { HomeSiteHeader } from "@/components/platform/HomeSiteHeader";
+import { WorldsHomeBanner } from "@/components/worlds/WorldsHomeBanner";
 
 type MatchTab = "live" | "upcoming" | "results";
 
@@ -122,6 +123,7 @@ export function HomeView() {
   return (
     <div className="bf-home-ultra bf-page-ultra">
       <HomeSiteHeader />
+      <WorldsHomeBanner />
 
       <section className="fu-hero fu-hero-live bf-home-hero" id="home-hero">
         <div className="fu-hero-orbs" aria-hidden>

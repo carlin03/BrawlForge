@@ -7,6 +7,7 @@ import { ActivityTracker } from "@/components/platform/ActivityTracker";
 import { LogoConfigProvider } from "@/contexts/LogoConfigContext";
 import { NewsProvider } from "@/contexts/NewsContext";
 import { MatchPoolRefreshProvider } from "@/contexts/MatchPoolRefreshContext";
+import { WorldsModeProvider } from "@/contexts/WorldsModeContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -16,8 +17,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <NewsProvider>
             <MatchPoolRefreshProvider>
               <GameProvider>
-                <ActivityTracker />
-                {children}
+                <WorldsModeProvider>
+                  <ActivityTracker />
+                  {children}
+                </WorldsModeProvider>
               </GameProvider>
             </MatchPoolRefreshProvider>
           </NewsProvider>

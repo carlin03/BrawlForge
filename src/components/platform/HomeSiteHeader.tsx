@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Sparkles } from "lucide-react";
 
 const QUICK = [
+  { href: "/worlds", label: "Worlds 2026", className: "fu-btn-gold" },
   { href: "/fantasy", label: "Fantasy", className: "fu-btn-gold" },
   { href: "/predictions", label: "Predicciones", className: "fu-btn-red" },
   { href: "/matches", label: "Partidos", className: "fu-btn-ghost" },

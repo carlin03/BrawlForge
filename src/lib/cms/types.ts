@@ -14,7 +14,7 @@ export type CmsFeatureFlagKey =
   | "cms.media.enabled"
   | "cms.automation.enabled";
 
-export type NavAccent = "fantasy" | "predict";
+export type NavAccent = "fantasy" | "predict" | "worlds";
 
 export interface ResolvedNavItem {
   label: string;
