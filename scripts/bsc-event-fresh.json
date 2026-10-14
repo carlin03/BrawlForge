@@ -1,0 +1,232 @@
+[
+  {
+    "eventId": "57UicBDQiZW3rOEycvUM7P",
+    "eventRules": {
+      "r": [
+        {
+          "m": [
+            {
+              "fP": false,
+              "id": 1
+            },
+            {
+              "fP": false,
+              "id": 2
+            },
+            {
+              "fP": false,
+              "id": 3
+            },
+            {
+              "fP": false,
+              "id": 4
+            },
+            {
+              "fP": true,
+              "id": 5
+            },
+            {
+              "fP": true,
+              "id": 6
+            },
+            {
+              "fP": true,
+              "id": 7
+            }
+          ],
+          "r": 1
+        }
+      ]
+    },
+    "status": "published",
+    "totalRanges": 1,
+    "estimatedUsers": 100000,
+    "bracketType": "single_elimination",
+    "range": 1,
+    "application": "brawlstars",
+    "region": "emea",
+    "cup": "world-championship",
+    "minimumRetentionInDays": 14,
+    "numberOfContestants": 8,
+    "rangeStartTimes": {
+      "1": 1781437500000
+    },
+    "type": "regular",
+    "raffles": [],
+    "predictionStartTimes": {},
+    "streams": []
+  },
+  {
+    "eventId": "fUOdC0IqHXuBhtoegWFeO",
+    "eventRules": {
+      "r": [
+        {
+          "m": [
+            {
+              "fP": false,
+              "id": 1
+            },
+            {
+              "fP": false,
+              "id": 2
+            },
+            {
+              "fP": false,
+              "id": 3
+            },
+            {
+              "fP": false,
+              "id": 4
+            },
+            {
+              "fP": true,
+              "id": 5
+            },
+            {
+              "fP": true,
+              "id": 6
+            },
+            {
+              "fP": true,
+              "id": 7
+            }
+          ],
+          "r": 1
+        }
+      ]
+    },
+    "status": "active",
+    "totalRanges": 1,
+    "estimatedUsers": 100000,
+    "bracketType": "single_elimination",
+    "range": 1,
+    "application": "brawlstars",
+    "region": "ea",
+    "cup": "world-championship",
+    "minimumRetentionInDays": 14,
+    "numberOfContestants": 8,
+    "rangeStartTimes": {
+      "1": 1781333100000
+    },
+    "type": "regular",
+    "raffles": [],
+    "predictionStartTimes": {
+      "1": 1781161200000
+    },
+    "streams": []
+  },
+  {
+    "eventId": "6iVR4E1YiJiezETVwcqn6f",
+    "eventRules": {
+      "r": [
+        {
+          "m": [
+            {
+              "fP": false,
+              "id": 1
+            },
+            {
+              "fP": false,
+              "id": 2
+            },
+            {
+              "fP": false,
+              "id": 3
+            },
+            {
+              "fP": false,
+              "id": 4
+            },
+            {
+              "fP": true,
+              "id": 5
+            },
+            {
+              "fP": true,
+              "id": 6
+            },
+            {
+              "fP": true,
+              "id": 7
+            }
+          ],
+          "r": 1
+        }
+      ]
+    },
+    "status": "published",
+    "totalRanges": 1,
+    "estimatedUsers": 100000,
+    "bracketType": "single_elimination",
+    "range": 1,
+    "application": "brawlstars",
+    "region": "na",
+    "cup": "world-championship",
+    "minimumRetentionInDays": 14,
+    "numberOfContestants": 8,
+    "rangeStartTimes": {
+      "1": 1782067500000
+    },
+    "type": "regular",
+    "raffles": [],
+    "predictionStartTimes": {},
+    "streams": []
+  },
+  {
+    "eventId": "5HIWv7rJuTye6PouIyTGDw",
+    "eventRules": {
+      "r": [
+        {
+          "m": [
+            {
+              "fP": false,
+              "id": 1
+            },
+            {
+              "fP": false,
+              "id": 2
+            },
+            {
+              "fP": false,
+              "id": 3
+            },
+            {
+              "fP": false,
+              "id": 4
+            },
+            {
+              "fP": true,
+              "id": 5
+            },
+            {
+              "fP": true,
+              "id": 6
+            },
+            {
+              "fP": true,
+              "id": 7
+            }
+          ],
+          "r": 1
+        }
+      ]
+    },
+    "status": "published",
+    "totalRanges": 1,
+    "estimatedUsers": 100000,
+    "bracketType": "single_elimination",
+    "range": 1,
+    "application": "brawlstars",
+    "region": "sa",
+    "cup": "world-championship",
+    "minimumRetentionInDays": 14,
+    "numberOfContestants": 8,
+    "rangeStartTimes": {
+      "1": 1781981100000
+    },
+    "type": "regular",
+    "raffles": [],
+    "predictionStartTimes": {},
+    "streams": []
+  }
+]

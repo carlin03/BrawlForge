@@ -1,0 +1,974 @@
+[
+  {
+    "bracketType": "single_elimination",
+    "eventId": "57UicBDQiZW3rOEycvUM7P",
+    "ranges": [
+      {
+        "rangeId": 1,
+        "matches": [
+          {
+            "id": 1,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 4,
+                "score": 0
+              },
+              {
+                "id": 57,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 24,
+                "score": 0
+              },
+              {
+                "id": 15,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 2,
+                "score": 0
+              },
+              {
+                "id": 25,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 21,
+                "score": 0
+              },
+              {
+                "id": 5,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "4NTRZRkMJaZBI9YySpvmqQ",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 0,
+                "score": 0
+              },
+              {
+                "id": 0,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 2
+              },
+              {
+                "result": "winner",
+                "matchId": 1
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "4NTRZRkMJaZBI9YySpvmqQ",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 0,
+                "score": 0
+              },
+              {
+                "id": 0,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 4
+              },
+              {
+                "result": "winner",
+                "matchId": 3
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "1R2qhedYtlNHepwqLeKkKh",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 0,
+                "score": 0
+              },
+              {
+                "id": 0,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 6
+              },
+              {
+                "result": "winner",
+                "matchId": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "numberOfContestants": 8
+  },
+  {
+    "bracketType": "single_elimination",
+    "eventId": "fUOdC0IqHXuBhtoegWFeO",
+    "ranges": [
+      {
+        "rangeId": 1,
+        "matches": [
+          {
+            "id": 1,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 6,
+                "score": 0
+              },
+              {
+                "id": 55,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 56,
+                "score": 0
+              },
+              {
+                "id": 13,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 11,
+                "score": 0
+              },
+              {
+                "id": 23,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "3Mv8lq6yxgWZSLxTSMnqin",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 27,
+                "score": 0
+              },
+              {
+                "id": 8,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "4NTRZRkMJaZBI9YySpvmqQ",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 0,
+                "score": 0
+              },
+              {
+                "id": 0,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 2
+              },
+              {
+                "result": "winner",
+                "matchId": 1
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "4NTRZRkMJaZBI9YySpvmqQ",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 0,
+                "score": 0
+              },
+              {
+                "id": 0,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 4
+              },
+              {
+                "result": "winner",
+                "matchId": 3
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "bracketPosition": {
+              "stage": "single",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "1R2qhedYtlNHepwqLeKkKh",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "id": 0,
+                "score": 0
+              },
+              {
+                "id": 0,
+                "score": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 6
+              },
+              {
+                "result": "winner",
+                "matchId": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "numberOfContestants": 8
+  },
+  {
+    "bracketType": "single_elimination",
+    "eventId": "6iVR4E1YiJiezETVwcqn6f",
+    "ranges": [
+      {
+        "rangeId": 1,
+        "matches": [
+          {
+            "id": 1,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 2
+              },
+              {
+                "result": "winner",
+                "matchId": 1
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 4
+              },
+              {
+                "result": "winner",
+                "matchId": 3
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 6
+              },
+              {
+                "result": "winner",
+                "matchId": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "numberOfContestants": 8
+  },
+  {
+    "bracketType": "single_elimination",
+    "eventId": "5HIWv7rJuTye6PouIyTGDw",
+    "ranges": [
+      {
+        "rangeId": 1,
+        "matches": [
+          {
+            "id": 1,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": false,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "none",
+                "matchId": 0
+              },
+              {
+                "result": "none",
+                "matchId": 0
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 2
+              },
+              {
+                "result": "winner",
+                "matchId": 1
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 4
+              },
+              {
+                "result": "winner",
+                "matchId": 3
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "bracketPosition": {
+              "stage": "none",
+              "depth": 0,
+              "position": 0
+            },
+            "matchPositionLabel": "",
+            "isFantasy": true,
+            "isExtended": false,
+            "isSkipped": false,
+            "contestant": [
+              {
+                "score": 0,
+                "id": 0
+              },
+              {
+                "score": 0,
+                "id": 0
+              }
+            ],
+            "completed": false,
+            "populateFromMatches": [
+              {
+                "result": "winner",
+                "matchId": 6
+              },
+              {
+                "result": "winner",
+                "matchId": 5
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "numberOfContestants": 8
+  }
+]

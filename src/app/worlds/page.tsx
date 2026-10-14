@@ -1,5 +1,6 @@
-import { WorldsHubView } from "@/components/worlds/WorldsHubView";
+import { redirect } from "next/navigation";
 
+/** /worlds → home del Mundial */
 export default function WorldsPage() {
-  return <WorldsHubView />;
+  redirect("/");
 }

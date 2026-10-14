@@ -1,0 +1,284 @@
+/* World Finals 2026 Cup — única experiencia pública */
+
+.wc-boot {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+  color: #1c1410;
+  background: #fff8ef;
+}
+
+.wc-app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+  color: #1c1410;
+  font-family: var(--wf-font-body, system-ui, sans-serif);
+}
+
+.wc-hero {
+  border-radius: 24px;
+  padding: clamp(1.4rem, 4vw, 2.5rem);
+  margin-bottom: 1.25rem;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(228, 184, 74, 0.35), transparent 40%),
+    radial-gradient(circle at 5% 90%, rgba(196, 30, 58, 0.18), transparent 40%),
+    linear-gradient(145deg, #fff, #ffeeda);
+  border: 1px solid rgba(196, 30, 58, 0.15);
+  box-shadow: 0 12px 32px rgba(28, 20, 16, 0.06);
+}
+
+.wc-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c41e3a;
+}
+
+.wc-hero h1 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.7rem, 5vw, 2.8rem);
+  line-height: 1.05;
+  font-weight: 900;
+}
+
+.wc-jp {
+  display: block;
+  font-size: 0.95rem;
+  letter-spacing: 0.25em;
+  color: #c41e3a;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.wc-hero em {
+  font-style: normal;
+  color: #b8870f;
+}
+
+.wc-lead {
+  margin: 0 0 1rem;
+  color: rgba(28, 20, 16, 0.65);
+  max-width: 40rem;
+  line-height: 1.5;
+}
+
+.wc-progress {
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(28, 20, 16, 0.08);
+  overflow: hidden;
+}
+
+.wc-progress > div {
+  height: 100%;
+  background: linear-gradient(90deg, #c41e3a, #e4b84a);
+  transition: width 0.2s ease;
+}
+
+.wc-progress-label {
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(28, 20, 16, 0.55);
+}
+
+.wc-champ-banner {
+  margin: 0.85rem 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(196, 30, 58, 0.1);
+  color: #c41e3a;
+  font-weight: 700;
+}
+
+.wc-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.wc-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(28, 20, 16, 0.1);
+  background: #fff;
+  color: #1c1410;
+  font-weight: 800;
+  font-size: 0.88rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.wc-tabs button.is-on {
+  background: #c41e3a;
+  border-color: #c41e3a;
+  color: #fff;
+}
+
+.wc-panel {
+  background: #fff;
+  border: 1px solid rgba(28, 20, 16, 0.08);
+  border-radius: 20px;
+  padding: 1.15rem;
+  box-shadow: 0 8px 24px rgba(28, 20, 16, 0.04);
+}
+
+.wc-panel h2,
+.wc-h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+}
+
+.wc-h2 {
+  margin-top: 1.5rem;
+}
+
+.wc-hint {
+  margin: 0 0 1rem;
+  color: rgba(28, 20, 16, 0.55);
+  font-size: 0.9rem;
+}
+
+.wc-match-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.wc-match {
+  border: 1px solid rgba(28, 20, 16, 0.08);
+  border-radius: 14px;
+  padding: 0.65rem;
+  background: #fff8ef;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.wc-match-id {
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #c41e3a;
+}
+
+.wc-team-pick,
+.wc-champ-pick {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(28, 20, 16, 0.1);
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.5rem 0.65rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: #1c1410;
+}
+
+.wc-team-pick.is-on,
+.wc-champ-pick.is-on {
+  border-color: #c41e3a;
+  background: rgba(196, 30, 58, 0.08);
+  box-shadow: 0 0 0 1px rgba(196, 30, 58, 0.2);
+}
+
+.wc-champ-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.wc-champ-pick {
+  flex-direction: column;
+  padding: 1rem 0.75rem;
+}
+
+.wc-champ-pick span {
+  font-size: 0.75rem;
+  color: #c41e3a;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.wc-reset {
+  margin-top: 1.25rem;
+  border: 0;
+  background: transparent;
+  color: rgba(28, 20, 16, 0.5);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.wc-team-grid,
+.wc-player-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-top: 0.75rem;
+}
+
+.wc-team-card,
+.wc-player-card {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 1px solid rgba(28, 20, 16, 0.08);
+  background: #fff8ef;
+  text-decoration: none;
+  color: inherit;
+}
+
+.wc-team-card strong,
+.wc-player-card strong {
+  display: block;
+}
+
+.wc-team-card span,
+.wc-player-card span {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(28, 20, 16, 0.55);
+}
+
+.wc-player-card {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Shell Worlds-only light */
+html[data-wf-theme="tokyo"] .bp-main,
+.bp-app.is-worlds-only .bp-main {
+  background: linear-gradient(180deg, #fff9f1, #ffe8d2) !important;
+}
+
+.bp-app.is-worlds-only .bp-nav {
+  background: #fff9f1 !important;
+  border-bottom: 1px solid rgba(196, 30, 58, 0.15) !important;
+}
+
+.bp-app.is-worlds-only .bp-logo,
+.bp-app.is-worlds-only .bp-nav-link {
+  color: #1c1410 !important;
+}
+
+.bp-app.is-worlds-only .bp-logo span {
+  color: #c41e3a !important;
+}

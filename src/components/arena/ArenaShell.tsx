@@ -35,7 +35,7 @@ export function ArenaShell({ children }: { children: React.ReactNode }) {
           <nav className="ar-nav" aria-label="Principal">
             {NAV_ITEMS.map((item) => {
               const on = isActive(pathname, item.href);
-              const accent = "accent" in item ? item.accent : undefined;
+              const accent = ("accent" in item ? item.accent : undefined) as string | undefined;
               const classes = [
                 on ? "is-on" : "",
                 accent === "predict" ? "is-vote" : "",

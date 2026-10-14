@@ -7,6 +7,7 @@
 @import "../styles/studio-library.css";
 @import "../styles/esport.css";
 @import "../styles/worlds.css";
+@import "../styles/worlds-cup.css";
 @layer base {
   html, body {
     background-color: #0a0c12 !important;

@@ -23,7 +23,7 @@ export function ForgeShell({ children }: { children: React.ReactNode }) {
           <nav className="fg-nav-links" aria-label="Principal">
             {NAV_ITEMS.map((item) => {
               const on = isActive(pathname, item.href);
-              const accent = "accent" in item ? item.accent : undefined;
+              const accent = ("accent" in item ? item.accent : undefined) as string | undefined;
               return (
                 <Link
                   key={item.href}

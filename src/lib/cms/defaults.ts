@@ -10,16 +10,16 @@ export const CMS_CONFIG_VERSION = 1;
 
 export const DEFAULT_THEME_TOKENS: ResolvedThemeTokens = {
   colors: {
-    bg: "#0a0c12",
-    surface: "#131824",
-    panel: "#181f2c",
-    text: "#f8fafc",
-    muted: "#9aa8bc",
-    primary: "#0099ff",
-    secondary: "#ffc82e",
-    success: "#34d06a",
-    error: "#ff1744",
-    warning: "#ffc82e",
+    bg: "#fff9f1",
+    surface: "#ffffff",
+    panel: "#fff8ef",
+    text: "#1c1410",
+    muted: "#6b5e52",
+    primary: "#c41e3a",
+    secondary: "#b8870f",
+    success: "#1f9d63",
+    error: "#c41e3a",
+    warning: "#e4b84a",
   },
   layout: {
     maxWidth: "1240px",
