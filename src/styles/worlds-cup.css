@@ -263,6 +263,155 @@
   align-items: flex-start;
 }
 
+.wc-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0.85rem 0 0;
+}
+
+.wc-hero-stats > div {
+  min-width: 88px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(28, 20, 16, 0.08);
+}
+
+.wc-hero-stats b {
+  display: block;
+  font-size: 1.25rem;
+  color: #c41e3a;
+}
+
+.wc-hero-stats span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(28, 20, 16, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.wc-cards-rail {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.15rem 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wc-cards-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  justify-items: center;
+}
+
+.wc-cards-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.wc-card-slot {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.wc-card-slot .bf-player-card,
+.wc-card-slot a {
+  max-width: 100%;
+}
+
+.wc-team-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.wc-team-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(28, 20, 16, 0.1);
+  background: #fff8ef;
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  color: #1c1410;
+}
+
+.wc-team-chip.is-on {
+  background: #c41e3a;
+  border-color: #c41e3a;
+  color: #fff;
+}
+
+.wc-team-focus {
+  border-top: 1px solid rgba(28, 20, 16, 0.08);
+  padding-top: 1rem;
+}
+
+.wc-team-focus-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.wc-team-focus-head strong {
+  display: block;
+  font-size: 1.15rem;
+}
+
+.wc-team-focus-head span {
+  color: rgba(28, 20, 16, 0.55);
+  font-size: 0.85rem;
+}
+
+.wc-link-btn {
+  margin-left: auto;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: #1c1410;
+  color: #fff8ef;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.82rem;
+}
+
+.wc-h3 {
+  margin: 1.25rem 0 0.55rem;
+  font-size: 1rem;
+}
+
+.wc-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 360px;
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(28, 20, 16, 0.12);
+}
+
+.wc-search input {
+  border: 0;
+  outline: 0;
+  width: 100%;
+  background: transparent;
+  font: inherit;
+  color: #1c1410;
+}
+
 /* Shell Worlds-only light */
 html[data-wf-theme="tokyo"] .bp-main,
 .bp-app.is-worlds-only .bp-main {

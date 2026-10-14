@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Crown, MapPin, Trophy, Users, Swords } from "lucide-react";
+import { Crown, MapPin, Trophy, Users, Swords, Layers } from "lucide-react";
 import { TeamLogo } from "@/components/ui/TeamLogo";
+import { PlayerCard } from "@/components/platform/PlayerCard";
 import {
   WORLDS_2026_VENUE,
   WORLDS_PICKEM_QF,
@@ -32,7 +33,7 @@ function loadPicks(): Picks {
   }
 }
 
-function teamName(slug: string, teams: ReturnType<typeof getWorlds2026Teams>) {
+function labelTeam(slug: string, teams: ReturnType<typeof getWorlds2026Teams>) {
   return teams.find((t) => t.slug === slug)?.name ?? slug;
 }
 
@@ -41,7 +42,8 @@ export function WorldsPickemsHome() {
   const players = useMemo(() => getWorlds2026Players(), []);
   const [picks, setPicks] = useState<Picks>(EMPTY);
   const [ready, setReady] = useState(false);
-  const [tab, setTab] = useState<"pickem" | "teams" | "players">("pickem");
+  const [tab, setTab] = useState<"pickem" | "teams" | "players" | "cards">("cards");
+  const [openTeam, setOpenTeam] = useState<string | null>(teams[0]?.slug ?? null);
 
   useEffect(() => {
     setPicks(loadPicks());
@@ -60,9 +62,7 @@ export function WorldsPickemsHome() {
   }, []);
 
   const pickQf = (id: string, winner: string) => {
-    const qf = { ...picks.qf, [id]: winner };
-    // reset later rounds if dependent
-    save({ qf, sf: {}, final: null, champion: null });
+    save({ qf: { ...picks.qf, [id]: winner }, sf: {}, final: null, champion: null });
   };
 
   const sfPairs = useMemo(() => {
@@ -77,8 +77,7 @@ export function WorldsPickemsHome() {
   }, [picks.qf]);
 
   const pickSf = (id: string, winner: string) => {
-    const sf = { ...picks.sf, [id]: winner };
-    save({ ...picks, sf, final: null, champion: null });
+    save({ ...picks, sf: { ...picks.sf, [id]: winner }, final: null, champion: null });
   };
 
   const sfWinners = useMemo(
@@ -90,13 +89,16 @@ export function WorldsPickemsHome() {
     const qfDone = Object.keys(picks.qf).length;
     const sfDone = Object.keys(picks.sf).length;
     const champ = picks.champion ? 1 : 0;
-    return Math.round(((qfDone + sfDone + champ) / (8 + 4 + 1)) * 100);
+    return Math.round(((qfDone + sfDone + champ) / 13) * 100);
   }, [picks]);
+
+  const spotlight = useMemo(() => players.slice(0, 12).map((p) => p.slug), [players]);
+  const activeTeam = teams.find((t) => t.slug === openTeam) ?? teams[0];
 
   if (!ready) {
     return (
       <div className="wc-boot">
-        <p>Cargando World Finals 2026…</p>
+        <p>Cargando cartas World Finals 2026…</p>
       </div>
     );
   }
@@ -109,20 +111,30 @@ export function WorldsPickemsHome() {
         </p>
         <h1>
           <span className="wc-jp">世界決勝</span>
-          Brawl Stars World Finals <em>2026</em>
+          World Finals <em>2026</em>
         </h1>
         <p className="wc-lead">
-          Pick&apos;ems estilo Mundial: elige ganadores del cuadro, corona al campeón y explora cada
-          equipo y jugador del campo de Tokio.
+          Cartas de cada pro, plantillas de los 16 equipos y pick&apos;ems del cuadro. Todo el Mundial
+          en Tokio — sin el resto del circuito.
         </p>
-        <div className="wc-progress" aria-label="Progreso pickem">
-          <div style={{ width: `${progress}%` }} />
+        <div className="wc-hero-stats">
+          <div>
+            <b>{teams.length}</b>
+            <span>Equipos</span>
+          </div>
+          <div>
+            <b>{players.length}</b>
+            <span>Jugadores</span>
+          </div>
+          <div>
+            <b>{progress}%</b>
+            <span>Tu pick&apos;em</span>
+          </div>
         </div>
-        <p className="wc-progress-label">{progress}% del bracket rellenado</p>
         {picks.champion && (
           <p className="wc-champ-banner">
             <Crown size={16} aria-hidden /> Tu campeón:{" "}
-            <strong>{teamName(picks.champion, teams)}</strong>
+            <strong>{labelTeam(picks.champion, teams)}</strong>
           </p>
         )}
       </header>
@@ -130,9 +142,10 @@ export function WorldsPickemsHome() {
       <nav className="wc-tabs" aria-label="Secciones Mundial">
         {(
           [
-            ["pickem", "Pick'ems", Trophy],
+            ["cards", "Cartas", Layers],
             ["teams", "Equipos", Users],
             ["players", "Jugadores", Swords],
+            ["pickem", "Pick'ems", Trophy],
           ] as const
         ).map(([id, label, Icon]) => (
           <button
@@ -146,10 +159,112 @@ export function WorldsPickemsHome() {
         ))}
       </nav>
 
+      {tab === "cards" && (
+        <section className="wc-panel">
+          <h2>Cartas del Mundial</h2>
+          <p className="wc-hint">
+            Cartas premium de los pros del campo de Tokio. Pulsa una para abrir su ficha.
+          </p>
+          <div className="wc-cards-rail">
+            {spotlight.map((slug) => (
+              <div key={slug} className="wc-card-slot">
+                <PlayerCard playerSlug={slug} size="lg" href={`/players/${slug}`} showExtended />
+              </div>
+            ))}
+          </div>
+          <h2 className="wc-h2">Todas las cartas ({players.length})</h2>
+          <div className="wc-cards-grid">
+            {players.map((p) => (
+              <div key={p.slug} className="wc-card-slot">
+                <PlayerCard
+                  playerSlug={p.slug}
+                  clubSlug={p.teamSlug}
+                  size="md"
+                  href={`/players/${p.slug}`}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {tab === "teams" && (
+        <section className="wc-panel">
+          <h2>Equipos · plantilla con cartas</h2>
+          <p className="wc-hint">Elige un club para ver sus 3 cartas de roster.</p>
+          <div className="wc-team-chips">
+            {teams.map((t) => (
+              <button
+                key={t.slug}
+                type="button"
+                className={`wc-team-chip ${openTeam === t.slug ? "is-on" : ""}`}
+                onClick={() => setOpenTeam(t.slug)}
+              >
+                <TeamLogo slug={t.slug} name={t.name} size={22} />
+                {t.name}
+              </button>
+            ))}
+          </div>
+          {activeTeam && (
+            <div className="wc-team-focus">
+              <div className="wc-team-focus-head">
+                <TeamLogo slug={activeTeam.slug} name={activeTeam.name} size={52} />
+                <div>
+                  <strong>{activeTeam.name}</strong>
+                  <span>
+                    {activeTeam.region} · {activeTeam.roster.length} jugadores
+                  </span>
+                </div>
+                <Link href={`/teams/${activeTeam.slug}`} className="wc-link-btn">
+                  Ficha equipo
+                </Link>
+              </div>
+              <div className="wc-cards-grid wc-cards-grid-3">
+                {activeTeam.roster.map((p) => (
+                  <div key={p.slug} className="wc-card-slot">
+                    <PlayerCard
+                      playerSlug={p.slug}
+                      clubSlug={activeTeam.slug}
+                      size="lg"
+                      href={`/players/${p.slug}`}
+                      showExtended
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {tab === "players" && (
+        <section className="wc-panel">
+          <h2>Jugadores ({players.length})</h2>
+          <p className="wc-hint">Todas las cartas del Mundial, ordenadas por IGN.</p>
+          <div className="wc-cards-grid">
+            {players.map((p) => (
+              <div key={p.slug} className="wc-card-slot">
+                <PlayerCard
+                  playerSlug={p.slug}
+                  clubSlug={p.teamSlug}
+                  size="md"
+                  href={`/players/${p.slug}`}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {tab === "pickem" && (
         <section className="wc-panel">
-          <h2>Cuartos de final</h2>
-          <p className="wc-hint">Elige el ganador de cada cruce (Bo5).</p>
+          <h2>Pick&apos;ems · cuadro Tokio</h2>
+          <p className="wc-hint">Elige ganadores. Progreso: {progress}%.</p>
+          <div className="wc-progress" aria-hidden>
+            <div style={{ width: `${progress}%` }} />
+          </div>
+
+          <h3 className="wc-h3">Cuartos</h3>
           <div className="wc-match-grid">
             {WORLDS_PICKEM_QF.map((m) => (
               <div key={m.id} className="wc-match">
@@ -163,8 +278,8 @@ export function WorldsPickemsHome() {
                       className={`wc-team-pick ${on ? "is-on" : ""}`}
                       onClick={() => pickQf(m.id, slug)}
                     >
-                      <TeamLogo slug={slug} name={teamName(slug, teams)} size={28} />
-                      <span>{teamName(slug, teams)}</span>
+                      <TeamLogo slug={slug} name={labelTeam(slug, teams)} size={28} />
+                      <span>{labelTeam(slug, teams)}</span>
                       {on && <Crown size={14} aria-hidden />}
                     </button>
                   );
@@ -173,9 +288,9 @@ export function WorldsPickemsHome() {
             ))}
           </div>
 
-          <h2 className="wc-h2">Semifinales</h2>
+          <h3 className="wc-h3">Semis</h3>
           {sfPairs.length === 0 ? (
-            <p className="wc-hint">Completa los 8 cuartos para desbloquear semis.</p>
+            <p className="wc-hint">Completa los 8 cuartos.</p>
           ) : (
             <div className="wc-match-grid">
               {sfPairs.map((m) => (
@@ -190,8 +305,8 @@ export function WorldsPickemsHome() {
                         className={`wc-team-pick ${on ? "is-on" : ""}`}
                         onClick={() => pickSf(m.id, slug)}
                       >
-                        <TeamLogo slug={slug} name={teamName(slug, teams)} size={28} />
-                        <span>{teamName(slug, teams)}</span>
+                        <TeamLogo slug={slug} name={labelTeam(slug, teams)} size={28} />
+                        <span>{labelTeam(slug, teams)}</span>
                         {on && <Crown size={14} aria-hidden />}
                       </button>
                     );
@@ -201,9 +316,9 @@ export function WorldsPickemsHome() {
             </div>
           )}
 
-          <h2 className="wc-h2">Campeón de Tokio</h2>
+          <h3 className="wc-h3">Campeón</h3>
           {sfWinners.length < 4 ? (
-            <p className="wc-hint">Elige las 4 semis para coronar al campeón.</p>
+            <p className="wc-hint">Termina las semis para coronar.</p>
           ) : (
             <div className="wc-champ-grid">
               {sfWinners.map((slug) => {
@@ -215,8 +330,8 @@ export function WorldsPickemsHome() {
                     className={`wc-champ-pick ${on ? "is-on" : ""}`}
                     onClick={() => save({ ...picks, champion: slug })}
                   >
-                    <TeamLogo slug={slug} name={teamName(slug, teams)} size={40} />
-                    <strong>{teamName(slug, teams)}</strong>
+                    <TeamLogo slug={slug} name={labelTeam(slug, teams)} size={40} />
+                    <strong>{labelTeam(slug, teams)}</strong>
                     {on && <span>Campeón</span>}
                   </button>
                 );
@@ -224,48 +339,9 @@ export function WorldsPickemsHome() {
             </div>
           )}
 
-          <button
-            type="button"
-            className="wc-reset"
-            onClick={() => save(EMPTY)}
-          >
+          <button type="button" className="wc-reset" onClick={() => save(EMPTY)}>
             Reiniciar pick&apos;em
           </button>
-        </section>
-      )}
-
-      {tab === "teams" && (
-        <section className="wc-panel">
-          <h2>Campo · 16 equipos</h2>
-          <div className="wc-team-grid">
-            {teams.map((t) => (
-              <Link key={t.slug} href={`/teams/${t.slug}`} className="wc-team-card">
-                <TeamLogo slug={t.slug} name={t.name} size={44} />
-                <div>
-                  <strong>{t.name}</strong>
-                  <span>
-                    {t.region} · {t.roster.length} jugadores
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {tab === "players" && (
-        <section className="wc-panel">
-          <h2>Jugadores del Mundial</h2>
-          <div className="wc-player-grid">
-            {players.map((p) => (
-              <Link key={p.slug} href={`/players/${p.slug}`} className="wc-player-card">
-                <strong>{p.ign}</strong>
-                <span>
-                  {p.teamName} · {p.region}
-                </span>
-              </Link>
-            ))}
-          </div>
         </section>
       )}
     </div>
